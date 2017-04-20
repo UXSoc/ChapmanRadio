@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>[%html_title%]</title>
+
+<link rel='shortcut icon' href='/img/favicon.ico' />
+
+<link rel="apple-touch-icon" sizes="150x150" href="/img/ios/apple-touch-icon.png" />
+
+<link rel="stylesheet" href="/css/style.css" type="text/css" />
+
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript">function eid(w) {return document.getElementById(w);}</script>
+<script type="text/javascript" src="/js/listenlive.js"></script>
+<script type="text/javascript" src="/js/snowfall.jquery.js"></script>
+<script type="text/javascript">$(document).ready(function(){ $(document).snowfall({collection : '.navbar'}); });</script>
+
+<meta property="og:title" content="[%html_title%]" />
+<meta property="og:site_name" content="Chapman Radio" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="[%og:url%]" />
+<meta property="og:description" content="[%metadescription%]" />
+
+<meta name="description" content="[%metadescription%]" />
+<meta name="keywords" content="[%metakeywords%]" />
+<meta name="author" content="David Tyler, webmaster@chapmanradio.com" />
+
+<style type="text/css">
+img, div, input { behavior: url("/plugins/iepngfix/iepngfix.htc") }
+</style>
+<!--[if lt IE 7]
+-->
+[%html_head%]
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-34475663-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</head>
+<body>
+
+	<div id="fb-root"></div>
+
+	<div class='wrapper'><div class='session'>[%session%]</div></div>
+	
+	<h1 id='header' style='background-image:url([%header_url%]);'>ChapmanRadio.com</h1>
+	
+	<div id='socialbar' class='wrapper'>
+		<div id='socialbar-container' class='clear'>
+			<a class='hidden social-popper' title="YouTube" id='youtube-popper' href="http://youtube.com/user/ChapmanRadio" target="_blank"></a>
+			<a class='hidden social-popper' title="Panther Sports" id='sports-popper' href="https://www.facebook.com/pages/Panther-Sports-on-Chapman-Radio/149631281728203" target="_blank"></a>	
+			<a class='social-popper' title="Vimeo" id='vimeo-popper' href="http://vimeo.com/user13950854" target="_blank"></a>
+			<a class='hidden social-popper' id='spotify-popper' href="#spotify" target="_blank"></a>
+			<a class='social-popper' title="Instagram" id='instagram-popper' href="http://instagram.com/chapmanradio" target="_blank"></a>
+			<a class='social-popper' title="Radioman's Profile" id='radioman-popper' href="http://facebook.com/chapmanradioman" target="_blank"></a>
+
+			<a class='social-popper' title="Twitter" id='twitter-popper' href="http://twitter.com/chapman_radio" target="_blank"></a>
+			
+			<a class='social-popper' title="Facebook Page" id='facebook-popper' href="http://facebook.com/chapmanradio" target="_blank"></a>
+
+		</div>
+	</div>
+	
+	<div id='main' class='wrapper'>
+		<div class='navbar'>
+			<ul>[%navbar%]</ul>
+		</div>
+		[%usernav%]
+		<div id='content'>
+			[%html_body%]
+		</div>
+	</div>
+
+	<div id='footer'>
+		[%footer%]
+		<br />
+		Thanks for visiting ChapmanRadio.com - We love having you, but remember that all users must adhere to <a href='/policies'>Chapman Radio's Policies</a>
+	</div>
+	
+</body>
+</html>
