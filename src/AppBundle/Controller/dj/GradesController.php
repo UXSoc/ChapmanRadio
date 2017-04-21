@@ -70,8 +70,7 @@ class GradesController extends Controller
             Template::Add("</tbody></table>");
         }
 
-        Template::Finalize();
-
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
 
     }
     function RenderGrade($grade, $prefix = "")

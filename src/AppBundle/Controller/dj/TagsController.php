@@ -76,31 +76,33 @@ class TagsController extends Controller
                 if(isset($meta[$entry])) foreach($meta[$entry] as $key => $val) if($key != 0) $info .= "<br />$val<br />";
                 else $info = "$entry";
 
-                $col[$count++ % 3] .= "<div style='border: 1px solid #CCC; margin: 5px; padding: 5px;'><h3>$name</h3><br /><p style='text-align:left;'>$info</p>".mp3player($dir.$entry) . download($dir.$entry, $entry)."</div>";
+                $col[$count++ % 3] .= "<div style='border: 1px solid #CCC; margin: 5px; padding: 5px;'><h3>$name</h3><br /><p style='text-align:left;'>$info</p>".self::mp3player($dir.$entry) . download($dir.$entry, $entry)."</div>";
             }
             $d->close();
             foreach($col as $c) Template::AddBodyContent("<div style='float:left; width: 310px;'>".$c."</div>");
             Template::AddBodyContent("</div>");
         }
 
-        Template::Finalize("</tr></table>");
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize("</tr></table>"));
 
-        function mp3player($mp3) {
-            $mp3 = urlencode($mp3);
-            return "<object type='application/x-shockwave-flash' data='/plugins/flashmp3player/player_mp3_maxi.swf' width='200' height='20'>
+    }
+
+    function mp3player($mp3) {
+        $mp3 = urlencode($mp3);
+        return "<object type='application/x-shockwave-flash' data='/plugins/flashmp3player/player_mp3_maxi.swf' width='200' height='20'>
 	<param name='movie' value='/plugins/flashmp3player/player_mp3_maxi.swf' />
 	<param name='bgcolor' value='#ffffff' />
 	<param name='FlashVars' value='mp3=$mp3' />
 	</object>";
-        }
+    }
 
-        function download($mp3, $entry) {
-            return "<div class='gloss' style='margin:10px 30px;display:block;width:200px;'>
+    function download($mp3, $entry)
+    {
+        return "<div class='gloss' style='margin:10px 30px;display:block;width:200px;'>
 		<a href='$mp3' style='display:block;width:100%;height:100%;' onmouseover='this.style.background=\"rgba(0,0,0,.2)\";' onmouseout='this.style.background=\"transparent\"'>
 			<img src='/img/misc/download.png' alt='' style='float: left; width: 40px; margin-top: -10px;'/>
 			Download
 		</a>
 	</div>";
-        }
     }
 }

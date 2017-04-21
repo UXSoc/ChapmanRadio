@@ -56,6 +56,7 @@ class SuspendedController extends Controller
         $user = Session::GetCurrentUser();
         Template::AddBodyContent(Strikes::Overview($user->id));
 
-        Template::Finalize();
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+
     }
 }

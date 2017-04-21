@@ -86,8 +86,7 @@ class DefaultController extends Controller
 	</tr>");
         }
 
-        Template::Finalize("</table>");
-
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize("</table>"));
 
     }
 }

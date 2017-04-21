@@ -222,7 +222,7 @@ class LiveController extends Controller
 </div>
 </div> </div>"); // column // container
         Template::script("\$(document).ready(function(){ live.genre=\"{$liveshow->genre}\"; });");
-        Template::Finalize();
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
 
     }
 

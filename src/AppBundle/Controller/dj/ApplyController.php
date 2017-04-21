@@ -28,6 +28,315 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class ApplyController extends Controller
 {
 
+    /**
+     * @Route("/dj/apply", name="dj_apply")
+     */
+    public function indexAction(ContainerInterface $container = null)
+    {
+
+        Template::css("/css/formtable.css");
+        Template::css("/css/dl.css");
+        Template::js("/js/jquery.watermark.min.js");
+        Template::js("/js/postform.js");
+        Template::js("/dj/js/apply.js");
+
+        Template::SetPageTitle("Apply for a Show");
+        Template::RequireLogin("Show Applications");
+
+        $appSeason = Site::ApplicationSeason();
+        $seasonName = Season::name($appSeason);
+
+        Template::SetBodyHeading("My Show Applications for $seasonName", "");
+
+        // are applications open?
+        if (!Site::$Applications || strtotime(Site::$ApplicationDeadline) < time()) {
+            Site::Update('applications', '0');
+
+            $override_code = Request::Get('override_code', Request::GetFrom($_SESSION, 'ApplicationOverrideCode'));
+            $overrideok = ($override_code) ? (Util::decrypt($override_code) == Site::ApplicationSeason()) : false;
+
+            if ($overrideok) { // $appSeason == Site::CurrentSeason() &&
+                $_SESSION['ApplicationOverrideCode'] = $override_code;
+                if (strtotime(Site::$ApplicationDeadline) < time())
+                    Template::notify("Past Deadline", "Please fill out the application for $seasonName as soon as possible!", "warning");
+            } else {
+                Template::AddBodyContent("<div style='width:640px;margin:10px auto;text-align:left;'><h3>Applications are Closed</h3>");
+                Template::AddBodyContent("<p>Sorry, but Chapman Radio is not currently accepting applications.</p><p>Applications typicallly open after the first Wednesday meeting of the semester, and then close again the following Sunday.</p>");
+
+                if (Session::isStaff()) {
+                    $staffoverridecode = Util::encrypt(Site::ApplicationSeason());
+                    Template::AddBodyContent("<div class='gloss'><h3>You are on Staff</h3><p>Here is the override code:</p>
+			<p><input type='text' style='width:320px;margin:auto;' value=\"" . htmlspecialchars($staffoverridecode, ENT_COMPAT, "UTF-8") . "\" autocomplete='off' readonly='true' /></p></div>");
+                }
+                Template::AddBodyContent("<p>Did you miss the deadline? <a href='/faqs#MissedDeadline'>Get help with a missed deadine.</a></p>");
+                Template::AddBodyContent("<form method='get' action='$_SERVER[REQUEST_URI]'><div class='gloss'>
+			<h3>Apply</h3>
+			<p>If you were given an special code to override the deadline, enter that code here:</p>" .
+                    (isset($_REQUEST['override_code']) ? "<p style='color:red'>Incorrect. Please try again:</p>" : "") .
+                    "<div style='text-align:center'><input style='width:320px;' id='code' type='text' name='override_code' value=\"" . Request::GetAsPrintable('override_code') . "\" />
+			<br />
+			<input type='submit' value=' Submit ' />
+			</div>
+		</div></form>");
+
+                return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+            }
+        }
+
+// data we'll use a lot
+        $userid = Session::getCurrentUserID();
+        $user = Session::getCurrentUser();
+        $handle_email_link = true;
+
+        $show = null;
+        if (isset($_REQUEST['editshow'])) {
+            $showid = Request::GetInteger('editshow');
+            $show = ShowModel::FromId($showid);
+
+            if (!$showid) {
+                Template::AddInlineError("Please pick a show, then try again.");
+                $show = null;
+            } else if (!$show || !$show->HasDj($user->id)) {
+                Template::AddInlineError("The application you are trying to edit could not be loaded.<br />This error can occur if you are trying to edit an application that has been deleted, or if you are trying to edit an application that you are not a DJ of.");
+                $show = null;
+            } else {
+                Template::SetBodyHeading("Show Application", $show->name);
+                Template::AddToBodyHeading("<a style='position: absolute; top: 0; right: 0; color: #CCC; margin: 10px; display: block;' href='/dj/apply'>Back to My Applications</a>");
+            }
+        }
+
+// Form submits
+        if (isset($_POST['NEW_SHOW'])) {
+            $showname = Request::Get('showname');
+            $existshow = DB::GetFirst("SELECT showid FROM shows WHERE showname = :name AND seasons LIKE :seasons", [
+                ":name" => $showname,
+                ":seasons" => "%$appSeason%"
+            ]);
+
+            $usershow = DB::GetFirst("SELECT showid FROM shows WHERE showname = :name AND (userid1 = :uid OR userid2 = :uid OR userid3 = :uid OR userid4 = :uid OR userid5 = :uid)", [
+                ":name" => $showname,
+                ":uid" => $user->id
+            ]);
+
+            if (!$showname) {
+                Template::AddInlineError("Please enter a show name.");
+            } else if (strlen($showname) > 100) {
+                Template::AddInlineError("Woah, seriously? Your show name, <b>$showname</b>, is <i>way</i> too long.");
+            } else if ($usershow) {
+                Template::AddInlineError("Sorry, " . $user->fname . ". You already have a show with this name.<br />To continue that show, choose it in list of existing shows.<br /><br />If it does not appear, contact webmaster@chapmanradio.com to have it re-enabled.");
+            } else if ($existshow) {
+                Template::AddInlineError("Sorry, " . $user->fname . ". The name, <b>$showname</b>, is already taken for $seasonName. Please choose a different name.");
+            } else {
+                $showid = DB::Insert("shows", [
+                    "showname" => $showname,
+                    "userid1" => $user->id,
+                    "seasons" => $appSeason,
+                    "createdon" => date("Y-m-d"),
+                    "status" => "incomplete",
+                    "revisionkey" => "CRDFDTWBMT"]);
+                $showname = stripslashes($showname);
+                Template::AddInlineSuccess("You've created a new show application, <b>$showname</b>.");
+            }
+        } else if (isset($_POST['CONTINUE_SHOW'])) {
+            $show = ShowModel::FromId(Request::GetInteger('showid'));
+            if (!$show) {
+                Template::AddInlineError("Please pick a show from the drop down menu, then try again.");
+            } else {
+                $show->SetStatus('incomplete');
+                $show->AddSeason($appSeason);
+                Template::AddInlineSuccess("You've opened up <b>" . $show->name . "</b> as an application for $seasonName.");
+            }
+        } else if (isset($_POST['EMAIL_CODE'])) {
+            $email = trim(Request::Get('email'));
+            if (!$email) {
+                Template::AddInlineError("Please enter an email address");
+            } else if (!preg_match("/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}\$/", $email)) {
+                Template::AddInlineError("Sorry, but it looks like <b>$email</b> is an invalid email address.");
+            } else {
+                $link = "https://chapmanradio.com/dj/apply?addcode=" . urlencode(Util::encrypt($user->id));
+                $retval = Notify::mail($email, "Chapman Radio co-DJ Code", "<h1>Co-DJ Code</h1><p>Hello,</p><p>You are receiveing this email because <b>" . $user->name . "</b> wants to be a co-DJ on your show.</p><p>If you have an open show application on Chapman Radio, and you want " . $user->fname . " to become a part of your show, follow this link:</p><p style='text-align:center'><a href='$link'>$link</a></p><p>If you haven't applied for a show in $seasonName, then you may ignore this email.</p>");
+                if (!$retval) {
+                    Template::AddInlineSuccess("Your unique co-DJ code has been emailed to <b>$email</b>");
+                } else {
+                    Template::AddInlineError("Your email did not send.<br />$retval");
+                }
+            }
+        } else if (isset($_POST['SAVE_DJ'])) {
+            $djid = Request::GetInteger('userid');
+            $dj = UserModel::FromId($djid);
+            $djname = Request::Get('djname');
+            $classclub = Request::Get('classclub') == 'class' ? 'class' : 'club';
+            $confirmnewsletter = Request::GetBool('confirmnewsletter');
+            if (!$djid) {
+                Template::AddInlineError("Invalid User ID #. Please try again");
+            } else if (!$dj) {
+                Template::AddInlineError("User ID #$djid does not exist. Please refresh the page and try again");
+            } else {
+                if (!$djname) $djname = $dj->name;
+                DB::Query("UPDATE users SET djname = :djname, classclub = :classclub, confirmnewsletter = :confirmnewsletter WHERE userid = :id", [
+                    ":djname" => $djname,
+                    ":classclub" => $classclub,
+                    ":confirmnewsletter" => $confirmnewsletter,
+                    ":id" => $djid
+                ]);
+                Template::AddInlineSuccess("Your changes to <b>{$dj->fname}</b> have been saved.");
+            }
+        } else if (isset($_POST['ADD_DJ'])) {
+            $codj_code = Request::Get('codj_code', 0);
+            $codj_id = Util::decrypt($codj_code);
+            $codj = UserModel::FromId($codj_id);
+
+            if (!$codj_code || !is_numeric($codj_id) || $codj_id == 0) {
+                Template::AddInlineError("Missing / Invalid co-dj code. Please try again.");
+            } else if (!$show) {
+                Template::AddInlineError("Internal Error: No show is currently loaded. Try again, or email webmaster@chapmanradio.com for help.");
+            } else if (!$codj) {
+                Template::AddInlineError("Sorry, but the user you are trying to add as a co-DJ could not be found. Email webmaster@chapmanradio.com for help.");
+            } else if ($show->HasDj($codj_id)) {
+                Template::AddInlineError("{$codj->name} is already a DJ for {$show->name}");
+            } else {
+                try {
+                    $show->AddDj($codj_id);
+                    Template::AddInlineSuccess("You've just added <b>{$codj->name}</b> as a co-DJ to <b>{$show->name}</b>.");
+                    $handle_email_link = false;
+                } catch (Exception $e) {
+                    Template::AddInlineError("There is a limit of 5 DJs for a single show.");
+                }
+            }
+        } else if (isset($_POST['REMOVE_DJ'])) {
+            $codj_id = Request::GetInteger('codjid');
+            $codj = UserModel::FromId($codj_id);
+            if (!$codj_id) {
+                Template::AddInlineError("Sorry, that co-dj could not be removed because the User ID # $codj_id was missing. Email webmaster@chapmanradio.com for help.");
+            } else if ($userid == $codj_id) {
+                Template::AddInlineError("You can't remove yourself from your own application, that's just silly.");
+            } else if (!$codj) {
+                Template::AddInlineError("Sorry, but the user you are trying to remove as a co-DJ could not be found. Try again, or email webmaster@chapmanradio.com for help.");
+            } else if (!$show) {
+                Template::AddInlineError("Internal Error: No show is currently loaded. Try again, or email webmaster@chapmanradio.com for help.");
+            } else {
+                try {
+                    $show->RemoveDj($codj_id);
+                    Template::AddInlineSuccess("<b>{$codj->name}</b> has been removed from <b>{$show->name}</b>.");
+                } catch (Exception $e) {
+                    Template::AddInlineError("Error: Unable to remove DJ. Email webmaster@chapmanradio.com for help.");
+                }
+            }
+        } else if (isset($_POST['SAVE_SHOWINFO'])) {
+            try {
+                $fields = array("name", "genre", "description", "explicit", "musictalk", "turntables", "podcastcategory");
+                foreach ($fields as $field) $show->Update($field, Request::Get($field, 0));
+                Template::AddInlineSuccess("Your changes have been saved.");
+            } catch (Exception $e) {
+                Template::AddInlineError("There was an error saving your changes");
+            }
+        } else if (isset($_POST['SAVE_QUESTIONS'])) {
+            if (!$show) {
+                Template::AddInlineError("Internal Error: No show is currently loaded. Try again, or email webmaster@chapmanradio.com for help.");
+            } else {
+                $questions = array("app_differentiate", "app_promote", "app_timeline", "app_giveaway", "app_speaking", "app_equipment", "app_prepare", "app_examples");
+                foreach ($questions as $question) $show->Update($question, Request::Get($question));
+                Template::AddInlineSuccess("Your responses have been saved.");
+            }
+        } else if (isset($_POST['SAVE_AVAILABILITY'])) {
+            if (!$show) {
+                Template::AddInlineError("Internal Error: No show is currently loaded. Try again, or email webmaster@chapmanradio.com for help.");
+            } else {
+                Template::AddInlineSuccess("Your <b>availability</b> has been saved.");
+                $show->Update('availability', Request::Get('availability'));
+                $show->Update('availabilitynotes', Request::Get('availabilitynotes'));
+            }
+        } else if (isset($_POST['FINALIZE_APPLICATION'])) {
+            if (!$show) {
+                Template::AddInlineError("Internal Error: No show is currently loaded. Try again, or email webmaster@chapmanradio.com for help.");
+            } else {
+                $show->Update('status', 'finalized');
+                Template::AddInlineSuccess("Congratulations, your application for <b>{$show->name}</b> has been received!");
+                $show = null;
+            }
+        }
+
+// Handle image uploads where JS failed
+        try {
+            if (Uploader::HandleModel($show) !== NULL) Template::AddInlineSuccess("Your image has successfully been uploaded.");
+        } catch (Exception $e) {
+            Template::AddInlineError($e->GetMessage());
+        }
+
+// Incoming email link
+        if ($handle_email_link && isset($_GET['addcode'])) {
+            $codjcode = Request::Get('addcode');
+            $codjid = intval(Util::decrypt($codjcode));
+            $codj = UserModel::FromId($codjid);
+
+            if (!$codjcode) {
+                Template::AddInlineError("You didn't enter a <b>co-DJ code</b>. Please enter a co-DJ code and try again");
+            } else if (!$codjid) {
+                Template::AddInlineError("Sorry, but the <b>co-DJ code</b> you used was <b>invalid</b>.");
+            } else if (!$codj) {
+                Template::AddInlineError("Sorry, but that <b>co-DJ code</b> has expired. Please ask your co-dj for a new code.");
+            } else {
+                Template::AddToBodyHeading("<a style='position: absolute; top: 0; right: 0; color: #CCC; margin: 10px; display: block;' href='/dj/apply'>Back to My Applications</a>");
+                Template::AddBodyContent("<div style='width:684px;margin:10px auto;text-align:left;'>");
+
+                $result = ShowModel::FromResults(DB::GetAll("SELECT * FROM shows WHERE (seasons LIKE '%$appSeason%') AND (status='incomplete') AND (userid1=$userid OR userid2=$userid OR userid3=$userid OR userid4=$userid OR userid5=$userid)"));
+
+                if (empty($result)) {
+                    Template::AddInlineError("You don't have any open applications for $seasonName.<br />Please <a href='/dj/apply'>start an application</a>, then try again");
+                } else {
+                    Template::AddBodyContent("<form method='post' action='$_SERVER[REQUEST_URI]'>
+			<h3>Add {$codj->name} to which show?</h3><div style='clear:both; overflow: auto; margin: 5px;'>");
+                    foreach ($result as $show) {
+                        Template::AddBodyContent("<div style='float:left; width: 150px;'>
+					<label for='showid" . $show->id . "'><img src='" . $show->img90 . "' alt='' /></label><br />
+					<input type='radio' name='editshow' value='" . $show->id . "' id='showid" . $show->id . "' style='width:auto;' />
+					<label for='showid" . $show->id . "'>" . $show->name . "</label><br />
+					</div>");
+                    }
+                    Template::AddBodyContent("
+				</div><div>
+					<input type='hidden' name='codj_code' value='" . $codjcode . "' />
+					<input type='submit' name='ADD_DJ' class='button' value=' Add co-DJ ' />
+				</div></form>");
+                }
+                Template::AddBodyContent("</div>");
+
+                return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+            }
+        }
+
+        $tab = Request::Get('tab');
+        if (!$show) $tab = "default";
+
+// output
+        switch ($tab) {
+            case "djs":
+                self::RenderDjTab();
+                break;
+            case "showinfo":
+                self::RenderShowInfoTab();
+                break;
+            case "questions":
+                self::RenderQuestionsTab();
+                break;
+            case "picture":
+                self::RenderPictureTab();
+                break;
+            case "availability":
+                self::RenderAvailabilityTab();
+                break;
+            case "finalize":
+                self::RenderFinalizeTab();
+                break;
+            default: // start page
+                self::RenderStartPage();
+                break;
+        }
+
+
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+    }
+
     function RenderStartPage()
     {
         global $appSeason, $seasonName, $userid, $user;
@@ -428,311 +737,4 @@ class ApplyController extends Controller
 
         return $requirements;
     }
-
-    /**
-     * @Route("/dj/apply", name="dj_apply")
-     */
-    public function indexAction(ContainerInterface $container = null)
-    {
-
-        Template::css("/css/formtable.css");
-        Template::css("/css/dl.css");
-        Template::js("/js/jquery.watermark.min.js");
-        Template::js("/js/postform.js");
-        Template::js("/dj/js/apply.js");
-
-        Template::SetPageTitle("Apply for a Show");
-        Template::RequireLogin("Show Applications");
-
-        $appSeason = Site::ApplicationSeason();
-        $seasonName = Season::name($appSeason);
-
-        Template::SetBodyHeading("My Show Applications for $seasonName", "");
-
-        // are applications open?
-        if (!Site::$Applications || strtotime(Site::$ApplicationDeadline) < time()) {
-            Site::Update('applications', '0');
-
-            $override_code = Request::Get('override_code', Request::GetFrom($_SESSION, 'ApplicationOverrideCode'));
-            $overrideok = ($override_code) ? (Util::decrypt($override_code) == Site::ApplicationSeason()) : false;
-
-            if ($overrideok) { // $appSeason == Site::CurrentSeason() &&
-                $_SESSION['ApplicationOverrideCode'] = $override_code;
-                if (strtotime(Site::$ApplicationDeadline) < time())
-                    Template::notify("Past Deadline", "Please fill out the application for $seasonName as soon as possible!", "warning");
-            } else {
-                Template::AddBodyContent("<div style='width:640px;margin:10px auto;text-align:left;'><h3>Applications are Closed</h3>");
-                Template::AddBodyContent("<p>Sorry, but Chapman Radio is not currently accepting applications.</p><p>Applications typicallly open after the first Wednesday meeting of the semester, and then close again the following Sunday.</p>");
-
-                if (Session::isStaff()) {
-                    $staffoverridecode = Util::encrypt(Site::ApplicationSeason());
-                    Template::AddBodyContent("<div class='gloss'><h3>You are on Staff</h3><p>Here is the override code:</p>
-			<p><input type='text' style='width:320px;margin:auto;' value=\"" . htmlspecialchars($staffoverridecode, ENT_COMPAT, "UTF-8") . "\" autocomplete='off' readonly='true' /></p></div>");
-                }
-                Template::AddBodyContent("<p>Did you miss the deadline? <a href='/faqs#MissedDeadline'>Get help with a missed deadine.</a></p>");
-                Template::AddBodyContent("<form method='get' action='$_SERVER[REQUEST_URI]'><div class='gloss'>
-			<h3>Apply</h3>
-			<p>If you were given an special code to override the deadline, enter that code here:</p>" .
-                    (isset($_REQUEST['override_code']) ? "<p style='color:red'>Incorrect. Please try again:</p>" : "") .
-                    "<div style='text-align:center'><input style='width:320px;' id='code' type='text' name='override_code' value=\"" . Request::GetAsPrintable('override_code') . "\" />
-			<br />
-			<input type='submit' value=' Submit ' />
-			</div>
-		</div></form>");
-                Template::Finalize();
-            }
-        }
-
-// data we'll use a lot
-        $userid = Session::getCurrentUserID();
-        $user = Session::getCurrentUser();
-        $handle_email_link = true;
-
-        $show = null;
-        if (isset($_REQUEST['editshow'])) {
-            $showid = Request::GetInteger('editshow');
-            $show = ShowModel::FromId($showid);
-
-            if (!$showid) {
-                Template::AddInlineError("Please pick a show, then try again.");
-                $show = null;
-            } else if (!$show || !$show->HasDj($user->id)) {
-                Template::AddInlineError("The application you are trying to edit could not be loaded.<br />This error can occur if you are trying to edit an application that has been deleted, or if you are trying to edit an application that you are not a DJ of.");
-                $show = null;
-            } else {
-                Template::SetBodyHeading("Show Application", $show->name);
-                Template::AddToBodyHeading("<a style='position: absolute; top: 0; right: 0; color: #CCC; margin: 10px; display: block;' href='/dj/apply'>Back to My Applications</a>");
-            }
-        }
-
-// Form submits
-        if (isset($_POST['NEW_SHOW'])) {
-            $showname = Request::Get('showname');
-            $existshow = DB::GetFirst("SELECT showid FROM shows WHERE showname = :name AND seasons LIKE :seasons", [
-                ":name" => $showname,
-                ":seasons" => "%$appSeason%"
-            ]);
-
-            $usershow = DB::GetFirst("SELECT showid FROM shows WHERE showname = :name AND (userid1 = :uid OR userid2 = :uid OR userid3 = :uid OR userid4 = :uid OR userid5 = :uid)", [
-                ":name" => $showname,
-                ":uid" => $user->id
-            ]);
-
-            if (!$showname) {
-                Template::AddInlineError("Please enter a show name.");
-            } else if (strlen($showname) > 100) {
-                Template::AddInlineError("Woah, seriously? Your show name, <b>$showname</b>, is <i>way</i> too long.");
-            } else if ($usershow) {
-                Template::AddInlineError("Sorry, " . $user->fname . ". You already have a show with this name.<br />To continue that show, choose it in list of existing shows.<br /><br />If it does not appear, contact webmaster@chapmanradio.com to have it re-enabled.");
-            } else if ($existshow) {
-                Template::AddInlineError("Sorry, " . $user->fname . ". The name, <b>$showname</b>, is already taken for $seasonName. Please choose a different name.");
-            } else {
-                $showid = DB::Insert("shows", [
-                    "showname" => $showname,
-                    "userid1" => $user->id,
-                    "seasons" => $appSeason,
-                    "createdon" => date("Y-m-d"),
-                    "status" => "incomplete",
-                    "revisionkey" => "CRDFDTWBMT"]);
-                $showname = stripslashes($showname);
-                Template::AddInlineSuccess("You've created a new show application, <b>$showname</b>.");
-            }
-        } else if (isset($_POST['CONTINUE_SHOW'])) {
-            $show = ShowModel::FromId(Request::GetInteger('showid'));
-            if (!$show) {
-                Template::AddInlineError("Please pick a show from the drop down menu, then try again.");
-            } else {
-                $show->SetStatus('incomplete');
-                $show->AddSeason($appSeason);
-                Template::AddInlineSuccess("You've opened up <b>" . $show->name . "</b> as an application for $seasonName.");
-            }
-        } else if (isset($_POST['EMAIL_CODE'])) {
-            $email = trim(Request::Get('email'));
-            if (!$email) {
-                Template::AddInlineError("Please enter an email address");
-            } else if (!preg_match("/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}\$/", $email)) {
-                Template::AddInlineError("Sorry, but it looks like <b>$email</b> is an invalid email address.");
-            } else {
-                $link = "https://chapmanradio.com/dj/apply?addcode=" . urlencode(Util::encrypt($user->id));
-                $retval = Notify::mail($email, "Chapman Radio co-DJ Code", "<h1>Co-DJ Code</h1><p>Hello,</p><p>You are receiveing this email because <b>" . $user->name . "</b> wants to be a co-DJ on your show.</p><p>If you have an open show application on Chapman Radio, and you want " . $user->fname . " to become a part of your show, follow this link:</p><p style='text-align:center'><a href='$link'>$link</a></p><p>If you haven't applied for a show in $seasonName, then you may ignore this email.</p>");
-                if (!$retval) {
-                    Template::AddInlineSuccess("Your unique co-DJ code has been emailed to <b>$email</b>");
-                } else {
-                    Template::AddInlineError("Your email did not send.<br />$retval");
-                }
-            }
-        } else if (isset($_POST['SAVE_DJ'])) {
-            $djid = Request::GetInteger('userid');
-            $dj = UserModel::FromId($djid);
-            $djname = Request::Get('djname');
-            $classclub = Request::Get('classclub') == 'class' ? 'class' : 'club';
-            $confirmnewsletter = Request::GetBool('confirmnewsletter');
-            if (!$djid) {
-                Template::AddInlineError("Invalid User ID #. Please try again");
-            } else if (!$dj) {
-                Template::AddInlineError("User ID #$djid does not exist. Please refresh the page and try again");
-            } else {
-                if (!$djname) $djname = $dj->name;
-                DB::Query("UPDATE users SET djname = :djname, classclub = :classclub, confirmnewsletter = :confirmnewsletter WHERE userid = :id", [
-                    ":djname" => $djname,
-                    ":classclub" => $classclub,
-                    ":confirmnewsletter" => $confirmnewsletter,
-                    ":id" => $djid
-                ]);
-                Template::AddInlineSuccess("Your changes to <b>{$dj->fname}</b> have been saved.");
-            }
-        } else if (isset($_POST['ADD_DJ'])) {
-            $codj_code = Request::Get('codj_code', 0);
-            $codj_id = Util::decrypt($codj_code);
-            $codj = UserModel::FromId($codj_id);
-
-            if (!$codj_code || !is_numeric($codj_id) || $codj_id == 0) {
-                Template::AddInlineError("Missing / Invalid co-dj code. Please try again.");
-            } else if (!$show) {
-                Template::AddInlineError("Internal Error: No show is currently loaded. Try again, or email webmaster@chapmanradio.com for help.");
-            } else if (!$codj) {
-                Template::AddInlineError("Sorry, but the user you are trying to add as a co-DJ could not be found. Email webmaster@chapmanradio.com for help.");
-            } else if ($show->HasDj($codj_id)) {
-                Template::AddInlineError("{$codj->name} is already a DJ for {$show->name}");
-            } else {
-                try {
-                    $show->AddDj($codj_id);
-                    Template::AddInlineSuccess("You've just added <b>{$codj->name}</b> as a co-DJ to <b>{$show->name}</b>.");
-                    $handle_email_link = false;
-                } catch (Exception $e) {
-                    Template::AddInlineError("There is a limit of 5 DJs for a single show.");
-                }
-            }
-        } else if (isset($_POST['REMOVE_DJ'])) {
-            $codj_id = Request::GetInteger('codjid');
-            $codj = UserModel::FromId($codj_id);
-            if (!$codj_id) {
-                Template::AddInlineError("Sorry, that co-dj could not be removed because the User ID # $codj_id was missing. Email webmaster@chapmanradio.com for help.");
-            } else if ($userid == $codj_id) {
-                Template::AddInlineError("You can't remove yourself from your own application, that's just silly.");
-            } else if (!$codj) {
-                Template::AddInlineError("Sorry, but the user you are trying to remove as a co-DJ could not be found. Try again, or email webmaster@chapmanradio.com for help.");
-            } else if (!$show) {
-                Template::AddInlineError("Internal Error: No show is currently loaded. Try again, or email webmaster@chapmanradio.com for help.");
-            } else {
-                try {
-                    $show->RemoveDj($codj_id);
-                    Template::AddInlineSuccess("<b>{$codj->name}</b> has been removed from <b>{$show->name}</b>.");
-                } catch (Exception $e) {
-                    Template::AddInlineError("Error: Unable to remove DJ. Email webmaster@chapmanradio.com for help.");
-                }
-            }
-        } else if (isset($_POST['SAVE_SHOWINFO'])) {
-            try {
-                $fields = array("name", "genre", "description", "explicit", "musictalk", "turntables", "podcastcategory");
-                foreach ($fields as $field) $show->Update($field, Request::Get($field, 0));
-                Template::AddInlineSuccess("Your changes have been saved.");
-            } catch (Exception $e) {
-                Template::AddInlineError("There was an error saving your changes");
-            }
-        } else if (isset($_POST['SAVE_QUESTIONS'])) {
-            if (!$show) {
-                Template::AddInlineError("Internal Error: No show is currently loaded. Try again, or email webmaster@chapmanradio.com for help.");
-            } else {
-                $questions = array("app_differentiate", "app_promote", "app_timeline", "app_giveaway", "app_speaking", "app_equipment", "app_prepare", "app_examples");
-                foreach ($questions as $question) $show->Update($question, Request::Get($question));
-                Template::AddInlineSuccess("Your responses have been saved.");
-            }
-        } else if (isset($_POST['SAVE_AVAILABILITY'])) {
-            if (!$show) {
-                Template::AddInlineError("Internal Error: No show is currently loaded. Try again, or email webmaster@chapmanradio.com for help.");
-            } else {
-                Template::AddInlineSuccess("Your <b>availability</b> has been saved.");
-                $show->Update('availability', Request::Get('availability'));
-                $show->Update('availabilitynotes', Request::Get('availabilitynotes'));
-            }
-        } else if (isset($_POST['FINALIZE_APPLICATION'])) {
-            if (!$show) {
-                Template::AddInlineError("Internal Error: No show is currently loaded. Try again, or email webmaster@chapmanradio.com for help.");
-            } else {
-                $show->Update('status', 'finalized');
-                Template::AddInlineSuccess("Congratulations, your application for <b>{$show->name}</b> has been received!");
-                $show = null;
-            }
-        }
-
-// Handle image uploads where JS failed
-        try {
-            if (Uploader::HandleModel($show) !== NULL) Template::AddInlineSuccess("Your image has successfully been uploaded.");
-        } catch (Exception $e) {
-            Template::AddInlineError($e->GetMessage());
-        }
-
-// Incoming email link
-        if ($handle_email_link && isset($_GET['addcode'])) {
-            $codjcode = Request::Get('addcode');
-            $codjid = intval(Util::decrypt($codjcode));
-            $codj = UserModel::FromId($codjid);
-
-            if (!$codjcode) {
-                Template::AddInlineError("You didn't enter a <b>co-DJ code</b>. Please enter a co-DJ code and try again");
-            } else if (!$codjid) {
-                Template::AddInlineError("Sorry, but the <b>co-DJ code</b> you used was <b>invalid</b>.");
-            } else if (!$codj) {
-                Template::AddInlineError("Sorry, but that <b>co-DJ code</b> has expired. Please ask your co-dj for a new code.");
-            } else {
-                Template::AddToBodyHeading("<a style='position: absolute; top: 0; right: 0; color: #CCC; margin: 10px; display: block;' href='/dj/apply'>Back to My Applications</a>");
-                Template::AddBodyContent("<div style='width:684px;margin:10px auto;text-align:left;'>");
-
-                $result = ShowModel::FromResults(DB::GetAll("SELECT * FROM shows WHERE (seasons LIKE '%$appSeason%') AND (status='incomplete') AND (userid1=$userid OR userid2=$userid OR userid3=$userid OR userid4=$userid OR userid5=$userid)"));
-
-                if (empty($result)) {
-                    Template::AddInlineError("You don't have any open applications for $seasonName.<br />Please <a href='/dj/apply'>start an application</a>, then try again");
-                } else {
-                    Template::AddBodyContent("<form method='post' action='$_SERVER[REQUEST_URI]'>
-			<h3>Add {$codj->name} to which show?</h3><div style='clear:both; overflow: auto; margin: 5px;'>");
-                    foreach ($result as $show) {
-                        Template::AddBodyContent("<div style='float:left; width: 150px;'>
-					<label for='showid" . $show->id . "'><img src='" . $show->img90 . "' alt='' /></label><br />
-					<input type='radio' name='editshow' value='" . $show->id . "' id='showid" . $show->id . "' style='width:auto;' />
-					<label for='showid" . $show->id . "'>" . $show->name . "</label><br />
-					</div>");
-                    }
-                    Template::AddBodyContent("
-				</div><div>
-					<input type='hidden' name='codj_code' value='" . $codjcode . "' />
-					<input type='submit' name='ADD_DJ' class='button' value=' Add co-DJ ' />
-				</div></form>");
-                }
-                Template::AddBodyContent("</div>");
-                Template::Finalize();
-            }
-        }
-
-        $tab = Request::Get('tab');
-        if (!$show) $tab = "default";
-
-// output
-        switch ($tab) {
-            case "djs":
-                self::RenderDjTab();
-                break;
-            case "showinfo":
-                self::RenderShowInfoTab();
-                break;
-            case "questions":
-                self::RenderQuestionsTab();
-                break;
-            case "picture":
-                self::RenderPictureTab();
-                break;
-            case "availability":
-                self::RenderAvailabilityTab();
-                break;
-            case "finalize":
-                self::RenderFinalizeTab();
-                break;
-            default: // start page
-                self::RenderStartPage();
-                break;
-        }
-
-        Template::Finalize();
-    }
-
 }

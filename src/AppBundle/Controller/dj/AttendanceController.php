@@ -74,7 +74,7 @@ class AttendanceController extends Controller
                 $rowclass = ++$count % 2 == 0 ? "evenRow" : "oddRow";
                 $date = date("ga, F jS", $att['timestamp']);
                 $color = Report::$colors[$att['status']];
-                list($late, $tardies) = dispLate($att['late'], $tardies);
+                list($late, $tardies) = self::dispLate($att['late'], $tardies);
                 if ($att['status'] != "present") $late = "&nbsp;";
                 if ($att['status'] == "absent") $absences++;
                 Template::AddBodyContent("<tr class='$rowclass'><td style='width:33%'>$date</td><td style='color:$color;width:33%;'>" . ucfirst($att['status']) . "</td><td>$late</td></tr>");
@@ -124,24 +124,25 @@ class AttendanceController extends Controller
 // little notice
         Template::AddBodyContent("<p style='margin:40px auto;font-size:12px;color:#757575;'>If you have questions about your attendance, please email <a href='mailto:attendance@chapmanradio.com'>attendance@chapmanradio.com</a></p>");
 // finish output
-        Template::Finalize("</div>");
-        function notify($msg, $color = "#090")
-        {
-            return "<div class='gloss' style='border:1px solid $color;color:$color;text-align:center;'>$msg</div>";
-        }
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize("</div>"));
+    }
 
-        function append($msg)
-        {
-            return "<br /><small style='color:#757575'>$msg</small>";
-        }
+    function notify($msg, $color = "#090")
+    {
+        return "<div class='gloss' style='border:1px solid $color;color:$color;text-align:center;'>$msg</div>";
+    }
 
-        function dispLate($late, $tardies = 0)
-        {
-            $s = $late == 1 ? "" : "s";
-            if ($late < 0) return array("<span style='color:#090'>" . (0 - $late) . " minute$s early</span>", $tardies);
-            else if ($late == 0) return array("on time", $tardies);
-            else if ($late < 8) return array("<span style='color:#A60;'>$late minute$s late</span>", $tardies);
-            else return array("<span style='color:#A00;'>$late minute$s late</span>", ++$tardies);
-        }
+    function append($msg)
+    {
+        return "<br /><small style='color:#757575'>$msg</small>";
+    }
+
+    function dispLate($late, $tardies = 0)
+    {
+        $s = $late == 1 ? "" : "s";
+        if ($late < 0) return array("<span style='color:#090'>" . (0 - $late) . " minute$s early</span>", $tardies);
+        else if ($late == 0) return array("on time", $tardies);
+        else if ($late < 8) return array("<span style='color:#A60;'>$late minute$s late</span>", $tardies);
+        else return array("<span style='color:#A00;'>$late minute$s late</span>", ++$tardies);
     }
 }

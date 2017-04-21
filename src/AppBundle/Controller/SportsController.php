@@ -11,6 +11,7 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use ChapmanRadio\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
@@ -22,6 +23,8 @@ class SportsController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
+
         Template::SetPageSection("/sports");
         Template::SetPageTitle("SportsController");
 
@@ -42,5 +45,6 @@ class SportsController extends Controller
         </div>
         
         <p><br class='clear' /></p>");
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
     }
 }

@@ -127,9 +127,9 @@ class Template {
 		
 		/* calculate render time */
 		/* output */
-		print $html;
-		print "\n<!-- Client: {$REMOTE_ADDR} Agent: {$HTTP_USER_AGENT} -->\n";
-		exit;
+		return $html;
+//		print "\n<!-- Client: {$REMOTE_ADDR} Agent: {$HTTP_USER_AGENT} -->\n";
+//		exit;
 	}
 	
 	public static function SetPageTitle($title){

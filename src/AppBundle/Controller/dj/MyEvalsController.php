@@ -137,7 +137,7 @@ class MyEvalsController extends Controller
         }
 // finish up
         Template::AddBodyContent("</div>");
-        Template::Finalize();
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
 
 
     }

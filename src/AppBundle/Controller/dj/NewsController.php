@@ -59,6 +59,6 @@ class NewsController extends Controller
 
         Template::AddBodyContent("</div>");
 
-        Template::Finalize();
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
     }
 }

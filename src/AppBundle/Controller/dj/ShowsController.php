@@ -26,7 +26,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class showsController extends Controller
+class ShowsController extends Controller
 {
 
     /**
@@ -344,7 +344,8 @@ class showsController extends Controller
         if($notify) Template::AddBodyContent("<div class='specs' style='width:480px;margin:10px auto;text-align:center;'>$notify</div>");
 // fetch array of shows for this DJ
         $shows = ShowModel::FromDj($userid);
-        if(empty($shows)) Template::Finalize("<div style='margin:20px 80px;padding:20px;background:#EFEFEF;text-align:center;color:#757575;'>Sorry, ".Session::GetCurrentUser()->fname.". It doesn't look like you have any shows on your account.<br /><br />Note: If you just submitted an application, it may take a few days for it to be finalized and appear here.</div>");
+        if(empty($shows))
+            return new \Symfony\Component\HttpFoundation\Response(Template::Finalize("<div style='margin:20px 80px;padding:20px;background:#EFEFEF;text-align:center;color:#757575;'>Sorry, ".Session::GetCurrentUser()->fname.". It doesn't look like you have any shows on your account.<br /><br />Note: If you just submitted an application, it may take a few days for it to be finalized and appear here.</div>"));
 // now we have all the shows as an array. let's display them all!
         foreach($shows as $show) {
 
@@ -431,7 +432,7 @@ class showsController extends Controller
 	
 	</td></tr></table>");
         }
-        Template::Finalize();
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
 
 
     }

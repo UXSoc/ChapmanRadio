@@ -166,12 +166,9 @@ class MarathonController extends Controller
             Template::AddBodyContent("</tr>");
         }
         Template::Add("</table>");
-
         Template::Add("</div>");
-
         Template::Add("<hr class='_clear' />");
-
-        Template::Finalize();
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
 
 
     }

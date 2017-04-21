@@ -200,8 +200,7 @@ class QuizController extends Controller
                 Template::AddBodyContent("<p>Hello, you've already taken the quiz for this semester.</p>");
                 break;
         }
-
-        Template::Finalize();
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
     }
     /* http://stackoverflow.com/questions/4102777/php-random-shuffle-array-maintaining-key-value */
     function shuffle_with_keys(&$array) {
