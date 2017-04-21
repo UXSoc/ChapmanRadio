@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Users
  *
- * @ORM\Table(name="users")
+ * @ORM\Table(name="users", repositoryClass="AppBundle\Repository\UserRepository")
  * @ORM\Entity
  */
 class Users
@@ -195,6 +195,7 @@ class Users
      * @ORM\Column(name="revisionkey", type="string", length=30, nullable=false)
      */
     private $revisionkey;
+
 
 
 }

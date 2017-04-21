@@ -42,6 +42,12 @@ class Aliases
      */
     private $expires = '0000-00-00 00:00:00';
 
+    public  function getPath()
+    {
+        return $this->path;
+    }
+
+
 
 }
 

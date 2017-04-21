@@ -24,7 +24,7 @@ class Version20170421165329 extends AbstractMigration
     }
 
     /**
-     * @param Schema $schema
+     * @param Schema $scysshema
      */
     public function down(Schema $schema)
     {
