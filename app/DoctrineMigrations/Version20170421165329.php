@@ -18,7 +18,7 @@ class Version20170421165329 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE genres ADD id BIGINT AUTO_INCREMENT NOT NULL, CHANGE hour hour TINYINT(1) NOT NULL, ADD PRIMARY KEY (id)');
+        $this->addSql('ALTER TABLE genres ADD id BIGINT AUTO_INCREMENT NOT NULL, ADD PRIMARY KEY (id)');
         $this->addSql('CREATE UNIQUE INDEX genres_id_uindex ON genres (id)');
 
     }
@@ -32,7 +32,7 @@ class Version20170421165329 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
 
-        $this->addSql('ALTER TABLE genres DROP PRIMARY KEY');
         $this->addSql('DROP INDEX genres_id_uindex ON genres');
+        $this->addSql('ALTER TABLE genres DROP id');
     }
 }
