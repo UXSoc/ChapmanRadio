@@ -17,6 +17,5 @@
     "tests"
   ],
   "dependencies": {
-    "vue": "^2.2.1"
   }
 }
