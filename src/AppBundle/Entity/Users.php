@@ -3,6 +3,9 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+
 
 /**
  * Users
@@ -30,7 +33,6 @@ class Users
 
     /**
      * @var string
-     *
      * @ORM\Column(name="email", type="string", length=200, nullable=false)
      */
     private $email;
@@ -195,6 +197,45 @@ class Users
      * @ORM\Column(name="revisionkey", type="string", length=30, nullable=false)
      */
     private $revisionkey;
+
+    public function getUserId()
+    {
+        return $this->userid;
+    }
+
+    public  function  setFacebookId($id)
+    {
+        $this->fbid = $id;
+    }
+
+    public  function  getFname()
+    {
+        return $this->fname;
+    }
+    public  function  getLname()
+    {
+        return $this->lname;
+    }
+
+    public  function  getEmail()
+    {
+        return $this->email;
+    }
+
+    public  function  getPhone()
+    {
+        return $this->phone;
+    }
+
+    public function  getStudentid()
+    {
+        return $this->studentid;
+    }
+
+    public  function  setPhone($phone)
+    {
+        return $this->phone;
+    }
 
 
 

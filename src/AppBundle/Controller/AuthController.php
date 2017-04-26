@@ -9,6 +9,7 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\Users;
 use ChapmanRadio\DB;
 use ChapmanRadio\Imaging;
 use ChapmanRadio\Notify;
@@ -21,8 +22,11 @@ use ChapmanRadio\Util;
 use ChapmanRadio\Validation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\User\User;
 
 
 class AuthController extends Controller
@@ -31,6 +35,30 @@ class AuthController extends Controller
     /**
      * @Route("/join", name="join")
      */
+    public  function  RegisterAction(Request $request)
+    {
+        $user = new Users();
+
+
+        $form = $this->createFormBuilder($user)
+            ->add('fname', TextType::class, array('label' => 'First Name'))
+            ->add('lname', TextType::class , array('label' => 'Last Name'))
+            ->add('email', TextType::class, array('label' => 'Email'))
+            ->add('phone', TextType::class, array('label' => 'Phone'))
+            ->add('studentid', TextType::class, array('label' => 'Student Id'))
+            ->add('save', SubmitType::class, array('label' => 'Register'))
+            ->getForm();
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user_data = $form->getData();
+        }
+
+        $form->handleRequest($request);
+
+
+        return $this->render('auth/login.html.twig',array("join_form" => $form->createView()));
+    }
+
     public function RegistrationAction(Request $request)
     {
         define('PATH', '../');
@@ -193,6 +221,17 @@ class AuthController extends Controller
             "phone" => ChapmanRadioRequest::Get('phone'),
             "studentid" => ChapmanRadioRequest::Get('studentid'),
             "verifycode" => $vcode));
+//        "djname" => "",
+//            "gender" => "",
+//            "seasons" => "",
+//            "lastlogin"=> new \DateTime("now"),
+//            "lastip" => "",
+//            "password"=>"",
+//            "staffgroup"=>"",
+//            "staffposition"=>"",
+//            "staffemail" => "",
+//            "quizpassedseasons"=>"",
+//            "revisionkey"=>""
 
         // now moved the uploaded file from /tmp to /content
         $userModel = UserModel::FromId($userid);
