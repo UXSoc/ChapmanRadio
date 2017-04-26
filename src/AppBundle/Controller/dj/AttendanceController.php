@@ -37,8 +37,8 @@ class AttendanceController extends Controller
         $seasonName = Season::name($season);
 
         Template::style(Schedule::styleGenres());
-        Template::css("/css/formtable.css");
-        Template::css("/css/dl.css");
+        Template::css("/legacy/css/formtable.css");
+        Template::css("/legacy/css/dl.css");
 
 // get the user info
         $userid = Session::GetCurrentUserID();

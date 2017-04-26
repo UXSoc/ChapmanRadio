@@ -1,0 +1,36 @@
+/*
+
+css/subnav.css
+
+adam borecki
+
+*/
+
+.subnavh4 {
+	background:url(/img/background/subnav.png) 0px 0px;
+	width:211px;
+	height:24px;
+	font-weight:normal;
+	font-size:14px;
+	color:#FFF;
+	padding:0 10px;
+	text-align:center;
+	}
+.subnav {
+	display:block; list-style-type:none; margin:0;
+	}
+.subnav li {
+	background: url(/img/background/subnav.png) 0px -50px;
+	display: block;
+	width: 231px;
+	height: 48px;
+	}
+.subnav a { display:block; color:#748A95; width:212px; padding:0 10px; height:100%; text-decoration:none; line-height:48px; outline:0; background:rgba(255,255,255,.5); }
+.subnav a:hover { color:#000; background:rgba(255,255,255,.75); padding:0 8px 0 12px; }
+.subnav .active {
+	background: url(/img/background/subnav.png) transparent bottom left;
+	}
+.subnav .active a,.subnav .active a:hover { background:transparent; color:#373D2B; cursor:default; padding:0 6px 0 14px; }
+#subcontentContainer {position:relative;width:625px;height:auto;overflow:hidden;}
+.subcontent {width:625px;height:auto;top:0;}
+.subcontent .inner { margin:6px 75px 20px 2px;width:100% }

@@ -1,0 +1,104 @@
+.formtablespinner {
+	width:16px;
+	height:16px;
+	display:none;
+	position:relative;
+	top:-8px;
+	left:-8px;
+}
+
+.formtableErrors {
+	margin:0 auto;
+	text-align:center;
+}
+
+.formtableErrors ul {
+	width:284px;
+	text-align:left;
+	margin:0 auto;
+}
+
+.formtableErrors li span {
+	color:#952216;
+}
+
+.formtable {
+	margin:0 auto 20px; /* top margin is determined by .required */
+	border:1px solid #BBB;
+	width:480px;
+}
+
+.formtableRequired {
+	margin:10px auto 0;
+	font-size:.84em;
+	color:#333;
+	text-align:center;
+	font-style:italic;
+}
+
+.formtable .evenRow {
+	background:#FAFAFA;
+}
+
+.formtable .oddRow {
+	background:#F0F0F0;
+}
+
+.formtable td {
+	padding:8px 10px 6px;
+	vertical-align:top;
+}
+
+.formtable input {
+	width:200px;
+}
+
+.formtable select {
+	width:200px;
+}
+
+.formtable select option {
+	text-align:left;
+}
+
+.formtable textarea {
+	width:280px;
+	height:75px;
+	margin-top:10px;
+	font-family:Verdana, sans-serif;
+	font-size:12px;
+}
+
+.formtable .append {
+	font-size:12px;
+	font-style:italic;
+}
+
+.formtable .append a {
+	font-style:normal;
+}
+
+.formtable .otherdiv {
+	display:none;
+	margin:12px 0 8px;
+}
+
+.formtable .onoffbox, .formtable .radio {
+	border:1px solid #DDD;
+	display:inline-block;
+	outline:0;
+	padding:2px 6px;
+	margin:2px;
+}
+
+.formtable .on {
+	background:#DDD;
+	border-color:#999;
+	color:#000;
+}
+
+.formtable .off {
+	background:#FCFCFC;
+	border-color:#DDD;
+	color:#848484;
+}

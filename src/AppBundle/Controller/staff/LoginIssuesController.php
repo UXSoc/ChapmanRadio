@@ -30,7 +30,7 @@ class LoginIssuesController extends Controller
 
         $seasonName = Season::name($season);
 
-        Template::css("/css/formtable.css");
+        Template::css("/legacy/css/formtable.css");
 
 
         $attempts = DB::GetAll("SELECT sla.type as login_type, sla.timestamp as login_time, users.* FROM suspendedloginattempts as sla INNER JOIN users ON users.userid = sla.userid WHERE season = :season ORDER BY sla.type, sla.timestamp", array(":season" => $season));

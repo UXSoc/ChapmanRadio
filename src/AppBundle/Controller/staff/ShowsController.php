@@ -82,7 +82,7 @@ class ShowsController extends Controller
 
 // process any input
         if($input) {
-            Template::css("/css/formtable.css");
+            Template::css("/legacy/css/formtable.css");
             $fields = array("showid","showname");
             $shows = ShowModel::Search($input, Request::Get('season', NULL));
             if(count($shows) == 0) Template::AddBodyContent("<p>No results found.</p>");

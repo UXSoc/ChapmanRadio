@@ -69,9 +69,9 @@ class FinalController extends  Controller{
         Template::AddBodyContent("<table class='tablesorter' style='width: 100%; text-align: left;'>
 	<thead><tr><th>User</th><th>Show Time</th><th>Recording</th><th>Download</th></tr></thead><tbody>");
 
-        Template::js("/js/recordings.js");
-        Template::css("/css/recordings.css?v2");
-        Template::js("/plugins/soundmanager/script/soundmanager2-nodebug-jsmin.js");
+        Template::js("/legacy/js/recordings.js");
+        Template::css("/legacy/css/recordings.css?v2");
+        Template::js("/legacy/plugins/soundmanager/script/soundmanager2-nodebug-jsmin.js");
 //Template::js("/plugins/soundmanager/script/soundmanager2.js");
         Template::script("soundManager.url = '/plugins/soundmanager/swf/'; soundManager.useFlashBlock = false; soundManager.useHTML5Audio = true;");
 

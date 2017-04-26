@@ -43,7 +43,7 @@ class ProfileController extends Controller
         Template::SetPageTitle("My Profile");
         Template::SetBodyHeading("DJ Resources", "My Profile");
         Template::RequireLogin("DJ Resources");
-        Template::Css("/css/formtable.css");
+        Template::Css("/legacy/css/formtable.css");
 
         Template::AddBodyContent("<p style='margin:10px auto;'>You can edit your information, change your password, or update your profile picture.</p>");
 

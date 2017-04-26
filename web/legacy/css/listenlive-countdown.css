@@ -1,0 +1,35 @@
+#listenlive-countdown {
+	width: 260px;
+	}
+
+#listenlive-countdown span {
+	margin: 1px 5px;
+	color: #79C043;
+	line-height: 42px;
+	font-size: 36px;
+	position: relative;
+	height: 48px;
+	width: 50px;
+	display: inline-block;
+	}
+	
+#listenlive-countdown p {
+	color: #79C043;
+	line-height: 8px;
+	font-size: 10px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	text-transform: uppercase;
+	}
+	
+#listenlive-countdown .subtitle {
+	color: #666;
+	line-height: 8px;
+	font-size: 10px;
+	text-transform: uppercase;
+	margin-top: 12px;
+	text-align: center;
+	width: 100%;
+	}

@@ -3,15 +3,6 @@
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 4/20/17
- * Time: 8:57 AM
- */
-
-namespace AppBundle\Controller\dj;
-
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 4/20/17
  * Time: 8:08 AM
  */
 

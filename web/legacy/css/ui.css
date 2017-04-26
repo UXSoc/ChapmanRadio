@@ -1,0 +1,55 @@
+/*
+
+css/ui.css
+
+*/
+
+
+.ui_segmentedcontrol {
+	height:26px;
+}
+
+.ui_segmentedcontrol a {
+	display:block;
+	float:left;
+	background:url(/img/ui/segmentedcontrol.gif) no-repeat top center;
+	height:26px;
+	cursor:pointer;
+	font-size:12px;
+	line-height:24px;
+	padding:0 8px;
+	color:#222;
+	text-shadow:0 1px 0 rgba(256,256,256,.8);
+	outline:0;
+    text-decoration:none;
+}
+
+
+.ui_segmentedcontrol .left { background-position:top left;padding-left:10px; }
+.ui_segmentedcontrol .left:hover { color:#000; background-position:center left; }
+.ui_segmentedcontrol .right { background-position:top right;padding-right:10px; }
+.ui_segmentedcontrol .right:hover { color:#000; background-position:center right; }
+
+.ui_segmentedcontrol .leftHighlighted, .ui_segmentedcontrol .leftHighlighted:hover ,
+.ui_segmentedcontrol .left.Highlighted, .ui_segmentedcontrol .left.Highlighted:hover {
+	background-position:bottom left;
+	cursor:default;
+	color:#FFF;
+	text-shadow:0px 1px 0px rgba(0,0,0,.5);
+}
+
+.ui_segmentedcontrol .rightHighlighted, .ui_segmentedcontrol .rightHighlighted:hover,
+.ui_segmentedcontrol .right.Highlighted, .ui_segmentedcontrol .right.Highlighted:hover {
+	background-position:bottom right;
+	cursor:default;
+	color:#FFF;
+	text-shadow:0px 1px 0px rgba(0,0,0,.5);
+}
+
+.ui_button115 { background:url(/img/ui/button115.png) top center; padding:0 8px;width:100px; height:26px; display:block; text-decoration:none;text-shadow:0 1px 0 rgba(256,256,256,.8); font-size:13px; line-height:23px;text-align:center; }
+.ui_button115:hover { background-position:center center; }
+.ui_button115:active { background-position:bottom center; }
+
+.ui_button172 { background:url(/img/ui/button172.png) top center; padding:0 6px; width:160px; height:26px; display:block; text-decoration:none;text-shadow:0 1px 0 rgba(256,256,256,.8); font-size:13px; line-height:23px;text-align:center; }
+.ui_button172:hover { background-position:center center; }
+.ui_button172:active { background-position:bottom center; }

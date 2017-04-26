@@ -1,0 +1,93 @@
+/*
+
+css/buttons.css
+
+built by adam borecki
+
+*/
+
+.left_arrow { background:url(/img/buttons/left_arrow.png) 0 0; width:15px; height:41px; outline:0; }
+.left_arrow { background:url(/img/buttons/right_arrow.png) 0 0; width:15px; height:41px; outline:0; }
+.left_arrow:hover, .right_arrow:hover { background-position:0 41px; }
+.left_arrow:active, .right_arrow:active { background-position:0 82px; }
+
+
+.largeButton {
+	font-family:"Trebuchet MS",serif;
+	border:0px;
+	width:244px;
+	height:77px;
+	line-height:77px;
+	font-size:24px;
+	font-weight:100;
+	text-align:center;
+	color:#FFF;
+	cursor:pointer;
+	display:block;
+	text-decoration:none;
+}
+
+.largeButton img {
+	margin:0px;
+}
+
+.multilineButton {
+	line-height:36px;
+}
+
+.largeButton:hover {
+	color:#FFF;
+	text-decoration:none;
+}
+
+.largeGreen {
+	background:url(/img/buttons/largebutton1.png) no-repeat top left;
+	text-shadow:1px 1px 1px #2F7301;
+}
+
+.largeGreen:hover {
+	background-position:bottom left;
+}
+
+.largeGreen:active {
+	background-position:top left;
+}
+
+.largeBlue {
+	background:url(/img/buttons/largebutton1.png) no-repeat top right;
+	text-shadow:1px 1px 1px #174583;
+}
+
+.largeBlue:hover {
+	background-position:bottom right;
+}
+
+.largeBlue:active {
+	background-position:top right;
+}
+
+.largeGray {
+	background:url(/img/buttons/largebutton2.png) no-repeat top left;
+	text-shadow:1px 1px 1px #2F7301;
+}
+
+.largeGray:hover {
+	background-position:bottom left;
+}
+
+.largeGray:active {
+	background-position:top left;
+}
+
+.largeRed {
+	background:url(/img/buttons/largebutton2.png) no-repeat top right;
+	text-shadow:1px 1px 1px #174583;
+}
+
+.largeRed:hover {
+	background-position:bottom right;
+}
+
+.largeRed:active {
+	background-position:top right;
+}

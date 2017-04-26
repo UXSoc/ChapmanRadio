@@ -33,12 +33,14 @@ class ApplyController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../../');
 
-        Template::css("/css/formtable.css");
-        Template::css("/css/dl.css");
-        Template::js("/js/jquery.watermark.min.js");
-        Template::js("/js/postform.js");
-        Template::js("/dj/js/apply.js");
+
+        Template::css("/legacy/css/formtable.css");
+        Template::css("/legacy/css/dl.css");
+        Template::js("/legacy/js/jquery.watermark.min.js");
+        Template::js("/legacy/js/postform.js");
+        Template::js("/legacy/dj/js/apply.js");
 
         Template::SetPageTitle("Apply for a Show");
         Template::RequireLogin("Show Applications");
@@ -589,8 +591,8 @@ class ApplyController extends Controller
     function RenderAvailabilityTab()
     {
         global $show;
-        Template::Css("/css/timeslots.css?v2");
-        Template::JS("/js/timeslots.js?v2");
+        Template::Css("/legacy/css/timeslots.css?v2");
+        Template::JS("/legacy/js/timeslots.js?v2");
 
         Template::AddBodyContent(self::menu("availability"));
         Template::AddBodyContent("

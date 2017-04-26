@@ -1,0 +1,66 @@
+
+#livechat-root {
+	overflow: auto;
+	line-height: 30px;
+	margin: 10px;
+	border: 1px solid #EEE;
+	padding: 10px;
+	}
+
+#livechat-getname {
+	overflow: auto;
+	line-height: 30px;
+	margin: 10px;
+	border: 1px solid #EEE;
+	padding: 10px;
+	}
+	
+#livechat-inputname {
+	vertical-align: bottom;
+	height: 30px;
+	width: 200px;
+	}
+	
+#livechat-savename {
+	vertical-align: bottom;
+	height: 30px;
+	width: 80px;
+	}
+	
+#livechat-messages {
+	height: 150px;
+	overflow-y: scroll;
+	margin-bottom: 3px;
+	}
+
+#livechat-msgbox {
+	vertical-align: top;
+	width: 345px;
+	height: 40px;
+	padding: 3px;
+	resize: none;
+	}
+	
+#livechat-send {
+	vertical-align: bottom;
+	height: 30px;
+	width: 80px;
+	}
+	
+.livechat-msg {
+	margin: 5px;
+	padding: 3px;
+	border: 1px solid #888;
+	border-radius: 5px;
+	overflow: hidden;
+	}
+.livechat-msg-in {
+	background: #9EE8FF;
+	}
+.livechat-msg-out {
+	background: #DDDDDD;
+	}
+.livechat-time {
+	color: #999;
+	float: right;
+	}.livechat-msg-text {	line-height: 13px;	}

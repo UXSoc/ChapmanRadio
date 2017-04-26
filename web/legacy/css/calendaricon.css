@@ -1,0 +1,3 @@
+.calendaricon { background:url(/img/icons/calendar48.png); width:48px; height:48px; color:#000;text-align:center;line-height:48px;position:relative; }
+.calendaricon .month { height:18px; position:absolute;width:48px; top:-19px;font-size:11px;display:block;color:#FFF;text-shadow:1px 1px 0 #000; }
+.calendaricon .day { text-shadow:0px 1px 2px #FFF; font-weight:bold;font-size:20px;display:block; }

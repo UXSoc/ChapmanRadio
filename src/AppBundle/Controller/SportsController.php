@@ -31,8 +31,8 @@ class SportsController extends Controller
         Template::SetBodyHeading("Chapman Radio", "SportsController");
 
         Template::style(".h3min {width:400px;margin:auto;}");
-        Template::css("/css/feeds.css");
-        Template::js("/js/reflex.js");
+        Template::css("/legacy/css/feeds.css");
+        Template::js("/legacy/js/reflex.js");
 
 //$temp = DB::GetFirst(" SELECT COUNT( * ) AS total FROM `mp3s` WHERE showid = ".SPORTS_ARCHIVES_SHOWID);
 

@@ -44,7 +44,7 @@ class ShowModel extends ImageModel {
 	public $podcasturl;
 	public $podcastlink;
 	
-	public static $default_img50 = "/img/defaults/50.png";
+	public static $default_img50 = "/legacy/img/defaults/50.png";
 	
 	public static $DataMap = array(
 		"id" => "showid",

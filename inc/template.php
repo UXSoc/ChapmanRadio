@@ -22,7 +22,7 @@ class Template {
 	
 	private static $section = "";
 	private static $template = "inc/templates/default.template.html";
-	private static $headerimg = "/img/logo/default.png";
+	private static $headerimg = "/legacy/img/logo/default.png";
 	
 	private static $notify = "";
 	private static $alert = "";
@@ -39,14 +39,14 @@ class Template {
 		
 		if(!file_exists(PATH . Template::$template)) Template::$template = "inc/templates/default.template.html";
 		
-		if(!self::$bootstrapping) self::$prehead[] = "<link rel='stylesheet' href='/css/prebootstrap.css' type='text/css' />\n";
+		if(!self::$bootstrapping) self::$prehead[] = "<link rel='stylesheet' href='legacy/css/prebootstrap.css' type='text/css' />\n";
 		else self::$bodyclass .= "bootstrapping";
 		
 		/* get the proper template file*/
 		$html = file_get_contents(PATH . Template::$template);
 		
 		// seasonal
-		self::$headerimg = "/img/logo/grad2016.png";
+		self::$headerimg = "/legacy/img/logo/grad2016.png";
 		//self::Css("/css/snow/snow.css");
 		
 		if(isset($_GET['fb_banner_preview']))
@@ -58,31 +58,31 @@ class Template {
 		if(isset($_REQUEST['logo'])){
 			switch($_REQUEST['logo']){ 
 				case 'fall':
-					Template::$headerimg = "/img/logo/logo_fall.png";
+					Template::$headerimg = "/legacy/img/logo/logo_fall.png";
 					break;
 				case 'xmas':
-					Template::$headerimg = "/img/logo/logo_xmas.png";
+					Template::$headerimg = "/legacy/img/logo/logo_xmas.png";
 					break;
 				case 'christmas':
-					Template::$headerimg = "/img/logo/christmas.png";
+					Template::$headerimg = "/legacy/img/logo/christmas.png";
 					break;
 				case 'spring':
-					Template::$headerimg = "/img/logo/logo_spring.png";
+					Template::$headerimg = "/legacy/img/logo/logo_spring.png";
 					break;
 				case 'halloween':
-					Template::$headerimg = "/img/logo/halloween.png";
+					Template::$headerimg = "/legacy/img/logo/halloween.png";
 					break;
 				case 'halloween2015':
-					Template::$headerimg = "/img/logo/halloween2015.png";
+					Template::$headerimg = "/legacy/img/logo/halloween2015.png";
 					break;
 				case 'thanksgiving':
-					Template::$headerimg = "/img/logo/thanksgiving.png";
+					Template::$headerimg = "/legacy/img/logo/thanksgiving.png";
 					break;
 				case 'ham':
-					Template::$headerimg = "/img/logo/ham.png";
+					Template::$headerimg = "/legacy/img/logo/ham.png";
 					break;
 				default:
-					Template::$headerimg = "/img/logo/default.png";
+					Template::$headerimg = "/legacy/img/logo/default.png";
 					break;
 				}
 			}
@@ -286,7 +286,7 @@ class Template {
 		}
 	
 	public static function formtable() {
-		Template::css("/css/formtable.css");
+		Template::css("/legacy/css/formtable.css");
 		}
 	
 	public static function alert($msg, $type='error', $overwrite=true) {
@@ -505,7 +505,7 @@ class Template {
 				$user->DeniedLogin('account_suspended');
 				Template::SetBodyHeading("Chapman Radio", "Account Suspended");
 				$djname = $user->djname && $user->name != $user->djname ? $user->name."<br /><span class='genre'>".$user->djname."</span>" : $user->name;
-				Template::css("/css/formtable.css");
+				Template::css("/legacy/css/formtable.css");
 				Template::AddBodyContent("<table class='formtable' cellspacing='0' style='width:424px;'><tr class='oddRow'><td><img src='".$user->img50."' /></td><td>$djname</td><td>".$user->email."<br />".$user->phone."<br />".$user->classclub."<td></tr></table>");
 				Template::error("<p>You have <b>3 strikes</b>.</p><div style='text-align:left;'><p>Your account has been suspended due to violations in our <a href='/policies'>policies</a>.</p><p>View <a href='/dj/attendance'>my attendance</a> for more information.</p><p>Email <a href='attendance@chapmanradio.com'>attendance@chapmanradio.com</a> for help with your strikes.</p></div>");
 			}
@@ -576,12 +576,12 @@ class Template {
 	
 	public static function bootstrap(){
 		self::$bootstrapping = true;
-		self::js("/js/bootstrap.min.js");
-		self::css("/css/bootstrap.min.css");
+		self::js("/legacy/js/bootstrap.min.js");
+		self::css("/legacy/css/bootstrap.min.css");
 		}
 	
 	public static function livestreams() {
-		Template::js("/js/livestreams.js?G");
+		Template::js("/legacy/js/livestreams.js?G");
 		$streams = Icecast::streams();
 		
 		if(!$streams && Session::HasUser())
@@ -595,9 +595,9 @@ class Template {
 		
 		return "
 			<div id='livestream-radio' class='livestream' style='display:".(($show!=null)?"block":"none")."'>
-				<div class='slide' id='livestream-radio-show'><a class='listenlivelink' href='/listenlive'><div class='cr-ls-container'><img alt='Current Show Logo' src='".(($show!=null)?$show->img64:"/img/defaults/64.png")."' /><div class='sideinfo'><span class='slidetitle'>CURRENT SHOW</span><span class='showname'>".(($show!=null)?$show->name:"")."</span><span class='showdetails'>{$djs}</span></div></div></a></div>
+				<div class='slide' id='livestream-radio-show'><a class='listenlivelink' href='/listenlive'><div class='cr-ls-container'><img alt='Current Show Logo' src='".(($show!=null)?$show->img64:"/legacy/img/defaults/64.png")."' /><div class='sideinfo'><span class='slidetitle'>CURRENT SHOW</span><span class='showname'>".(($show!=null)?$show->name:"")."</span><span class='showdetails'>{$djs}</span></div></div></a></div>
 				<div class='slide' id='livestream-radio-nowplaying'><a class='listenlivelink' href='/listenlive'><div class='cr-ls-container'></div></a></div>
-				<div class='slide' id='livestream-sports' style='display:".(isset($streams['sports'])?"table-cell":"none")."'><a class='listenlivelink' data-stream='sports' href='/listenlive?stream=sports'><div class='cr-ls-container'><img alt='SportsController Image' src='/img/chrome/sports_64.png' /><div class='sideinfo'><span class='slidetitle'>ALSO STREAMING</span><span class='showname'>Live SportsController Stream</span></div></div></a></div>
+				<div class='slide' id='livestream-sports' style='display:".(isset($streams['sports'])?"table-cell":"none")."'><a class='listenlivelink' data-stream='sports' href='/listenlive?stream=sports'><div class='cr-ls-container'><img alt='SportsController Image' src='/legacy/img/chrome/sports_64.png' /><div class='sideinfo'><span class='slidetitle'>ALSO STREAMING</span><span class='showname'>Live SportsController Stream</span></div></div></a></div>
 			</div>";
 		}
 	

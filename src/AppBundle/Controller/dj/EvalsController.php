@@ -15,8 +15,6 @@ namespace AppBundle\Controller\dj;
  * Time: 8:08 AM
  */
 
-namespace AppBundle\Controller\dj;
-
 
 use ChapmanRadio\Evals;
 use ChapmanRadio\Template;
@@ -38,8 +36,8 @@ class EvalsController extends Controller
 
         Template::AddStaffAlert("You can see completed evals at <a href='/staff/evals'>/staff/evals</a>");
 
-        Template::css("/css/dl.css");
-        Template::css("/css/buttons.css");
+        Template::css("/legacy/css/dl.css");
+        Template::css("/legacy/css/buttons.css");
 
         Template::SetBodyHeading("DJ Resources", "Show Evaluations");
         Template::AddBodyContent("

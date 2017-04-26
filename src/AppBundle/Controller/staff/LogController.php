@@ -25,7 +25,7 @@ class LogController extends Controller
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Edit Log");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin( "Staff Resources", "staff");
 
         $limit = Request::GetInteger('limit', 30);
 

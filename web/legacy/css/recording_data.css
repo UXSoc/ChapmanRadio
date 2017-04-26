@@ -1,0 +1,23 @@
+.recording_data { border:1px solid #AAA; width:auto; margin:10px auto 20px; }
+.recording_data .evenRow { background-color:#F4F4F4; }
+.recording_data .oddRow { background-color:#E6E6E6; }
+
+.recording_data a.evenRow:hover,.recording_data a.oddRow:hover { background-color:#939393; cursor:pointer; }
+
+.recording_data .thead { background:rgba(0,0,0,.1); height:32px; }
+.recording_data .tbody { height:300px; overflow:auto; clear:left; }
+.recording_data .row { clear:left; min-height:28px; display:block;  }
+.recording_data .col { float:left; display:block; overflow:hidden; white-space:nowrap; }
+
+.recording_data .col1, .recording_data .th1 { width:84px; overflow:hidden; }
+.recording_data .col1 { color:#848484; }
+.recording_data .col2, .recording_data .th2 { width:166px; text-align:left; }
+.recording_data .col3, .recording_data .th3 { width:42px; }
+.recording_data .col4, .recording_data .th4 { width:42px; }
+.recording_data .col5, .recording_data .th5 { width:42px; }
+
+.recording_data .data { display:none; clear:left; }
+.recording_data .formtable { width:200px;margin:6px auto 26px; }
+.recording_data textarea { width:184px; margin:0 auto; }
+
+.recording_data small { display: block; color: #848484; line-height: 14px; font-style: italic; }

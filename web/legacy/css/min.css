@@ -1,0 +1,26 @@
+/*
+
+css/splash.css
+
+built for adam borecki's cms environment
+
+*/
+
+#header {
+	text-indent:-600000px;
+	background:url(/img/logo/logo_splash.png) no-repeat center top transparent;
+	height:157px;
+	margin-top:36px;
+}
+
+#contentcontainer {
+	margin:0 auto;
+}
+
+#content {
+/*	width:618px;
+	height:400px;
+	overflow:hidden;
+	background:url(/img/bg/mincontentbg.jpg) center top #EEE;*/
+	position:relative;
+}

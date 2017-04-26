@@ -23,10 +23,10 @@ class AwardsController extends  Controller
         Template::SetBodyHeading("Site Administration", "Awards");
         Template::RequireLogin("Staff Resources", "staff");
 
-        Template::js("/staff/js/awards.js");
-        Template::css("/css/formtable.css");
-        Template::css("/plugins/tablesorter/blue/style.css");
-        Template::js("/plugins/tablesorter/jquery.tablesorter.min.js");
+        Template::js("/legacy/staff/js/awards.js");
+        Template::css("/legacy/css/formtable.css");
+        Template::css("/legacy/plugins/tablesorter/blue/style.css");
+        Template::js("/legacy/plugins/tablesorter/jquery.tablesorter.min.js");
 
         Template::AddBodyContent("<div class='leftcontent'>");
 

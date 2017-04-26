@@ -1,0 +1,82 @@
+/* temp */
+
+body.bootstrapping {
+	text-align: left;
+	}
+
+.cr-page-title {
+	text-align: center;
+	display: block;
+	font-size: 1.5em;
+	font-weight: bold;
+	}
+
+body.bootstrapping .cr-page-title {
+	margin-bottom: 10px;
+	}
+
+.cr-page-heading {
+	color: black;
+	font-size: 1.3em;
+	margin-bottom: 10px;
+	border-bottom: 3px solid #CCC;
+	padding: 3px;
+	}
+	
+.dt-form {
+	margin-left: 10px;
+	}
+
+.cr-login-left {
+	float: left;
+	width: 450px;
+	}
+
+.cr-login-right {
+	float: right;
+	width: 450px;
+	}
+
+.cr-map-infowindow {
+	min-height: 65px;
+	width: 200px;
+	}
+
+.cr-map-table {
+	text-align: center;
+	}
+
+.cr-map-table-header {
+	text-transform: uppercase;
+	font-size: 19px;
+	font-weight: bold;
+	color: #79C043;
+	}
+
+.cr-map-table-item {
+	text-align: left;
+	width: 300px;
+	border: 1px solid #CCC;
+	background: #EEE;
+	margin: 5px auto;
+	padding: 5px;
+	min-height: 60px;
+	}
+
+.cr-map-table-item .star {
+	float: left;
+	margin-right: 5px;
+	}
+
+.cr-mostplayed-error {
+	text-align: center;
+	}
+
+.cr-mostplayed-block a {
+	color: #666;
+	}
+
+.cr-mostplayed-block a:hover {
+	color: #333;
+	text-decoration: none;
+	}

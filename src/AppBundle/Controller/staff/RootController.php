@@ -29,7 +29,7 @@ class RootController extends Controller
         Template::SetPageTitle("Staff - Advanced");
         Template::SetBodyHeading("Site Administration", "Advanced Settings");
         Template::RequireLogin("Staff Resources", "staff");
-        Template::css("/css/formtable.css");
+        Template::css("/legacy/css/formtable.css");
 
         $season = Season::current();
         $seasonName = Season::name($season);

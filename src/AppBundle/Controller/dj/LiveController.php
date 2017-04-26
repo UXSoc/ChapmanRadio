@@ -79,15 +79,15 @@ class LiveController extends Controller
         }
 
         /* AND NOW THE ACTUAL DJ LIVE PAGE!!!!!! */
-        Template::css("/css/formtable.css");
-        Template::js("/dj/js/live.js?peace");
-        Template::js("/js/jquery.scrollTo.js");
-        Template::js("/js/jquery.watermark.min.js");
-        Template::css("/css/dj-chat.css");
-        Template::css("/dj/css/live.css?3");
-        Template::css("/css/ajaxresults.css");
-        Template::css("/css/nowplaying.css");
-        Template::css("/css/calendaricon.css");
+        Template::css("/legacy/css/formtable.css");
+        Template::js("/legacy/dj/js/live.js?peace");
+        Template::js("/legacy/js/jquery.scrollTo.js");
+        Template::js("/legacy/js/jquery.watermark.min.js");
+        Template::css("/legacy/css/dj-chat.css");
+        Template::css("/legacy/dj/css/live.css?3");
+        Template::css("/legacy/css/ajaxresults.css");
+        Template::css("/legacy/css/nowplaying.css");
+        Template::css("/legacy/css/calendaricon.css");
         $liveshow = ShowModel::FromId($liveshowid);
         Template::AddBodyContent("<div style='position: absolute; top: 20px; text-align: right; display: block; width: 90%;'>");
         if ($_SESSION['DJLiveexpires'] == 0 || Session::isStaff()) Template::AddBodyContent("<a href='?deauthorize'>Logout of DJ Live ONLY</a><br />");
@@ -109,7 +109,7 @@ class LiveController extends Controller
                 $notimportantlink = "{$pref}oftheday.com";
                 break;
             default:
-                $notimportantimg = "/img/pets/{$pref}.jpg";
+                $notimportantimg = "/legacy/img/pets/{$pref}.jpg";
                 $notimportantlink = "chapmanradio.com/umadbro-c";
                 $notimportantclass = "internal";
                 break;

@@ -32,7 +32,7 @@ class ActivityController extends Controller
         Template::SetBodyHeading("Chapman Radio Admin", "Site Activity");
         Template::RequireLogin("Staff Resources", "staff");
 
-        Template::css("/css/formtable.css");
+        Template::css("/legacy/css/formtable.css");
 
 // listeners
         $listeners = DB::GetFirst("SELECT chapmanradio,chapmanradiolowquality,datetime FROM stats ORDER BY datetime DESC LIMIT 0,1");

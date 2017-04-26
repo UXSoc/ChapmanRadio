@@ -45,12 +45,12 @@ class QuizController extends Controller
 // settings for new quizes
         $qsPerQuiz = 10;
 
-        Template::css("/css/formtable.css");
-        Template::css("/css/subnav.css");
-        Template::css("/css/ui.css");
-        Template::js("/js/jquery.scrollTo.js");
-        Template::js("/js/subnav.js");
-        Template::js("/js/postform.js");
+        Template::css("/legacy/css/formtable.css");
+        Template::css("/legacy/css/subnav.css");
+        Template::css("/legacy/css/ui.css");
+        Template::js("/legacy/js/jquery.scrollTo.js");
+        Template::js("/legacy/js/subnav.js");
+        Template::js("/legacy/js/postform.js");
         Template::script("\$(document).ready(function(){ $('#subcontentContainer').css({ height : '750px' }); });");
 
         Template::AddBodyContent("<p>All members of Chapman Radio are required to pass the Quiz.<br />If you fail, you'll have to retake it until you get a perfect score.</p>");

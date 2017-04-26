@@ -1,0 +1,105 @@
+`bed1.mp3
+	Straight to Number One
+	<i>Sexy Music</i>
+	by Touch and Go
+`bed2.mp3
+	Better Off Alone
+	<i>Dance</i>
+	by Alice Deejay
+`bed3.mp3
+	Animal Rights
+	<i>Dance</i>
+	by Wolfgang Gartner and Deadmau5
+`bed4.mp3
+	Aquarium
+	<i>Classical</i>
+	by Camille Saint Sa&euml;ns
+`bed5.mp3
+	Breaking News
+	<i>Cheesy</i>
+	by Apple Loops
+`bed6.mp3
+	Muzak
+	<i>Cheesy</i>
+	by Apple Loops
+`bed7.mp3
+	Drugs
+	<i>Electronic</i>
+	by Ratatat
+`bed8.mp3
+	Mirando
+	<i>Electronic</i>
+	by Ratatat
+
+`novelty1.mp3
+	20th Century Fox
+	Theme from the opening of <i>20th Century Fox</i> movies
+`novelty2.mp3
+	Habanera
+	from <i>Carmen</i>, by Bizet
+`novelty3.mp3
+	James Bond
+	Main theme from the <i>James Bond</i> series, by <i>Monty Norman</i>
+`novelty4.mp3
+	Jeopardy
+	Theme from the TV Show game show, <i>Jeopardy</i>
+`novelty5.mp3
+	Pink Panther
+	<i>Henry Mancini</i>'s main theme from <i>The Pink Panther</i>
+`novelty6.mp3
+	Star Wars
+	Main Theme from <i>John William</i>'s soundtrack to <i>Star Wars</i>.
+`novelty7.mp3
+	Beethoven
+	Introduction to the <i>1st movement</i> of <i>Beethoven's 5th symphony</i>.
+`novelty8.mp3
+	Pirates of the Carribean
+	Theme from the <i>Pirates of the Carribean</i>  by <i>Hans Zimmer</i>	
+
+`sfx1.mp3
+	Dramatic Accent
+	Heighten the intensity of your show tag.
+`sfx2.mp3
+	Applause
+	Nothing but the best cheesiest applause for you show tags.
+
+`01.mp3
+	"You're listening to ..."
+	"You're listening to Chapman Radio, on Chapman Radio dot com."
+	read by Craig Shields
+`02.mp3
+	"The all new Chapman ..."
+	"The all new Chapman Radio, now with more content."
+	read by Craig Shields
+`04.mp3
+	"All the hits ..."
+	"All the hits, but in a non-violent way. Chapman Radio dot com."
+	read by Craig Shields
+`05.mp3
+	"Here's some new music ..."
+	"Here's some new music, you're listening to Chapman Radio dot com."
+	read by Craig Shields
+`06.mp3
+	"You're listening to .."
+	"You're listening to Chapman Radio dot com."
+	read by Craig Shields
+`08.mp3
+	"Chapman Radio dot com."
+	"Chapman Radio dot com."
+	read by Craig Shields
+`21.mp3
+	"Internet Radio like ..."
+	"Chapman Radio dot com. Internet Radio like you've never heard it before."
+	read by Craig Shields
+`22.mp3
+	"The music never stops ..."
+	"The music never stops, on Chapman Radio dot com."
+	read by Craig Shields
+`23.mp3
+	"Nothing but the latest ..."
+	"Nothing but the latest and hottest broadcasts on Chapman Radio dot com".
+	read by Craig Shields
+`25.mp3
+	"Nonstop culture ..."
+	"Nonstop culture and sophistication, only on Chapman Radio dot com."
+	read by Craig Shields

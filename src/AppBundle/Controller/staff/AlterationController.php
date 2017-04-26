@@ -35,8 +35,8 @@ class AlterationController extends Controller
         Template::SetPageTitle("Alterations");
         Template::RequireLogin("Staff Resources", "staff");
 
-        Template::css("/css/formtable.css");
-        Template::js("/js/postform.js");
+        Template::css("/legacy/css/formtable.css");
+        Template::js("/legacy/js/postform.js");
         Template::style(".alterations .time { width:220px;}");
 
         Template::SetBodyHeading("Staff Resources", "Alterations");

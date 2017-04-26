@@ -1,0 +1,16 @@
+.t_container{width:auto;margin:10px auto;width:807px;border-right:1px solid #AAA;position:relative;}
+.t_row{clear:both;border-bottom:1px solid #AAA;height:32px;}
+.t_label,.t_cell,.t_blank{width:100px;height:32px;float:left;line-height:30px;color:#757575;}
+.t_cell {border-left:1px solid #AAA;position:relative;}
+.t_label{background:#E6E6E6;}
+.t_toplabel{border-left:1px solid #AAA;border-bottom:1px solid #AAA;}
+.t_cell.t_unselected {background:#0A0;}
+.t_cell.t_selected {background:#A00;}
+.t_x1 .t_show1 {display:block;}
+.t_x2 .t_show2 {display:block;}
+.t_show1,.t_show2{width:44px;height:24px;display:none;background:rgba(0,0,0,.2);position:absolute;left:4px;top:4px;}
+.t_show2{left:52px;}
+.t_genre{position:absolute;width:44px;height:20px;}
+#t_highlight1,#t_highlight2{position:absolute;left:0;top:0;width:44px;height:24px;display:none;background:rgba(0,0,0,.8);}
+#t_div,.t_div{position:absolute;left:101px;top:33px;width:706px;height:726px;}
+#schedulePanel #t_div,.t_div { height: 796px; }

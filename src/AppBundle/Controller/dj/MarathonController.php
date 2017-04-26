@@ -46,7 +46,7 @@ class MarathonController extends Controller
         Template::SetBodyHeading("DJ Resources", "Request Marathon Slot");
         Template::RequireLogin("DJ Account");
 
-        Template::JS("/js/jquery-ui-dragdrop.min.js");
+        Template::JS("/legacy/js/jquery-ui-dragdrop.min.js");
 
         Template::Bootstrap();
 

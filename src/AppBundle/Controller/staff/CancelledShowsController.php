@@ -24,7 +24,7 @@ class CancelledShowsController extends Controller
         $season = Season::current();
         $seasonName = Season::name($season);
 
-        Template::css("/css/formtable.css");
+        Template::css("/legacy/css/formtable.css");
 
         Template::AddBodyContent("<form method='get' action='$_SERVER[PHP_SELF]' id='seasonpicker'><div>Cancelled shows for: <select onchange='$(\"#seasonpicker\").submit();' name='season'>" . Season::picker(2011, false, $season, true) . "<input type='submit' value='&gt;' /></div></form>");
 

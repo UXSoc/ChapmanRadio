@@ -41,7 +41,7 @@ class NewsController extends Controller
         Template::RequireLogin("DJ Account");
         Template::Bootstrap();
 
-        Template::Css("/css/page-news.css");
+        Template::Css("/legacy/css/page-news.css");
 
         Template::SetBodyHeading("Class News");
         Template::AddStaffAlert("You can post news here at <a href='/staff/classnews'>/staff/classnews</a>");

@@ -1,0 +1,44 @@
+/*
+
+css/press.css
+
+*/
+
+.press td {
+	vertical-align:top;
+	padding-bottom:6px;
+}
+
+.press .image {
+	vertical-align:middle;
+	padding:4px;
+}
+
+.press .date {
+	text-align:right;
+	font-family:Verdana, sans-serif;
+	font-size:12px;
+	margin-bottom:0px;
+	color:#848484;
+	display:block;
+}
+
+.press .full {
+	text-align:center;
+	padding-bottom:20px;
+}
+
+.press .full a {
+	color:#333;
+	font-weight:bold;
+	text-decoration:none;
+	border-bottom:1px dotted #484848;
+}
+
+.press .full a:hover {
+	color:#000;
+	border-bottom-style:solid;
+}
+
+.press {
+}

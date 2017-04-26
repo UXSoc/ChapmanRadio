@@ -40,12 +40,12 @@ class ShowsController extends Controller
 
         $userid = Session::GetCurrentUserID();
 
-        Template::css("/css/ui.css");
-        Template::css("/css/formtable.css");
-        Template::css("/css/stats.css");
-        Template::css("/css/recording_data.css");
-        Template::js("/dj/js/shows.js");
-        Template::js("/js/jquery.color.js");
+        Template::css("/legacy/css/ui.css");
+        Template::css("/legacy/css/formtable.css");
+        Template::css("/legacy/css/stats.css");
+        Template::css("/legacy/css/recording_data.css");
+        Template::js("/legacy/dj/js/shows.js");
+        Template::js("/legacy/js/jquery.color.js");
 
 // is there something to process?
         $notify = "";

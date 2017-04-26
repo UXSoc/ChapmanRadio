@@ -30,8 +30,8 @@ class EventsController extends  Controller
         Template::AddBodyContent("<div class='leftcontent'>");
 
         Template::shadowbox();
-        Template::css("/css/formtable.css");
-        Template::css("/css/calendaricon.css");
+        Template::css("/legacy/css/formtable.css");
+        Template::css("/legacy/css/calendaricon.css");
         Template::style(".events{margin:10px 40px;}.event{margin:10px auto;}.calendaricon{margin:0 10px 10px;float:left;}");
         Template::script("
 	e={

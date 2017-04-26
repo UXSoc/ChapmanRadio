@@ -1,0 +1,179 @@
+/* css/dj-chat.css (C) David Tyler 2012  */
+
+/* override djlive only */
+#content {
+	min-height: 0px !important;
+	}
+
+#live_noscript_message {
+	background: red;
+	color: white;
+	padding: 10px;
+	width: 600px;
+	margin: 10px auto;
+	display: none;
+	}
+	
+	
+#djlivebox_container {
+	width: 1326px;
+	margin: -10px 0px -6px -163px;
+	box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, .1);
+	background: #F9FCFF;
+	display: inline-block;
+	}
+	
+.djlivebox_column {
+	width: 420px;
+	float: left;
+	margin: 0 10px;
+	}
+	
+.djlivebox {
+	margin: 10px 0;
+	}
+	
+/* Boxes */
+
+.gloss.chats {
+	height: 600px;
+	overflow: hidden;
+	}	
+
+/* Set now playing box */
+
+#nowplaying_preview {
+	display: none;
+	}
+#nowplaying_input {
+	width: 340px;
+	padding: 7px;
+	}
+#nowplaying_suggestion_box {
+	display: none;
+	position: absolute;
+	margin-left: 10px;
+	background: #EEE;
+	width: 330px;
+	border: 1px solid black;
+	box-shadow: 3px 3px 10px #888;
+	z-index: 10;
+	}
+.nowplaying_message {
+	display: none;
+	color: #888;
+	border-top: 1px solid #BBB;
+	}
+.nowplaying_message p, .nowplaying_ready {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	}
+#nowplaying_suggestions div {
+	border-bottom: 1px solid #BBB;
+	}
+#nowplaying_suggestions div:last-child {
+	border-bottom: none;
+	}
+.nowplaying_suggestion {
+	padding: 5px;
+	clear: both;
+	overflow: auto;
+	text-align: left;
+	cursor: pointer;
+	font-size: 14px;
+	}
+.nowplaying_suggestion>img, .nowplaying_suggestion>span {
+	float: left;
+	margin-right: 5px;
+	max-width: 245px;
+	}
+.nowplaying_suggestion:hover, .nowplaying_suggestion.active {
+	background: #DDD; 
+	}
+#nowplaying_reset {
+	float: right;
+	margin-right: 40px;
+	color: #AAA;
+	margin-top: -7px;
+	}
+#nowplaying_musicnotes, #nowplaying_talknotes {
+	margin: 3px;
+	padding: 3px;
+	width: 330px;
+	height: 90px;
+	}
+#nowplaying_submitmusic, #nowplaying_submittalk {
+	margin: 3px;
+	padding: 3px;
+	width: 150px;
+	}
+	
+.egg-tart-birthday { margin-top: -60px; }
+.egg-tart-xmas { margin-top: -17px; }
+.egg-tart-melon { margin-top: -17px; }
+.egg-tart-patty { margin-top: -42px; }
+.egg-tart-dub img { width: 200px !important; }
+.egg-tart-ninja img { width: 200px !important; }
+.egg-tart-pirate img { width: 200px !important; }
+
+.cr-dj-notimportant.internal img {
+	border: 3px outset #999;
+	box-shadow: 1px 1px 5px;
+	}
+
+/* Chat */
+	
+#sms-root {
+	text-align: left;
+	overflow-y: scroll;
+	height: 550px;
+	}
+#sms-nodata {
+	text-align: center;
+	margin-top: 30px;
+	font-size: 18px;
+	line-height: 36px;
+	font-weight: bold;
+	}
+.sms-contact {
+	margin-bottom: 3px;
+	}
+.sms-number {
+	background: black;
+	color: white;
+	padding: 3px;
+	cursor: pointer;
+	}
+.sms-contact.flashing .sms-number {
+	background: red;
+	}
+
+.sms-conversation {
+	display: none;
+	margin-left: 20px;
+	}
+.sms-txt {
+	margin: 5px;
+	padding: 3px;
+	border: 1px solid #888;
+	border-radius: 5px;
+	overflow: hidden;
+	}
+.sms-in {
+	background: #9EE8FF;
+	}
+.sms-out {
+	background: #DDDDDD;
+	}
+.sms-time {
+	color: #999;
+	}
+.sms-replybox {
+	width: 280px;
+	padding: 3px;
+	}
+.sms-replysend {
+	padding: 3px;
+	width: 60px;
+	margin-left: 5px;
+	}

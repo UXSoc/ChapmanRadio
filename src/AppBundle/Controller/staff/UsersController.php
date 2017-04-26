@@ -30,10 +30,10 @@ class UsersController extends Controller
 
         Template::SetPageTitle("User Lookup");
         Template::RequireLogin("Staff Resources", "staff");
-        Template::js("/js/jquery.watermark.min.js");
+        Template::js("/legacy/js/jquery.watermark.min.js");
         Template::Bootstrap();
         Template::shadowbox();
-        Template::js("/staff/js/dialog_edit.js");
+        Template::js("/legacy/staff/js/dialog_edit.js");
 
         $season = Site::CurrentSeason(true);
         $seasonName = Season::name($season);
@@ -112,7 +112,7 @@ class UsersController extends Controller
 	</div></div>");
 
         if ($input) {
-            Template::css("/css/formtable.css");
+            Template::css("/legacy/css/formtable.css");
             $fields = array("fbid", "studentid", "name", "djname", "email");
             $users = UserModel::Search($input, Request::Get('season', NULL), "ORDER BY lname ASC");
             if (count($users) == 0) Template::Add("<p>No results found.</p>");

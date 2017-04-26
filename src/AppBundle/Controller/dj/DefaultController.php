@@ -46,29 +46,29 @@ class DefaultController extends Controller
 // organize content into a table
         $menu = array(
             array(
-                "img" => "/img/decor/dj/myshows.png",
+                "img" => "/legacy/img/decor/dj/myshows.png",
                 "label" => "My Shows",
-                "text" => "/img/text/myshows.png",
+                "text" => "/legacy/img/text/myshows.png",
                 "description" => "View your statistics, manage your recordings, and edit your show preferences.",
                 "link" => "/dj/shows",
             ),
             array(
-                "img" => "/img/decor/dj/myprofile.png",
+                "img" => "/legacy/img/decor/dj/myprofile.png",
                 "label" => "My Profile",
-                "text" => "/img/text/myprofile.png",
+                "text" => "/legacy/img/text/myprofile.png",
                 "description" => "Update your contact information or manage your profile picture.",
                 "link" => "/dj/profile",
             ),
             array(
-                "img" => "/img/decor/dj/tags.png",
+                "img" => "/legacy/img/decor/dj/tags.png",
                 "label" => "Evals",
-                "text" => "/img/text/evals.png",
+                "text" => "/legacy/img/text/evals.png",
                 "description" => "Start evaluating a fellow DJ or see what peers have to say about your show.",
                 "link" => "/dj/evals",
             ),
         );
 
-        Template::css("/css/formtable.css");
+        Template::css("/legacy/css/formtable.css");
 
         Template::AddBodyContent("<br /><iframe src='//player.vimeo.com/video/111051355' width='942' height='450'></iframe>");
 

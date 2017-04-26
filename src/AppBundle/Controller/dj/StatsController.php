@@ -47,10 +47,10 @@ class StatsController extends Controller
         Template::RequireLogin("Listenership Statistics");
         Template::SetBodyHeading("DJ Resources", "Listenership Statistics");
 
-        Template::css("/css/dl.css");
-        Template::js("/js/jquery.color.js");
-        Template::js("/js/dj-stats.js");
-        Template::css("/css/star.css");
+        Template::css("/legacy/css/dl.css");
+        Template::js("/legacy/js/jquery.color.js");
+        Template::js("/legacy/js/dj-stats.js");
+        Template::css("/legacy/css/star.css");
 
         Template::style(Schedule::styleGenres());
         Template::AddBodyContent("<div style='width:930px;margin:10px auto;text-align:left;'>");

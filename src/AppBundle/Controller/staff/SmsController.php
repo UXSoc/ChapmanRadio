@@ -26,7 +26,7 @@ class SmsController extends Controller
         Template::SetPageTitle("Staff - SMS");
         Template::SetBodyHeading("Site Administration", "SMS / Livechat History");
         Template::RequireLogin("Staff Resources", "staff");
-        Template::css("/css/formtable.css");
+        Template::css("/legacy/css/formtable.css");
 
         $limit = Request::GetInteger('limit', 50);
         $result = livechat::getMostRecent($limit, isset($_GET['all']));

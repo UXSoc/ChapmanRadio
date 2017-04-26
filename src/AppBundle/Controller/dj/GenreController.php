@@ -38,7 +38,7 @@ class GenreController extends Controller
         Template::SetBodyHeading("DJ Resources", "My Genre");
         Template::RequireLogin("DJ Account");
 
-        Template::css("/css/dl.css");
+        Template::css("/legacy/css/dl.css");
 
 // output the header
         Template::AddBodyContent("<div style='width:600px;margin:10px auto;text-align:left;'>");

@@ -1,0 +1,25 @@
+/* by adam borecki */
+.panel {width:840px;margin:10px auto;position:relative;background:#FEFEFE url(/img/bg/panelbg.gif);}
+#shows { width:100%;height:400px;overflow:auto;line-height:0;text-align:left;padding:4px 0; }
+.show { opacity:.6;margin:2px; width:200px;height:60px;display:inline-block;position:relative;}
+.show:hover{opacity:1}
+.show a { width:130px; position:absolute;left:60px;top:5px;text-align:left;}
+.show img {position:absolute;left:5px;top:5px;margin:0;width:50px;height:50px;}
+.show span { line-height:1em;display:block;overflow:hidden;height:20px;width:135px;white-space:nowrap;text-overflow: ellipsis; }
+.s_item{position:absolute;text-align:left;height:32px;width:50px;overflow:hidden;background:#EEE;}
+.s_itemHover{width:260px;overflow:visible;height:60px;}
+.s_item img {float:left;}
+.s_itemHover img { margin:5px;}
+.moreinfo {width:100%;}
+.moreinfo tt {font-family:Verdana;color:#939393;font-size:12px;}
+.moreinfo td {padding:4px 8px;}
+#schednav{position:fixed;right:10px;bottom:0;width:220px;height:auto;background:url(/img/bg/panelbg.gif);}
+#schednav .top{background:url(/img/bg/feedh4bg.png);color:#FFF;height:26px;line-height:22px;}
+#tooltip {position:absolute;width:320px;background:url(/img/bg/panelbg.gif);border:1px solid #757575;text-align:left;}
+#tooltip img, #tooltip p {margin:5px;}
+#tooltip img {float:left;}
+
+#schedhover {position:fixed;bottom:10px;left:10px;width:220px;border:1px solid #AAA;background:url(/img/bg/panelbg.gif);text-align:left;}
+/* #schedhover {position:fixed;bottom:100px;left:-312px;width:220px;border:1px solid #AAA;background:url(/img/bg/panelbg.gif);text-align:left;} */
+#schedhover .top{background:url(/img/bg/feedh4bg.png);color:#FFF;height:26px;line-height:22px;text-align:center;}
+code { padding:4px;background:#AAA;border:1px solid #848484;font-family:courier; }

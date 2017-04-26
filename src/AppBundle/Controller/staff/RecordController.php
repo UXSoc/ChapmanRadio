@@ -94,10 +94,10 @@ class RecordController extends Controller
             Template::js("/staff/js/record_quick.js?c=20131025");
             Template::Add("<div id='record_background' style='position: fixed; bottom: 10px; top: 100px; left: 10px; right: 10px; border: 1px solid #CCC;'></div><div id='record_container' style='text-align: center; position: fixed; bottom: 10px; top: 100px; left: 10px; right: 10px; border: 1px solid #CCC;'><form><input type='hidden' id='record-type' value='" . $type . "' /><input type='hidden' id='record-date' value='" . $date . "' /><div style='margin-top: 20px;'><div><input type='text' id='search' style='padding: 10px; width: 330px; ' /></div><div id='found_dj' style='height: 350px; width: 310px; padding: 10px; border: 1px solid #666; display: inline-block; margin: 10px;'></div><div id='record_result' style='font-size: 92px; color: white; font-family: sans-serif; font-weight: bold; text-shadow: 1px 1px black;'></div></form></div></div>");
         } else {
-            Template::js("/staff/js/record.js?c=20131025");
-            Template::js("/js/jquery.watermark.min.js");
-            Template::css("/staff/css/recordAttendance.css");
-            Template::css("/css/dl.css");
+            Template::js("/legacy/staff/js/record.js?c=20131025");
+            Template::js("/legacy/js/jquery.watermark.min.js");
+            Template::css("/legacy/staff/css/recordAttendance.css");
+            Template::css("/legacy/css/dl.css");
 
 
             Template::AddBodyContent("<div class='address'><div style='padding:3px 20px 0 0;float:right;'><button onclick='a.remainder();'>Set Remainder Absent</button></div><form action='javascript:a.select();'><div style='padding:3px 0 0 20px;text-align:left;'><input id='search' autocomplete='off' value='' /><select name='filter' id='filter' /><option value='nofilter' selected='selected'>No Filter</option><option value='default'>Not Marked</option><option value='present'>Present</option><option value='excused'>Excused</option><option value='absent'>Absent</option></select></div></form></div><div id='results' style=min-height:240px;text-align:left;clear:both;background:url(/img/bg/panelbg.gif) #FEFEFE;margin-bottom:40px;'></div></div>");

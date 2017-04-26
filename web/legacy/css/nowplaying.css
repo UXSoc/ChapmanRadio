@@ -1,0 +1,17 @@
+/* css/nowplaying.css (C) David Tyler 2012 */
+
+.nowplaying_show { width:257px;height:199px;background:url(/img/bg/nowplayingbg.png);position:relative; }
+.nowplaying_show .inner { margin-left:13px;width:233px;padding-top:10px; }
+.nowplaying_show .showname, .upnext .showname { text-align:center;white-space:nowrap;overflow:hidden; }
+.nowplaying_show .description { font-size:12px;padding:0 2px;text-align:left;clear:both;height:100px;overflow:hidden; }
+.nowplaying_show a.button { display:block;cursor:pointer;text-align:left;background:url(/img/buttons/gloss1.png) no-repeat center center #000; width:108px; height:23px; color:#EEE; text-shadow:0 1px 1px rgba(0,0,0,.4); outline:0; padding:2px 0px 2px 8px;position:absolute;right:23px; }
+.nowplaying_show a.button:hover { background-position:top left; color:#FFF; }
+.nowplaying_show a.button:active { background-position:bottom left; color:#CCC; }
+
+.nowplaying_container {text-align:left; overflow: auto; }
+
+.nowplaying_title {}
+
+.nowplaying_artist { }
+
+.nowplaying_notes { color:#848484; }

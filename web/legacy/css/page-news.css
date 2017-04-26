@@ -1,0 +1,23 @@
+.page-news{
+	text-align: left;
+	}
+
+.page-news article {
+	border-bottom: 1px solid #999;
+	position: relative;
+	}
+
+.page-news article h2 {
+	margin-bottom: 5px;
+	}
+
+.page-news article p {
+	margin-bottom: 10px;
+	}
+
+.page-news article .date {
+	right: 0;
+	top: 0;
+	position: absolute;
+	padding: 5px;
+	}

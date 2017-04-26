@@ -1,0 +1,85 @@
+/*
+
+css/feeds.css
+
+built for adam borecki's cms environment
+
+*/
+
+#feeds {
+	width:100%;
+	margin:10px 0 40px;
+}
+
+#feeds td {
+	text-align:center;
+}
+
+.feed {
+	width:200px;
+	margin:0 auto;
+	background:url(/img/bg/feedbg.png) repeat-x left bottom;
+	font-size:12px;
+	padding-bottom:20px;
+}
+
+.feed ul {margin:0;}
+
+.feed h4 {
+	background:url(/img/bg/feedh4bg.png) repeat-x center center;
+	padding:4px 0 10px;
+	color:#FFF;
+	font-weight:normal;
+	font-size:16px;
+	position:relative;
+}
+
+.feed h4 img, .feed h4 canvas { /* img or canvas, because reflex.js turns images into canvases */
+	position:absolute;
+	left:12px;
+	top:-4px;
+}
+
+.feed h4 a {
+	text-decoration:none;
+}
+
+.feed h4 a:hover {
+	text-decoration:underline;
+}
+
+.feed li {
+	list-style:circle;
+}
+
+.feed .data {
+	text-align:left;
+	list-style:none;
+}
+
+.feed .data a {
+	display:block;
+	text-decoration:none;
+	color:#575757;
+}
+
+.feed .data a:hover {
+	background:url(/img/bg/feedhoverbg.png) repeat-x left bottom #FFF;
+	color:#000;
+}
+
+.feed .message {
+	display:block;
+	padding:0px 8px 12px;
+}
+
+.feed .date {
+	display:block;
+	text-align:right;
+	border-bottom:1px solid #E0E0E0;
+	margin:1px 3px -1px;
+	padding:0 3px 0 0;
+	font-style:italic;
+	color:#848484;
+	font-size:11px;
+}

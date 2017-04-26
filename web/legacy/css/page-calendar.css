@@ -1,0 +1,44 @@
+.cr-calendar-key {
+	float: left;
+	border: 1px solid #CCC;
+	margin: 5px;
+	padding: 5px;
+	}
+
+.cr-calendar td {
+	width: 14.28%;
+	height: 100px;
+	}
+
+.cr-calendar span {
+	color: #AAA;
+	font-size: 11px;
+	}
+
+.cr-calendar div {
+	margin-top: 3px;
+	background: #EEE;
+	border: 1px solid #CCC;
+	font-size: 13px;
+	padding: 2px;
+	}
+
+div.cr-calendar-public {
+	background: #8CA2B9;
+	}
+
+div.cr-calendar-everyone {
+	background: #AEFDFF;
+	}
+
+div.cr-calendar-class_new {
+	background: #D9FC9D;
+	}
+	
+div.cr-calendar-class {
+	background: #FFB2B2;
+	}
+
+div.cr-calendar-other {
+	background: #CCCCCC;
+	}

@@ -42,7 +42,7 @@ class SuspendedController extends Controller
         Template::SetBodyHeading("Chapman Radio", "Suspended Account");
         Template::RequireLogin("DJ Resources");
 
-        Template::css("/css/formtable.css");
+        Template::css("/legacy/css/formtable.css");
 
         if (isset($_REQUEST['reactivate'])) {
             $userid = Session::getCurrentUserID();

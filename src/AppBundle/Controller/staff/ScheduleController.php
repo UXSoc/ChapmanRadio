@@ -32,12 +32,12 @@ class ScheduleController extends Controller
         Template::RequireLogin("Staff Resources", "staff");
 
         Template::shadowbox();
-        Template::css("/css/dl.css");
-        Template::js("/staff/js/schedule.js?3");
-        Template::css("/css/formtable.css");
-        Template::js("/js/jquery.watermark.min.js");
-        Template::css("/css/admin-schedule.css");
-        Template::css("/css/timeslots.css?3");
+        Template::css("/legacy/css/dl.css");
+        Template::js("/legacy/staff/js/schedule.js?3");
+        Template::css("/legacy/css/formtable.css");
+        Template::js("/legacy/js/jquery.watermark.min.js");
+        Template::css("/legacy/css/admin-schedule.css");
+        Template::css("/legacy/css/timeslots.css?3");
 
         $season = Site::ScheduleSeason(true);
         $seasonName = Season::name($season);

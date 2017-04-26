@@ -46,7 +46,7 @@ class MyEvalsController extends Controller
 
         Template::AddStaffAlert("You can see completed evals at <a href='/staff/evals'>/staff/evals</a>");
 
-        Template::css("/css/dl.css");
+        Template::css("/legacy/css/dl.css");
 
 // let's give this info to javascript
 //Template::script("if(typeof evals == 'undefined') evals = {}; eval.self = '$_SERVER[PHP_SELF]';");

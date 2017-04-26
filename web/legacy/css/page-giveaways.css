@@ -1,0 +1,34 @@
+.page-giveaways {
+	width: 800px;
+	margin: 0 auto;
+	}
+
+.page-giveaways .giveaway-box {
+	text-align: left;
+	padding-bottom: 15px;
+	margin-bottom: 15px;
+	overflow: auto;
+	border-bottom: 1px solid #CCC;
+	}
+
+.page-giveaways .giveaway-box .howtowin {
+	margin-top: 5px;
+	}
+	
+.page-giveaways .giveaway-box:nth-child(2n) {
+	text-align:right;
+	}
+
+.page-giveaways .giveaway-box:nth-child(2n+1) .giveaway-img {
+	float: left;
+	margin-right: 5px;
+	}
+
+.page-giveaways .giveaway-box:nth-child(2n) .giveaway-img {
+	float: right;
+	margin-left: 5px;
+	}
+
+.page-giveaways .giveaway-box .giveaway-show {
+	margin: 3px;
+	}

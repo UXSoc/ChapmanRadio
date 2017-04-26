@@ -1,0 +1,12 @@
+/*
+
+css/about.css
+
+by adam borecki
+
+*/
+
+.about {}
+.about .even { background:#F4F4F4; }
+.about .odd { background:#E6E6E6; }
+.about .spacer { height:75px; width:20px; }

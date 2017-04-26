@@ -25,14 +25,14 @@ class EvalController extends Controller
         Template::SetPageTitle("New Peer Evaluation");
         Template::RequireLogin("DJ Account");
 
-        Template::js("/dj/js/evals.js");
-        Template::js("/js/jquery.scrollTo.js");
-        Template::css("/dj/css/evals.css");
+        Template::js("/legacy/dj/js/evals.js");
+        Template::js("/legacy/js/jquery.scrollTo.js");
+        Template::css("/legacy/dj/css/evals.css");
 
         Template::SetBodyHeading("DJ Resources", "New Peer Evaluation");
         Template::AddBodyContent("
 	<div id='moreinfo'><div class='head'>More Info</div><div id='moreinfoInner'></div></div>
-	<div id='loading'><img src='/img/misc/loading.gif' alt='' /><br />Loading...</div>
+	<div id='loading'><img src='/legacy/img/misc/loading.gif' alt='' /><br />Loading...</div>
 	<div id='noshow' style='display:none;'>
 		<b>No current broadcast.</b><br />
 		It doesn't look like there are any shows broadcasting right now. Try back later.<br /><br />
@@ -49,9 +49,9 @@ class EvalController extends Controller
         foreach ($categories as $catType => $categorydata) {
             Template::AddBodyContent("<div id='list$catType' class='list'>");
             if ($catType == 'good')
-                Template::AddBodyContent("<div class='head' title='Well Done'><img src='/img/icons/smileys/happy48.png' alt='' /> Well<br />Done</div><div class='buttons'>");
+                Template::AddBodyContent("<div class='head' title='Well Done'><img src='/legacy/img/icons/smileys/happy48.png' alt='' /> Well<br />Done</div><div class='buttons'>");
             else
-                Template::AddBodyContent("<div class='head' title='Needs Improvement'><img src='/img/icons/smileys/sad48.png' alt='' /> Needs<br />Improvement</div><div class='buttons'>");
+                Template::AddBodyContent("<div class='head' title='Needs Improvement'><img src='/legacy/img/icons/smileys/sad48.png' alt='' /> Needs<br />Improvement</div><div class='buttons'>");
 
             foreach ($categorydata as $value => $cat) {
                 switch ($cat['type']) {
@@ -59,7 +59,7 @@ class EvalController extends Controller
                         Template::AddBodyContent("<button class='eval-button' onmouseover='evals.moreinfo(\"$catType\",\"$value\");' onclick='evals.submit(\"$catType\",\"button\",\"$value\")' id='button-$value' title=\"" . htmlentities($cat['description']) . "\"><table><tr><td style='width:75px;'><img src='$cat[icon]' alt='' /></td><td style='vertical-align:middle;'>$cat[label]</td></tr></table></button>\n");
                         break;
                     case 'comment':
-                        $icon = $catType == 'good' ? "/img/icons/chat50.png" : "/img/icons/chatbw50.png";
+                        $icon = $catType == 'good' ? "/legacy/img/icons/chat50.png" : "/legacy/img/icons/chatbw50.png";
                         Template::AddBodyContent("<div class='comment gloss'>
 					<h2>" . ($catType == 'good' ? "Compliment" : "Constructive Criticism") . "</h2>
 					<div class='submit' style='background:url($icon);'>
