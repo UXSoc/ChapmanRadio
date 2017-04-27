@@ -12,20 +12,21 @@ use ChapmanRadio\DB;
 use function ChapmanRadio\error;
 use ChapmanRadio\Log;
 use ChapmanRadio\Picker;
-use ChapmanRadio\Request;
+use ChapmanRadio\Request as ChapmanRadioRequest;
 use ChapmanRadio\Season;
 use ChapmanRadio\Template;
 use ChapmanRadio\UserModel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 class StaffController extends Controller
 {
     /**
      * @Route("/staff/staff", name="staff_staff")
      */
-    public function indexAction(ContainerInterface $container = null)
+    public function indexAction(Request $request)
     {
         define('PATH', '../');
 
@@ -39,7 +40,7 @@ class StaffController extends Controller
         Template::AddBodyContent("<div style='width:640px;margin:20px auto 10px;text-align:left;'>");
 
         if(isset($_POST['ADD_STAFF'])) {
-            $userid = Request::GetInteger('userid');
+            $userid = ChapmanRadioRequest::GetInteger('userid');
             if(!$userid) {
                 Template::AddInlineError("please pick a user from the drop down menu, then try again");
             }
@@ -49,13 +50,13 @@ class StaffController extends Controller
                     Template::AddInlineError("There's a problem with that user. Please try again");
                 }
                 else{
-                    $staffgroup = Request::Get('staffgroup');
-                    $staffposition = Request::Get('staffposition');
-                    $staffemail = Request::Get('staffemail');
+                    $staffgroup = ChapmanRadioRequest::Get('staffgroup');
+                    $staffposition = ChapmanRadioRequest::Get('staffposition');
+                    $staffemail = ChapmanRadioRequest::Get('staffemail');
                     Log::StaffEvent("User {$user->name} (#$userid) added to staff as $staffposition ($staffgroup)");
                     DB::Query("UPDATE users SET type = :type, staffgroup = :sg, staffposition = :sp, staffemail = :se WHERE userid= :uid", array(
                         ":uid" => $userid,
-                        ":type" => Request::Get('type') == 'staff' ? 'staff' : 'dj',
+                        ":type" => ChapmanRadioRequest::Get('type') == 'staff' ? 'staff' : 'dj',
                         ":sg" => $staffgroup,
                         ":se" => $staffemail,
                         ":sp" => $staffposition
@@ -66,11 +67,11 @@ class StaffController extends Controller
         }
 
         if(isset($_POST['SAVE_STAFF'])) {
-            $user = UserModel::FromId(Request::GetInteger('userid'));
+            $user = UserModel::FromId(ChapmanRadioRequest::GetInteger('userid'));
             if(!$user) error("that user doesnt exist");
-            $staffgroup = Request::Get('staffgroup');
-            $staffposition = Request::Get('staffposition');
-            $staffemail = Request::Get('staffemail');
+            $staffgroup = ChapmanRadioRequest::Get('staffgroup');
+            $staffposition = ChapmanRadioRequest::Get('staffposition');
+            $staffemail = ChapmanRadioRequest::Get('staffemail');
             Log::StaffEvent("Staff Member {$user->name} (#{$user->id}) updated to $staffposition ($staffgroup)");
             DB::Query("UPDATE users SET type='staff', staffgroup = :sg, staffposition = :sp, staffemail = :se WHERE userid = :uid", array(
                 ":uid" => $user->id,
@@ -82,7 +83,7 @@ class StaffController extends Controller
         }
 
         if(isset($_POST['DELETE_STAFF'])) {
-            $user = UserModel::FromId(Request::GetInteger('userid'));
+            $user = UserModel::FromId(ChapmanRadioRequest::GetInteger('userid'));
             if(!$user) error("that user doesnt exist");
             Log::StaffEvent("User {$user->name} (#{$user->id}) removed from staff");
             DB::Query("UPDATE users SET type='dj', staffgroup='', staffposition='', staffemail='' WHERE userid = :uid", array(":uid" => $user->id));
@@ -98,19 +99,19 @@ class StaffController extends Controller
 </tr><tr class='evenRow'>
 	<td>Group</td>
 	<td>
-		<input type='text' name='staffgroup' value=\"".Request::GetAsPrintable('staffgroup')."\" />
+		<input type='text' name='staffgroup' value=\"".ChapmanRadioRequest::GetAsPrintable('staffgroup')."\" />
 		<br /><small style='color:#757575;width:220px;'>e.g. Management, Technical, Programming, Communications, Events - case insensitive</span>
 	</td>
 </tr><tr class='oddRow'>
 	<td>Position</td>
 	<td>
-		<input type='text' name='staffposition' value=\"".Request::GetAsPrintable('staffposition')."\" />
+		<input type='text' name='staffposition' value=\"".ChapmanRadioRequest::GetAsPrintable('staffposition')."\" />
 		<br /><small style='color:#757575;width:220px;'>e.g. General Manager, Engineer, Electronic Director, etc. - case insensitive</span>
 	</td>
 </tr><tr class='evenRow'>
 	<td>Staff Email</td>
 	<td>
-		<input type='text' name='staffemail' value=\"".Request::GetAsPrintable('staffemail')."\" />
+		<input type='text' name='staffemail' value=\"".ChapmanRadioRequest::GetAsPrintable('staffemail')."\" />
 	</td>
 </tr><tr class='evenRow'>
 	<td colspan='2' style='text-align:center;'>
@@ -125,9 +126,10 @@ class StaffController extends Controller
         Template::AddBodyContent("<h3>Current Staff Members</h3></div>");
         $users = UserModel::FromResults(DB::GetAll("SELECT * FROM users WHERE type='staff' ORDER BY staffgroup,fname"));
         $count = 0;
+        $path = $request->getRequestUri();
         foreach($users as $user){
             $rowclass = ++$count % 2 == 0 ? "evenRow" : "oddRow";
-            Template::AddBodyContent("<form method='post' action='$_SERVER[PHP_SELF]'>
+            Template::AddBodyContent("<form method='post' action='$path'>
 	<table class='formtable' cellspacing='0' style='width:auto;'><tr class='$rowclass'>
 		<td><img src='{$user->img64}' alt='' /></td>
 		<td><b>{$user->name}</b><br /><a href='/staff/users?input={$user->id}' target='_blank'>&raquo; More Info</a></td>

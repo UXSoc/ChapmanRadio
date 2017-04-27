@@ -12,7 +12,7 @@ use ChapmanRadio\DB;
 use ChapmanRadio\Evals;
 use ChapmanRadio\GradeStructureModel;
 use ChapmanRadio\Log;
-use ChapmanRadio\Request;
+use ChapmanRadio\Request as ChapmanRadioRequest;
 use ChapmanRadio\Schedule;
 use ChapmanRadio\Season;
 use ChapmanRadio\Session;
@@ -23,13 +23,14 @@ use ChapmanRadio\UserModel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class AlterationController extends Controller
 {
     /**
      * @Route("/staff/alterations", name="staff_alterations")
      */
-    public function indexAction(ContainerInterface $container = null)
+    public function indexAction(Request $request)
     {
         define('PATH', '../');
 
@@ -46,7 +47,7 @@ class AlterationController extends Controller
             $from = @$_REQUEST['from'] or "";
             $to = @$_REQUEST['to'] or "";
             $showid = intval(@$_REQUEST['showid']);
-            $note = Request::Get('note');
+            $note = ChapmanRadioRequest::Get('note');
             if(!$from || !$to){
                 Template::AddBodyContent("<p style='color:#A00;'>Missing from or to date.</p>");
             }
@@ -58,7 +59,7 @@ class AlterationController extends Controller
                 }
                 else {
                     Log::StaffEvent("Created alteration record for show $showid");
-                    Schedule::alter($starttimestamp,$endtimestamp,$showid,0,$note);
+                    Schedule::alter($starttimestamp,$endtimestamp,$showid,$note);
                     Template::AddBodyContent("<p style='color:#090;'>That alteration has been created.</p>");
                 }
             }
@@ -69,7 +70,7 @@ class AlterationController extends Controller
             $to = strtotime(@$_REQUEST['to']);
             $showid = intval(@$_REQUEST['showid']);
             $userid = Session::GetCurrentUserId();
-            $note = Request::Get('note');
+            $note = ChapmanRadioRequest::Get('note');
             if($alterationid && $from && $to) {
                 Log::StaffEvent("Modified alteration record $alterationid");
                 DB::Query("UPDATE alterations SET showid='$showid', starttimestamp='$from', endtimestamp='$to',alteredby='$userid',note='$note' WHERE alterationid='$alterationid'");
@@ -81,7 +82,7 @@ class AlterationController extends Controller
         }
 
         else if(isset($_REQUEST['DeleteAlteration'])) {
-            $alterationid = Request::GetInteger('alterationid');
+            $alterationid = ChapmanRadioRequest::GetInteger('alterationid');
             if(!$alterationid) {
                 Template::AddBodyContent("<p style='color:#A00'>Missing alteration id # (this is probably a programming bug)</p>");
             }
@@ -106,8 +107,9 @@ class AlterationController extends Controller
 
         Template::AddBodyContent("<div style='width:840px;margin:10px auto;text-align:left;' class='alterations'>");
 
+        $path = $request->getRequestUri();
         Template::AddBodyContent("<h3>New Alteration</h3>
-<form method='post' action='$_SERVER[PHP_SELF]'>
+<form method='post' action='$path'>
 <table class='formtable' style='margin:10px auto;' cellspacing='0'>
 	<tr class='oddRow'><td style='text-align:center;' colspan='2'>New Alteration</td></tr>
 	<tr class='evenRow'><td>From</td><td><input class='time' type='text' name='from' value='".date("g:00a n/j/y T")."' ></td></tr>
@@ -118,18 +120,18 @@ class AlterationController extends Controller
 </table></form>");
 
 
-        $limitview = Request::GetInteger('limitview', 60);
+        $limitview = ChapmanRadioRequest::GetInteger('limitview', 60);
         if($limitview < 1) $limitview = 1;
         if($limitview > 160) $limitview = 160;
 
-        $fromview = strtotime(Request::Get('fromview'));
+        $fromview = strtotime(ChapmanRadioRequest::Get('fromview'));
         if(!$fromview) $fromview = strtotime("-1 month");
 
-        $toview = strtotime(Request::Get('toview'));
+        $toview = strtotime(ChapmanRadioRequest::Get('toview'));
         if(!$toview) $toview = strtotime("+1 month");
 
         Template::AddBodyContent("<h3>Current Alterations</h3>
-<form method='get' action='$_SERVER[PHP_SELF]'>
+<form method='get' action='$path'>
 <p style='margin-top:8px;'>Viewing up to <input type='text' name='limitview' value='60' style='width:20px;' maxlength='3' /> alterations from <input type='text' style='width:93px;' name='fromview' value='".date("n/j/y",$fromview)."' /> to <input type='text' name='toview' style='width:93px;' value='".date("n/j/y",$toview)."' /> <input type='submit' value=' &gt; ' />
 </form><table class='formtable' style='margin:10px auto;width:750px;' cellspacing='0'>");
 
@@ -178,12 +180,12 @@ class AlterationController extends Controller
 		</div>
 		<br style='clear:both;' />
 	</td></tr>
-	<form method='post' action='$_SERVER[PHP_SELF]'>
+	<form method='post' action='$path'>
 		<tr class='$rowclass alterationRow' style='display:none;' id='alterationRow$row[alterationid]'>
 		<td><input type='text' name='from' class='time' id='from$alterationid' value='$from' />".($row['alteredby']==0?"Autocreated":"")."</span>".($createdby ? "<br />
 			Altered by: ".$createdby->name : "")."</td>
 		<td><input type='text' class='time' name='to' value='$to' id='to$alterationid' /><br /><textarea name='note' style='height:39px;width:220px;'>$row[note]</textarea></td>
-		<td>".showPicker($alterationid, $shows, $showid)."
+		<td>".self::showPicker($alterationid, $shows, $showid)."
 			<input type='submit' name='UpdateAlteration' value=' &gt; Update &gt; ' style='width:auto;' />
 			<input type='hidden' name='alterationid' value='$row[alterationid]' />
 			<button type='button' onclick='if(confirm(\"Are you sure you want to delete this alteration? This process is irreversible.\"))postform({DeleteAlteration:true,alterationid:$row[alterationid]})'> x Delete x</button>

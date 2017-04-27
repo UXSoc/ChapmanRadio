@@ -9,18 +9,19 @@ namespace AppBundle\Controller\staff;
  */
 
 use ChapmanRadio\DB;
-use ChapmanRadio\Request;
+use ChapmanRadio\Request as ChapmanRadioRequest;
 use ChapmanRadio\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 class EventsController extends  Controller
 {
     /**
      * @Route("/staff/events", name="staff_events")
      */
-    public function indexAction(ContainerInterface $container = null)
+    public function indexAction(Request $request)
     {
         define('PATH', '../');
 
@@ -49,8 +50,8 @@ class EventsController extends  Controller
 	};");
 
         if(isset($_POST['NewEvent'])) {
-            $title = Request::Get('title');
-            $timestamp = strtotime(Request::Get('when'));
+            $title = ChapmanRadioRequest::Get('title');
+            $timestamp = strtotime(ChapmanRadioRequest::Get('when'));
             if(!$title) {
                 Template::AddInlineError("Please enter a title for your new event");
             }
@@ -66,23 +67,23 @@ class EventsController extends  Controller
         Template::AddBodyContent("<h2>New Event</h2>
 <form method='post'>
 <table class='formtable' cellspacing='0' style='margin:10px auto;'>
-<tr class='oddRow'><td>Title</td><td><input type='text' name='title' value=\"".Request::Get('title')."\" /></td></tr>
-<tr class='evenRow'><td>When</td><td><input type='text' name='when' value=\"".Request::Get('when')."\" /></td></tr>
+<tr class='oddRow'><td>Title</td><td><input type='text' name='title' value=\"".ChapmanRadioRequest::Get('title')."\" /></td></tr>
+<tr class='evenRow'><td>When</td><td><input type='text' name='when' value=\"".ChapmanRadioRequest::Get('when')."\" /></td></tr>
 <tr class='oddRow'><td colspan='2' style='text-align:center;'><input type='submit' name='NewEvent' value=' New Event ' /><br /><span style='color:#757575;font-size:11px;'>You can edit more details after you create the event.<br />It won't be visible on the website until you activate it.</span></td></tr>
 </table>
 </form>");
 
         if(isset($_POST['SaveEvent'])) {
-            $eventid = Request::GetInteger('eventid');
+            $eventid = ChapmanRadioRequest::GetInteger('eventid');
             if(!$eventid) Template::Error("Internal Programming Error: Missing eventid post variable in SaveEvent");
 
             $updates = array();
-            $updates['title'] = Request::Get('title');
-            $updates['location'] = Request::Get('location');
-            $updates['link'] = Request::GetUrl('link');
-            $updates['description'] = Request::Get('description');
-            $updates['active'] = Request::GetBool('active');
-            $updates['primaryeventpicid'] = Request::GetInteger('primaryeventpicid');
+            $updates['title'] = ChapmanRadioRequest::Get('title');
+            $updates['location'] = ChapmanRadioRequest::Get('location');
+            $updates['link'] = ChapmanRadioRequest::GetUrl('link');
+            $updates['description'] = ChapmanRadioRequest::Get('description');
+            $updates['active'] = ChapmanRadioRequest::GetBool('active');
+            $updates['primaryeventpicid'] = ChapmanRadioRequest::GetInteger('primaryeventpicid');
 
             $timestamp = strtotime($_REQUEST['when']);
             if(!$timestamp || $timestamp == -1) Template::AddInlineError("The time you entered was not recognized and was not saved.");
@@ -156,13 +157,14 @@ class EventsController extends  Controller
         Template::AddBodyContent("<h2>Events</h2>");
         $result = DB::GetAll("SELECT * FROM events ORDER BY timestamp DESC");
 
+        $path = $request->getRequestUri();
         if(empty($result)) Template::AddBodyContent("<p>There are no events to display.</p>");
         else {
             Template::AddBodyContent("<div class='events'>");
             foreach($result as $event){
                 $eventid = $event['eventid'];
                 Template::AddBodyContent("<div class='event'>");
-                Template::AddBodyContent("<form method='post' action='$_SERVER[PHP_SELF]' enctype='multipart/form-data'>");
+                Template::AddBodyContent("<form method='post' action='$path' enctype='multipart/form-data'>");
                 $month = date("M.", $event['timestamp']);
                 $day = date("j", $event['timestamp']);
                 Template::AddBodyContent("<div class='calendaricon'><span class='month'>$month</span><span class='day'>$day</span></div>");

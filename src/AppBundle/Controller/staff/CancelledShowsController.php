@@ -8,14 +8,15 @@ use ChapmanRadio\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 class CancelledShowsController extends Controller
 {
 
     /**
-     * @Route("/staff/cancelled", name="staff_cancelled")
+     * @Route("/staff/cancelledshows", name="staff_cancelledshows")
      */
-    public function indexAction(ContainerInterface $container = null)
+    public function indexAction(Request $request)
     {
         define('PATH', '../');
 
@@ -28,7 +29,9 @@ class CancelledShowsController extends Controller
 
         Template::css("/legacy/css/formtable.css");
 
-        Template::AddBodyContent("<form method='get' action='$_SERVER[PHP_SELF]' id='seasonpicker'><div>Cancelled shows for: <select onchange='$(\"#seasonpicker\").submit();' name='season'>" . Season::picker(2011, false, $season, true) . "<input type='submit' value='&gt;' /></div></form>");
+
+        $path = $request->getRequestUri();
+        Template::AddBodyContent("<form method='get' action='$path' id='seasonpicker'><div>Cancelled shows for: <select onchange='$(\"#seasonpicker\").submit();' name='season'>" . Season::picker(2011, false, $season, true) . "<input type='submit' value='&gt;' /></div></form>");
 
         $shows = ShowModel::FromResults(DB::GetAll("SELECT * FROM shows WHERE status='cancelled' AND seasons LIKE '%$season%'"));
         if (empty($shows)) {

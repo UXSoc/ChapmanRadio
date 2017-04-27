@@ -12,7 +12,7 @@ use ChapmanRadio\DB;
 use function ChapmanRadio\error;
 use ChapmanRadio\Evals;
 use ChapmanRadio\GradeStructureModel;
-use ChapmanRadio\Request;
+use ChapmanRadio\Request as ChapmanRequest;
 use ChapmanRadio\Schedule;
 use ChapmanRadio\Season;
 use ChapmanRadio\Session;
@@ -22,6 +22,7 @@ use ChapmanRadio\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class StatsController extends Controller
 {
@@ -29,13 +30,13 @@ class StatsController extends Controller
     /**
      * @Route("/dj/stats", name="dj_stats")
      */
-    public function indexAction(ContainerInterface $container = null)
+    public function indexAction(Request $request)
     {
         define('PATH', '../');
 
 
         Template::SetPageTitle("Stats - DJ Resources");
-        Template::RequireLogin("/dj/stats","Listenership Statistics");
+        Template::RequireLogin("/dj/stats", "Listenership Statistics");
         Template::SetBodyHeading("DJ Resources", "Listenership Statistics");
 
         Template::css("/legacy/css/dl.css");
@@ -49,7 +50,7 @@ class StatsController extends Controller
 // we'll use this string in a lot of queries
         $fields = "chapmanradio+chapmanradiolowquality";
 // process JSON output?
-        if (Request::Get('generate') == "jsonstats") Stats::generateJSON();
+        if (ChapmanRequest::Get('generate') == "jsonstats") Stats::generateJSON();
 // what season are we in?
         $season = Season::current();
         $seasonName = Season::name($season);
@@ -123,6 +124,8 @@ class StatsController extends Controller
 	.bar .label {display:none;position:absolute;top:-20px;right:-20px;white-space:nowrap;font-weight:bold;text-shadow:1px 1px 1px #FFF;color:#000;}
 	.bar:hover .label {display:block;}
 	");
+        $path = $request->getRequestUri();
+
         Template::script("
 	if(typeof stats == 'undefined') stats = {};
 	stats.prevMonth2 = '" . date("Y-m", strtotime("-2 months")) . "';
@@ -135,7 +138,7 @@ class StatsController extends Controller
 	stats.curDay = '" . date("Y-m-d") . "';
 	stats.nextDay = '" . date("Y-m-d", strtotime("+1 day")) . "';
 	stats.nextDay2 = '" . date("Y-m-d", strtotime("+2 days")) . "';
-	stats.self = '$_SERVER[PHP_SELF]';
+	stats.self = '$path';
 	");
 // view by show
 

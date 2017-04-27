@@ -26,7 +26,7 @@ class EvalsController extends Controller
 {
 
     /**
-     * @Route("/dj/evals", name="dj_eval")
+     * @Route("/dj/evals", name="dj_evals")
      */
     public function indexAction(ContainerInterface $container = null)
     {

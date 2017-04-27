@@ -11,7 +11,7 @@ namespace AppBundle\Controller\dj;
 
 use ChapmanRadio\DB;
 use ChapmanRadio\Evals;
-use ChapmanRadio\Request;
+use ChapmanRadio\Request as ChapmanRequest;
 use ChapmanRadio\Schedule;
 use ChapmanRadio\Session;
 use ChapmanRadio\Site;
@@ -20,6 +20,7 @@ use ChapmanRadio\UserModel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class GenreController extends Controller
 {
@@ -27,7 +28,7 @@ class GenreController extends Controller
     /**
      * @Route("/dj/genre", name="dj_genre")
      */
-    public function indexAction(ContainerInterface $container = null)
+    public function indexAction(Request $request)
     {
         define('PATH', '../');
 
@@ -57,7 +58,7 @@ class GenreController extends Controller
 
 // what should the default genre be?
 
-        $genre = Request::Get('genre', '');
+        $genre = ChapmanRequest::Get('genre', '');
 
         if ($genre && !in_array($genre, $genres)) $genre = "";
 
@@ -79,7 +80,8 @@ class GenreController extends Controller
 
 // let's output the navigation
 
-        Template::AddBodyContent("<form method='get' action='$_SERVER[PHP_SELF]' id='changegenre'><div class='address'><a>Genre:</a> <span style='position:relative;top:2px;'><select name='genre' onchange='$(\"#changegenre\").submit();'><option value=''> - Pick a Genre - </option>");
+        $path = $request->getRequestUri();
+        Template::AddBodyContent("<form method='get' action='$path ' id='changegenre'><div class='address  '><a>Genre:</a> <span style='position:relative;top:2px;'><select name='genre' onchange='$(\"#changegenre\").submit();'><option value=''> - Pick a Genre - </option>");
 
         foreach ($genres as $g)
             Template::AddBodyContent("<option value='$g' " . ($g == $genre ? "selected='selected'" : "") . ">$g</option>");
@@ -113,7 +115,7 @@ class GenreController extends Controller
 
 // finish up
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize("</div>"));
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($requst,"</div>"));
 
     }
 }

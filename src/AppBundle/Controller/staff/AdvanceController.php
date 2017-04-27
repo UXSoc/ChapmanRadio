@@ -14,7 +14,7 @@ use ChapmanRadio\GradeStructureModel;
 use ChapmanRadio\Icecast;
 use ChapmanRadio\Notify;
 use ChapmanRadio\Picker;
-use ChapmanRadio\Request;
+use ChapmanRadio\Request as ChapmanRadioRequest;
 use ChapmanRadio\Season;
 use ChapmanRadio\Session;
 use ChapmanRadio\Site;
@@ -23,6 +23,7 @@ use ChapmanRadio\Util;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class AdvanceController extends Controller
 {
@@ -30,7 +31,7 @@ class AdvanceController extends Controller
     /**
      * @Route("/staff/advance", name="staff_advance")
      */
-    public function indexAction(ContainerInterface $container = null)
+    public function indexAction(Request $request)
     {
         define('PATH', '../');
 
@@ -48,15 +49,15 @@ class AdvanceController extends Controller
 
         if (isset($_POST['SAVE_GLOBAL_SETTINGS'])) {
 
-            $broadcasting = Request::GetBool('global_broadcasting');
+            $broadcasting = ChapmanRadioRequest::GetBool('global_broadcasting');
 
-            $currentseason = Request::Get('global_currentseason', Site::CurrentSeason());
+            $currentseason = ChapmanRadioRequest::Get('global_currentseason', Site::CurrentSeason());
 
-            $scheduleseason = Request::Get('global_scheduleseason', Site::ScheduleSeason());
+            $scheduleseason = ChapmanRadioRequest::Get('global_scheduleseason', Site::ScheduleSeason());
 
-            $applications = Request::GetBool('global_applications');
+            $applications = ChapmanRadioRequest::GetBool('global_applications');
 
-            $applicationsseason = Request::Get('global_applicationseason', Site::ApplicationSeason());
+            $applicationsseason = ChapmanRadioRequest::Get('global_applicationseason', Site::ApplicationSeason());
 
             $applicationtimestamp = strtotime(@$_REQUEST['applicationsdeadline']);
 
@@ -82,7 +83,7 @@ class AdvanceController extends Controller
                 Site::Update('applicationsdeadline', $applicationsdeadline);
 
 
-                $icecastserver = Request::Get('icecast_server');
+                $icecastserver = ChapmanRadioRequest::Get('icecast_server');
 
                 if ($icecastserver) {
 
@@ -95,9 +96,9 @@ class AdvanceController extends Controller
                 }
 
 
-                Site::Update('icecastusername', Request::Get('icecast_username'));
+                Site::Update('icecastusername', ChapmanRadioRequest::Get('icecast_username'));
 
-                Site::Update('icecastpassword', Request::Get('icecast_password'));
+                Site::Update('icecastpassword', ChapmanRadioRequest::Get('icecast_password'));
 
                 Site::Init();
 
@@ -105,7 +106,7 @@ class AdvanceController extends Controller
                 Template::AddInlineSuccess("Your changes have been saved.");
             }
         } else if (isset($_POST['EMAIL_CODE'])) {
-            $userid = Request::GetInteger('userid');
+            $userid = ChapmanRadioRequest::GetInteger('userid');
             if (!$userid) Template::AddInlineError("Missing or Invalid User ID #.<br />Please pick a user from the drop down menu then try again");
             else {
                 $user = DB::GetFirst("SELECT fname,name,email FROM users WHERE userid='$userid'");
@@ -136,6 +137,7 @@ class AdvanceController extends Controller
         }
 
 
+        $path = $request->getRequestUri();
         Template::AddBodyContent("
 <form class='table' method='post' style='text-align:left'>
 
@@ -246,7 +248,7 @@ class AdvanceController extends Controller
 </form>
 
 
-<form class='table' method='post' action='$_SERVER[PHP_SELF]'>
+<form class='table' method='post' action='$path'>
 	<div class='center header'>
 		<span>Override Deadline Code</span>
 	</div>

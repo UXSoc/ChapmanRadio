@@ -11,15 +11,17 @@ namespace AppBundle\Controller\staff;
 
 use ChapmanRadio\DB;
 use ChapmanRadio\Log;
-use ChapmanRadio\Request;
+use ChapmanRadio\Request as ChapmanRadioRequest;
 use ChapmanRadio\Schedule;
 use ChapmanRadio\Season;
+use ChapmanRadio\ShowModel;
 use ChapmanRadio\Site;
 use ChapmanRadio\Template;
 use ChapmanRadio\Util;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 class ScheduleController extends Controller
 {
@@ -27,7 +29,7 @@ class ScheduleController extends Controller
     /**
      * @Route("/staff/schedule", name="staff_schedule")
      */
-    public function indexAction(ContainerInterface $container = null)
+    public function indexAction(Request $request)
     {
         define('PATH', '../');
 
@@ -50,18 +52,18 @@ class ScheduleController extends Controller
         $endhour = 28;
 
 // process AJAX
-        if (Request::Get('action') == 'saveSchedulePlacement') {
+        if (ChapmanRadioRequest::Get('action') == 'saveSchedulePlacement') {
 
             // what show to place
-            $showid = Request::GetInteger('showid');
+            $showid = ChapmanRadioRequest::GetInteger('showid');
 
             // when
-            $hour = Request::GetInteger('hour');
-            $day = Request::Get('day');
-            $season = Request::Get('season');
+            $hour = ChapmanRadioRequest::GetInteger('hour');
+            $day = ChapmanRadioRequest::Get('day');
+            $season = ChapmanRadioRequest::Get('season');
 
             // what week (1 = week 1, 2 = week 2, 3 = both)
-            $biweekly = Request::Get('biweekly');
+            $biweekly = ChapmanRadioRequest::Get('biweekly');
 
             // get current slot
             $sched = DB::GetFirst("SELECT `$day` FROM schedule WHERE hour='$hour' AND season='$season'");
@@ -92,8 +94,10 @@ class ScheduleController extends Controller
             die(json_encode(array("success" => true, "status" => $show['status'], "showtime" => $show['showtime'], "showid" => $showid)));
         }
 
+
+        $path = $request->getRequestUri();
         Template::AddBodyContent("<p>It is currently <b>cycle " . Schedule::cycle() . "</b> in a week of " . Season::name(Site::ScheduleSeason()) . ".</p>
-	<form method='get' action='$_SERVER[PHP_SELF]'>
+	<form method='get' action='$path    '>
 	<p style='margin:20px auto;'>Edit the schedule for " . Season::picker(2011, true, $season) . "<input type='submit' value=' &gt; ' /></p>
 	</form>");
 
@@ -201,7 +205,9 @@ class ScheduleController extends Controller
         Template::script($script);
 
 // give javascript season info
-        Template::script("s.season='$season';s.seasonName='$seasonName';s.self='$_SERVER[PHP_SELF]'");
+
+        $path = $request->getRequestUri();
+        Template::script("s.season='$season';s.seasonName='$seasonName';s.self='$path'");
 
 // selected panel
         Template::AddBodyContent("

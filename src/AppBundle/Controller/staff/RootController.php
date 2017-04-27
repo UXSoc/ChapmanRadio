@@ -16,6 +16,7 @@ use ChapmanRadio\UserModel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 class RootController extends Controller
 {
@@ -23,7 +24,7 @@ class RootController extends Controller
     /**
      * @Route("/staff/root", name="staff_root")
      */
-    public function indexAction(ContainerInterface $container = null)
+    public function indexAction(Request $request)
     {
         define('PATH', '../');
 
@@ -56,8 +57,9 @@ class RootController extends Controller
                 }
             }
         }
+        $path = $request->getRequestUri();
         Template::AddBodyContent("
-<form class='table' method='post' action='$_SERVER[PHP_SELF]'>
+<form class='table' method='post' action='$path'>
 	<div class='center'>Simulate Login</div>
 	<div>
 		Login as User #

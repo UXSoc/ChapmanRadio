@@ -23,7 +23,7 @@ class NewsController extends Controller
 {
 
     /**
-     * @Route("/dj/news", name="news_eval")
+     * @Route("/dj/news", name="dj_news")
      */
     public function indexAction(ContainerInterface $container = null)
     {

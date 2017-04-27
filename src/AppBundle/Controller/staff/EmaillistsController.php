@@ -2,18 +2,19 @@
 namespace AppBundle\Controller\staff;
 
 use ChapmanRadio\DB;
-use ChapmanRadio\Request;
+use ChapmanRadio\Request as ChapmanRadioRequest;
 use ChapmanRadio\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 class EmaillistsController extends Controller
 {
     /**
      * @Route("/staff/emaillists", name="staff_emaillists")
      */
-    public function indexAction(ContainerInterface $container = null)
+    public function indexAction(Request $request)
     {
         define('PATH', '../');
 
@@ -26,8 +27,8 @@ class EmaillistsController extends Controller
         Template::AddBodyContent("<div class='leftcontent'>");
 
         if (isset($_POST['NewEmailList'])) {
-            $listname = Request::Get('listname');
-            $email = Request::Get('email');
+            $listname = ChapmanRadioRequest::Get('listname');
+            $email = ChapmanRadioRequest::Get('email');
 
             if (!preg_match("/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}\$/", $email))
                 Template::AddInlineError("Thats a not valid email address");
@@ -55,7 +56,9 @@ class EmaillistsController extends Controller
         }
 
 // new email
-        Template::AddBodyContent("<h2>Add Email to List</h2><form method='post' action='$_SERVER[PHP_SELF]'><table class='formtable' cellspacing='0'><tr class='oddRow'><td>List</td><td><select name='listname'>$list_options</select></td></tr><tr class='evenRow'><td>Email</td><td><input type='text' name='email' value='' /></td></tr><tr class='oddRow'><td style='text-align:center;' colspan='2'><input type='submit' name='NewEmailList' value=' Create ' /></td></tr></table></form>");
+
+        $path = $request->getRequestUri();
+        Template::AddBodyContent("<h2>Add Email to List</h2><form method='post' action='$path'><table class='formtable' cellspacing='0'><tr class='oddRow'><td>List</td><td><select name='listname'>$list_options</select></td></tr><tr class='evenRow'><td>Email</td><td><input type='text' name='email' value='' /></td></tr><tr class='oddRow'><td style='text-align:center;' colspan='2'><input type='submit' name='NewEmailList' value=' Create ' /></td></tr></table></form>");
 
 
         Template::AddBodyContent("<h2>Email Lists</h2>");

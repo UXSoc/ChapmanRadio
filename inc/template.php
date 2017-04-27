@@ -41,7 +41,7 @@ class Template
 
         if (!file_exists(PATH . Template::$template)) Template::$template = "inc/templates/default.template.html";
 
-        if (!self::$bootstrapping) self::$prehead[] = "<link rel='stylesheet' href='legacy/css/prebootstrap.css' type='text/css' />\n";
+        if (!self::$bootstrapping) self::$prehead[] = "<link rel='stylesheet' href='/legacy/css/prebootstrap.css' type='text/css' />\n";
         else self::$bodyclass .= "bootstrapping";
 
         /* get the proper template file*/
@@ -636,8 +636,8 @@ class Template
 
     public static function shadowbox($options = "")
     {
-        Template::css("/plugins/shadowbox/shadowbox.css");
-        Template::js("/plugins/shadowbox/shadowbox.js");
+        Template::css("/legacy/plugins/shadowbox/shadowbox.css");
+        Template::js("/legacy/plugins/shadowbox/shadowbox.js");
         if ($options) $options = "{" . $options . "}";
         Template::script("Shadowbox.init($options);");
     }

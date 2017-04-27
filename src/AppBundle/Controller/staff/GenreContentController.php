@@ -10,7 +10,7 @@ namespace AppBundle\Controller\staff;
 
 use ChapmanRadio\DB;
 use function ChapmanRadio\error;
-use ChapmanRadio\Request;
+use ChapmanRadio\Request as ChapmanradioRequest;
 use ChapmanRadio\Schedule;
 use ChapmanRadio\Session;
 use ChapmanRadio\Site;
@@ -18,12 +18,13 @@ use ChapmanRadio\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 class GenreContentController extends  Controller{
     /**
      * @Route("/staff/genrecontent", name="staff_genrecontent")
      */
-    public function indexAction(ContainerInterface $container = null)
+    public function indexAction(Request $request)
     {
         define('PATH', '../');
 
@@ -44,10 +45,11 @@ class GenreContentController extends  Controller{
         foreach($genres as $g) $genredata[$g] = 0;
         foreach($data as $row) $genredata[$row['genre']] = $row['total'];
 
+        $path = $request->getRequestUri();
         if(!isset($_REQUEST['genre'])) {
             Template::AddBodyContent("<div style='width:600px;margin:10px auto;text-align:left;'>");
             Template::AddBodyContent("<h3>Pick a Genre</h3><p>For which genre would you like to edit the content?</p>
-	<form method='get' action='$_SERVER[PHP_SELF]'><table class='formtable' cellspacing='0'>
+	<form method='get' action='$path'><table class='formtable' cellspacing='0'>
 		<tr class='oddRow'><td style='text-align:center'>Pick a Genre</td></tr>
 		<tr class='evenRow'><td>");
             foreach($genres as $genre) {
@@ -67,11 +69,11 @@ class GenreContentController extends  Controller{
             Template::AddBodyContent("</div>");
             Template::Finalize();
         }
-        else if(!in_array(Request::Get('genre'), $genres)) {
+        else if(!in_array(ChapmanradioRequest::Get('genre'), $genres)) {
             error("You've entered an invalid genre. please go back and try again");
         }
 
-        $genre = Request::Get('genre');
+        $genre = ChapmanradioRequest::Get('genre');
 
 // okay, now we have a trimmed $genre
         Template::SetPageTitle("$genre on Chapman Radio");
@@ -79,7 +81,7 @@ class GenreContentController extends  Controller{
 
 // save their data
         if(isset($_POST['SAVE_CONTENT'])) {
-            $content = Request::Get('genrecontent');
+            $content = ChapmanradioRequest::Get('genrecontent');
             $staffid = Session::GetCurrentUserId();
             $lastmodified = date("Y-m-d H:i:s");
             DB::Query("UPDATE genrecontent SET content = :content, staffid='$staffid', lastmodified='$lastmodified' WHERE genre='$genre'", array(":content" => $content));
@@ -96,12 +98,13 @@ class GenreContentController extends  Controller{
         if(!$genrecontent['content']) $genrecontent['content'] = "<p>Hi there, $genre DJs!</p><p>Let me explain why <b>$genre</b> is <i>awesome!</i></p><p>I'll keep this updated with new $genre releases.</p><p><b>NOTE:</b> You can use this editor to stylize your words, add links, and even upload images.</p>";
 
 
-        Template::AddBodyContent("<form method='post' action='$_SERVER[PHP_SELF]'>");
+        $path = $request->getRequestUri();
+        Template::AddBodyContent("<form method='post' action='$path'>");
         Template::AddBodyContent("<div style='width:750px;margin:10px auto;text-align:left;'>");
         Template::AddBodyContent("<h3 style='font-weight:normal;'>Editing <b>$genre</b> Content</h3><p>You are now editing the content for DJs with $genre shows.</p>");
 
 // get xinha
-        Template::JS("/plugins/tinymce/tinymce.min.js");
+        Template::JS("/legacy/plugins/tinymce/tinymce.min.js");
         Template::Script("tinymce.init({ selector: '.tinymce', plugins: [ 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code insertdatetime media table contextmenu paste textcolor'], toolbar: 'insertfile undo redo | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image' });");
 
         Template::AddBodyContent("<div style='text-align:center;margin:10px auto;'><textarea class='tinymce' name='genrecontent' rows='26' cols='75' style='margin:auto;'>$genrecontent[content]</textarea></div>");

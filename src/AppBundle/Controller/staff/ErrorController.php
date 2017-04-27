@@ -18,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class ErrorController{
 
     /**
-     * @Route("/staff/error", name="staff_error")
+     * @Route("/staff/errors", name="staff_errors")
      */
     public function indexAction(ContainerInterface $container = null)
     {

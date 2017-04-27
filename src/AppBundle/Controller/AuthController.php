@@ -172,7 +172,7 @@ class AuthController extends Controller
             else self::RenderReActivate($user,$seasonName);
         } else {
             if ($user != null) self::RenderActivate($user,$seasonName);
-            else self::RenderUnknown();
+            else self::RenderUnknown($request);
         }
 
         Template::AddBodyContent("</form>");
@@ -201,13 +201,15 @@ class AuthController extends Controller
     }
 
 // For requests with no user and no code, ask for a code or login
-    function RenderUnknown()
+    function RenderUnknown(Request $request)
     {
         global $seasonName;
+
+        $path = $request->getRequestUri();
         Template::AddBodyContent("
 		<div style='text-align: left; width: 600px; margin: 10px auto; padding: 10px; border: 1px solid #CCC;'>
 		<h3 style='margin-bottom:10px;'>New to Chapman Radio?</h3>
-		<form method='get' action='$_SERVER[PHP_SELF]'>");
+		<form method='get' action='$path'>");
         if (isset($_REQUEST['code'])) Template::AddBodyContent("<p style='color:red'>Invalid code. Please try again:</p>");
         Template::AddBodyContent("<p>Enter your activation code: <input name='code' value='' /> <input type='submit' value='Activate' />
 		</form>

@@ -12,7 +12,7 @@ namespace AppBundle\Controller\dj;
 use ChapmanRadio\DB;
 use ChapmanRadio\Evals;
 use ChapmanRadio\GradeStructureModel;
-use ChapmanRadio\Request;
+use ChapmanRadio\Request as ChapmanRadioRequest;
 use ChapmanRadio\Season;
 use ChapmanRadio\Session;
 use ChapmanRadio\Site;
@@ -20,6 +20,7 @@ use ChapmanRadio\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class QuizController extends Controller
 {
@@ -27,7 +28,7 @@ class QuizController extends Controller
     /**
      * @Route("/dj/quiz", name="dj_quiz")
      */
-    public function indexAction(ContainerInterface $container = null)
+    public function indexAction(Request $request)
     {
         define('PATH', '../');
 
@@ -54,7 +55,7 @@ class QuizController extends Controller
         if($passed) Template::Error("You have already passed the quiz for this semester.");
 
         $action = "";
-        $quizid = Request::GetInteger('quizid', Request::GetInteger('quiz', Request::GetIntegerFrom($_SESSION, 'quizid')));
+        $quizid = ChapmanRadioRequest::GetInteger('quizid', ChapmanRadioRequest::GetInteger('quiz', ChapmanRadioRequest::GetIntegerFrom($_SESSION, 'quizid')));
         if(!$quizid && !$passed) $action = "newquiz";
         if($quizid) $action = "continuequiz";
 
@@ -136,8 +137,9 @@ class QuizController extends Controller
                     Template::error("Sorry, but the quiz you are looking for could not be found.");
                 }
 
+                $path = $request->getRequestUri();
                 Template::AddBodyContent("<div class='leftcontent' style='margin:20px auto;'>
-		<form method='post' action='$_SERVER[PHP_SELF]' id='quizform'><table><tr><td>
+		<form method='post' action='$path' id='quizform'><table><tr><td>
 		<input type='hidden' name='quizid' value='$quizid' />
 		<input type='hidden' name='ProcessQuiz' value='1' />
 		
@@ -153,7 +155,7 @@ class QuizController extends Controller
                 foreach($categories as $qNum => $cat) {
                     $qNum++;
                     $catid = "question$qNum";
-                    $active = (Request::Get('view') == $catid) ? true : false;
+                    $active = (ChapmanRadioRequest::Get('view') == $catid) ? true : false;
 
                     $q = json_decode($quiz["q$qNum"],true);
                     $quizquestion = @$quizquestions[$q['quizquestionid']];
@@ -170,7 +172,7 @@ class QuizController extends Controller
                         }
                         $subcontent .= "<div style='width:400px;margin:10px auto;' class='gloss'>";
                         $responses = explode("[%,%]", $quizquestion['responses']);
-                        shuffle_with_keys($responses);
+                        self::shuffle_with_keys($responses);
                         //$subcontent .= "<pre>".print_r($responses,true)."</pre>";
                         foreach($responses as $responseNum => $response) {
                             $id = "q$qNum-response$responseNum";

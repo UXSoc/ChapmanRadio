@@ -8,13 +8,13 @@ class Uploader
     public static function Render($identifier, $cropelement = NULL, $extra = '', $aspect = 1.0)
     {
         if (!isset($_REQUEST['nocropper'])) {
-            Template::IncludeJs('/plugins/uploader/js/vendor/jquery.ui.widget.js');
-            Template::IncludeJs('/plugins/uploader/js/jquery.iframe-transport.js');
-            Template::IncludeJs('/plugins/uploader/js/jquery.fileupload.js');
-            Template::IncludeJs('/plugins/jcrop/jquery.jcrop.min.js');
-            Template::IncludeCss('/plugins/jcrop/jquery.jcrop.min.css');
-            Template::IncludeJs('/js/uploader.js');
-            Template::IncludeCss('/css/uploader.css');
+            Template::IncludeJs('/legacy/plugins/uploader/js/vendor/jquery.ui.widget.js');
+            Template::IncludeJs('/legacy/plugins/uploader/js/jquery.iframe-transport.js');
+            Template::IncludeJs('/legacy/plugins/uploader/js/jquery.fileupload.js');
+            Template::IncludeJs('/legacy/plugins/jcrop/jquery.jcrop.min.js');
+            Template::IncludeCss('/legacy/plugins/jcrop/jquery.jcrop.min.css');
+            Template::IncludeJs('/legacy/js/uploader.js');
+            Template::IncludeCss('/legacy/css/uploader.css');
         }
         return "
 			<form method='post' action='$_SERVER[REQUEST_URI]' enctype='multipart/form-data' data-cropper='$cropelement' id='cr_uploader_" . $identifier . "_form' class='cr_uploader'>

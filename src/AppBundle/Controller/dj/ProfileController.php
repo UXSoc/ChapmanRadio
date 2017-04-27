@@ -13,7 +13,6 @@ use ChapmanRadio\DB;
 use ChapmanRadio\Evals;
 use ChapmanRadio\GradeStructureModel;
 use ChapmanRadio\Imaging;
-use ChapmanRadio\Request;
 use ChapmanRadio\Season;
 use ChapmanRadio\Session;
 use ChapmanRadio\Template;
@@ -24,6 +23,7 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class ProfileController extends Controller
 {
@@ -31,7 +31,7 @@ class ProfileController extends Controller
     /**
      * @Route("/dj/profile", name="dj_profile")
      */
-    public function indexAction(ContainerInterface $container = null)
+    public function indexAction(Request $request)
     {
         define('PATH', '../');
         require_once PATH ."inc/facebook.php";
@@ -147,10 +147,12 @@ class ProfileController extends Controller
                     Template::AddBodyContent("<tr class='$rowclass'><td>$eng</td><td><input name='$prefix$field' value=\"".htmlentities($user->$field)."\" /></tr>");
             }
         }
+
+        $path = $request->getRequestUri();
         Template::AddBodyContent("</table></form>
 
 <h3>My Password</h3>
-<form method='post' action='$_SERVER[PHP_SELF]'>
+<form method='post' action='$path'>
 <table cellspacing='0' class='formtable'>
 	<tr class='oddRow'><td style='text-align:center;' colspan='2'>Change Password</td></tr>
 	<tr class='evenRow'><td>Old Password</td><td><input type='password' name='oldpassword' value='' /></td></tr>

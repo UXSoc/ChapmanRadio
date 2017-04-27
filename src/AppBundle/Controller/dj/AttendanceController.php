@@ -1,13 +1,11 @@
 <?php
+namespace AppBundle\Controller\dj;
 /**
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 4/20/17
  * Time: 8:08 AM
  */
-
-namespace AppBundle\Controller\dj;
-
 
 use ChapmanRadio\DB;
 use ChapmanRadio\Report;
@@ -27,7 +25,7 @@ class AttendanceController extends Controller
     /**
      * @Route("/dj/attendance", name="dj_attendence")
      */
-    public function indexAction(ContainerInterface $container = null)
+    public function indexAction()
     {
         define('PATH', '../');
 
