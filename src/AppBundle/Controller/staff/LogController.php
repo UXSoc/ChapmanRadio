@@ -22,10 +22,11 @@ class LogController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Edit Log");
-        Template::RequireLogin( "Staff Resources", "staff");
+        Template::RequireLogin( "/staff/log","Staff Resources", "staff");
 
         $limit = Request::GetInteger('limit', 30);
 

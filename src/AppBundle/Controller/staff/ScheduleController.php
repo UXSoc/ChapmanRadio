@@ -1,5 +1,7 @@
 <?php
+
 namespace AppBundle\Controller\staff;
+
 /**
  * Created by PhpStorm.
  * User: michaelpollind
@@ -26,6 +28,7 @@ class ScheduleController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Schedule Editor");
         Template::SetBodyHeading("Site Administration", "Schedule Editor");

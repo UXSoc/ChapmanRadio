@@ -8,19 +8,15 @@
 
 namespace AppBundle\Controller\dj;
 
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 4/20/17
- * Time: 8:08 AM
- */
-
-namespace AppBundle\Controller\dj;
-
 
 use ChapmanRadio\DB;
 use ChapmanRadio\Evals;
+use ChapmanRadio\Request;
+use ChapmanRadio\Schedule;
+use ChapmanRadio\Session;
+use ChapmanRadio\Site;
 use ChapmanRadio\Template;
+use ChapmanRadio\UserModel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -29,14 +25,15 @@ class GenreController extends Controller
 {
 
     /**
-     * @Route("/dj/genre", name="dj_eval")
+     * @Route("/dj/genre", name="dj_genre")
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("My Genre");
         Template::SetBodyHeading("DJ Resources", "My Genre");
-        Template::RequireLogin("DJ Account");
+        Template::RequireLogin("/dj/genre","DJ Account");
 
         Template::css("/legacy/css/dl.css");
 

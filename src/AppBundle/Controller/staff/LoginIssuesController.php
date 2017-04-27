@@ -19,13 +19,15 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class LoginIssuesController extends Controller
 {
     /**
-     * @Route("/staff/login", name="staff_login")
+     * @Route("/staff/loginissues", name="staff_loginissues")
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
+
         Template::SetPageTitle("Suspended Login Attempts");
         Template::SetBodyHeading("Chapman Radio Admin", "Suspended Login Attempts");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/loginissues","Staff Resources", "staff");
         $season = Season::current();
 
         $seasonName = Season::name($season);

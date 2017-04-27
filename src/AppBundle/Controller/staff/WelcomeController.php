@@ -24,10 +24,11 @@ class WelcomeController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Welcome Message");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/welcome","Staff Resources", "staff");
         Template::Bootstrap();
 
         $users = UserModel::FromResults(DB::GetAll("SELECT * FROM users WHERE seasons LIKE :season", [":season" => "%" . Site::CurrentSeason() . "%"]));

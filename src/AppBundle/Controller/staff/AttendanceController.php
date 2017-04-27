@@ -13,6 +13,7 @@ use ChapmanRadio\DB;
 use ChapmanRadio\Picker;
 use ChapmanRadio\Site;
 use ChapmanRadio\Template;
+use ChapmanRadio\Util;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -25,9 +26,10 @@ class AttendanceController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Attendance");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/attendance","Staff Resources", "staff");
         Template::css(PATH . "css/formtable.css");
         Template::css(PATH . "css/dl.css");
 

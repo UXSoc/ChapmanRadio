@@ -25,9 +25,11 @@ class AliasesController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
+
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "URL Aliases");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/aliases","Staff Resources", "staff");
         $aliases = DB::GetAll("SELECT * FROM aliases");
         Template::AddBodyContent("<table class='eros -full'><thead><tr><td>Path</td><td>Url</td><td>Expires</td></tr></thead>");
         foreach($aliases as $alias) Template::AddBodyContent("<tr><td>{$alias['path']}</td><td>{$alias['url']}</td><td>{$alias['expires']}</td></tr>");

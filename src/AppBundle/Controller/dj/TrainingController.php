@@ -26,13 +26,14 @@ class TrainingController extends Controller
 {
 
     /**
-     * @Route("/dj/traning", name="dj_training")
+     * @Route("/dj/training", name="dj_training")
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("DJ Training Signups");
-        Template::RequireLogin("DJ Training Signups");
+        Template::RequireLogin("/dj/training","DJ Training Signups");
 
         $user = Session::GetCurrentUser();
 

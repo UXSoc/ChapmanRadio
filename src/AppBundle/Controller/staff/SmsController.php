@@ -22,10 +22,11 @@ class SmsController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Staff - SMS");
         Template::SetBodyHeading("Site Administration", "SMS / Livechat History");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/sms","Staff Resources", "staff");
         Template::css("/legacy/css/formtable.css");
 
         $limit = Request::GetInteger('limit', 50);

@@ -21,9 +21,10 @@ class EvalController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("New Peer Evaluation");
-        Template::RequireLogin("DJ Account");
+        Template::RequireLogin("/dj/eval","DJ Account");
 
         Template::js("/legacy/dj/js/evals.js");
         Template::js("/legacy/js/jquery.scrollTo.js");

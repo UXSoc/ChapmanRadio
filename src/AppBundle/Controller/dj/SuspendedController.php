@@ -8,16 +8,6 @@
 
 namespace AppBundle\Controller\dj;
 
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 4/20/17
- * Time: 8:08 AM
- */
-
-namespace AppBundle\Controller\dj;
-
-
 use ChapmanRadio\DB;
 use ChapmanRadio\Evals;
 use ChapmanRadio\GradeStructureModel;
@@ -37,10 +27,11 @@ class SuspendedController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Suspended Account");
         Template::SetBodyHeading("Chapman Radio", "Suspended Account");
-        Template::RequireLogin("DJ Resources");
+        Template::RequireLogin("/dj/suspended","DJ Resources");
 
         Template::css("/legacy/css/formtable.css");
 

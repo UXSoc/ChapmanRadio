@@ -27,10 +27,11 @@ class StaffController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Staff - Admin");
         Template::SetBodyHeading("Site Administration", "Staff Members");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/staff","Staff Resources", "staff");
 
         $season = Season::current();
         $seasonName = Season::name($season);

@@ -22,10 +22,11 @@ class UploadController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Upload - Site Administration");
         Template::SetBodyHeading("Site Administration", "File Upload");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/upload","Staff Resources", "staff");
 
         $season = Season::Current();
 

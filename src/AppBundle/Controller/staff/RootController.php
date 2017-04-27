@@ -21,14 +21,15 @@ class RootController extends Controller
 {
 
     /**
-     * @Route("/staff/", name="staff_root")
+     * @Route("/staff/root", name="staff_root")
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Staff - Advanced");
         Template::SetBodyHeading("Site Administration", "Advanced Settings");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/recordings","Staff Resources", "staff");
         Template::css("/legacy/css/formtable.css");
 
         $season = Season::current();

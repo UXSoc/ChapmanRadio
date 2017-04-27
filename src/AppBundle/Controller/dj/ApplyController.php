@@ -33,7 +33,7 @@ class ApplyController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
-        define('PATH', '../../');
+        define('PATH', '../');
 
 
         Template::css("/legacy/css/formtable.css");
@@ -43,7 +43,7 @@ class ApplyController extends Controller
         Template::js("/legacy/dj/js/apply.js");
 
         Template::SetPageTitle("Apply for a Show");
-        Template::RequireLogin("Show Applications");
+        Template::RequireLogin("/dj/apply","Show Applications");
 
         $appSeason = Site::ApplicationSeason();
         $seasonName = Season::name($appSeason);

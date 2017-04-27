@@ -8,16 +8,6 @@
 
 namespace AppBundle\Controller\dj;
 
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 4/20/17
- * Time: 8:08 AM
- */
-
-namespace AppBundle\Controller\dj;
-
-
 use ChapmanRadio\DB;
 use ChapmanRadio\Evals;
 use ChapmanRadio\GradeStructureModel;
@@ -36,9 +26,10 @@ class SitinsController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Staff Sit-ins");
-        Template::RequireLogin("Staff Sit-ins");
+        Template::RequireLogin("/dj/sitins","Staff Sit-ins");
 
         if (isset($_POST['request'])) {
             $request = DB::GetFirst("SELECT * FROM show_sitins WHERE season = :season AND showid = :id", array(":season" => Season::Current(), ":id" => Request::GetInteger('showid')));

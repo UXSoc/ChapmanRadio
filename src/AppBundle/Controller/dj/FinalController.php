@@ -8,18 +8,11 @@
 
 namespace AppBundle\Controller\dj;
 
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 4/20/17
- * Time: 8:08 AM
- */
-
-namespace AppBundle\Controller\dj;
-
-
 use ChapmanRadio\DB;
 use ChapmanRadio\Evals;
+use ChapmanRadio\Request;
+use ChapmanRadio\Season;
+use ChapmanRadio\Session;
 use ChapmanRadio\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -33,9 +26,10 @@ class FinalController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Final Exam");
-        Template::RequireLogin("Final Exam");
+        Template::RequireLogin("/dj/final","Final Exam");
 
         Template::Bootstrap();
 

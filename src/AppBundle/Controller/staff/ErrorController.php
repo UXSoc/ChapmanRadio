@@ -22,9 +22,11 @@ class ErrorController{
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
+
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Recent Site Errors");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/error","Staff Resources", "staff");
 
         $limit = Request::GetInteger('limit', 30);
 

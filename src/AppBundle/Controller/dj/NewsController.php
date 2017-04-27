@@ -8,19 +8,10 @@
 
 namespace AppBundle\Controller\dj;
 
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 4/20/17
- * Time: 8:08 AM
- */
 
-namespace AppBundle\Controller\dj;
-
-
-use ChapmanRadio\DB;
 use ChapmanRadio\Evals;
 use ChapmanRadio\GradeStructureModel;
+use ChapmanRadio\NewsModel;
 use ChapmanRadio\Season;
 use ChapmanRadio\Session;
 use ChapmanRadio\Template;
@@ -36,9 +27,10 @@ class NewsController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Class News");
-        Template::RequireLogin("DJ Account");
+        Template::RequireLogin("/dj/news", "DJ Account");
         Template::Bootstrap();
 
         Template::Css("/legacy/css/page-news.css");
@@ -50,11 +42,11 @@ class NewsController extends Controller
 
         Template::AddBodyContent("<div class='page-news'>");
 
-        if(empty($news)) Template::AddCoujuNotice("No news to display");
-        else foreach($news as $newsitem)
+        if (empty($news)) Template::AddCoujuNotice("No news to display");
+        else foreach ($news as $newsitem)
             Template::AddBodyContent("<article>
 		<h2>{$newsitem->title}</h2>
-		<span class='date'>Posted ".date("F jS, Y", $newsitem->posted_unix)."</span>
+		<span class='date'>Posted " . date("F jS, Y", $newsitem->posted_unix) . "</span>
 		<p>{$newsitem->body}</p></article>");
 
         Template::AddBodyContent("</div>");

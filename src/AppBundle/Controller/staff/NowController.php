@@ -24,10 +24,11 @@ class NowController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Site Status");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/now","Staff Resources", "staff");
         Template::Bootstrap();
 
         $listeners = DB::GetFirst("SELECT chapmanradio,chapmanradiolowquality,datetime FROM stats ORDER BY datetime DESC LIMIT 0,1");

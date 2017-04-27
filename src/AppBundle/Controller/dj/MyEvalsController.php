@@ -8,15 +8,6 @@
 
 namespace AppBundle\Controller\dj;
 
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 4/20/17
- * Time: 8:08 AM
- */
-
-namespace AppBundle\Controller\dj;
-
 
 use ChapmanRadio\DB;
 use ChapmanRadio\Evals;
@@ -40,9 +31,10 @@ class MyEvalsController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Show Evals");
-        Template::RequireLogin("DJ Account");
+        Template::RequireLogin("/dj/myevals","DJ Account");
 
         Template::AddStaffAlert("You can see completed evals at <a href='/staff/evals'>/staff/evals</a>");
 

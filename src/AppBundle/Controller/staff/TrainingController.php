@@ -27,10 +27,11 @@ class TrainingController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Staff Training Administration");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/training","Staff Resources", "staff");
 
         if(isset($_POST['cr-training-present'])){
             $suid = Request::Get('suid');

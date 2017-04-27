@@ -23,10 +23,11 @@ class SitinsController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Sit-in Requests");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/sitins","Staff Resources", "staff");
         Template::TableSorter();
 
         if(isset($_POST['submit'])){

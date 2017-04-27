@@ -8,19 +8,12 @@
 
 namespace AppBundle\Controller\dj;
 
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 4/20/17
- * Time: 8:08 AM
- */
-
-namespace AppBundle\Controller\dj;
-
 
 use ChapmanRadio\DB;
+use ChapmanRadio\DJLive;
 use ChapmanRadio\Evals;
 use ChapmanRadio\GradeStructureModel;
+use ChapmanRadio\Request;
 use ChapmanRadio\Season;
 use ChapmanRadio\Session;
 use ChapmanRadio\ShowModel;
@@ -34,15 +27,16 @@ class LiveController extends Controller
 {
 
     /**
-     * @Route("/dj/live", name="dj_eval")
+     * @Route("/dj/live", name="dj_live")
      */
     public function indexAction(ContainerInterface $container = null)
     {
 
+        define('PATH', '../');
 
         Template::SetPageTitle("DJ Live");
         Template::SetBodyHeading("Chapman Radio", "DJ Live");
-        Template::RequireLogin("DJ Live Page");
+        Template::RequireLogin("/dj/live","DJ Live Page");
 
 # Template::AddBodyContent("<div class='couju-debug' style='margin: 0 10px;'>Hey DJs! During Spring Break, no one has to broadcast - but if you're more then welcome to!<br />Just select your show as usual. If you get to a page that says 'Schedule Conflict' just check the boxes and press Override.<br /><strong>YOUR SHOW WILL BE RECORDED</strong></div>");
 
@@ -75,7 +69,7 @@ class LiveController extends Controller
 // if the user didn't login correctly above, ask for login
         if (!isset($liveshowid)) {
             DJLive::LoginForm();
-            Template::Finalize();
+            return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
         }
 
         /* AND NOW THE ACTUAL DJ LIVE PAGE!!!!!! */

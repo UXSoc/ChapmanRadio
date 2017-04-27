@@ -24,13 +24,14 @@ class ShowsController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Show Management");
         Template::SetBodyHeading("Site Administration", "Show Management");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/shows","Staff Resources", "staff");
         Template::Bootstrap();
         Template::shadowbox();
-        Template::js("/staff/js/dialog_edit.js");
+        Template::js("/legacy/staff/js/dialog_edit.js");
 
         $input = Request::Get('input','');
 

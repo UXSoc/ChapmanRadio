@@ -17,9 +17,11 @@ class CancelledShowsController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
+
         Template::SetPageTitle("Cancelled Shows");
         Template::SetBodyHeading("Chapman Radio Admin", "Cancelled Shows");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/cancelled","Staff Resources", "staff");
 
         $season = Season::current();
         $seasonName = Season::name($season);

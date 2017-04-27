@@ -21,14 +21,15 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class GenreContentController extends  Controller{
     /**
-     * @Route("/staff/genre", name="staff_genre")
+     * @Route("/staff/genrecontent", name="staff_genrecontent")
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Genre Content");
         Template::SetBodyHeading("Site Administration", "Genre Content");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/genrecontent","Staff Resources", "staff");
 
         Template::css(PATH."css/formtable.css");
         Template::style(Schedule::styleGenres());

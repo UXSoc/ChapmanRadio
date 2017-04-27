@@ -22,10 +22,11 @@ class ListensController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Listen Log");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/listens","Staff Resources", "staff");
 
         $limit = Request::GetInteger('limit', 30);
 

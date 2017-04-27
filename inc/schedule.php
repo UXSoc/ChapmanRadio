@@ -541,12 +541,11 @@ class Schedule
     {
         Schedule::$genres = Site::$Genres;
         Schedule::$genreClasses = array();
-        if(Schedule::$genres != null) {
-            foreach (Schedule::$genres as $k => $v) {
-                Schedule::$genres[$k] = trim($v);
-                Schedule::$genreClasses[trim($v)] = preg_replace("/\\W/", "", $v);
-            }
+        foreach (Schedule::$genres as $k => $v) {
+            Schedule::$genres[$k] = trim($v);
+            Schedule::$genreClasses[trim($v)] = preg_replace("/\\W/", "", $v);
         }
+
         Schedule::$genreClasses[""] = "";
     }
 

@@ -8,16 +8,6 @@
 
 namespace AppBundle\Controller\dj;
 
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 4/20/17
- * Time: 8:08 AM
- */
-
-namespace AppBundle\Controller\dj;
-
-
 use ChapmanRadio\DB;
 use function ChapmanRadio\error;
 use ChapmanRadio\Evals;
@@ -41,10 +31,11 @@ class StatsController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
 
         Template::SetPageTitle("Stats - DJ Resources");
-        Template::RequireLogin("Listenership Statistics");
+        Template::RequireLogin("/dj/stats","Listenership Statistics");
         Template::SetBodyHeading("DJ Resources", "Listenership Statistics");
 
         Template::css("/legacy/css/dl.css");

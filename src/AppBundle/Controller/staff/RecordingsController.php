@@ -23,10 +23,11 @@ class RecordingsController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Recent Recordings");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/recordings","Staff Resources", "staff");
 
         $limit = Request::GetInteger('limit', 30);
         $recordings = RecordingModel::FromResults(DB::GetAll("SELECT * FROM mp3s INNER JOIN shows ON mp3s.showid = shows.showid ORDER BY recordedon DESC LIMIT $limit"));

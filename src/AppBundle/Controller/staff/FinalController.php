@@ -20,14 +20,15 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class FinalController extends  Controller{
     /**
-     * @Route("/dj/final", name="staff_final")
+     * @Route("/staff/final", name="staff_final")
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Final Exams");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/final","Staff Resources", "staff");
         Template::TableSorter();
 
         if(isset($_POST['submit'])){

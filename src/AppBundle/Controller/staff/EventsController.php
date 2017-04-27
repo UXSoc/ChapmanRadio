@@ -22,10 +22,11 @@ class EventsController extends  Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Events - Admin");
         Template::SetBodyHeading("Site Administration", "Events");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/events","Staff Resources", "staff");
 
         Template::AddBodyContent("<div class='leftcontent'>");
 

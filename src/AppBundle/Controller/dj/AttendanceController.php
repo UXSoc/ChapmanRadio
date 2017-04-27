@@ -25,13 +25,14 @@ class AttendanceController extends Controller
 {
 
     /**
-     * @Route("/dj/attendence", name="dj_apply")
+     * @Route("/dj/attendance", name="dj_attendence")
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("My Attendance");
-        Template::RequireLogin("DJ Account");
+        Template::RequireLogin("/dj/dj_attendence","DJ Account");
 
         $season = Site::CurrentSeason();
         $seasonName = Season::name($season);

@@ -8,23 +8,18 @@
 
 namespace AppBundle\Controller\dj;
 
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 4/20/17
- * Time: 8:08 AM
- */
-
-namespace AppBundle\Controller\dj;
-
 
 use ChapmanRadio\DB;
 use ChapmanRadio\Evals;
 use ChapmanRadio\GradeStructureModel;
+use ChapmanRadio\Imaging;
+use ChapmanRadio\Request;
 use ChapmanRadio\Season;
 use ChapmanRadio\Session;
 use ChapmanRadio\Template;
+use ChapmanRadio\Uploader;
 use ChapmanRadio\UserModel;
+use ChapmanRadio\Util;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -38,11 +33,13 @@ class ProfileController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
+        require_once PATH ."inc/facebook.php";
 
 
         Template::SetPageTitle("My Profile");
         Template::SetBodyHeading("DJ Resources", "My Profile");
-        Template::RequireLogin("DJ Resources");
+        Template::RequireLogin("/dj/profile","DJ Resources");
         Template::Css("/legacy/css/formtable.css");
 
         Template::AddBodyContent("<p style='margin:10px auto;'>You can edit your information, change your password, or update your profile picture.</p>");
@@ -84,17 +81,17 @@ class ProfileController extends Controller
             $password = @$_REQUEST['password'] or "";
             $passwordconfirm = @$_REQUEST['passwordconfirm'] or "";
             if(!$password || !$passwordconfirm) {
-                Template::AddBodyContent(notify("Please enter a new password and confirm it.","#A00"));
+                Template::AddBodyContent(self::notify("Please enter a new password and confirm it.","#A00"));
             }
             else if($password != $passwordconfirm) {
-                Template::AddBodyContent(notify("The passwords you entered didn't match","#A00"));
+                Template::AddBodyContent(self::notify("The passwords you entered didn't match","#A00"));
             }
             else if($oldpassword != $correctpassword && Util::encrypt($oldpassword) != $correctpassword) {
-                Template::AddBodyContent(notify("The old password your entered was incorrect. ","#A00"));
+                Template::AddBodyContent(self::notify("The old password your entered was incorrect. ","#A00"));
             }
             else {
                 DB::Query("UPDATE users SET password = :pwd WHERE userid = :uid", array(":uid" => $userid, ":pwd" => Util::encrypt($password)));
-                Template::AddBodyContent(notify("Your password has been updated.","#090"));
+                Template::AddBodyContent(self::notify("Your password has been updated.","#090"));
             }
         }
 
@@ -112,7 +109,7 @@ class ProfileController extends Controller
             }
         }
         catch(Exception $e){
-            Template::AddBodyContent(notify($e->GetMessage(),"#A00"));
+            Template::AddBodyContent(self::notify($e->GetMessage(),"#A00"));
         }
 
 // display information

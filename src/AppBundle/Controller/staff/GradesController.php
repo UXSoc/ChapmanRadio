@@ -24,9 +24,10 @@ class GradesController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("All Grades");
-        Template::RequireLogin("DJ Account");
+        Template::RequireLogin("/staff/grades","DJ Account");
         Template::Bootstrap();
 
         Template::js("/plugins/tablesorter/jquery.tablesorter.min.js");

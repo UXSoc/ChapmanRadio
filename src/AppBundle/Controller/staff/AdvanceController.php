@@ -32,10 +32,12 @@ class AdvanceController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
+
 
         Template::SetPageTitle("Staff - Advanced");
         Template::SetBodyHeading("Site Administration", "Advanced Settings");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/advance","Staff Resources", "staff");
 
         Template::css("/legacy/css/formtable.css");
 

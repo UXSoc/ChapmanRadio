@@ -23,8 +23,10 @@ class DownloadsController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
+
         Template::SetPageTitle("Downloads - DJ Resources");
-        Template::RequireLogin("DJ Account");
+        Template::RequireLogin("/dj/downloads","DJ Account");
         $season = Season::current();
         Template::SetBodyHeading("DJ Resources", "Downloads: ".Season::Name());
         Template::AddBodyContent("<div class='leftcontent'><h3>Downloads for this Semester</h3><br />");

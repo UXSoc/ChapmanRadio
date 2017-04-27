@@ -14,6 +14,7 @@ use ChapmanRadio\DB;
 use ChapmanRadio\Imaging;
 use ChapmanRadio\Notify;
 use ChapmanRadio\Request as ChapmanRadioRequest;
+use ChapmanRadio\Season;
 use ChapmanRadio\Session;
 use ChapmanRadio\Template;
 use ChapmanRadio\Uploader;
@@ -32,17 +33,14 @@ use Symfony\Component\Security\Core\User\User;
 class AuthController extends Controller
 {
 
-    /**
-     * @Route("/join", name="join")
-     */
-    public  function  RegisterAction(Request $request)
+    public function RegisterAction(Request $request)
     {
         $user = new Users();
 
 
         $form = $this->createFormBuilder($user)
             ->add('fname', TextType::class, array('label' => 'First Name'))
-            ->add('lname', TextType::class , array('label' => 'Last Name'))
+            ->add('lname', TextType::class, array('label' => 'Last Name'))
             ->add('email', TextType::class, array('label' => 'Email'))
             ->add('phone', TextType::class, array('label' => 'Phone'))
             ->add('studentid', TextType::class, array('label' => 'Student Id'))
@@ -56,14 +54,298 @@ class AuthController extends Controller
         $form->handleRequest($request);
 
 
-        return $this->render('auth/login.html.twig',array("join_form" => $form->createView()));
+        return $this->render('auth/login.html.twig', array("join_form" => $form->createView()));
     }
 
+    /**
+     * @Route("/activate", name="activate")
+     */
+    public function activateAction(Request $request)
+    {
+
+        define('PATH', '../');
+        $season = Season::current();
+        $seasonName = Season::name($season);
+
+        Template::js("/legacy/js/parsley.min.js");
+
+        Template::SetPageTitle("Active my Account");
+        Template::SetBodyHeading("Activate my Account for $seasonName");
+        Template::Bootstrap();
+
+// Template::AddBodyContent("<div style='width:640px;margin:10px auto 60px;text-align:left;'><p>Activate or Renew your Chapman Radio Account.</p><p>Brand new and existing Chapman Radio accounts need to be activated or renewed every semester. We do this in order to keep information current. It's also important as a way to keep DJs up-to-date with new policies.</p>");
+
+        /* Page flows:
+
+         - Returning user tries to login and needs to be reactivated
+         - New user clicks link in email and needs to be activated
+         - New user finds their way here without code, ask for code
+         */
+
+        $user = Session::GetCurrentUser();
+        $loggedin = ($user != NULL);
+
+        if (!$loggedin) {
+            $code = ChapmanRadioRequest::Get('code');
+            if ($code) $user = UserModel::FromVerifyCode($code);
+        }
+
+        $errors = array();
+        if ($user != NULL && isset($_POST['submitbutton'])) {
+            // Check info fields
+            if (isset($_POST['activate_info_form'])) {
+                if (ChapmanRadioRequest::IsNull('fname'))
+                    $errors["fname"] = "Please enter your first name.";
+                if (ChapmanRadioRequest::IsNull('lname'))
+                    $errors["lname"] = "Please enter your last name.";
+                if (ChapmanRadioRequest::IsNull('email') || !preg_match("/^[A-Za-z0-9._%+-]+@(mail\.|)chapman\.edu$/", trim($_REQUEST['email'])))
+                    $errors["email"] = "Please enter a valid Chapman University email address.";
+                if (ChapmanRadioRequest::IsNull('classclub'))
+                    $errors["classclub"] = "Please enter your class/club status.";
+                if (ChapmanRadioRequest::IsNull('phone'))
+                    $errors["phone"] = "Please enter your phone number.";
+                if (ChapmanRadioRequest::IsNull('phone') || ChapmanRadioRequest::GetInteger('studentid') == 0)
+                    $errors["studentid"] = "Please enter a valid Student ID Number.";
+                if (ChapmanRadioRequest::IsNull('confirminfo'))
+                    $errors["confirminfo"] = "Please confirm that you have read and updated this information.";
+            }
+
+            // Check password fields
+            if (isset($_POST['activate_password_form'])) {
+                if (ChapmanRadioRequest::IsNull('password'))
+                    $errors["password"] = "Please enter a password.";
+                if (ChapmanRadioRequest::IsNotNull('password') && ChapmanRadioRequest::Get('password') != ChapmanRadioRequest::Get('passwordconfirm')) {
+                    $errors["password"] = "Please enter your password again";
+                    $errors["passwordconfirm"] = "The passwords you entered didn't match.";
+                }
+            }
+
+            // Submit info if no errors
+            if (empty($errors) && isset($_POST['activate_info_form'])) {
+                DB::Query("UPDATE users SET fname = :fname, lname = :lname, email = :email, phone = :phone, studentid = :studentid, classclub = :classclub WHERE userid = :userid", array(
+                    ":fname" => $_REQUEST['fname'],
+                    ":lname" => $_REQUEST['lname'],
+                    ":email" => $_REQUEST['email'],
+                    ":phone" => $_REQUEST['phone'],
+                    ":studentid" => $_REQUEST['studentid'],
+                    ":classclub" => $_REQUEST['classclub'],
+                    ":userid" => $user->id
+                ));
+            }
+
+            if (empty($errors) && isset($_POST['activate_password_form'])) {
+                DB::Query("UPDATE users SET password = :password WHERE userid = :userid", array(
+                    ":password" => Util::encrypt($_REQUEST['password']),
+                    ":userid" => $user->id
+                ));
+            }
+
+            if (empty($errors)) {
+                $user->AddSeason($season);
+                $user->Login();
+
+                Template::AddBodyContent("<div style='width:570px;margin:20px auto 60px;text-align:left;'>
+			<h3>Account Activated</h3>
+			<p>Thanks, " . $user->fname . "</p>
+			<p>Your account is now active for <b>$seasonName</b>.</p>
+			<p>You can review the Chapman Radio policies any time at <a href='/policies'>chapmanradio.com/policies</a>.<br /></p>
+			<h3>What next?</h3>
+			<p>Do you want to <a href='/dj/apply'>apply for a show</a>?</p>
+		</div>");
+
+                Template::notify("Renewed", "Your account has been actived for $seasonName. Thanks!");
+                return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+            }
+        } else if (isset($_POST['submitbutton'])) {
+            Template::AddBodyContent("<div style='color:#A00;text-align:center;margin:10px auto 20px'>Problem with page: Post handling method did not have access to user</div>");
+        }
+
+        if (!empty($errors)) {
+            Template::AddBodyContent("<div style='color:#A00;text-align:center;margin:10px auto 20px'><b>Missing information.</b><br />Please fill in all required fields, then try re-submitting.</div>");
+        }
+
+        Template::AddBodyContent("<form method='post' action='$_SERVER[REQUEST_URI]' data-parsley-namespace='data-parsley-' data-parsley-validate>");
+
+        /* What form content to display */
+        if ($loggedin) {
+            if ($user->IsActivated()) self::RenderNoActivation($user,$seasonName);
+            else self::RenderReActivate($user,$seasonName);
+        } else {
+            if ($user != null) self::RenderActivate($user,$seasonName);
+            else self::RenderUnknown();
+        }
+
+        Template::AddBodyContent("</form>");
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+    }
+
+
+// for existing users who are already active
+    function RenderNoActivation($user,$seasonName)
+    {
+        Template::AddBodyContent("<div class='gloss'><h3>Already Activated</h3><p>Hey " . $user->fname . ", you're already activated for $seasonName.</p><br /><p>Not " . $user->fname . "? <a href='/logout'>Logout</a></p></div>");
+    }
+
+// For new users, set a password and accept policies
+    function RenderActivate($user,$seasonName)
+    {
+        self::RenderPasswordForm($user);
+        self::RenderCheckboxForm($seasonName);
+    }
+
+// For existing users, check personal info and accept policies
+    function RenderReActivate($user,$seasonName)
+    {
+        self::RenderInfoForm($user);
+        self::RenderCheckboxForm($seasonName);
+    }
+
+// For requests with no user and no code, ask for a code or login
+    function RenderUnknown()
+    {
+        global $seasonName;
+        Template::AddBodyContent("
+		<div style='text-align: left; width: 600px; margin: 10px auto; padding: 10px; border: 1px solid #CCC;'>
+		<h3 style='margin-bottom:10px;'>New to Chapman Radio?</h3>
+		<form method='get' action='$_SERVER[PHP_SELF]'>");
+        if (isset($_REQUEST['code'])) Template::AddBodyContent("<p style='color:red'>Invalid code. Please try again:</p>");
+        Template::AddBodyContent("<p>Enter your activation code: <input name='code' value='' /> <input type='submit' value='Activate' />
+		</form>
+		</div>
+		<div style='text-align: left; width: 600px; margin: 10px auto; padding: 10px; border: 1px solid #CCC;'>
+		<h3 style='margin-bottom:10px;'>Already a Member?</h3>
+		<p>To renew an existing account for <b>$seasonName</b>, please <a href='/login'>log in</a>.</p>
+		</div>
+		");
+    }
+
+    function RenderInfoForm($user)
+    {
+        Template::AddBodyContent("
+		<div style='text-align: left; width: 600px; margin: 10px auto; padding: 10px; border: 1px solid #CCC;'>
+		<h3>Update My Information</h3>
+		<p>Welcome back " . $user->fname . "! Does everything still look correct here?</p><br />
+		<div class='zeus-form'>
+			<input type='hidden' name='activate_info_form' value='1' />
+			<div>
+				" . self::GetError('fname') . "
+				<span>First Name</span>
+				<input type='text' name='fname'  value=\"" . ChapmanRadioRequest::GetAsPrintable('fname', $user->fname) . "\" />
+			</div>
+			<div>
+				" . self::GetError('lname') . "
+				<span>Last Name</span>
+				<input type='text' name='lname' value=\"" . ChapmanRadioRequest::GetAsPrintable('lname', $user->lname) . "\" />
+			</div>
+			<div>
+				" . self::GetError('email') . "
+				<span>Chapman Email</span>
+				<input type='text' name='email' value=\"" . ChapmanRadioRequest::GetAsPrintable('email', $user->email) . "\" />
+			</div>
+			<div>
+				" . self::GetError('classclub') . "
+				<span>Class or Club</span>
+				<select name='classclub'>
+					<option " . ((ChapmanRadioRequest::Get('classclub', $user->classclub) == "class") ? "selected" : "") . " value='class'>Class</option>
+					<option " . ((ChapmanRadioRequest::Get('classclub', $user->classclub) == "club") ? "selected" : "") . " value='club'>Club</option>
+				</select>
+			</div>
+			<div>
+				" . self::GetError('phone') . "
+				<span>Phone</span>
+				<input type='text' name='phone' value=\"" . ChapmanRadioRequest::GetAsPrintable('phone', $user->phone) . "\" />
+			</div>
+			<div>
+				" . self::GetError('studentid') . "
+				<span>Student ID</span>
+				<input type='text' name='studentid' value=\"" . ChapmanRadioRequest::GetAsPrintable('studentid', $user->studentid) . "\" />
+			</div>
+			<div>
+				<span style='color:#757575;'>This is your current profile picture. After renewing your account, you'll be able to change your picture from your Profile page</span>
+				<img src='" . $user->img192 . "' alt='' />
+			</div>
+			<div>
+				" . self::GetError('confirminfo') . "
+				<input type='checkbox' id='confirminfo' name='confirminfo' data-parsley-required='true' value='1' style='width:auto;' />
+				<label for='confirminfo'> Yes, this information is correct.</label>
+			</div>
+		</div>
+		</div>");
+    }
+
+    function RenderPasswordForm($user)
+    {
+        Template::AddBodyContent("
+		<div style='text-align: left; width: 600px; margin: 10px auto; padding: 10px; border: 1px solid #CCC;'>
+		<h3>Chapman Radio Account Password</h3>");
+
+        if ($user->fbid) Template::AddBodyContent("<p>Your Chapman Radio Account is integrated with Facebook. You don't need to set a password, just click the blue Facebook button on the login page. We never see your Facebook password.</p><br />");
+
+        else Template::AddBodyContent("<p>Your Chapman Radio Account is not currently integrated with Facebook. You need to set a password now to login, but you can also add Facebook login later if you would like so you don't need to remember this password.</p><br />
+	<div class='zeus-form'>
+		<input type='hidden' name='activate_password_form' value='1' />
+		<div>
+			" . self::GetError('password') . "
+			<span>Chapman Radio Password</span>
+			<input type='password' name='password' id='join-password' value='' data-parsley-required='true' data-parsley-minlength='8' />
+		</div>
+		<div>
+			" . self::GetError('passwordconfirm') . "
+			<span>Re-enter Password</span>
+			<input type='password' name='passwordconfirm' value='' data-parsley-required='true' data-parsley-equalto='#join-password' />
+		</div>
+	</div>");
+
+        //<tr class='oddRow'><td colspan='2' style='text-align:center;'>Facebook Connect is <b>".($user['fbid']?"On":"Off")."</b> for my account.".($user['fbid']?"<br /><table style='margin:auto;'><tr><td>My Chapman Radio Account<br /><img src='$user[icon]' alt='' /></td><td style='vertical-align:middle;'><img src='/img/arrows/double.png' alt='' /><td>My Facebook Account<br /><img src='https://graph.facebook.com/$user[fbid]/picture' /></td></tr></table>":"")."</td></tr>
+
+        Template::AddBodyContent("</div>");
+    }
+
+    function RenderCheckboxForm($seasonName)
+    {
+        Template::AddBodyContent("
+		<div style='text-align: left; width: 600px; margin: 10px auto; padding: 10px; border: 1px solid #CCC;'>
+		<h3>$seasonName Policies</h3>
+		<p>To activate your Chapman Radio account, you must confirm that you will adhere to Chapman Radio's policies and procedures.</p>
+		<p>Please read each criteria &amp; mark the checkbox to confirm that you understand.</p>
+		<ol id='activate-checkboxes' style='list-style-type:none;line-height:21px;'>" .
+            self::cbox("My account is subject to the <a href='/policies' target='_blank'>Chapman Radio Policies</a>.") .
+            self::cbox("As a member of Chapman Radio, I will adhere to the <b>Course Syllabus</b>, which is always available at <a href='/syllabus' target='_blank'>chapmanradio.com/syllabus</a>. This applies to all members, in both the class and club.") .
+            self::cbox("I understand the <b>3 Strikes Policy</b>: If I earn 3 strikes, combined from all of my shows, then any all of my shows will be cancelled.") .
+            self::cbox("I understand that there are <b>3 ways to earn Strikes</b>: Missing a show, missing 2 workshop meetings, or being late 3 times to shows or meetings.") .
+            self::cbox("I understand I will be emailed by Chapman Radio when I receive a Strike, and it is my responsibility to contact Staff if I think there was an error or I have a question. I also know I can check my attendance status online at any time.") .
+            "<br />" .
+            self::cbox("I have read and understand the Chapman University <a href='http://www.chapman.edu/campus-services/information-systems/security/acceptable-use-policy.aspx' target='_blank'>Acceptable Use Policy</a>. The use of any Chapman University or Chapman Radio services or equipment is subject to this policy.") .
+            self::cbox("I have read and understand Chapman University's <a href='http://www.chapman.edu/campus-services/information-systems/security/dmca.aspx' target='_blank'>Digital Millennium Copyright Act (DMCA) Policy</a>. I understand how the provisions of the DMCA could affect my show. I understand that I am completely responsible, equally along with my co-djs, for all content that is broadcast during my show.") .
+            self::cbox("I understand that Chapman University and Chapman Radio do not actively monitor my show and cannot be responsible for the content that is broadcast. I understand that responsibility for my show is shared between all registered DJs on the show, and shall notify Chapman Radio of any changes to the DJs responsible for my show.") .
+            "</ol>");
+        Template::script("function checkcboxes(){ var problem = false; $('#activate-checkboxes input[type=checkbox]').each(function(i, e){ if(!$(e).is(':checked')) { $('#submitbutton').prop('disabled', true); problem = true; return; } }); if(!problem) $('#submitbutton').prop('disabled', false); }");
+        Template::AddBodyContent("<p style='text-align:center;margin-top:20px;'><input type='submit' name='submitbutton' id='submitbutton' value=' Activate my Account ' /><script>checkcboxes();</script></p></div>");
+    }
+
+    function GetError($key)
+    {
+        global $errors;
+        if (isset($errors[$key]) && $errors[$key] != "") return "<span class='error'>" . $errors[$key] . "</span>";
+        return "";
+    }
+
+    function cbox($msg)
+    {
+        if (!isset($_GLOBALS['cboxCount'])) $_GLOBALS['cboxCount'] = 0;
+        global $cboxCount;
+        $cboxCount++;
+        $checked = isset($_REQUEST['accept' . $cboxCount]) ? "checked='checked'" : "";
+        return "<li><label for='accept$cboxCount'><input type='checkbox' name='accept$cboxCount' value='$cboxCount' id='accept$cboxCount' $checked onchange='checkcboxes();' /> $msg</label></li>";
+    }
+
+    /**
+     * @Route("/join", name="join")
+     */
     public function RegistrationAction(Request $request)
     {
         define('PATH', '../');
         require_once "./../inc/facebook.php";
-
 
 
         Template::SetPageTitle("Join");
@@ -74,7 +356,7 @@ class AuthController extends Controller
 
         $user = Session::GetCurrentUser();
         if (Session::HasUser()) {
-            return new \Symfony\Component\HttpFoundation\Response( Template::Finalize("<div style='width:537px;margin:10px auto;text-align:left;'>
+            return new \Symfony\Component\HttpFoundation\Response(Template::Finalize("<div style='width:537px;margin:10px auto;text-align:left;'>
 		<p>Hello, " . $user->fname . ".</p>
 		<p>You already have an account with Chapman Radio, so you don't need to apply for one.</p>
 		<p>Go to <a href='/dj'>my account</a>.</p><p><p>Not " . $user->fname . "? <a href='/logout?source=join'>Logout</a></p>
@@ -85,7 +367,7 @@ class AuthController extends Controller
             $temp = DB::GetFirst("SELECT * FROM users WHERE fbid = :fbid", array(":fbid" => $me['id']));
             if ($temp) {
                 $logout = $facebook->getLogoutUrl();
-                return new \Symfony\Component\HttpFoundation\Response( Template::Finalize("<div class='gloss'>
+                return new \Symfony\Component\HttpFoundation\Response(Template::Finalize("<div class='gloss'>
 			<h3>Account in Use</h3>
 			<p>Sorry, but $me[first_name]'s facebook account is already in use at Chapman Radio.</p>
 			<p><a href='/login'>Login to Chapman Radio</a></p>
@@ -170,8 +452,9 @@ class AuthController extends Controller
         $join .= "<tr><td colspan='2' style='text-align:center;'><input type='submit' name='JOIN' value=' Submit ' /></td></tr>";
         $join .= "</table></form>";
 
-        return new \Symfony\Component\HttpFoundation\Response( Template::Finalize($join));
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($join));
     }
+
     function TryJoin()
     {
         global $uploadedfile, $me;
@@ -220,18 +503,19 @@ class AuthController extends Controller
             "name" => "$fname $lname",
             "phone" => ChapmanRadioRequest::Get('phone'),
             "studentid" => ChapmanRadioRequest::Get('studentid'),
-            "verifycode" => $vcode));
-//        "djname" => "",
-//            "gender" => "",
-//            "seasons" => "",
-//            "lastlogin"=> new \DateTime("now"),
-//            "lastip" => "",
-//            "password"=>"",
-//            "staffgroup"=>"",
-//            "staffposition"=>"",
-//            "staffemail" => "",
-//            "quizpassedseasons"=>"",
-//            "revisionkey"=>""
+            "verifycode" => $vcode,
+            //modify
+            "djname" => "",
+            "gender" => "",
+            "seasons" => "",
+            "lastlogin" => new \DateTime("now"),
+            "lastip" => "",
+            "password" => "",
+            "staffgroup" => "",
+            "staffposition" => "",
+            "staffemail" => "",
+            "quizpassedseasons" => "",
+            "revisionkey" => ""));
 
         // now moved the uploaded file from /tmp to /content
         $userModel = UserModel::FromId($userid);
@@ -255,8 +539,9 @@ class AuthController extends Controller
 		<p>We just sent a confirmation email to <b>$email</b>. Follow the link in that email to activate your account.</p>
 		<p><strong style='color:red'>Be sure to check your spam folder for the confirmation email.</strong></p>
 		</div>");
-        return new \Symfony\Component\HttpFoundation\Response(  "");
+        return new \Symfony\Component\HttpFoundation\Response("");
     }
+
 
     /**
      * @Route("/login", name="login")
@@ -269,10 +554,10 @@ class AuthController extends Controller
         Template::SetBodyHeading("Chapman Radio", "Login");
         Template::Bootstrap();
 
-        if(Session::HasUser()) {
+        if (Session::HasUser()) {
             $user = Session::GetCurrentUser();
             Template::SetBodyHeading("Chapman Radio", "Login");
-            return new \Symfony\Component\HttpFoundation\Response( Template::Finalize("<div style='width:570px;margin:auto;text-align:left;'>
+            return new \Symfony\Component\HttpFoundation\Response(Template::Finalize("<div style='width:570px;margin:auto;text-align:left;'>
 		<h3>Already Logged In</h3><br />
 		<p>Hello, {$user->name}. You're already logged in.</p>
 		<p>Go to my <a href='/dj'>DJ page</a>.</p>
@@ -281,25 +566,23 @@ class AuthController extends Controller
         }
 
 // check for a facebook login
-        if(isset($me) && $me) {
+        if (isset($me) && $me) {
             $email = (isset($me['email'])) ? $me['email'] : "";
             $row = DB::GetFirst("SELECT fname, email, userid FROM users WHERE fbid='$fbid' LIMIT 0,1");
             $userid = 0;
-            if($row) {
+            if ($row) {
                 // logged in with facebook before
                 $userid = $row['userid'];
-            }
-            else {
+            } else {
                 // never logged in with facebook before
                 $row = DB::GetFirst("SELECT fname,userid FROM users WHERE email = :email LIMIT 0,1", array(":email" => $email));
-                if($email != "" && $row) {
+                if ($email != "" && $row) {
                     // logged in with an email address before
                     $userid = $row['userid'];
                     DB::Query("UPDATE users SET fbid=$fbid WHERE userid=$userid");
-                }
-                else {
+                } else {
                     // never logged in w/ email address before
-                    $logoutUrl = $facebook -> getLogoutUrl();
+                    $logoutUrl = $facebook->getLogoutUrl();
                     Template::SetBodyHeading("Chapman Radio", "New Account");
                     return new \Symfony\Component\HttpFoundation\Response(Template::Finalize("<div class='leftcontent'><p>Hello, $me[first_name].</p><p>You're trying to log into Chapman Radio with your Facebook account. Unfortunately, we don't have any Chapman Radio accounts associated with this Facebook account.</p><p>If you <b>already have</b> a Chapman Radio account, please <a href='$logoutUrl'>logout of Facebook</a>, then try to login again.</p><p>If you <b>don't have</b> a Chapman Radio account, you can <a href='/join'>Join Chapman Radio</a>.</div>"));
                 }
@@ -311,26 +594,26 @@ class AuthController extends Controller
 
 // process
         $loginERROR = "";
-        if(isset($_POST['USER_LOGIN'])) {
+        if (isset($_POST['USER_LOGIN'])) {
             $email = ChapmanRadioRequest::Get('email');
             $password = ChapmanRadioRequest::Get('password');
-            if(!$email && !$password) $loginERROR = "Please enter your email and password:";
-            else if(!$email) $loginERROR = "Please enter your email address:";
-            else if(!$password) $loginERROR = "Please enter your password:";
-            else if(!preg_match("/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}\$/", $email)) $loginERROR = "It looks like <b>".stripslashes($email)."</b> is an invalid email address. Please try again:";
+            if (!$email && !$password) $loginERROR = "Please enter your email and password:";
+            else if (!$email) $loginERROR = "Please enter your email address:";
+            else if (!$password) $loginERROR = "Please enter your password:";
+            else if (!preg_match("/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}\$/", $email)) $loginERROR = "It looks like <b>" . stripslashes($email) . "</b> is an invalid email address. Please try again:";
             else {
                 $row = DB::GetFirst("SELECT userid,fname,password FROM users WHERE email = :email", array(":email" => $email));
-                if(!$row) $loginERROR = "Sorry, but that email isn't registered with Chapman Radio. Would you like to <a href='/join'>Join</a>?";
+                if (!$row) $loginERROR = "Sorry, but that email isn't registered with Chapman Radio. Would you like to <a href='/join'>Join</a>?";
                 else {
                     $correctPassword = Util::decrypt($row['password']);
-                    if($password == $correctPassword ) Session::Login($row['userid']);
-                    else if($correctPassword == "") $loginERROR = "Sorry, but this account is not setup with a password. You must use Facebook to login.";
+                    if ($password == $correctPassword) Session::Login($row['userid']);
+                    else if ($correctPassword == "") $loginERROR = "Sorry, but this account is not setup with a password. You must use Facebook to login.";
                     else $loginERROR = "Sorry, that password was incorrect.";
                 }
             }
         }
 
-        if($loginERROR) $loginERROR = "<p style='color:red;'>$loginERROR</p>";
+        if ($loginERROR) $loginERROR = "<p style='color:red;'>$loginERROR</p>";
 
 // output
 
@@ -341,7 +624,7 @@ class AuthController extends Controller
         Template::SetBodyHeading("Chapman Radio", "Login");
         Template::AddBodyContent("<p style='color:#484848;padding:10px; text-align: center;'>");
 
-        if(isset($_SESSION['redirectPageName'])) Template::AddBodyContent("Please login to view <b>{$_SESSION['redirectPageName']}</b>.<br />");
+        if (isset($_SESSION['redirectPageName'])) Template::AddBodyContent("Please login to view <b>{$_SESSION['redirectPageName']}</b>.<br />");
 
         $email_string = ChapmanRadioRequest::Get('email');
 
@@ -385,6 +668,6 @@ class AuthController extends Controller
 	</div>
 	<br class='_clear' />");
 
-        return new \Symfony\Component\HttpFoundation\Response( Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
     }
 }

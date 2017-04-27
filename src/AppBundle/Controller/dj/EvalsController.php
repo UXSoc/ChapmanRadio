@@ -30,9 +30,10 @@ class EvalsController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Show Evals");
-        Template::RequireLogin("DJ Account");
+        Template::RequireLogin("/dj/evals","DJ Account");
 
         Template::AddStaffAlert("You can see completed evals at <a href='/staff/evals'>/staff/evals</a>");
 

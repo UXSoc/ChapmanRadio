@@ -31,9 +31,10 @@ class AlterationController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Alterations");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/alterations","Staff Resources", "staff");
 
         Template::css("/legacy/css/formtable.css");
         Template::js("/legacy/js/postform.js");

@@ -17,6 +17,7 @@ use ChapmanRadio\Podcast;
 use ChapmanRadio\Request;
 use ChapmanRadio\Season;
 use ChapmanRadio\Session;
+use ChapmanRadio\ShowModel;
 use ChapmanRadio\Site;
 use ChapmanRadio\Stats;
 use ChapmanRadio\Template;
@@ -34,9 +35,10 @@ class ShowsController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("My Shows");
-        Template::RequireLogin("DJ Resources");
+        Template::RequireLogin("/dj/shows","DJ Resources");
 
         $userid = Session::GetCurrentUserID();
 

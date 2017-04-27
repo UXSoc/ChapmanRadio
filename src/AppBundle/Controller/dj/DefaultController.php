@@ -8,15 +8,6 @@
 
 namespace AppBundle\Controller\dj;
 
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 4/20/17
- * Time: 8:08 AM
- */
-
-namespace AppBundle\Controller\dj;
-
 
 use ChapmanRadio\DB;
 use ChapmanRadio\Evals;
@@ -32,16 +23,14 @@ class DefaultController extends Controller
 {
 
     /**
-     * @Route("/dj", name="dj_eval")
+     * @Route("/dj", name="dj")
      */
     public function indexAction(ContainerInterface $container = null)
     {
-
-
-
+        define('PATH', '../');
         Template::SetPageTitle("DJ Account");
         Template::SetBodyHeading("Chapman Radio", "DJ Account");
-        Template::RequireLogin("DJ Account");
+        Template::RequireLogin("/dj","DJ Account");
 
 // organize content into a table
         $menu = array(
@@ -74,7 +63,7 @@ class DefaultController extends Controller
 
         Template::AddBodyContent("<table style='margin:10px auto;' class='formtable' cellspacing='0' cellpadding='0'>");
 
-        foreach($menu as $key => $item) {
+        foreach ($menu as $key => $item) {
             $rowclass = ($key + 1) % 2 == 0 ? 'evenRow' : 'oddRow';
             extract($item);
             Template::AddBodyContent("<tr class='$rowclass' style='cursor:pointer;' onmouseover='this.rel=this.style.backgroundColor;this.style.backgroundColor=\"#E0E0E0\";' onmouseout='this.style.backgroundColor=this.rel;' onclick='window.location=\"$link\"'>

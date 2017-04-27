@@ -8,15 +8,6 @@
 
 namespace AppBundle\Controller\dj;
 
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 4/20/17
- * Time: 8:08 AM
- */
-
-namespace AppBundle\Controller\dj;
-
 
 use ChapmanRadio\DB;
 use ChapmanRadio\Evals;
@@ -40,11 +31,12 @@ class MarathonController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Marathon Signup");
         Template::SetPageSection("");
         Template::SetBodyHeading("DJ Resources", "Request Marathon Slot");
-        Template::RequireLogin("DJ Account");
+        Template::RequireLogin("/dj/marathon","DJ Account");
 
         Template::JS("/legacy/js/jquery-ui-dragdrop.min.js");
 

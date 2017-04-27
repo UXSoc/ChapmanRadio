@@ -22,10 +22,11 @@ class FeaturesController extends  Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Site Administration");
         Template::SetBodyHeading("Site Administration", "Features");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/features","Staff Resources", "staff");
 
         Template::shadowbox();
         Template::js("/staff/js/dialog_edit.js");

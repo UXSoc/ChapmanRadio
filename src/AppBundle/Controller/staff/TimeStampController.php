@@ -24,6 +24,7 @@ class TimeStampController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         if(isset($_REQUEST["make"])) {
             $t = strtotime(urldecode($_REQUEST["make"]));
@@ -36,7 +37,7 @@ class TimeStampController extends Controller
 
         Template::SetPageTitle("Timestamp Utility");
         Template::SetBodyHeading("Chapman Radio", "Timestamp Utility");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/timestamp","Staff Resources", "staff");
 
 // timestamp calculations
         $timestamp = Request::GetInteger('timestamp');

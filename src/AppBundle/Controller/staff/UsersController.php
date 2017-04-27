@@ -23,13 +23,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class UsersController extends Controller
 {
     /**
-     * @Route("/staff/user", name="staff_upload")
+     * @Route("/staff/users", name="staff_users")
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("User Lookup");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/users","Staff Resources", "staff");
         Template::js("/legacy/js/jquery.watermark.min.js");
         Template::Bootstrap();
         Template::shadowbox();

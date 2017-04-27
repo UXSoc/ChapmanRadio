@@ -25,13 +25,14 @@ class StrikesController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         $season = Season::current();
         $seasonName = Season::name($season);
 
         Template::SetPageTitle("Strikes");
         Template::SetBodyHeading("Staff Resources", "Strikes: $seasonName");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/strikes","Staff Resources", "staff");
 
         Template::AddBodyContent("<div class='gloss'><table style='font-size:12px;margin:auto;text-align:left;' cellspacing='2'>
 	<tr><td><b>".Site::$ShowAbsencesPerStrike."</b> Show Absence</td><td>&nbsp;&nbsp;=&nbsp;&nbsp;</td><td>1 strike</td></tr>

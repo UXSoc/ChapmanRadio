@@ -15,10 +15,11 @@ class EmaillistsController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Email Lists - Staff");
         Template::SetBodyHeading("Staff Resources", "Email Lists");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/emaillists","Staff Resources", "staff");
 
         Template::css(PATH . "css/formtable.css");
 

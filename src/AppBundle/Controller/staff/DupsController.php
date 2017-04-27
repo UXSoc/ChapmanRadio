@@ -16,9 +16,11 @@ class DupsController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
+
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Duplicates");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/dups","Staff Resources", "staff");
         Template::Bootstrap();
 
         $dupshows = DB::GetAll("SELECT s1.*,s2.showid as dsid FROM shows as s1 INNER JOIN shows AS s2 ON s1.showname = s2.showname AND s1.showid < s2.showid");

@@ -27,10 +27,10 @@ class ActivityController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
-
+        define('PATH', '../');
         Template::SetPageTitle("Site Activity - Admin");
         Template::SetBodyHeading("Chapman Radio Admin", "Site Activity");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/activity","Staff Resources", "staff");
 
         Template::css("/legacy/css/formtable.css");
 

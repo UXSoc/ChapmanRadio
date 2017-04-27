@@ -1,4 +1,5 @@
 <?php
+
 namespace AppBundle\Controller\dj;
 
 
@@ -20,29 +21,30 @@ class TagsController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTitle("Create your own Tags - DJ Resources");
-        Template::RequireLogin("DJ Resources");
+        Template::RequireLogin("/dj/tags", "DJ Resources");
 
         $dirs = array(
-            "Noise" => PATH."resources/tags/noise/",
-            "Craig's Voiceover" => PATH."resources/tags/craig/",
-            "Sample Music Beds" => PATH."resources/tags/beds/",
-            "Novelty Audio Files" => PATH."resources/tags/novelty/",
-            "Sound Effects" => PATH."resources/tags/sfx/",
-            "Computer Voice" => PATH."resources/tags/voice/",
+            "Noise" => PATH . "resources/tags/noise/",
+            "Craig's Voiceover" => PATH . "resources/tags/craig/",
+            "Sample Music Beds" => PATH . "resources/tags/beds/",
+            "Novelty Audio Files" => PATH . "resources/tags/novelty/",
+            "Sound Effects" => PATH . "resources/tags/sfx/",
+            "Computer Voice" => PATH . "resources/tags/voice/",
         );
 
         $meta = array();
-        $data = file_get_contents(PATH."dj/tags.data.txt");
+        $data = file_get_contents(PATH . "dj/tags.data.txt");
 
         $items = explode("`", $data);
-        foreach($items as $item) {
-            if(!$item) continue;
+        foreach ($items as $item) {
+            if (!$item) continue;
             $rows = explode("\n", $item);
             $key = trim(array_shift($rows));
             $newrows = array();
-            foreach($rows as $k => $v) if(trim($v)) $newrows[$k] = trim($v);
+            foreach ($rows as $k => $v) if (trim($v)) $newrows[$k] = trim($v);
             $meta[$key] = $newrows;
         }
 
@@ -61,7 +63,7 @@ class TagsController extends Controller
 	</div>");
 
         $total = 0;
-        foreach($dirs as $eng => $dir) {
+        foreach ($dirs as $eng => $dir) {
             $d = dir($dir);
 
             Template::AddBodyContent("<div style='clear: both; overflow: auto;'><h2 style='text-align: left; text-transform: uppercase; font-size: 19px; color: #79C043;'>$eng</h2>");
@@ -69,17 +71,17 @@ class TagsController extends Controller
             $col = array("", "", "");
             while (false !== ($entry = $d->read())) {
 
-                if(substr($entry,0,1) == ".") continue;
+                if (substr($entry, 0, 1) == ".") continue;
                 $name = isset($meta[$entry]) ? $meta[$entry][0] : $entry;
                 $info = "";
 
-                if(isset($meta[$entry])) foreach($meta[$entry] as $key => $val) if($key != 0) $info .= "<br />$val<br />";
+                if (isset($meta[$entry])) foreach ($meta[$entry] as $key => $val) if ($key != 0) $info .= "<br />$val<br />";
                 else $info = "$entry";
 
-                $col[$count++ % 3] .= "<div style='border: 1px solid #CCC; margin: 5px; padding: 5px;'><h3>$name</h3><br /><p style='text-align:left;'>$info</p>".self::mp3player($dir.$entry) . download($dir.$entry, $entry)."</div>";
+                $col[$count++ % 3] .= "<div style='border: 1px solid #CCC; margin: 5px; padding: 5px;'><h3>$name</h3><br /><p style='text-align:left;'>$info</p>" . self::mp3player($dir . $entry) . download($dir . $entry, $entry) . "</div>";
             }
             $d->close();
-            foreach($col as $c) Template::AddBodyContent("<div style='float:left; width: 310px;'>".$c."</div>");
+            foreach ($col as $c) Template::AddBodyContent("<div style='float:left; width: 310px;'>" . $c . "</div>");
             Template::AddBodyContent("</div>");
         }
 
@@ -87,22 +89,23 @@ class TagsController extends Controller
 
     }
 
-    function mp3player($mp3) {
+    function mp3player($mp3)
+    {
         $mp3 = urlencode($mp3);
         return "<object type='application/x-shockwave-flash' data='/plugins/flashmp3player/player_mp3_maxi.swf' width='200' height='20'>
-	<param name='movie' value='/plugins/flashmp3player/player_mp3_maxi.swf' />
-	<param name='bgcolor' value='#ffffff' />
-	<param name='FlashVars' value='mp3=$mp3' />
-	</object>";
+        <param name='movie' value='/plugins/flashmp3player/player_mp3_maxi.swf' />
+        <param name='bgcolor' value='#ffffff' />
+        <param name='FlashVars' value='mp3=$mp3' />
+        </object>";
     }
 
     function download($mp3, $entry)
     {
         return "<div class='gloss' style='margin:10px 30px;display:block;width:200px;'>
-		<a href='$mp3' style='display:block;width:100%;height:100%;' onmouseover='this.style.background=\"rgba(0,0,0,.2)\";' onmouseout='this.style.background=\"transparent\"'>
-			<img src='/img/misc/download.png' alt='' style='float: left; width: 40px; margin-top: -10px;'/>
-			Download
-		</a>
-	</div>";
+            <a href='$mp3' style='display:block;width:100%;height:100%;' onmouseover='this.style.background=\"rgba(0,0,0,.2)\";' onmouseout='this.style.background=\"transparent\"'>
+                <img src='/img/misc/download.png' alt='' style='float: left; width: 40px; margin-top: -10px;'/>
+                Download
+            </a>
+	    </div>";
     }
 }

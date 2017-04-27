@@ -25,10 +25,11 @@ class RecordController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
 
         Template::SetPageTemplate("report");
         Template::SetPageTitle("Attendance Recording Utility");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/record","Staff Resources", "staff");
 
 
         $type = Request::Get('type');

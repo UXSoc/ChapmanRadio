@@ -19,9 +19,11 @@ class AwardsController extends  Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+        define('PATH', '../');
+
         Template::SetPageTitle("Awards");
         Template::SetBodyHeading("Site Administration", "Awards");
-        Template::RequireLogin("Staff Resources", "staff");
+        Template::RequireLogin("/staff/awards","Staff Resources", "staff");
 
         Template::js("/legacy/staff/js/awards.js");
         Template::css("/legacy/css/formtable.css");

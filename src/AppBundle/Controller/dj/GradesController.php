@@ -23,14 +23,15 @@ class GradesController extends Controller
 {
 
     /**
-     * @Route("/dj/grades", name="dj_eval")
+     * @Route("/dj/grades", name="dj_grades")
      */
     public function indexAction(ContainerInterface $container = null)
     {
 
+        define('PATH', '../');
 
         Template::SetPageTitle("My Grades - DJ Resources");
-        Template::RequireLogin("DJ Account");
+        Template::RequireLogin("/dj/grades","DJ Account");
         Template::Bootstrap();
 
         Template::Css("/dj/css/page-grades.css?1");
