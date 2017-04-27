@@ -5,7 +5,7 @@ import SummaryPage from './pages/SummaryPage.vue'
 
 const router = new VueRouter({
   routes: [
-     { name: 'summary', path: '', component: SummaryPage }
+     { name: 'summary', path: '/', component: SummaryPage }
   ]
 })
 

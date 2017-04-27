@@ -89,7 +89,7 @@ class GenreContentController extends  Controller{
 // does the row in genrecontent table exist?
         $genrecontent = DB::GetFirst("SELECT * FROM genrecontent WHERE genre='$genre'");
         if(!$genrecontent) {
-            DB::Insert("genrecontent", array("genre" => $genre, "content" => ""));
+            DB::Insert("genrecontent", array("genre" => $genre, "content" => "", "staffid" => 0,"lastmodified" => new \DateTime("now")  ));
             $genrecontent = DB::GetFirst("SELECT * FROM genrecontent WHERE genre='$genre'");
         }
 
