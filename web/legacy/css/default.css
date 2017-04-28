@@ -11,7 +11,7 @@ body {
 }
 
 #bodybottomshade {
-	background:url(/img/bg/bodybottomshade.png) repeat-x;
+	background:url(/legacy/img/bg/bodybottomshade.png) repeat-x;
 	position:fixed;
 	bottom:0;
 	left:0;
@@ -21,7 +21,7 @@ body {
 }
 
 #bodybg {
-	background:url(/img/bg/bodybg.png) repeat-x 0 0;
+	background:url(/legacy/img/bg/bodybg.png) repeat-x 0 0;
 	position:absolute;
 	left:0;
 	top:0;
@@ -32,7 +32,7 @@ body {
 
 #header {
 	text-indent:-600000px;
-	background:url(/img/logo/logo.png) no-repeat center bottom transparent;
+	background:url(/legacy/img/logo/logo.png) no-repeat center bottom transparent;
 	height:175px;
 	margin:10px auto;
 }
@@ -53,7 +53,7 @@ body {
 }
 
 .graystripe {
-	background:url(/img/bg/graystripe.png);
+	background:url(/legacy/img/bg/graystripe.png);
 	height:2px;
 	width:100%;
 }

@@ -59,7 +59,7 @@ class EventsController extends  Controller
                 Template::AddInlineError("Please enter a valid time for your new event");
             }
             else {
-                $eventid = DB::Insert("events", array('title' => $title, 'timestamp' => $timestamp));
+                $eventid = DB::Insert("events", array('title' => $title, 'timestamp' => $timestamp,"description" => "" , "link" => "", "location" => ""));
                 Template::AddInlineSuccess("Your event has been created.");
             }
         }

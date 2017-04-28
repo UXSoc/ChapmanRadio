@@ -33,7 +33,7 @@ class LogController extends Controller
         $events = DB::GetAll("SELECT * FROM staff_log INNER JOIN users ON staff_log.userid = users.userid ORDER BY timestamp DESC LIMIT $limit");
 
         Template::AddBodyContent("<table class='eros -full'><thead><tr><td>Timestamp</td><td>Staff</td><td>Details</td></tr></thead>");
-        foreach($events as $event) Template::AddBodyContent("<tr><td>{$event['timestamp']}</td><td>".$event['name']."</td><td>".formatLogEntry($event['details'])."</td></tr>");
+        foreach($events as $event) Template::AddBodyContent("<tr><td>{$event['timestamp']}</td><td>".$event['name']."</td><td>".self::formatLogEntry($event['details'])."</td></tr>");
         Template::AddBodyContent("</table>");
 
         return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());

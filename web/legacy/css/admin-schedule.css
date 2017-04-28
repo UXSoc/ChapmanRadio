@@ -1,5 +1,5 @@
 /* by adam borecki */
-.panel {width:840px;margin:10px auto;position:relative;background:#FEFEFE url(/img/bg/panelbg.gif);}
+.panel {width:840px;margin:10px auto;position:relative;background:#FEFEFE url(/legacy/img/bg/panelbg.gif);}
 #shows { width:100%;height:400px;overflow:auto;line-height:0;text-align:left;padding:4px 0; }
 .show { opacity:.6;margin:2px; width:200px;height:60px;display:inline-block;position:relative;}
 .show:hover{opacity:1}
@@ -13,13 +13,13 @@
 .moreinfo {width:100%;}
 .moreinfo tt {font-family:Verdana;color:#939393;font-size:12px;}
 .moreinfo td {padding:4px 8px;}
-#schednav{position:fixed;right:10px;bottom:0;width:220px;height:auto;background:url(/img/bg/panelbg.gif);}
-#schednav .top{background:url(/img/bg/feedh4bg.png);color:#FFF;height:26px;line-height:22px;}
-#tooltip {position:absolute;width:320px;background:url(/img/bg/panelbg.gif);border:1px solid #757575;text-align:left;}
+#schednav{position:fixed;right:10px;bottom:0;width:220px;height:auto;background:url(/legacy/img/bg/panelbg.gif);}
+#schednav .top{background:url(/legacy/img/bg/feedh4bg.png);color:#FFF;height:26px;line-height:22px;}
+#tooltip {position:absolute;width:320px;background:url(/legacy/img/bg/panelbg.gif);border:1px solid #757575;text-align:left;}
 #tooltip img, #tooltip p {margin:5px;}
 #tooltip img {float:left;}
 
-#schedhover {position:fixed;bottom:10px;left:10px;width:220px;border:1px solid #AAA;background:url(/img/bg/panelbg.gif);text-align:left;}
+#schedhover {position:fixed;bottom:10px;left:10px;width:220px;border:1px solid #AAA;background:url(/legacy/img/bg/panelbg.gif);text-align:left;}
 /* #schedhover {position:fixed;bottom:100px;left:-312px;width:220px;border:1px solid #AAA;background:url(/img/bg/panelbg.gif);text-align:left;} */
-#schedhover .top{background:url(/img/bg/feedh4bg.png);color:#FFF;height:26px;line-height:22px;text-align:center;}
+#schedhover .top{background:url(/legacy/img/bg/feedh4bg.png);color:#FFF;height:26px;line-height:22px;text-align:center;}
 code { padding:4px;background:#AAA;border:1px solid #848484;font-family:courier; }

@@ -418,7 +418,7 @@ form.table label {
 /* Calendar Icon */
 	
 .calendaricon {
-	background:url(/img/icons/calendar48.png);
+	background:url(/legacy/img/icons/calendar48.png);
 	width:48px;
 	height:48px;
 	color:#000;
@@ -441,11 +441,11 @@ form.table label {
 	}
 
 /* Star */
-.star { background:url(/img/icons/star48.png); width:48px; height:48px; color:#FFF;text-shadow:0px 1px 2px #900; text-align:center;line-height:48px;font-weight:bold;font-size:20px; }
+.star { background:url(/legacy/img/icons/star48.png); width:48px; height:48px; color:#FFF;text-shadow:0px 1px 2px #900; text-align:center;line-height:48px;font-weight:bold;font-size:20px; }
 
 /* legacy, check and delete */
 .specs {
-	background:url(/img/bg/specsbg.png) #EEE;
+	background:url(/legacy/img/bg/specsbg.png) #EEE;
 	border:1px solid #999999;
 	margin:10px 0;
 	padding:4px 12px;
@@ -456,7 +456,7 @@ form.table label {
 	margin:0 0 12px 30px;
 }
 .gloss {
-	background:url(/img/background/gloss.png);
+	background:url(/legacy/img/background/gloss.png);
 	border:1px solid #AAA;
 	padding:6px 10px;
 	width:400px;
@@ -468,7 +468,7 @@ form.table label {
 .genre { margin:0;color:#AAA;text-align:right;font-style:italic;font-size:12px; }
 
 .graystripe {
-	background:url(/img/bg/graystripe.png);
+	background:url(/legacy/img/bg/graystripe.png);
 	height:2px;
 	width:100%;
 }

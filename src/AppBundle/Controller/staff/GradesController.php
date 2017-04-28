@@ -10,6 +10,7 @@ namespace AppBundle\Controller\staff;
 
 use ChapmanRadio\DB;
 use ChapmanRadio\GradeStructureModel;
+use ChapmanRadio\Season;
 use ChapmanRadio\Site;
 use ChapmanRadio\Template;
 use ChapmanRadio\UserModel;
@@ -79,7 +80,7 @@ class GradesController extends Controller
             foreach($item->children as $child) Template::Add("<th>{$child->name}</th>");
         }
         Template::Add("</tr></thead><tbody>");
-        foreach($users as $dj) RenderGradeRow($dj, $grades, isset($known[$dj->id])? $known[$dj->id] : []);
+        foreach($users as $dj) self::RenderGradeRow($dj, $grades, isset($known[$dj->id])? $known[$dj->id] : []);
         Template::Add("</tbody></table>");
 
         return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
@@ -93,8 +94,8 @@ class GradesController extends Controller
             Template::Add("<tr><td>{$dj->name} <a href='/staff/reports/user?userid={$dj->id}' target='_blank'>&raquo;</a></td>");
         }
         foreach($grades as $item){
-            RenderGradeCol($dj, $item, $known);
-            foreach($item->children as $child) RenderGradeCol($dj, $child, $known);
+            self::RenderGradeCol($dj, $item, $known);
+            foreach($item->children as $child) self::RenderGradeCol($dj, $child, $known);
         }
         Template::Add("</tr>");
     }

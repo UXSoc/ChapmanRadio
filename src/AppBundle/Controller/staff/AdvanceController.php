@@ -29,7 +29,7 @@ class AdvanceController extends Controller
 {
 
     /**
-     * @Route("/staff/advance", name="staff_advance")
+     * @Route("/staff/advanced", name="staff_advanced")
      */
     public function indexAction(Request $request)
     {

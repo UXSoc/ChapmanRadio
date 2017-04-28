@@ -239,7 +239,7 @@ class ScheduleController extends Controller
             }
         }
         Template::script($script);
-        Template::js("/js/jquery.scrollTo.js");
+        Template::js("/legacy/js/jquery.scrollTo.js");
 
         Template::AddBodyContent("<div id='schedulePanel' class='panel'>
 <div class='navbar'><span class='noHover'>Schedule - $seasonName</span></div>

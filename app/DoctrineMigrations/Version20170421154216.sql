@@ -1018,7 +1018,7 @@ CREATE TABLE IF NOT EXISTS `v_training_slots` (
 --
 DROP TABLE IF EXISTS `v_features_active`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`cr_david`@`localhost` SQL SECURITY DEFINER VIEW `v_features_active` AS select `features`.`feature_id` AS `feature_id`,`features`.`feature_type` AS `feature_type`,`features`.`feature_title` AS `feature_title`,`features`.`feature_link` AS `feature_link`,`features`.`feature_text` AS `feature_text`,`features`.`feature_priority` AS `feature_priority`,`features`.`feature_active` AS `feature_active`,`features`.`feature_size` AS `feature_size`,`features`.`feature_posted` AS `feature_posted`,`features`.`feature_expires` AS `feature_expires`,`features`.`revisionkey` AS `revisionkey` from `features` where ((`features`.`feature_active` = 1) and (isnull(`features`.`feature_expires`) or (`features`.`feature_expires` = '0000-00-00 00:00:00') or (`features`.`feature_expires` > now())) and (isnull(`features`.`feature_posted`) or (`features`.`feature_posted` < now()))) order by `features`.`feature_priority` desc;
+CREATE VIEW `v_features_active` AS select `features`.`feature_id` AS `feature_id`,`features`.`feature_type` AS `feature_type`,`features`.`feature_title` AS `feature_title`,`features`.`feature_link` AS `feature_link`,`features`.`feature_text` AS `feature_text`,`features`.`feature_priority` AS `feature_priority`,`features`.`feature_active` AS `feature_active`,`features`.`feature_size` AS `feature_size`,`features`.`feature_posted` AS `feature_posted`,`features`.`feature_expires` AS `feature_expires`,`features`.`revisionkey` AS `revisionkey` from `features` where ((`features`.`feature_active` = 1) and (isnull(`features`.`feature_expires`) or (`features`.`feature_expires` = '0000-00-00 00:00:00') or (`features`.`feature_expires` > now())) and (isnull(`features`.`feature_posted`) or (`features`.`feature_posted` < now()))) order by `features`.`feature_priority` desc;
 
 -- --------------------------------------------------------
 
@@ -1027,7 +1027,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`cr_david`@`localhost` SQL SECURITY DEFINER V
 --
 DROP TABLE IF EXISTS `v_listener_map`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`cr_david`@`localhost` SQL SECURITY DEFINER VIEW `v_listener_map` AS select max(`listens`.`timestamp`) AS `listen_timestamp`,max(`listens`.`source`) AS `listen_source`,`geoip`.`geoip_country` AS `geoip_country`,`geoip`.`geoip_region` AS `geoip_region`,`geoip`.`geoip_city` AS `geoip_city`,avg(`geoip`.`geoip_latitude`) AS `geoip_latitude`,avg(`geoip`.`geoip_longitude`) AS `geoip_longitude`,count(0) AS `listen_count` from (`listens` join `geoip` on((`geoip`.`geoip_ip` = `listens`.`ipaddr`))) where (`geoip`.`geoip_city` <> '') group by `geoip`.`geoip_country`,`geoip`.`geoip_region`,`geoip`.`geoip_city`;
+CREATE VIEW `v_listener_map` AS select max(`listens`.`timestamp`) AS `listen_timestamp`,max(`listens`.`source`) AS `listen_source`,`geoip`.`geoip_country` AS `geoip_country`,`geoip`.`geoip_region` AS `geoip_region`,`geoip`.`geoip_city` AS `geoip_city`,avg(`geoip`.`geoip_latitude`) AS `geoip_latitude`,avg(`geoip`.`geoip_longitude`) AS `geoip_longitude`,count(0) AS `listen_count` from (`listens` join `geoip` on((`geoip`.`geoip_ip` = `listens`.`ipaddr`))) where (`geoip`.`geoip_city` <> '') group by `geoip`.`geoip_country`,`geoip`.`geoip_region`,`geoip`.`geoip_city`;
 
 -- --------------------------------------------------------
 
@@ -1036,7 +1036,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`cr_david`@`localhost` SQL SECURITY DEFINER V
 --
 DROP TABLE IF EXISTS `v_livechat`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`cr_david`@`localhost` SQL SECURITY DEFINER VIEW `v_livechat` AS select `livechat`.`livechatid` AS `livechatid`,`livechat`.`contactid` AS `contactid`,`livechat`.`direction` AS `direction`,`livechat`.`message` AS `message`,`livechat`.`datetime` AS `datetime`,`livechat_contacts`.`contactkey` AS `contactkey`,`livechat_contacts`.`contactname` AS `contactname` from (`livechat` left join `livechat_contacts` on((`livechat`.`contactid` = `livechat_contacts`.`contactkey`)));
+CREATE VIEW `v_livechat` AS select `livechat`.`livechatid` AS `livechatid`,`livechat`.`contactid` AS `contactid`,`livechat`.`direction` AS `direction`,`livechat`.`message` AS `message`,`livechat`.`datetime` AS `datetime`,`livechat_contacts`.`contactkey` AS `contactkey`,`livechat_contacts`.`contactname` AS `contactname` from (`livechat` left join `livechat_contacts` on((`livechat`.`contactid` = `livechat_contacts`.`contactkey`)));
 
 -- --------------------------------------------------------
 
@@ -1045,7 +1045,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`cr_david`@`localhost` SQL SECURITY DEFINER V
 --
 DROP TABLE IF EXISTS `v_news_active`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`cr_david`@`localhost` SQL SECURITY DEFINER VIEW `v_news_active` AS select `news`.`news_id` AS `news_id`,`news`.`news_title` AS `news_title`,`news`.`news_body` AS `news_body`,`news`.`news_postedby` AS `news_postedby`,`news`.`news_posted` AS `news_posted`,`news`.`news_expires` AS `news_expires` from `news` where ((isnull(`news`.`news_posted`) or (`news`.`news_posted` < now())) and (isnull(`news`.`news_expires`) or (`news`.`news_expires` > now()))) order by `news`.`news_posted` desc;
+CREATE VIEW `v_news_active` AS select `news`.`news_id` AS `news_id`,`news`.`news_title` AS `news_title`,`news`.`news_body` AS `news_body`,`news`.`news_postedby` AS `news_postedby`,`news`.`news_posted` AS `news_posted`,`news`.`news_expires` AS `news_expires` from `news` where ((isnull(`news`.`news_posted`) or (`news`.`news_posted` < now())) and (isnull(`news`.`news_expires`) or (`news`.`news_expires` > now()))) order by `news`.`news_posted` desc;
 
 -- --------------------------------------------------------
 
@@ -1054,7 +1054,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`cr_david`@`localhost` SQL SECURITY DEFINER V
 --
 DROP TABLE IF EXISTS `v_training_signups`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`cr_david`@`localhost` SQL SECURITY DEFINER VIEW `v_training_signups` AS select `training_signups`.`trainingsignup_id` AS `trainingsignup_id`,`training_signups`.`trainingsignup_slot` AS `trainingsignup_slot`,`training_signups`.`trainingsignup_userid` AS `trainingsignup_userid`,`training_signups`.`trainingsignup_present` AS `trainingsignup_present`,`training_slots`.`trainingslot_id` AS `trainingslot_id`,`training_slots`.`trainingslot_season` AS `trainingslot_season`,`training_slots`.`trainingslot_datetime` AS `trainingslot_datetime`,`training_slots`.`trainingslot_staffid` AS `trainingslot_staffid`,`training_slots`.`trainingslot_max` AS `trainingslot_max` from (`training_signups` join `training_slots` on((`training_signups`.`trainingsignup_slot` = `training_slots`.`trainingslot_id`)));
+CREATE VIEW `v_training_signups` AS select `training_signups`.`trainingsignup_id` AS `trainingsignup_id`,`training_signups`.`trainingsignup_slot` AS `trainingsignup_slot`,`training_signups`.`trainingsignup_userid` AS `trainingsignup_userid`,`training_signups`.`trainingsignup_present` AS `trainingsignup_present`,`training_slots`.`trainingslot_id` AS `trainingslot_id`,`training_slots`.`trainingslot_season` AS `trainingslot_season`,`training_slots`.`trainingslot_datetime` AS `trainingslot_datetime`,`training_slots`.`trainingslot_staffid` AS `trainingslot_staffid`,`training_slots`.`trainingslot_max` AS `trainingslot_max` from (`training_signups` join `training_slots` on((`training_signups`.`trainingsignup_slot` = `training_slots`.`trainingslot_id`)));
 
 -- --------------------------------------------------------
 
@@ -1063,7 +1063,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`cr_david`@`localhost` SQL SECURITY DEFINER V
 --
 DROP TABLE IF EXISTS `v_training_slots`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`cr_david`@`localhost` SQL SECURITY DEFINER VIEW `v_training_slots` AS select `training_slots`.`trainingslot_id` AS `trainingslot_id`,`training_slots`.`trainingslot_season` AS `trainingslot_season`,`training_slots`.`trainingslot_datetime` AS `trainingslot_datetime`,`training_slots`.`trainingslot_staffid` AS `trainingslot_staffid`,`training_slots`.`trainingslot_max` AS `trainingslot_max`,`users`.`userid` AS `userid`,`users`.`fbid` AS `fbid`,`users`.`email` AS `email`,`users`.`studentid` AS `studentid`,`users`.`phone` AS `phone`,`users`.`fname` AS `fname`,`users`.`lname` AS `lname`,`users`.`name` AS `name`,`users`.`djname` AS `djname`,`users`.`gender` AS `gender`,`users`.`seasons` AS `seasons`,`users`.`classclub` AS `classclub`,`users`.`lastlogin` AS `lastlogin`,`users`.`lastip` AS `lastip`,`users`.`password` AS `password`,`users`.`verifycode` AS `verifycode`,`users`.`type` AS `type`,`users`.`staffgroup` AS `staffgroup`,`users`.`staffposition` AS `staffposition`,`users`.`staffemail` AS `staffemail`,`users`.`confirmnewsletter` AS `confirmnewsletter`,`users`.`workshoprequired` AS `workshoprequired`,`users`.`suspended` AS `suspended`,`users`.`quizpassedseasons` AS `quizpassedseasons`,`users`.`revisionkey` AS `revisionkey`,(select count(0) from `training_signups` where (`training_signups`.`trainingsignup_slot` = `training_slots`.`trainingslot_id`)) AS `trainingslot_count` from (`training_slots` join `users` on((`training_slots`.`trainingslot_staffid` = `users`.`userid`)));
+CREATE VIEW `v_training_slots` AS select `training_slots`.`trainingslot_id` AS `trainingslot_id`,`training_slots`.`trainingslot_season` AS `trainingslot_season`,`training_slots`.`trainingslot_datetime` AS `trainingslot_datetime`,`training_slots`.`trainingslot_staffid` AS `trainingslot_staffid`,`training_slots`.`trainingslot_max` AS `trainingslot_max`,`users`.`userid` AS `userid`,`users`.`fbid` AS `fbid`,`users`.`email` AS `email`,`users`.`studentid` AS `studentid`,`users`.`phone` AS `phone`,`users`.`fname` AS `fname`,`users`.`lname` AS `lname`,`users`.`name` AS `name`,`users`.`djname` AS `djname`,`users`.`gender` AS `gender`,`users`.`seasons` AS `seasons`,`users`.`classclub` AS `classclub`,`users`.`lastlogin` AS `lastlogin`,`users`.`lastip` AS `lastip`,`users`.`password` AS `password`,`users`.`verifycode` AS `verifycode`,`users`.`type` AS `type`,`users`.`staffgroup` AS `staffgroup`,`users`.`staffposition` AS `staffposition`,`users`.`staffemail` AS `staffemail`,`users`.`confirmnewsletter` AS `confirmnewsletter`,`users`.`workshoprequired` AS `workshoprequired`,`users`.`suspended` AS `suspended`,`users`.`quizpassedseasons` AS `quizpassedseasons`,`users`.`revisionkey` AS `revisionkey`,(select count(0) from `training_signups` where (`training_signups`.`trainingsignup_slot` = `training_slots`.`trainingslot_id`)) AS `trainingslot_count` from (`training_slots` join `users` on((`training_slots`.`trainingslot_staffid` = `users`.`userid`)));
 
 --
 -- Indexes for dumped tables
