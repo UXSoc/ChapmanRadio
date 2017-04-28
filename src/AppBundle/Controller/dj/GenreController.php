@@ -115,7 +115,7 @@ class GenreController extends Controller
 
 // finish up
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($requst,"</div>"));
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($request,"</div>"));
 
     }
 }

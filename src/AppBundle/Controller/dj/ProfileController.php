@@ -14,6 +14,7 @@ use ChapmanRadio\Evals;
 use ChapmanRadio\GradeStructureModel;
 use ChapmanRadio\Imaging;
 use ChapmanRadio\Season;
+use ChapmanRadio\Request as ChapmanRadioRequest;
 use ChapmanRadio\Session;
 use ChapmanRadio\Template;
 use ChapmanRadio\Uploader;
@@ -69,7 +70,7 @@ class ProfileController extends Controller
             foreach($fields as $eng => $field) {
                 if(is_numeric($eng)) continue;
                 if(!isset($_REQUEST[$prefix.$field])) Template::Error("Missing information: Please go back and enter <b>$eng</b>");
-                else if($field != 'name') $user->Update($field, Request::Get($prefix.$field));
+                else if($field != 'name') $user->Update($field, ChapmanRadioRequest::Get($prefix.$field));
             }
 
             Template::AddBodyContent("<div class='gloss' style='width:360px;margin:10px auto;'><p style='color:green'>Updated</p><p>You've successfully updated your profile information.</p></div>");
