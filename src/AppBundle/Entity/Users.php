@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Users
  *
- * @ORM\Table(name="users", repositoryClass="AppBundle\Repository\UserRepository")
+ * @ORM\Table(name="users")
  * @ORM\Entity
  */
 class Users

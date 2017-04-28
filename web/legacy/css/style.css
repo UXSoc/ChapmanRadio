@@ -13,7 +13,7 @@ html, body {
 	min-height:100%;
 }
 body {
-	background:url(/img/background/header.jpg) repeat-x 0 -175px #FFF;
+	background:url(/legacy/img/background/header.jpg) repeat-x 0 -175px #FFF;
 	background-position: 0 0;
 	color:#333;
 	text-align:center;
@@ -199,7 +199,7 @@ form.table label {
 	overflow: auto;
 	}
 .navbar ul {
-	background:url(/img/background/navbar.png) center center #393939;
+	background:url(/legacy/img/background/navbar.png) center center #393939;
 	display: table;
 	height:30px;
 	width:100%;
@@ -215,7 +215,7 @@ form.table label {
 	display: table-cell;
 	}
 .navbar a {
-	background:url(/img/background/navbar.png) center center #393939;
+	background:url(/legacy/img/background/navbar.png) center center #393939;
 	background-position: 0px 0px;
 	color:#CCC;
 	display: block;
@@ -287,7 +287,7 @@ form.table label {
 
 /* Address bars */
 .address {
-	background:url(/img/background/address.png) repeat-x bottom left #EEE;
+	background:url(/legacy/img/background/address.png) repeat-x bottom left #EEE;
 	height:25px;
 	font-size:13px;
 	text-align:left;

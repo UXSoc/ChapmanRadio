@@ -21,14 +21,14 @@ css/apply.css
 .apply .section {
 	font-size:20px;
 	border-bottom:1px solid #AAA;
-	background:#FFF url('/app/sectionbg.png') repeat-x bottom left;
+	background:#FFF url('/legacy/app/sectionbg.png') repeat-x bottom left;
 	text-align:left;
 }
 
 .apply .dj {
 	display:block;
 	border:1px solid #999;
-	background:#E6E6E6 url('/app/gloss.png') no-repeat;
+	background:#E6E6E6 url('/legacy/app/gloss.png') no-repeat;
 	float:none;
 	width:360px;
 	margin:6px auto;

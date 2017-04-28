@@ -32,7 +32,7 @@ class GenreContentController extends  Controller{
         Template::SetBodyHeading("Site Administration", "Genre Content");
         Template::RequireLogin("/staff/genrecontent","Staff Resources", "staff");
 
-        Template::css(PATH."css/formtable.css");
+        Template::css("/legacy/css/formtable.css");
         Template::style(Schedule::styleGenres());
 
         $season = Site::CurrentSeason();
@@ -112,7 +112,7 @@ class GenreContentController extends  Controller{
 // info
         $user = Session::GetCurrentUser();
         $lastupdated = date("l, F jS, Y");
-        Template::css(PATH."css/dl.css");
+        Template::css("/legacy/css/dl.css");
         Template::AddBodyContent("<div class='gloss' style='padding:0px;'>
 	<div class='address'><a>$genre</a></div>
 	<p class='$genreClass' style='padding:2px 0 2px 10px;height:12px;'></p>
