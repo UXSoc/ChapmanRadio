@@ -4,6 +4,11 @@ parameters:
     #parameter_name: value
 
 services:
+    user_repository:
+        class: AppBundle\Repository\UserRepository
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - AppBundle\Entity\Users
     #service_name:
     #    class: AppBundle\Directory\ClassName
     #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']

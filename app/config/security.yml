@@ -1,11 +1,17 @@
 # To get started with security, check out the documentation:
 # http://symfony.com/doc/current/security.html
 security:
-
+    encoders:
+        AppBundle\Entity\Users:
+            algorithm: bcrypt
+            cost: 12
     # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
+        webservice:
+            id: user_repository
         in_memory:
             memory: ~
+
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -15,6 +21,9 @@ security:
 
         main:
             anonymous: ~
+            form_login:
+                login_path: login
+                check_path: login
             # activate different ways to authenticate
 
             # http://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate

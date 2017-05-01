@@ -1,0 +1,13 @@
+<p>
+    Hey {{ user.getName() }},
+</p><p>
+    Please confirm your email before logging in to
+</p>
+<p>
+    <a href="{{ url('confirm_token',{'token' : user.getConfirmationToken()}) }}">{{ url('confirm_token',{'token' : user.getConfirmationToken()}) }}</a>
+</p>
+<p>
+    Greetings,
+    <br>
+    Chapman Radio
+</p>
