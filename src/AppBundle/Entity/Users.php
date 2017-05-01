@@ -21,7 +21,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Users implements AdvancedUserInterface
 {
     const USER_ROLE = 'USER_ROLE';
-    const USER_ADMIN = 'USER_ADMIN';
+    const STAFF_ROLE = 'STAFF_ROLE';
+    const DJ_ROLE = 'DJ_ROLE';
 
     /**
      * @var integer
@@ -138,12 +139,6 @@ class Users implements AdvancedUserInterface
     private $confirmation_token;
 
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="type", type="string", nullable=false)
-     */
-    private $type = 'dj';
 
     /**
      * @var string
@@ -206,7 +201,7 @@ class Users implements AdvancedUserInterface
     /**
      * @var array
      *
-     * @ORM\Column(name="role", type="array", nullable=false)
+     * @ORM\Column(name="role", type="simple_array", nullable=false)
      */
     private $role = [Users::USER_ROLE];
 
