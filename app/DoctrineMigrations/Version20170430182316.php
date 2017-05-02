@@ -22,15 +22,16 @@ class Version20170430182316 extends AbstractMigration implements ContainerAwareI
      */
     public function up(Schema $schema)
     {
+
+
+
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE users ADD confirmed TINYINT');
         $this->addSql('ALTER TABLE users ADD confirmation_token VARCHAR(30)');
         $this->addSql('ALTER TABLE users ADD username VARCHAR(30)');
-        $this->addSql('ALTER TABLE users ADD role TEXT NOT NULL;');
 
         $this->addSql('ALTER TABLE users DROP fname');
         $this->addSql('ALTER TABLE users DROP lname');
-//        $this->addSql('ALTER TABLE users DROP quizpassedseasons');
         $this->addSql('ALTER TABLE users DROP verifycode');
 
         $this->addSql('ALTER TABLE users MODIFY fbid BIGINT(20) unsigned');
@@ -49,10 +50,7 @@ class Version20170430182316 extends AbstractMigration implements ContainerAwareI
         $this->addSql('CREATE UNIQUE INDEX users_email_uindex ON users (email)');
         $this->addSql('CREATE UNIQUE INDEX users_username_uindex ON users (username)');
 
-        $this->addSql('UPDATE users SET role=CASE WHEN type = "dj" THEN "ROLE_DJ" WHEN type = "staff" THEN "ROLE_STAFF" ELSE "ROLE_USER" END;');
         $this->addSql('UPDATE users set confirmed=1');
-        $this->addSql('ALTER TABLE users DROP type');
-
 
     }
 
@@ -61,19 +59,13 @@ class Version20170430182316 extends AbstractMigration implements ContainerAwareI
      */
     public function down(Schema $schema)
     {
-        $this->addSql('ALTER TABLE users ADD type enum("","dj","staff") NOT NULL ');
 
         $this->addSql('ALTER TABLE users DROP confirmed;');
         $this->addSql('ALTER TABLE users DROP confirmation_token;');
         $this->addSql('ALTER TABLE users DROP username;');
 
-        $this->addSql('UPDATE users SET type=CASE WHEN role = "DJ_ROLE" THEN "dj" WHEN type = "STAFF_ROLE" THEN "staff" ELSE "" END;');
-        $this->addSql('ALTER TABLE users DROP role;');
-
-
         $this->addSql('ALTER TABLE users ADD fname varchar(100) NOT NULL');
         $this->addSql('ALTER TABLE users ADD lname varchar(100) NOT NULL,');
-//        $this->addSql('ALTER TABLE users ADD quizpassedseasons varchar(600) NOT NULL,');
         $this->addSql('ALTER TABLE users ADD verifycode varchar(30) NOT NULL,');
 
         $this->addSql('ALTER TABLE users MODIFY fbid BIGINT(20) unsigned NOT NULL');
@@ -110,6 +102,7 @@ class Version20170430182316 extends AbstractMigration implements ContainerAwareI
             $ent = $row[0];
 
             echo $ent->getEmail() . "\n";
+
 
             $password = Util::decrypt($ent->getPassword());
             $p = $encoder->encodePassword($ent, $password);

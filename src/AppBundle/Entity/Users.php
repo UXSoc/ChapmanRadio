@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
@@ -138,8 +139,6 @@ class Users implements AdvancedUserInterface
      */
     private $confirmation_token;
 
-
-
     /**
      * @var string
      *
@@ -199,11 +198,10 @@ class Users implements AdvancedUserInterface
 
 
     /**
-     * @var array
-     *
-     * @ORM\Column(name="role", type="simple_array", nullable=false)
+     * @var Role[]
+     * @ORM\OneToMany(targetEntity="Role", mappedBy="user", indexBy="role")
      */
-    private $role = [Users::USER_ROLE];
+    private $roles;
 
 
 
@@ -309,13 +307,18 @@ class Users implements AdvancedUserInterface
      */
     public function getRoles()
     {
-        return $this->role;
+        return $this->roles->toArray();
     }
 
-    public function setRoles($roles)
+    public function addRole($role)
     {
-        $this->role = $roles;
+        if(!isset($this->roles[$role]))
+        {
+//            $this->roles[$role] = new Role($role);
+        }
     }
+
+
 
     /**
      * Returns the password used to authenticate the user.

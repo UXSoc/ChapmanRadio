@@ -124,7 +124,7 @@ class StaffController extends Controller
         Template::css("/legacy/css/formtable.css");
 
         Template::AddBodyContent("<h3>Current Staff Members</h3></div>");
-        $users = UserModel::FromResults(DB::GetAll("SELECT * FROM users WHERE type='staff' ORDER BY staffgroup,fname"));
+        $users = UserModel::FromResults(DB::GetAll("SELECT * FROM users WHERE type='staff' ORDER BY staffgroup,username"));
         $count = 0;
         $path = $request->getRequestUri();
         foreach($users as $user){
