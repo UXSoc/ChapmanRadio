@@ -27,7 +27,7 @@ class LoginIssuesController extends Controller
 
         Template::SetPageTitle("Suspended Login Attempts");
         Template::SetBodyHeading("Chapman Radio Admin", "Suspended Login Attempts");
-        Template::RequireLogin("/staff/loginissues","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/loginissues","Staff Resources", "staff");
         $season = Season::current();
 
         $seasonName = Season::name($season);
@@ -55,6 +55,6 @@ class LoginIssuesController extends Controller
             Template::AddBodyContent("</table>");
 
         }
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

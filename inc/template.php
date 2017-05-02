@@ -1,5 +1,11 @@
 <?php namespace ChapmanRadio;
 
+use AppBundle\Controller\DefaultController;
+use AppBundle\Entity\Users;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Security\Core\User\User;
+
 class Template
 {
 
@@ -31,7 +37,7 @@ class Template
     private static $problem = false;
     private static $bootstrapping = false;
 
-    public static function Finalize($xtra = '')
+    public static function Finalize($container,$xtra = '')
     {
 
         if (isset($_GET['template'])) setcookie('template', $_GET['template'], 0, '/');
@@ -99,8 +105,8 @@ class Template
         $html = str_replace('[%og:url%]', "http://chapmanradio.com" . $_SERVER['PHP_SELF'], $html);
         $html = str_replace('[%header_url%]', Template::$headerimg, $html);
         $html = str_replace('[%session%]', Template::generateUserSession(), $html);
-        $html = str_replace('[%navbar%]', Template::generateSiteNavigation(Template::$section), $html);
-        $html = str_replace('[%usernav%]', Template::generateUserNavigation(), $html);
+//        $html = str_replace('[%navbar%]', Template::generateSiteNavigation(Template::$section), $html);
+        $html = str_replace('[%usernav%]', Template::generateUserNavigation($container), $html);
         $html = str_replace('[%body_alert%]', Template::$bodyalert, $html);
         $html = str_replace('[%html_body%]', Template::$heading . Template::$body . $xtra, $html);
         $html = str_replace('[%body_start%]', Template::$bodystart, $html);
@@ -384,64 +390,70 @@ class Template
         return $ret;
     }
 
-    public static function generateUserNavigation()
+    public static function generateUserNavigation($container)
     {
         $nav = "";
         $dj = Session::HasUser();
         $staff = Session::isStaff();
 
-        if ($dj) {
-            $nav .= Template::userNavBar("DJ", array(
-                "/dj/live" => "DJ Live",
-                "/dj/shows" => "My Shows",
-                "/dj/profile" => "My Profile",
-                "/dj/grades" => "My Grades",
-                "/dj/attendance" => "My Attendance",
-                "/dj/genre" => "My Genre",
-                "/dj/evals" => "Evals",
-                "/dj/stats" => "Stats",
-                "/dj/news" => "Class News",
-                "/calendar" => 'Calendar',
-                "/dj/downloads" => "Downloads"
-            ), 'dj-bar');
-        }
+        $token =  $container->get('security.token_storage')->getToken();
+        if ($token != null) {
+            $user = $token->getUser();
+            if($user != null) {
+                if (in_array(Users::DJ_ROLE, $user->getRoles())) {
+                    $nav .= Template::userNavBar("DJ", array(
+                        "/dj/live" => "DJ Live",
+                        "/dj/shows" => "My Shows",
+                        "/dj/profile" => "My Profile",
+                        "/dj/grades" => "My Grades",
+                        "/dj/attendance" => "My Attendance",
+                        "/dj/genre" => "My Genre",
+                        "/dj/evals" => "Evals",
+                        "/dj/stats" => "Stats",
+                        "/dj/news" => "Class News",
+                        "/calendar" => 'Calendar',
+                        "/dj/downloads" => "Downloads"
+                    ), 'dj-bar');
+                }
 
-        if ($staff)
-            $nav .= Template::userNavBar("Staff", array(
-                "http://kb.chapmanradio.com" => "KB",
-                "/staff/attendance" => "Attendance",
-                "/staff/features" => "Features",
-                "/staff/genrecontent" => "Genres",
-                "/staff/users" => "Users",
-                "/staff/shows" => "Shows",
-                "/staff/promos" => "Promos",
-                "/staff/events" => "Events",
-                "/staff/giveaways" => "Giveaways",
-                "/staff/schedule" => "Schedule",
-                "/staff/awards" => "Awards",
-                "/staff/evals" => "Evals",
-                "/staff/sitins" => "Sit-ins",
-                "/staff/classnews" => "Class News",
-                "..." => array(
-                    "/staff/staff" => "Staff",
-                    "/staff/grades" => "Grade Management",
-                    "/staff/log" => "Edit Log",
-                    "/staff/emaillists" => "Email Alerts",
-                    "/staff/alterations" => "Schedule Alterations",
-                    "/staff/cancelledshows" => "Cancelled Shows",
-                    "/staff/loginissues" => "Login Attempts",
-                    "/staff/strikes" => "Strikes",
-                    "/staff/aliases" => "URL Aliases",
-                    "/staff/listens" => "Listen Log",
-                    "/staff/quizquestions" => "Quizes",
-                    "/staff/errors" => "Error Log",
-                    "/staff/timestamp" => "Timestamp Utility",
-                    "/staff/recordings" => "Recording Log",
-                    "/staff/sms" => "Livechat History",
-                    "/staff/turntableshows" => "Turntable Shows",
-                    "/staff/advanced" => "Advanced"
-                )
-            ), 'staff-bar');
+                if (in_array(Users::STAFF_ROLE, $user->getRoles()))
+                    $nav .= Template::userNavBar("Staff", array(
+                        "http://kb.chapmanradio.com" => "KB",
+                        "/staff/attendance" => "Attendance",
+                        "/staff/features" => "Features",
+                        "/staff/genrecontent" => "Genres",
+                        "/staff/users" => "Users",
+                        "/staff/shows" => "Shows",
+                        "/staff/promos" => "Promos",
+                        "/staff/events" => "Events",
+                        "/staff/giveaways" => "Giveaways",
+                        "/staff/schedule" => "Schedule",
+                        "/staff/awards" => "Awards",
+                        "/staff/evals" => "Evals",
+                        "/staff/sitins" => "Sit-ins",
+                        "/staff/classnews" => "Class News",
+                        "..." => array(
+                            "/staff/staff" => "Staff",
+                            "/staff/grades" => "Grade Management",
+                            "/staff/log" => "Edit Log",
+                            "/staff/emaillists" => "Email Alerts",
+                            "/staff/alterations" => "Schedule Alterations",
+                            "/staff/cancelledshows" => "Cancelled Shows",
+                            "/staff/loginissues" => "Login Attempts",
+                            "/staff/strikes" => "Strikes",
+                            "/staff/aliases" => "URL Aliases",
+                            "/staff/listens" => "Listen Log",
+                            "/staff/quizquestions" => "Quizes",
+                            "/staff/errors" => "Error Log",
+                            "/staff/timestamp" => "Timestamp Utility",
+                            "/staff/recordings" => "Recording Log",
+                            "/staff/sms" => "Livechat History",
+                            "/staff/turntableshows" => "Turntable Shows",
+                            "/staff/advanced" => "Advanced"
+                        )
+                    ), 'staff-bar');
+            }
+        }
 
         $nav .= Template::livestreams();
         return $nav;
@@ -536,27 +548,27 @@ class Template
         return $code;
     }
 
-    public static function Error($msg)
+    public static function Error($container,$msg)
     {
         // Log::Error('PHP TemplateError', $msg);
 
         $headers = "From: \"Chapman Radio\" <notifications@chapmanradio.com>\r\nReply-to: webmaster@chapmanradio.com\r\n";
         $success = mail("webmaster@chapmanradio.com", "TmplteError", $msg . "\n" . print_r($_SERVER, true), $headers);
 
-        Template::Finalize("<div class='couju-error'>$msg</div><br /><p style='color:#757575'><br />If you have questions about this error, please contact webmaster@chapmanradio.com</p>");
+        Template::Finalize($container,"<div class='couju-error'>$msg</div><br /><p style='color:#757575'><br />If you have questions about this error, please contact webmaster@chapmanradio.com</p>");
     }
 
-    public static function UnhandledException($e)
+    public static function UnhandledException($e,$container)
     {
-        Log::Error('PHP EX', $e);
-        Template::Finalize("<div class='couju-error'>
+        Log::Error($container,'PHP EX', $e);
+        Template::Finalize($container,"<div class='couju-error'>
 			Opps! There was an error loading this page<br /><br />
 			Error: " . $e->GetMessage() . "<br /><br />
 			This error has been logged and our staff have been notified.
 			</div>");
     }
 
-    public static function RequireLogin($redirect,$description, $type = 'dj')
+    public static function RequireLogin($redirect, $description, $type = 'dj')
     {
         $user = Session::GetCurrentUser();
         if ($user != NULL) {
@@ -723,8 +735,8 @@ Template::SetMetaDescription(Site::$MetaDescription);
 // if(!isset($_GET['dt'])) Template::Maint();
 
 // Depreciated
-function error($msg)
+function error($container,$msg)
 {
-    Template::Error($msg);
+    Template::Error($container,$msg);
 }
 

@@ -35,7 +35,7 @@ class AlterationController extends Controller
         define('PATH', '../');
 
         Template::SetPageTitle("Alterations");
-        Template::RequireLogin("/staff/alterations","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/alterations","Staff Resources", "staff");
 
         Template::css("/legacy/css/formtable.css");
         Template::js("/legacy/js/postform.js");
@@ -195,7 +195,7 @@ class AlterationController extends Controller
 
         Template::AddBodyContent("</table></div>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
 
 
     }

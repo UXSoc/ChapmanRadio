@@ -27,7 +27,7 @@ class RecordingsController extends Controller
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Recent Recordings");
-        Template::RequireLogin("/staff/recordings","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/recordings","Staff Resources", "staff");
 
         $limit = Request::GetInteger('limit', 30);
         $recordings = RecordingModel::FromResults(DB::GetAll("SELECT * FROM mp3s INNER JOIN shows ON mp3s.showid = shows.showid ORDER BY recordedon DESC LIMIT $limit"));
@@ -39,6 +39,6 @@ class RecordingsController extends Controller
 
         Template::AddBodyContent("</table>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

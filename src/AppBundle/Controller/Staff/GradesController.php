@@ -28,7 +28,7 @@ class GradesController extends Controller
         define('PATH', '../');
 
         Template::SetPageTitle("All Grades");
-        Template::RequireLogin("/staff/grades","DJ Account");
+        //Template::RequireLogin("/staff/grades","DJ Account");
         Template::Bootstrap();
 
         Template::js("/plugins/tablesorter/jquery.tablesorter.min.js");
@@ -83,7 +83,7 @@ class GradesController extends Controller
         foreach($users as $dj) self::RenderGradeRow($dj, $grades, isset($known[$dj->id])? $known[$dj->id] : []);
         Template::Add("</tbody></table>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
 
     }
     function RenderGradeRow($dj, $grades, $known){

@@ -20,7 +20,7 @@ class EmaillistsController extends Controller
 
         Template::SetPageTitle("Email Lists - Staff");
         Template::SetBodyHeading("Staff Resources", "Email Lists");
-        Template::RequireLogin("/staff/emaillists","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/emaillists","Staff Resources", "staff");
 
         Template::css(PATH . "css/formtable.css");
 
@@ -75,7 +75,7 @@ class EmaillistsController extends Controller
         }
 
         Template::AddBodyContent("</div><br style='margin-bottom:20px' />");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 
 }

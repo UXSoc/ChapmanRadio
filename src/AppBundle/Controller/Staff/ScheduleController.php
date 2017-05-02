@@ -35,7 +35,7 @@ class ScheduleController extends Controller
 
         Template::SetPageTitle("Schedule Editor");
         Template::SetBodyHeading("Site Administration", "Schedule Editor");
-        Template::RequireLogin("Staff Resources", "staff");
+        //Template::RequireLogin("Staff Resources", "staff");
 
         Template::shadowbox();
         Template::css("/legacy/css/dl.css");
@@ -302,6 +302,6 @@ class ScheduleController extends Controller
 	<div id='schednavShows'></div>
 </div>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

@@ -34,7 +34,7 @@ class MyEvalsController extends Controller
         define('PATH', '../');
 
         Template::SetPageTitle("Show Evals");
-        Template::RequireLogin("/dj/myevals","DJ Account");
+        //Template::RequireLogin("/dj/myevals","DJ Account");
 
         Template::AddStaffAlert("You can see completed evals at <a href='/staff/evals'>/staff/evals</a>");
 
@@ -129,7 +129,7 @@ class MyEvalsController extends Controller
         }
 // finish up
         Template::AddBodyContent("</div>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
 
 
     }

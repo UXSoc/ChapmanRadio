@@ -29,7 +29,7 @@ class NowController extends Controller
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Site Status");
-        Template::RequireLogin("/staff/now","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/now","Staff Resources", "staff");
         Template::Bootstrap();
 
         $listeners = DB::GetFirst("SELECT chapmanradio,chapmanradiolowquality,datetime FROM stats ORDER BY datetime DESC LIMIT 0,1");
@@ -110,7 +110,7 @@ class NowController extends Controller
         Template::Add("</table><br />");
         self::DispEmailBox($userswithincompleteshows);
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 
     function DispEmailBox($users){

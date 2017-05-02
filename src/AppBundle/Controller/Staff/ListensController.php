@@ -26,7 +26,7 @@ class ListensController extends Controller
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Listen Log");
-        Template::RequireLogin("/staff/listens","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/listens","Staff Resources", "staff");
 
         $limit = Request::GetInteger('limit', 30);
 
@@ -38,7 +38,7 @@ class ListensController extends Controller
             Template::AddBodyContent("<tr><td>{$listen['timestamp']}</td><td>".$listen['showname']." (".$listen['showid'].")</td><td>".$listen['recording_id']."</td><td>".$listen['source']."</td><td>".inet_ntop($listen['ipaddr'])."</td></tr>");
 
         Template::AddBodyContent("</table>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
 
     }
 

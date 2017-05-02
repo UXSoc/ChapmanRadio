@@ -30,7 +30,7 @@ class DefaultController extends Controller
         define('PATH', '../');
         Template::SetPageTitle("DJ Account");
         Template::SetBodyHeading("Chapman Radio", "DJ Account");
-        Template::RequireLogin("/dj","DJ Account");
+//        Template::RequireLogin("/dj","DJ Account");
 
 // organize content into a table
         $menu = array(
@@ -74,8 +74,7 @@ class DefaultController extends Controller
 		</td>
 	</tr>");
         }
-
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize("</table>"));
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,"</table>"));
 
     }
 }

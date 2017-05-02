@@ -29,7 +29,7 @@ class SitinsController extends Controller
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Sit-in Requests");
-        Template::RequireLogin("/staff/sitins","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/sitins","Staff Resources", "staff");
         Template::TableSorter();
 
         if(isset($_POST['submit'])){
@@ -96,6 +96,6 @@ class SitinsController extends Controller
 
         Template::AddBodyContent("</tbody></table>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

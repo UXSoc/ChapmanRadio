@@ -12,6 +12,10 @@ security:
         in_memory:
             memory: ~
 
+    access_control:
+        - { path: ^/dj, roles: ROLE_DJ }
+        - { path: ^/staff, roles: ROLE_STAFF }
+
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs

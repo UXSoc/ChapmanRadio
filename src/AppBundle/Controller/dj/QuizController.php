@@ -34,7 +34,7 @@ class QuizController extends Controller
 
         Template::SetPageTitle("Quiz");
         Template::SetBodyHeading("Chapman Radio", "Quiz");
-        Template::RequireLogin("/dj/quiz","Chapman Radio Quiz");
+        //Template::RequireLogin("/dj/quiz","Chapman Radio Quiz");
 
 // settings for new quizes
         $qsPerQuiz = 10;
@@ -70,7 +70,7 @@ class QuizController extends Controller
             $quiz = DB::GetFirst("SELECT * FROM quizes WHERE quizid='$quizid'");
             if(!$quiz) {
                 unset($_SESSION['quizid']);
-                Template::error("It appears that the quiz you are looking for could not be found.");
+                Template::error($this->container,"It appears that the quiz you are looking for could not be found.");
             }
             $right = 0;
             $wrong = 0;
@@ -113,7 +113,7 @@ class QuizController extends Controller
             Template::AddBodyContent("</div>");
             unset($_SESSION['quizid']);
             DB::Query("UPDATE quizes SET `completed`='1',`right`='$right',`wrong`='$wrong',`total`='$total' WHERE quizid='$quizid'");
-            Template::Finalize();
+            return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
         }
 
         switch($action) {
@@ -134,7 +134,7 @@ class QuizController extends Controller
                 $quiz = DB::GetFirst("SELECT * FROM quizes WHERE quizid='$quizid'");
                 if(!$quiz) {
                     unset($_SESSION['quizid']);
-                    Template::error("Sorry, but the quiz you are looking for could not be found.");
+                    Template::error($this->container,"Sorry, but the quiz you are looking for could not be found.");
                 }
 
                 $path = $request->getRequestUri();
@@ -195,7 +195,7 @@ class QuizController extends Controller
                 Template::AddBodyContent("<p>Hello, you've already taken the quiz for this semester.</p>");
                 break;
         }
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
     /* http://stackoverflow.com/questions/4102777/php-random-shuffle-array-maintaining-key-value */
     function shuffle_with_keys(&$array) {

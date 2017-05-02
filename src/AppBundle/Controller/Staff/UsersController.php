@@ -30,7 +30,7 @@ class UsersController extends Controller
         define('PATH', '../');
 
         Template::SetPageTitle("User Lookup");
-        Template::RequireLogin("/staff/users","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/users","Staff Resources", "staff");
         Template::js("/legacy/js/jquery.watermark.min.js");
         Template::Bootstrap();
         Template::shadowbox();
@@ -206,6 +206,6 @@ class UsersController extends Controller
                 Template::AddInlineNotice("User ID #$useridfrom ($userfrom->name) has been permanently deleted.");
             }
         }
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

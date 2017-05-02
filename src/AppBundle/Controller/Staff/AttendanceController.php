@@ -29,7 +29,7 @@ class AttendanceController extends Controller
         define('PATH', '../');
 
         Template::SetPageTitle("Attendance");
-        Template::RequireLogin("/staff/attendance","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/attendance","Staff Resources", "staff");
         Template::css(PATH . "css/formtable.css");
         Template::css(PATH . "css/dl.css");
 
@@ -154,7 +154,7 @@ class AttendanceController extends Controller
         Template::AddBodyContent("</div>");
 
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
 
 
     }

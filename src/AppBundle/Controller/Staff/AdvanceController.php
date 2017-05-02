@@ -38,7 +38,7 @@ class AdvanceController extends Controller
 
         Template::SetPageTitle("Staff - Advanced");
         Template::SetBodyHeading("Site Administration", "Advanced Settings");
-        Template::RequireLogin("/staff/advance","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/advance","Staff Resources", "staff");
 
         Template::css("/legacy/css/formtable.css");
 
@@ -279,6 +279,6 @@ class AdvanceController extends Controller
 
 
         Template::AddBodyContent("</div>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

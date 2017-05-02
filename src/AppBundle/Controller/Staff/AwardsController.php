@@ -23,7 +23,7 @@ class AwardsController extends  Controller
 
         Template::SetPageTitle("Awards");
         Template::SetBodyHeading("Site Administration", "Awards");
-        Template::RequireLogin("/staff/awards","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/awards","Staff Resources", "staff");
 
         Template::js("/legacy/staff/js/awards.js");
         Template::css("/legacy/css/formtable.css");
@@ -35,9 +35,9 @@ class AwardsController extends  Controller
 // assign an award
         Template::AddBodyContent("<h3>Assign an Award</h3>");
         if (isset($_POST['ASSIGN_AWARD'])) {
-            $type = @$_REQUEST['type'] or error("Missing <b>type</b> variable");
-            $showid = @$_REQUEST['showid'] or error("Missing <b>type</b> variable");
-            $awardedon = @$_REQUEST['awardedon'] or error("Missing <b>awardedon</b> variable");
+            $type = @$_REQUEST['type'] or error($this->container,"Missing <b>type</b> variable");
+            $showid = @$_REQUEST['showid'] or error($this->container,"Missing <b>type</b> variable");
+            $awardedon = @$_REQUEST['awardedon'] or error($this->container,"Missing <b>awardedon</b> variable");
             if (!preg_match("/^\\d{4}-\\d{2}-\\d{2}\$/", $awardedon)) error("Awarded on <b>$awardedon</b> was invalid. please enter a YYYY-MM-DD formatted date");
             DB::Insert('awards', array("type" => $type, "showid" => $showid, "awardedon" => $awardedon));
             Template::AddBodyContent("<p style='color:green'>The award <b>$type</b> has just been assigned to <a href='/show?show=$showid' target='_blank'><b>Show #$showid</b></a> ");
@@ -112,7 +112,7 @@ class AwardsController extends  Controller
 
 // all done
         Template::AddBodyContent("</div>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
 
     }
 

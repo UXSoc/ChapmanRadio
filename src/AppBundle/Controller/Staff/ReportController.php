@@ -36,7 +36,7 @@ class ReportController extends Controller
         Template::SetPageTemplate("report");
         Template::SetPageTitle("Workshop Attendance Report");
 
-        Template::RequireLogin("/staff/reports/workshop", "Staff Resources", "staff");
+        //Template::RequireLogin("/staff/reports/workshop", "Staff Resources", "staff");
         Template::JS("/legacy/staff/js/viewAttendance.js");
         Template::Style(" .reportlink { color:#757575; font-size: 11px; } ");
 
@@ -96,7 +96,7 @@ class ReportController extends Controller
 
         Template::SetPageTemplate("report");
         Template::SetPageTitle("Attendance");
-        Template::RequireLogin("/staff/reports/user", "Staff Resources", "staff");
+        //Template::RequireLogin("/staff/reports/user", "Staff Resources", "staff");
         Template::JS("/staff/js/viewAttendance.js");
 
         $season = Site::CurrentSeason(true);
@@ -181,7 +181,7 @@ class ReportController extends Controller
 
         Template::SetPageTemplate("report");
         Template::SetPageTitle("Attendance");
-        Template::RequireLogin("/staff/reports/show", "Staff Resources", "staff");
+        //Template::RequireLogin("/staff/reports/show", "Staff Resources", "staff");
 
 
         Template::Js("/legacy/staff/js/viewAttendance.js");
@@ -247,7 +247,7 @@ class ReportController extends Controller
         define('PATH', '../');
         Template::SetPageTemplate("report");
         Template::SetPageTitle("Recording Details");
-        Template::RequireLogin("/staff/reports/recording", "Staff Resources", "staff");
+        //Template::RequireLogin("/staff/reports/recording", "Staff Resources", "staff");
 
 
         $id = Request::Get('id');
@@ -280,7 +280,7 @@ class ReportController extends Controller
 
         Template::SetPageTemplate("report");
         Template::SetPageTitle("Attendance");
-        Template::RequireLogin("Staff Resources", "staff");
+        //Template::RequireLogin("Staff Resources", "staff");
 
         $attid = Request::Get('id');
         if (!$attid) die("Error: Missing id variable.");
@@ -317,7 +317,7 @@ class ReportController extends Controller
 
         Template::SetPageTemplate("report");
         Template::SetPageTitle("Event Attendance Report");
-        Template::RequireLogin("/staff/reports/event", "Staff Resources", "staff");
+        //Template::RequireLogin("/staff/reports/event", "Staff Resources", "staff");
 
         Template::IncludeJs("/legacy/staff/js/viewAttendance.js");
 
@@ -413,7 +413,7 @@ class ReportController extends Controller
 
         Template::SetPageTemplate("report");
         Template::SetPageTitle("Attendance");
-        Template::RequireLogin("/staff/reports/emails", "Staff Resources", "staff");
+        //Template::RequireLogin("/staff/reports/emails", "Staff Resources", "staff");
 
         $season = Season::current();
         $seasonName = Season::name($season);
@@ -471,7 +471,7 @@ class ReportController extends Controller
 
         Template::SetPageTemplate("report");
         Template::SetPageTitle("Attendance");
-        Template::RequireLogin("/staff/reports/date", "Staff Resources", "staff");
+        //Template::RequireLogin("/staff/reports/date", "Staff Resources", "staff");
 
 
         Template::IncludeJs("/staff/js/viewAttendance.js");
@@ -540,7 +540,7 @@ class ReportController extends Controller
         if (!$count) Template::AddBodyContent("<p style='color:#848484'>No data.</p>");
 
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
 
     }
 

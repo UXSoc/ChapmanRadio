@@ -31,7 +31,7 @@ class TrainingController extends Controller
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Staff Training Administration");
-        Template::RequireLogin("/staff/training","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/training","Staff Resources", "staff");
 
         if(isset($_POST['cr-training-present'])){
             $suid = Request::Get('suid');
@@ -51,6 +51,6 @@ class TrainingController extends Controller
             Template::AddBodyContent("<tr><td>{$signup->datetime}</td><td>{$dj->name}</td><td>{$row['s_fname']} {$row['s_lname']}</td><td>{$button}</td></tr>");
         }
         Template::AddBodyContent("</table>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

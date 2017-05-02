@@ -30,7 +30,7 @@ class ActivityController extends Controller
         define('PATH', '../');
         Template::SetPageTitle("Site Activity - Admin");
         Template::SetBodyHeading("Chapman Radio Admin", "Site Activity");
-        Template::RequireLogin("/staff/activity","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/activity","Staff Resources", "staff");
 
         Template::css("/legacy/css/formtable.css");
 
@@ -53,7 +53,7 @@ class ActivityController extends Controller
         }
         Template::AddBodyContent("</table></div>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 
 }

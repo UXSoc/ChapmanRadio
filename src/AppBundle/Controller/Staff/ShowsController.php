@@ -28,7 +28,7 @@ class ShowsController extends Controller
 
         Template::SetPageTitle("Show Management");
         Template::SetBodyHeading("Site Administration", "Show Management");
-        Template::RequireLogin("/staff/shows","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/shows","Staff Resources", "staff");
         Template::Bootstrap();
         Template::shadowbox();
         Template::js("/legacy/staff/js/dialog_edit.js");
@@ -149,6 +149,6 @@ class ShowsController extends Controller
             }
         }
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

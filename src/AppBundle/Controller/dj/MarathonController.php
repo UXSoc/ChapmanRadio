@@ -27,7 +27,7 @@ class MarathonController extends Controller
 {
 
     /**
-     * @Route("/dj/marathon", name="dj_eval")
+     * @Route("/dj/marathon", name="dj_marathon")
      */
     public function indexAction(ContainerInterface $container = null)
     {
@@ -36,7 +36,7 @@ class MarathonController extends Controller
         Template::SetPageTitle("Marathon Signup");
         Template::SetPageSection("");
         Template::SetBodyHeading("DJ Resources", "Request Marathon Slot");
-        Template::RequireLogin("/dj/marathon","DJ Account");
+        //Template::RequireLogin("/dj/marathon","DJ Account");
 
         Template::JS("/legacy/js/jquery-ui-dragdrop.min.js");
 
@@ -160,7 +160,7 @@ class MarathonController extends Controller
         Template::Add("</table>");
         Template::Add("</div>");
         Template::Add("<hr class='_clear' />");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
 
 
     }

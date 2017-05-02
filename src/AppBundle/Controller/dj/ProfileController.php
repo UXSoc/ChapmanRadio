@@ -40,7 +40,7 @@ class ProfileController extends Controller
 
         Template::SetPageTitle("My Profile");
         Template::SetBodyHeading("DJ Resources", "My Profile");
-        Template::RequireLogin("/dj/profile","DJ Resources");
+       // Template::RequireLogin("/dj/profile","DJ Resources");
         Template::Css("/legacy/css/formtable.css");
 
         Template::AddBodyContent("<p style='margin:10px auto;'>You can edit your information, change your password, or update your profile picture.</p>");
@@ -60,7 +60,7 @@ class ProfileController extends Controller
         $prefix = "update-profile-";
 
         $userid = Session::GetCurrentUserID();
-        $user = UserModel::FromId(Session::GetCurrentUserId());
+        $user = UserModel::FromId($this->getUser()->getId());
         if(!$user) throw new Exception('Non existent user accessed user page');
 
 // process a save request
@@ -69,7 +69,7 @@ class ProfileController extends Controller
             $req = array();
             foreach($fields as $eng => $field) {
                 if(is_numeric($eng)) continue;
-                if(!isset($_REQUEST[$prefix.$field])) Template::Error("Missing information: Please go back and enter <b>$eng</b>");
+                if(!isset($_REQUEST[$prefix.$field])) Template::Error($this->container,"Missing information: Please go back and enter <b>$eng</b>");
                 else if($field != 'name') $user->Update($field, ChapmanRadioRequest::Get($prefix.$field));
             }
 
@@ -195,7 +195,7 @@ class ProfileController extends Controller
 
 // finish up
         Template::AddBodyContent("</div>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
 
     }
 

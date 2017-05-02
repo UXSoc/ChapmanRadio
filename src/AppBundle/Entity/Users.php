@@ -20,9 +20,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Users implements AdvancedUserInterface
 {
-    const USER_ROLE = 'USER_ROLE';
-    const STAFF_ROLE = 'STAFF_ROLE';
-    const DJ_ROLE = 'DJ_ROLE';
+    const USER_ROLE = 'ROLE_USER';
+    const STAFF_ROLE = 'ROLE_STAFF';
+    const DJ_ROLE = 'ROLE_DJ';
 
     /**
      * @var integer

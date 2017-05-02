@@ -29,7 +29,7 @@ class DJLive
         return null;
     }
 
-    public static function handleLogin()
+    public static function handleLogin($container)
     {
 
         $showid = Request::GetFrom($_POST, 'showid');
@@ -61,7 +61,7 @@ class DJLive
         // let's make sure the show isn't cancelled
         if ($show->status == 'cancelled') {
             Session::LoginFailed($userid, 'show_cancelled');
-            Template::Error("<p>Your show, <b>$show->name</b>, has been <b style='color:#A00'>cancelled</b>.</p><div style='text-align:left;'><p>This means that one or more of your DJs has accumulated 3 strikes. You cannot broadcast a show that has been cancelled.</p><p>Visit <a href='/dj/attendance'>chapmanradio.com/dj/attendance</a> for information on your strikes.</p><p>Email <a href='mailto:attendance@chapmanradio.com'>attendance@chapmanradio.com</a> if you have questions / if you think your show should not be cancelled.</p></div>");
+            Template::Error($container,"<p>Your show, <b>$show->name</b>, has been <b style='color:#A00'>cancelled</b>.</p><div style='text-align:left;'><p>This means that one or more of your DJs has accumulated 3 strikes. You cannot broadcast a show that has been cancelled.</p><p>Visit <a href='/dj/attendance'>chapmanradio.com/dj/attendance</a> for information on your strikes.</p><p>Email <a href='mailto:attendance@chapmanradio.com'>attendance@chapmanradio.com</a> if you have questions / if you think your show should not be cancelled.</p></div>");
         }
 
         // make sure they're a part of the show
@@ -77,7 +77,7 @@ class DJLive
         $scheduledshow = ShowModel::FromId($scheduledshowid);
         Template::AddBodyContent(self::WrongShowForm($show, $scheduledshow, $timestamp));
         Template::script("$('document').ready(function(){ var totalChecked = 0; $('#accept_override_form input[type=checkbox]').change(function(){ if($(this).is(':checked')) totalChecked++; else totalChecked--; $('#overridebutton').prop('disabled', (totalChecked != 5)); }); });");
-        Template::Finalize();
+        return Template::Finalize($container);
         return null;
     }
 

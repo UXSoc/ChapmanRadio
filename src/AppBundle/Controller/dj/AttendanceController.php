@@ -15,6 +15,7 @@ use ChapmanRadio\Session;
 use ChapmanRadio\Site;
 use ChapmanRadio\Strikes;
 use ChapmanRadio\Template;
+use ChapmanRadio\UserModel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -30,7 +31,7 @@ class AttendanceController extends Controller
         define('PATH', '../');
 
         Template::SetPageTitle("My Attendance");
-        Template::RequireLogin("/dj/dj_attendence","DJ Account");
+//        Template::RequireLogin("/dj/dj_attendence","DJ Account");
 
         $season = Site::CurrentSeason();
         $seasonName = Season::name($season);
@@ -40,9 +41,8 @@ class AttendanceController extends Controller
         Template::css("/legacy/css/dl.css");
 
 // get the user info
-        $userid = Session::GetCurrentUserID();
-        $user = Session::GetCurrentUser();
-
+        $userid = $this->getUser()->getId();
+        $user = UserModel::FromId($this->getUser()->getId());
 // start the output
 
 // strikes
@@ -51,7 +51,7 @@ class AttendanceController extends Controller
 	<h3>Strikes</h3>
 	<p>If you accumulate 3 strikes, even from multiple shows, all of your shows will be cancelled.</p>
 	<p>For details, see <a href='/policies'>chapmanradio.com/policies</a> or email the <a href='/contact'>Attendance Manager</a> for help.</p>");
-        Template::AddBodyContent(Strikes::Overview($user->id));
+        Template::AddBodyContent(Strikes::Overview($this->getUser()->getId()));
 
         Template::AddBodyContent("<h3>Show Attendance</h3><br />");
         $shows = $user->GetShowsInSeason(0, "AND status='accepted'");
@@ -123,7 +123,7 @@ class AttendanceController extends Controller
 // little notice
         Template::AddBodyContent("<p style='margin:40px auto;font-size:12px;color:#757575;'>If you have questions about your attendance, please email <a href='mailto:attendance@chapmanradio.com'>attendance@chapmanradio.com</a></p>");
 // finish output
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize("</div>"));
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,"</div>"));
     }
 
     function notify($msg, $color = "#090")

@@ -30,7 +30,7 @@ class NewsController extends Controller
         define('PATH', '../');
 
         Template::SetPageTitle("Class News");
-        Template::RequireLogin("/dj/news", "DJ Account");
+        //Template::RequireLogin("/dj/news", "DJ Account");
         Template::Bootstrap();
 
         Template::Css("/legacy/css/page-news.css");
@@ -51,6 +51,6 @@ class NewsController extends Controller
 
         Template::AddBodyContent("</div>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

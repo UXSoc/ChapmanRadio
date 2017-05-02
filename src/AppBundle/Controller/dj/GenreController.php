@@ -34,7 +34,7 @@ class GenreController extends Controller
 
         Template::SetPageTitle("My Genre");
         Template::SetBodyHeading("DJ Resources", "My Genre");
-        Template::RequireLogin("/dj/genre","DJ Account");
+        //Template::RequireLogin("/dj/genre","DJ Account");
 
         Template::css("/legacy/css/dl.css");
 
@@ -115,7 +115,7 @@ class GenreController extends Controller
 
 // finish up
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($request,"</div>"));
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,"</div>"));
 
     }
 }

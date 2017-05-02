@@ -29,15 +29,15 @@ class RecordController extends Controller
 
         Template::SetPageTemplate("report");
         Template::SetPageTitle("Attendance Recording Utility");
-        Template::RequireLogin("/staff/record","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/record","Staff Resources", "staff");
 
 
         $type = Request::Get('type');
         $date = Request::Get('date');
         $requiredfor = Request::Get('requiredfor');
 
-        if (!$type || !$date) Template::Finalize('Bad URL, try again');
-        if ($type == 'workshop' && !$requiredfor) Template::Finalize('Bad URL, try again');
+        if (!$type || !$date) new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,'Bad URL, try again'));
+        if ($type == 'workshop' && !$requiredfor) return new \Symfony\Component\HttpFoundation\Response(Template::Finalize('Bad URL, try again'));
 
 // Prepare a list of IDs that are required - all djs on all shows, respecting the classclub option
         $required = array();
@@ -110,6 +110,6 @@ class RecordController extends Controller
 
         Template::AddBodyContent("</div>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

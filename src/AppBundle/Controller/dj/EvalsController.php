@@ -24,7 +24,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class EvalsController extends Controller
 {
-
     /**
      * @Route("/dj/evals", name="dj_evals")
      */
@@ -33,7 +32,7 @@ class EvalsController extends Controller
         define('PATH', '../');
 
         Template::SetPageTitle("Show Evals");
-        Template::RequireLogin("/dj/evals","DJ Account");
+      //  Template::RequireLogin("/dj/evals","DJ Account");
 
         Template::AddStaffAlert("You can see completed evals at <a href='/staff/evals'>/staff/evals</a>");
 
@@ -53,6 +52,6 @@ class EvalsController extends Controller
 	</td></tr></table>
 	");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

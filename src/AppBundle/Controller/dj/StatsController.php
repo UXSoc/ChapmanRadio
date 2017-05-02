@@ -19,6 +19,7 @@ use ChapmanRadio\Session;
 use ChapmanRadio\ShowModel;
 use ChapmanRadio\Stats;
 use ChapmanRadio\Template;
+use ChapmanRadio\UserModel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -36,7 +37,7 @@ class StatsController extends Controller
 
 
         Template::SetPageTitle("Stats - DJ Resources");
-        Template::RequireLogin("/dj/stats", "Listenership Statistics");
+        //Template::RequireLogin("/dj/stats", "Listenership Statistics");
         Template::SetBodyHeading("DJ Resources", "Listenership Statistics");
 
         Template::css("/legacy/css/dl.css");
@@ -76,7 +77,9 @@ class StatsController extends Controller
         Template::AddBodyContent("<dl><dt>Overall Peak</dt><dd>$seasonPeak</dd><dt>Overall Average</dt><dd>$seasonAverage</dd></dl>");
         Template::AddBodyContent("</td>");
 // what shows is this user in?
-        $shows = Session::GetCurrentUser()->GetShowsInSeason($season, "AND status='accepted'");
+
+
+        $shows = UserModel::FromId($this->getUser()->getId())->GetShowsInSeason($season, "AND status='accepted'");
         foreach ($shows as $show) {
             $temp = DB::GetFirst("SELECT MAX($fields) as peak, AVG($fields) as average FROM stats WHERE `datetime` >='$startdatetime' AND `datetime` <= '$enddatetime' AND showid='" . $show->id . "'");
             $peak = $average = 0;
@@ -166,7 +169,7 @@ class StatsController extends Controller
 	</tr>");
         }
         Template::AddBodyContent("</table>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize("</div>"));
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,"</div>"));
 
     }
 }

@@ -32,7 +32,7 @@ class FeaturesController extends Controller
         define('PATH', '../');
 
         Template::SetPageTitle("Query Utility");
-        Template::RequireLogin("Staff Resources", "staff");
+        //Template::RequireLogin("Staff Resources", "staff");
 
         $id = Request::GetInteger('id');
         if(!$id) die("Missing id #");
@@ -75,10 +75,10 @@ class FeaturesController extends Controller
         Template::IncludeJs("/legacy/staff/js/dialog_edit.js");
 
         $feature_id = Request::GetInteger('feature_id', NULL);
-        if (!$feature_id) Template::Finalize("Missing feature_id request variable");
+        if (!$feature_id) return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,"Missing feature_id request variable"));
 
         $feature = FeatureModel::FromId($feature_id);
-        if (!$feature) Template::Finalize("Invalid feature_id request variable");
+        if (!$feature) return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,"Invalid feature_id request variable"));
 
 // Handle image uploads where JS failed
         try {
@@ -166,7 +166,7 @@ Some features are interactive, like the show of the week, or recent tracks. Thes
         Template::AddBodyContent("<br /><h2>Inactive Features</h2>");
         self::RenderTable($inactive);
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
 
     }
 

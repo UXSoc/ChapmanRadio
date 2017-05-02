@@ -30,7 +30,7 @@ class Version20170430182316 extends AbstractMigration implements ContainerAwareI
 
         $this->addSql('ALTER TABLE users DROP fname');
         $this->addSql('ALTER TABLE users DROP lname');
-        $this->addSql('ALTER TABLE users DROP quizpassedseasons');
+//        $this->addSql('ALTER TABLE users DROP quizpassedseasons');
         $this->addSql('ALTER TABLE users DROP verifycode');
 
         $this->addSql('ALTER TABLE users MODIFY fbid BIGINT(20) unsigned');
@@ -49,7 +49,7 @@ class Version20170430182316 extends AbstractMigration implements ContainerAwareI
         $this->addSql('CREATE UNIQUE INDEX users_email_uindex ON users (email)');
         $this->addSql('CREATE UNIQUE INDEX users_username_uindex ON users (username)');
 
-        $this->addSql('UPDATE users SET role=CASE WHEN type = "dj" THEN "DJ_ROLE" WHEN type = "staff" THEN "STAFF_ROLE" ELSE "USER_ROLE" END;');
+        $this->addSql('UPDATE users SET role=CASE WHEN type = "dj" THEN "ROLE_DJ" WHEN type = "staff" THEN "ROLE_STAFF" ELSE "ROLE_USER" END;');
         $this->addSql('UPDATE users set confirmed=1');
         $this->addSql('ALTER TABLE users DROP type');
 
@@ -73,7 +73,7 @@ class Version20170430182316 extends AbstractMigration implements ContainerAwareI
 
         $this->addSql('ALTER TABLE users ADD fname varchar(100) NOT NULL');
         $this->addSql('ALTER TABLE users ADD lname varchar(100) NOT NULL,');
-        $this->addSql('ALTER TABLE users ADD quizpassedseasons varchar(600) NOT NULL,');
+//        $this->addSql('ALTER TABLE users ADD quizpassedseasons varchar(600) NOT NULL,');
         $this->addSql('ALTER TABLE users ADD verifycode varchar(30) NOT NULL,');
 
         $this->addSql('ALTER TABLE users MODIFY fbid BIGINT(20) unsigned NOT NULL');

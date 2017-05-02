@@ -15,6 +15,7 @@ use ChapmanRadio\Schedule;
 use ChapmanRadio\Session;
 use ChapmanRadio\Site;
 use ChapmanRadio\Template;
+use ChapmanRadio\UserModel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -30,7 +31,7 @@ class GenreContentController extends  Controller{
 
         Template::SetPageTitle("Genre Content");
         Template::SetBodyHeading("Site Administration", "Genre Content");
-        Template::RequireLogin("/staff/genrecontent","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/genrecontent","Staff Resources", "staff");
 
         Template::css("/legacy/css/formtable.css");
         Template::style(Schedule::styleGenres());
@@ -67,7 +68,7 @@ class GenreContentController extends  Controller{
 		<tr class='oddRow'><td style='text-align:center;'><input type='submit' value=' Edit Content ' /></td></tr>
 	</table></form>");
             Template::AddBodyContent("</div>");
-            Template::Finalize();
+            return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
         }
         else if(!in_array(ChapmanradioRequest::Get('genre'), $genres)) {
             error("You've entered an invalid genre. please go back and try again");
@@ -110,7 +111,8 @@ class GenreContentController extends  Controller{
         Template::AddBodyContent("<div style='text-align:center;margin:10px auto;'><textarea class='tinymce' name='genrecontent' rows='26' cols='75' style='margin:auto;'>$genrecontent[content]</textarea></div>");
 
 // info
-        $user = Session::GetCurrentUser();
+
+        $user = UserModel::FromId($this->getUser()->getId());//Session::GetCurrentUser();
         $lastupdated = date("l, F jS, Y");
         Template::css("/legacy/css/dl.css");
         Template::AddBodyContent("<div class='gloss' style='padding:0px;'>
@@ -135,6 +137,6 @@ class GenreContentController extends  Controller{
 // close tags
         Template::AddBodyContent("</div></form>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

@@ -22,14 +22,14 @@ class FinalController extends Controller
 {
 
     /**
-     * @Route("/dj/final", name="dj_eval")
+     * @Route("/dj/final", name="dj_final")
      */
     public function indexAction(ContainerInterface $container = null)
     {
         define('PATH', '../');
 
         Template::SetPageTitle("Final Exam");
-        Template::RequireLogin("/dj/final","Final Exam");
+        //Template::RequireLogin("/dj/final","Final Exam");
 
         Template::Bootstrap();
 
@@ -138,6 +138,6 @@ class FinalController extends Controller
         }
 
         Template::AddBodyContent("</table>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

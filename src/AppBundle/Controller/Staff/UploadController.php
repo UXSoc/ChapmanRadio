@@ -26,7 +26,7 @@ class UploadController extends Controller
 
         Template::SetPageTitle("Upload - Site Administration");
         Template::SetBodyHeading("Site Administration", "File Upload");
-        Template::RequireLogin("/staff/upload","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/upload","Staff Resources", "staff");
 
         $season = Season::Current();
 
@@ -56,7 +56,7 @@ class UploadController extends Controller
 	<div class='gloss' style='width:360px;margin:10px auto;text-align:center;'>$downloads</div>
 	</div>
 ");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
 
     }
 

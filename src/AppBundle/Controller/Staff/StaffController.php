@@ -32,7 +32,7 @@ class StaffController extends Controller
 
         Template::SetPageTitle("Staff - Admin");
         Template::SetBodyHeading("Site Administration", "Staff Members");
-        Template::RequireLogin("/staff/staff","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/staff","Staff Resources", "staff");
 
         $season = Season::current();
         $seasonName = Season::name($season);
@@ -145,7 +145,7 @@ class StaffController extends Controller
 
         Template::AddBodyContent("<br style='margin-bottom:20px' />");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 
 }

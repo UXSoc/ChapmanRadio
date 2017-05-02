@@ -26,7 +26,7 @@ class LogController extends Controller
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Edit Log");
-        Template::RequireLogin( "/staff/log","Staff Resources", "staff");
+        //Template::RequireLogin( "/staff/log","Staff Resources", "staff");
 
         $limit = Request::GetInteger('limit', 30);
 
@@ -36,7 +36,7 @@ class LogController extends Controller
         foreach($events as $event) Template::AddBodyContent("<tr><td>{$event['timestamp']}</td><td>".$event['name']."</td><td>".self::formatLogEntry($event['details'])."</td></tr>");
         Template::AddBodyContent("</table>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 
     function formatLogEntry($desc){

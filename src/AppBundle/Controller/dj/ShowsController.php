@@ -9,6 +9,7 @@
 namespace AppBundle\Controller\dj;
 
 
+use AppBundle\Entity\Users;
 use ChapmanRadio\DB;
 use function ChapmanRadio\error;
 use ChapmanRadio\Evals;
@@ -38,9 +39,12 @@ class ShowsController extends Controller
         define('PATH', '../');
 
         Template::SetPageTitle("My Shows");
-        Template::RequireLogin("/dj/shows","DJ Resources");
+        //Template::RequireLogin("/dj/shows","DJ Resources");
 
-        $userid = Session::GetCurrentUserID();
+        /** @var Users $user */
+        $user = $this->getUser();
+
+
 
         Template::css("/legacy/css/ui.css");
         Template::css("/legacy/css/formtable.css");
@@ -345,9 +349,9 @@ class ShowsController extends Controller
 // should we notify?
         if($notify) Template::AddBodyContent("<div class='specs' style='width:480px;margin:10px auto;text-align:center;'>$notify</div>");
 // fetch array of shows for this DJ
-        $shows = ShowModel::FromDj($userid);
+        $shows = ShowModel::FromDj($user->getId());
         if(empty($shows))
-            return new \Symfony\Component\HttpFoundation\Response(Template::Finalize("<div style='margin:20px 80px;padding:20px;background:#EFEFEF;text-align:center;color:#757575;'>Sorry, ".Session::GetCurrentUser()->fname.". It doesn't look like you have any shows on your account.<br /><br />Note: If you just submitted an application, it may take a few days for it to be finalized and appear here.</div>"));
+            return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,"<div style='margin:20px 80px;padding:20px;background:#EFEFEF;text-align:center;color:#757575;'>Sorry, ". $user->getUsername().". It doesn't look like you have any shows on your account.<br /><br />Note: If you just submitted an application, it may take a few days for it to be finalized and appear here.</div>"));
 // now we have all the shows as an array. let's display them all!
         foreach($shows as $show) {
 
@@ -434,7 +438,7 @@ class ShowsController extends Controller
 	
 	</td></tr></table>");
         }
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
 
 
     }

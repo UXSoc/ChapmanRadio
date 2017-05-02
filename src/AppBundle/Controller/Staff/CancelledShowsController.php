@@ -22,7 +22,7 @@ class CancelledShowsController extends Controller
 
         Template::SetPageTitle("Cancelled Shows");
         Template::SetBodyHeading("Chapman Radio Admin", "Cancelled Shows");
-        Template::RequireLogin("/staff/cancelled","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/cancelled","Staff Resources", "staff");
 
         $season = Season::current();
         $seasonName = Season::name($season);
@@ -52,6 +52,6 @@ class CancelledShowsController extends Controller
             Template::AddBodyContent("</table>");
         }
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

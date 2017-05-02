@@ -28,7 +28,7 @@ class WelcomeController extends Controller
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Welcome Message");
-        Template::RequireLogin("/staff/welcome","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/welcome","Staff Resources", "staff");
         Template::Bootstrap();
 
         $users = UserModel::FromResults(DB::GetAll("SELECT * FROM users WHERE seasons LIKE :season", [":season" => "%" . Site::CurrentSeason() . "%"]));
@@ -82,7 +82,7 @@ class WelcomeController extends Controller
 
             Template::Add("<hr>");
         }
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
 
     }
 }

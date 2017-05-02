@@ -11,6 +11,7 @@ namespace AppBundle\Controller\dj;
 use ChapmanRadio\DB;
 use ChapmanRadio\Evals;
 use ChapmanRadio\GradeStructureModel;
+use ChapmanRadio\Schedule;
 use ChapmanRadio\Season;
 use ChapmanRadio\Session;
 use ChapmanRadio\Template;
@@ -29,7 +30,7 @@ class SitinsController extends Controller
         define('PATH', '../');
 
         Template::SetPageTitle("Staff Sit-ins");
-        Template::RequireLogin("/dj/sitins","Staff Sit-ins");
+        //Template::RequireLogin("/dj/sitins","Staff Sit-ins");
 
         if (isset($_POST['request'])) {
             $request = DB::GetFirst("SELECT * FROM show_sitins WHERE season = :season AND showid = :id", array(":season" => Season::Current(), ":id" => Request::GetInteger('showid')));
@@ -101,6 +102,6 @@ If a staff member commits to sitting in on your show, their name will appear on 
 		</div>");
 
         }
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

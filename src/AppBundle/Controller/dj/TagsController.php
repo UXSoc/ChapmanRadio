@@ -24,7 +24,7 @@ class TagsController extends Controller
         define('PATH', '../');
 
         Template::SetPageTitle("Create your own Tags - DJ Resources");
-        Template::RequireLogin("/dj/tags", "DJ Resources");
+        //Template::RequireLogin("/dj/tags", "DJ Resources");
 
         $dirs = array(
             "Noise" => PATH . "resources/tags/noise/",
@@ -85,7 +85,7 @@ class TagsController extends Controller
             Template::AddBodyContent("</div>");
         }
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize("</tr></table>"));
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,"</tr></table>"));
 
     }
 

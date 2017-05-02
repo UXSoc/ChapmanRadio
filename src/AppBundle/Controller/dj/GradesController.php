@@ -15,6 +15,7 @@ use ChapmanRadio\GradeStructureModel;
 use ChapmanRadio\Season;
 use ChapmanRadio\Session;
 use ChapmanRadio\Template;
+use ChapmanRadio\UserModel;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -31,7 +32,7 @@ class GradesController extends Controller
         define('PATH', '../');
 
         Template::SetPageTitle("My Grades - DJ Resources");
-        Template::RequireLogin("/dj/grades","DJ Account");
+        //Template::RequireLogin("/dj/grades","DJ Account");
         Template::Bootstrap();
 
         Template::Css("/dj/css/page-grades.css?1");
@@ -40,7 +41,8 @@ class GradesController extends Controller
 
         Template::SetBodyHeading("My Grades for " . Season::Name());
 
-        $user = Session::GetCurrentUser();
+
+        $user = UserModel::FromId($this->getUser()->getId());
 
         if ($user->classclub == 'club') {
             Template::AddCoujuInfo("You're in the club! You don't have to worry about grades, just be sure to go to the required wednesday night meetings and your show.");
@@ -62,7 +64,7 @@ class GradesController extends Controller
             Template::Add("</tbody></table>");
         }
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
 
     }
     function RenderGrade($grade, $prefix = "")

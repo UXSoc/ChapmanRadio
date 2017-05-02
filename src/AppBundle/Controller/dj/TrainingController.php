@@ -33,7 +33,7 @@ class TrainingController extends Controller
         define('PATH', '../');
 
         Template::SetPageTitle("DJ Training Signups");
-        Template::RequireLogin("/dj/training","DJ Training Signups");
+        //Template::RequireLogin("/dj/training","DJ Training Signups");
 
         $user = Session::GetCurrentUser();
 
@@ -106,6 +106,6 @@ class TrainingController extends Controller
             }
         }
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

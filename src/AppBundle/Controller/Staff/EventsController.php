@@ -27,7 +27,7 @@ class EventsController extends  Controller
 
         Template::SetPageTitle("Events - Admin");
         Template::SetBodyHeading("Site Administration", "Events");
-        Template::RequireLogin("/staff/events","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/events","Staff Resources", "staff");
 
         Template::AddBodyContent("<div class='leftcontent'>");
 
@@ -203,7 +203,7 @@ class EventsController extends  Controller
         }
 
         Template::AddBodyContent("</div>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 
 }

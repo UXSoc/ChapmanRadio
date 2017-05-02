@@ -7,7 +7,11 @@ namespace AppBundle\Controller\dj;
  * Time: 8:08 AM
  */
 
+use ChapmanRadio\DB;
 use ChapmanRadio\Evals;
+use ChapmanRadio\Schedule;
+use ChapmanRadio\Session;
+use ChapmanRadio\ShowModel;
 use ChapmanRadio\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -17,6 +21,43 @@ class EvalController extends Controller
 {
 
     /**
+     * @Route("/dj/ajax/evals/sync", name="dj_eval_sync")
+     */
+    public  function syncAction()
+    {
+        define('PATH', '../');
+
+        $showid = Schedule::HappeningNow();
+        if($showid <= 0) die("null");
+        $show = ShowModel::FromId($showid);
+        if(!$show) die("null");
+
+        $json = array();
+        $json['djs'] = $show->GetDjNamesCsv();
+        $json['showid'] = $show->id;
+        $json['showname'] = $show->name;
+        $json['icon'] = $show->img50;
+        $json['genre'] = $show->genre;
+        $json['description'] = Util::Truncate($show->description, 200);
+        $json['explicit'] = $show->explicit;
+        $json['timestamp'] = strtotime(date("Y-m-d H:00:00"));
+        $json['date'] = date("g:ia n/j/y", $json['timestamp']);
+
+// send current evals data to javascript
+        $data = array();
+        $userid = Session::getCurrentUserID();
+        $evals = DB::GetAll("SELECT * FROM evals WHERE timestamp >= ".(time()-60*60*2)." AND showid='$showid' AND userid='$userid'");
+        foreach($evals as $eval){
+            $eval['date'] = date("g:ia", $eval['postedtimestamp']);
+            $data[$eval['evalid']] = $eval;
+            $data[$eval['evalid']]["id"] = "eval".$eval["evalid"];
+        }
+
+        $json['evals'] = $data;
+        die( json_encode( $json ) );
+    }
+
+    /**
      * @Route("/dj/eval", name="dj_eval")
      */
     public function indexAction(ContainerInterface $container = null)
@@ -24,7 +65,7 @@ class EvalController extends Controller
         define('PATH', '../');
 
         Template::SetPageTitle("New Peer Evaluation");
-        Template::RequireLogin("/dj/eval","DJ Account");
+//        Template::RequireLogin("/dj/eval","DJ Account");
 
         Template::js("/legacy/dj/js/evals.js");
         Template::js("/legacy/js/jquery.scrollTo.js");
@@ -84,6 +125,6 @@ class EvalController extends Controller
         Template::script("if(typeof evals == 'undefined') evals = {}; ");
 // send categories data to javascript
         Template::script("evals.categories = " . json_encode($categories) . ";");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

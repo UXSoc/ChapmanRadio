@@ -20,7 +20,7 @@ class DupsController extends Controller
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Duplicates");
-        Template::RequireLogin("/staff/dups","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/dups","Staff Resources", "staff");
         Template::Bootstrap();
 
         $dupshows = DB::GetAll("SELECT s1.*,s2.showid as dsid FROM shows as s1 INNER JOIN shows AS s2 ON s1.showname = s2.showname AND s1.showid < s2.showid");
@@ -43,7 +43,7 @@ class DupsController extends Controller
         }
         Template::Add("</tbody></table><br />");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 
 }

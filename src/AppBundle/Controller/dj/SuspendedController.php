@@ -31,7 +31,7 @@ class SuspendedController extends Controller
 
         Template::SetPageTitle("Suspended Account");
         Template::SetBodyHeading("Chapman Radio", "Suspended Account");
-        Template::RequireLogin("/dj/suspended","DJ Resources");
+        //Template::RequireLogin("/dj/suspended","DJ Resources");
 
         Template::css("/legacy/css/formtable.css");
 
@@ -47,7 +47,7 @@ class SuspendedController extends Controller
         $user = Session::GetCurrentUser();
         Template::AddBodyContent(Strikes::Overview($user->id));
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
 
     }
 }

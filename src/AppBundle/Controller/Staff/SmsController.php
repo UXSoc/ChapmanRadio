@@ -26,7 +26,7 @@ class SmsController extends Controller
 
         Template::SetPageTitle("Staff - SMS");
         Template::SetBodyHeading("Site Administration", "SMS / Livechat History");
-        Template::RequireLogin("/staff/sms","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/sms","Staff Resources", "staff");
         Template::css("/legacy/css/formtable.css");
 
         $limit = Request::GetInteger('limit', 50);
@@ -42,7 +42,7 @@ class SmsController extends Controller
 
         Template::AddBodyContent("</table></div>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 
 }

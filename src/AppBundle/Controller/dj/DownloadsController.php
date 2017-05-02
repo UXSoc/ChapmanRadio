@@ -52,6 +52,6 @@ class DownloadsController extends Controller
         Template::AddBodyContent("</ul>");
 
         Template::AddBodyContent("<h3>Show Tags</h3><p>Ready to create tags for your show? <a href='/dj/tags'>Get resources for making tags.</a></p>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize("</div>"));
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,"</div>"));
     }
 }

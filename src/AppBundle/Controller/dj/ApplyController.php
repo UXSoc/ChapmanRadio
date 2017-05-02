@@ -43,7 +43,7 @@ class ApplyController extends Controller
         Template::js("/legacy/dj/js/apply.js");
 
         Template::SetPageTitle("Apply for a Show");
-        Template::RequireLogin("/dj/apply","Show Applications");
+//        Template::RequireLogin("/dj/apply","Show Applications");
 
         $appSeason = Site::ApplicationSeason();
         $seasonName = Season::name($appSeason);
@@ -81,7 +81,7 @@ class ApplyController extends Controller
 			</div>
 		</div></form>");
 
-                return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+                return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,''));
             }
         }
 
@@ -303,7 +303,7 @@ class ApplyController extends Controller
                 }
                 Template::AddBodyContent("</div>");
 
-                return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+                return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
             }
         }
 
@@ -336,7 +336,7 @@ class ApplyController extends Controller
         }
 
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 
     function RenderStartPage()

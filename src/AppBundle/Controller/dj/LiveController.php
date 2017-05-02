@@ -36,7 +36,7 @@ class LiveController extends Controller
 
         Template::SetPageTitle("DJ Live");
         Template::SetBodyHeading("Chapman Radio", "DJ Live");
-        Template::RequireLogin("/dj/live","DJ Live Page");
+        //Template::RequireLogin("/dj/live","DJ Live Page");
 
 # Template::AddBodyContent("<div class='couju-debug' style='margin: 0 10px;'>Hey DJs! During Spring Break, no one has to broadcast - but if you're more then welcome to!<br />Just select your show as usual. If you get to a page that says 'Schedule Conflict' just check the boxes and press Override.<br /><strong>YOUR SHOW WILL BE RECORDED</strong></div>");
 
@@ -48,7 +48,7 @@ class LiveController extends Controller
                 Template::AddBodyContent("<div style='color:red;margin: 10px;'>You're on staff so you can preview the DJ Live page even with the site not broadcasting</div>");
             } else {
                 Template::AddCoujuError("<b>Error: Not broadcasting.</b><br />Chapman Radio is not currently not broadcasting.<br />This probably means that we're on a break");
-                Template::Finalize();
+                return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
             }
         }
         if (!in_array(Request::ClientAddress(), Site::$StationIps) && !isset($_SESSION['djlive_override_ip_protection']) && !Session::isStaff()) {
@@ -69,7 +69,7 @@ class LiveController extends Controller
 // if the user didn't login correctly above, ask for login
         if (!isset($liveshowid)) {
             DJLive::LoginForm();
-            return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+            return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
         }
 
         /* AND NOW THE ACTUAL DJ LIVE PAGE!!!!!! */
@@ -216,7 +216,7 @@ class LiveController extends Controller
 </div>
 </div> </div>"); // column // container
         Template::script("\$(document).ready(function(){ live.genre=\"{$liveshow->genre}\"; });");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
 
     }
 

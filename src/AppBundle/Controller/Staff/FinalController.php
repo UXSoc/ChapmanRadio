@@ -28,7 +28,7 @@ class FinalController extends  Controller{
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Final Exams");
-        Template::RequireLogin("/staff/final","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/final","Staff Resources", "staff");
         Template::TableSorter();
 
         if(isset($_POST['submit'])){
@@ -98,6 +98,6 @@ class FinalController extends  Controller{
         }
 
         Template::AddBodyContent("</tbody></table>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

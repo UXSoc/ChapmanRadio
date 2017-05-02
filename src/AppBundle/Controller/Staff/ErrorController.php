@@ -26,7 +26,7 @@ class ErrorController{
 
         Template::SetPageTitle("Staff");
         Template::SetBodyHeading("Site Administration", "Recent Site Errors");
-        Template::RequireLogin("/staff/error","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/error","Staff Resources", "staff");
 
         $limit = Request::GetInteger('limit', 30);
 
@@ -49,6 +49,6 @@ class ErrorController{
 	</tr>");
 
         Template::AddBodyContent("</table>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
     }
 }

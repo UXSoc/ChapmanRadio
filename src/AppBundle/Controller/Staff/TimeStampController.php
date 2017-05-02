@@ -37,7 +37,7 @@ class TimeStampController extends Controller
 
         Template::SetPageTitle("Timestamp Utility");
         Template::SetBodyHeading("Chapman Radio", "Timestamp Utility");
-        Template::RequireLogin("/staff/timestamp","Staff Resources", "staff");
+        //Template::RequireLogin("/staff/timestamp","Staff Resources", "staff");
 
 // timestamp calculations
         $timestamp = Request::GetInteger('timestamp');
@@ -167,7 +167,7 @@ class TimeStampController extends Controller
 		
 		</td></tr></table>
 	</div>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
 
     }
 }
