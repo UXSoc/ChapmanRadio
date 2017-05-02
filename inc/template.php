@@ -1,6 +1,7 @@
 <?php namespace ChapmanRadio;
 
 use AppBundle\Controller\DefaultController;
+use AppBundle\Entity\Role;
 use AppBundle\Entity\Users;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
@@ -398,9 +399,10 @@ class Template
 
         $token =  $container->get('security.token_storage')->getToken();
         if ($token != null) {
+            /** @var Users $user */
             $user = $token->getUser();
             if($user != null) {
-                if (in_array(Users::DJ_ROLE, $user->getRoles())) {
+                if ($user->hasRole(Role::DJ_ROLE)) {
                     $nav .= Template::userNavBar("DJ", array(
                         "/dj/live" => "DJ Live",
                         "/dj/shows" => "My Shows",
@@ -416,7 +418,7 @@ class Template
                     ), 'dj-bar');
                 }
 
-                if (in_array(Users::STAFF_ROLE, $user->getRoles()))
+                if ($user->hasRole(Role::STAFF_ROLE))
                     $nav .= Template::userNavBar("Staff", array(
                         "http://kb.chapmanradio.com" => "KB",
                         "/staff/attendance" => "Attendance",

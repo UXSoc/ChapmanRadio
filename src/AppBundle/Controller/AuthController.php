@@ -12,6 +12,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Users;
 use AppBundle\Form\UserConfirmType;
 use AppBundle\Form\UserType;
+use AppBundle\Repository\UserRepository;
 use ChapmanRadio\DB;
 use ChapmanRadio\Imaging;
 use ChapmanRadio\Notify;
@@ -41,14 +42,18 @@ class AuthController extends Controller
      */
     public function RegisterAction(Request $request)
     {
-        $user = new Users();
+
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->get('user_repository');
+        $user = $userRepository->create();
+
         /** @var $form Form*/
         $form = $this->createForm(UserType::class,$user);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $user->setConfirmationToken(base64_encode(random_bytes(10)));
+            $user->setConfirmationToken(substr(md5(random_bytes(10)),20));
 
             $password = $this->get('security.password_encoder')
                 ->encodePassword($user, $user->getPlainPassword());

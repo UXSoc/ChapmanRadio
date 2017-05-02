@@ -45,8 +45,8 @@ class UsersController extends Controller
 // create user pickers
         $opts = array();
         $season = Site::CurrentSeason();
-        $result = DB::GetAll("SELECT userid,fname,lname FROM users ORDER BY fname");  // WHERE seasons LIKE '%$season'
-        foreach ($result as $row) $opts[] = "<option value='$row[userid]'>$row[fname] $row[lname] (#{$row['userid']})</option>";
+        $result = DB::GetAll("SELECT userid,name FROM users ORDER BY name");  // WHERE seasons LIKE '%$season'
+        foreach ($result as $row) $opts[] = "<option value='$row[userid]'>$row[name] (#{$row['userid']})</option>";
 
 // output the default page
         Template::Add("

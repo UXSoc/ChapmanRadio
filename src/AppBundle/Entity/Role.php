@@ -18,20 +18,28 @@ use Symfony\Component\Security\Core\Role\RoleInterface;
  */
 class Role implements RoleInterface
 {
-
+    const USER_ROLE = 'ROLE_USER';
+    const STAFF_ROLE = 'ROLE_STAFF';
+    const DJ_ROLE = 'ROLE_DJ';
     /**
      * @var integer
      *
-     *
-     * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
+     * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="user_id", type="bigint", nullable=false)
+     */
+    private $userId;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Users", inversedBy="roles")
-     * @ORM\JoinColumn(name="id", referencedColumnName="userid")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="userid")
      */
     private $user;
 
@@ -43,6 +51,15 @@ class Role implements RoleInterface
     private $role;
 
 
+    public  function setUser($user)
+    {
+        $this->user = $user;
+    }
+
+    public  function  setRole($role)
+    {
+        $this->role = $role;
+    }
 
 
     /**
@@ -58,5 +75,10 @@ class Role implements RoleInterface
     public function getRole()
     {
         return $this->role;
+    }
+
+    public function __toString()
+    {
+        return $this->role; // if you have a name property you can do $this->getName();
     }
 }

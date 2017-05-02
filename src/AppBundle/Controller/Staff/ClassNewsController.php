@@ -9,6 +9,7 @@
 namespace AppBundle\Controller\Staff;
 
 use ChapmanRadio\DB;
+use ChapmanRadio\NewsModel;
 use ChapmanRadio\Season;
 use ChapmanRadio\ShowModel;
 use ChapmanRadio\Template;
@@ -65,10 +66,10 @@ class ClassNewsController extends Controller
         Template::AddPageHeading("Active Class News");
         $all = NewsModel::All();
         $items = [];
-        foreach ($all as $item) $items[] = RenderRow($item);
-        RenderTable($items);
+        foreach ($all as $item) $items[] = self::RenderRow($item);
+        self::RenderTable($items);
 
-        Template::Finalize();
+        Template::Finalize($this->container);
 
     }
 

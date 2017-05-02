@@ -1,6 +1,8 @@
 <?php
 
 namespace AppBundle\Repository;
+use AppBundle\Entity\Role;
+use AppBundle\Entity\Users;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
@@ -16,9 +18,26 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 class UserRepository extends EntityRepository implements UserProviderInterface
 {
 
+    public function getUsersByRole($role)
+    {
+        $users = $this->createQueryBuilder('u')
+            ->innerJoin('AppBundle:Role','co','WITH','co.user_id = u.userid')
+            ->groupBy('u.userid');
+        return $users;
+    }
+
+    /**
+     * @return Users
+     */
+    public  function  create()
+    {
+        $user = new Users();
+        $user->addRole(Role::USER_ROLE);
+        return $user;
+    }
+
     public function loadUserByUsername($username)
     {
-
         $user = $this->findOneByUsernameOrEmail($username);
         if (!$user) {
             throw new UsernameNotFoundException('No user found for username '.$username);

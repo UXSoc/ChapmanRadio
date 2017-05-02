@@ -21,9 +21,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Users implements AdvancedUserInterface
 {
-    const USER_ROLE = 'ROLE_USER';
-    const STAFF_ROLE = 'ROLE_STAFF';
-    const DJ_ROLE = 'ROLE_DJ';
 
     /**
      * @var integer
@@ -199,11 +196,22 @@ class Users implements AdvancedUserInterface
 
     /**
      * @var Role[]
-     * @ORM\OneToMany(targetEntity="Role", mappedBy="user", indexBy="role")
+     * @ORM\OneToMany(cascade={"persist"},targetEntity="Role", mappedBy="user", indexBy="role")
      */
     private $roles;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="quizpassedseasons", type="string", length=200, nullable=false)
+     */
+    private $quizpassedseasons = "";
 
+
+    public  function __construct()
+    {
+        $this->roles = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -314,8 +322,28 @@ class Users implements AdvancedUserInterface
     {
         if(!isset($this->roles[$role]))
         {
-//            $this->roles[$role] = new Role($role);
+            $r = new Role();
+            $r->setRole($role);
+            $r->setUser($this);
+            $this->roles->add($r);
+            return true;
         }
+        return false;
+    }
+
+    public function  removeRole($role)
+    {
+        if(isset($this->roles[$role]))
+        {
+            unset($this->roles[$role]);
+            return true;
+        }
+        return false;
+    }
+
+    public  function  hasRole($role)
+    {
+        return isset($this->roles[$role]);
     }
 
 
