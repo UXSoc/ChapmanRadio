@@ -169,7 +169,7 @@ class StatsController extends Controller
 	</tr>");
         }
         Template::AddBodyContent("</table>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,"</div>"));
+        return Template::Finalize($this->container,"</div>");
 
     }
 }

@@ -83,7 +83,7 @@ class GradesController extends Controller
         foreach($users as $dj) self::RenderGradeRow($dj, $grades, isset($known[$dj->id])? $known[$dj->id] : []);
         Template::Add("</tbody></table>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
 
     }
     function RenderGradeRow($dj, $grades, $known){

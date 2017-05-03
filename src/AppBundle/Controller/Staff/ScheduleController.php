@@ -302,6 +302,6 @@ class ScheduleController extends Controller
 	<div id='schednavShows'></div>
 </div>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
 }

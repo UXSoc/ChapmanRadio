@@ -32,7 +32,7 @@ class ShowsController extends Controller
 {
 
     /**
-     * @Route("/dj/shows", name="shows_eval")
+     * @Route("/dj/shows", name="dj_shows")
      */
     public function indexAction(ContainerInterface $container = null)
     {
@@ -351,7 +351,7 @@ class ShowsController extends Controller
 // fetch array of shows for this DJ
         $shows = ShowModel::FromDj($user->getId());
         if(empty($shows))
-            return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,"<div style='margin:20px 80px;padding:20px;background:#EFEFEF;text-align:center;color:#757575;'>Sorry, ". $user->getUsername().". It doesn't look like you have any shows on your account.<br /><br />Note: If you just submitted an application, it may take a few days for it to be finalized and appear here.</div>"));
+            return Template::Finalize($this->container,"<div style='margin:20px 80px;padding:20px;background:#EFEFEF;text-align:center;color:#757575;'>Sorry, ". $user->getUsername().". It doesn't look like you have any shows on your account.<br /><br />Note: If you just submitted an application, it may take a few days for it to be finalized and appear here.</div>");
 // now we have all the shows as an array. let's display them all!
         foreach($shows as $show) {
 
@@ -438,8 +438,7 @@ class ShowsController extends Controller
 	
 	</td></tr></table>");
         }
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
-
+        return Template::Finalize($this->container);
 
     }
 }

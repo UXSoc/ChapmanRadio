@@ -55,6 +55,6 @@ class LoginIssuesController extends Controller
             Template::AddBodyContent("</table>");
 
         }
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
 }

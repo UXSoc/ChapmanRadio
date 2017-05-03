@@ -102,6 +102,6 @@ If a staff member commits to sitting in on your show, their name will appear on 
 		</div>");
 
         }
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
 }

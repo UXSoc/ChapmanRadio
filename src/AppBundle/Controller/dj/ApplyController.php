@@ -81,7 +81,7 @@ class ApplyController extends Controller
 			</div>
 		</div></form>");
 
-                return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,''));
+                return Template::Finalize($this->container,'');
             }
         }
 
@@ -303,7 +303,7 @@ class ApplyController extends Controller
                 }
                 Template::AddBodyContent("</div>");
 
-                return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+                return Template::Finalize($this->container);
             }
         }
 
@@ -336,7 +336,7 @@ class ApplyController extends Controller
         }
 
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
 
     function RenderStartPage()

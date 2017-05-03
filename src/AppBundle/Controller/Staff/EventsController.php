@@ -75,7 +75,7 @@ class EventsController extends  Controller
 
         if(isset($_POST['SaveEvent'])) {
             $eventid = ChapmanRadioRequest::GetInteger('eventid');
-            if(!$eventid) Template::Error("Internal Programming Error: Missing eventid post variable in SaveEvent");
+            if(!$eventid) Template::Error($this->container,"Internal Programming Error: Missing eventid post variable in SaveEvent");
 
             $updates = array();
             $updates['title'] = ChapmanRadioRequest::Get('title');
@@ -203,7 +203,7 @@ class EventsController extends  Controller
         }
 
         Template::AddBodyContent("</div>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
 
 }

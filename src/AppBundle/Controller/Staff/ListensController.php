@@ -38,7 +38,7 @@ class ListensController extends Controller
             Template::AddBodyContent("<tr><td>{$listen['timestamp']}</td><td>".$listen['showname']." (".$listen['showid'].")</td><td>".$listen['recording_id']."</td><td>".$listen['source']."</td><td>".inet_ntop($listen['ipaddr'])."</td></tr>");
 
         Template::AddBodyContent("</table>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
 
     }
 

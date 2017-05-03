@@ -69,16 +69,16 @@ class FeaturesController extends Controller
     {
         define('PATH', '../');
 
-        Template::RequireLogin("Staff Resources", "staff");
+        //Template::RequireLogin("Staff Resources", "staff");
         Template::SetPageTemplate("blank");
         Template::IncludeCss("/legacy/css/dialog.css");
         Template::IncludeJs("/legacy/staff/js/dialog_edit.js");
 
         $feature_id = Request::GetInteger('feature_id', NULL);
-        if (!$feature_id) return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,"Missing feature_id request variable"));
+        if (!$feature_id) return Template::Finalize($this->container,"Missing feature_id request variable");
 
         $feature = FeatureModel::FromId($feature_id);
-        if (!$feature) return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,"Invalid feature_id request variable"));
+        if (!$feature) return Template::Finalize($this->container,"Invalid feature_id request variable");
 
 // Handle image uploads where JS failed
         try {
@@ -109,7 +109,7 @@ class FeaturesController extends Controller
         $editor->End();
 
         Template::AddBodyContent("<div style='padding-bottom: 70px;'></div><div id='query-result' style='position: fixed; bottom: 0; left: 0px; right: 0px; padding: 5px; height: 70px; border-top: 1px solid #666; background: white;'></div>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return Template::Finalize($this->container);
     }
 
     /**
@@ -121,7 +121,7 @@ class FeaturesController extends Controller
 
         Template::SetPageTitle("Site Administration");
         Template::SetBodyHeading("Site Administration", "Features");
-        Template::RequireLogin("/staff/features", "Staff Resources", "staff");
+        //Template::RequireLogin("/staff/features", "Staff Resources", "staff");
 
         Template::shadowbox();
         Template::js("/legacy/staff/js/dialog_edit.js");
@@ -166,7 +166,7 @@ Some features are interactive, like the show of the week, or recent tracks. Thes
         Template::AddBodyContent("<br /><h2>Inactive Features</h2>");
         self::RenderTable($inactive);
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
 
     }
 

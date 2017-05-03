@@ -115,7 +115,7 @@ class MarathonController extends Controller
 
         if(!$at_least_one){
             Template::Add("<div class='couju-error'>You have no shows that can be scheduled. Please contact webmaster</div>");
-            Template::Finalize();
+            return Template::Finalize($this->container);
         }
 
         Template::Add("<hr class='_clear' />");
@@ -160,8 +160,7 @@ class MarathonController extends Controller
         Template::Add("</table>");
         Template::Add("</div>");
         Template::Add("<hr class='_clear' />");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
-
+        return Template::Finalize($this->container);
 
     }
     function TimestampToShow($timestamp, $season){

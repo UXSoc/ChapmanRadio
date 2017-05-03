@@ -36,8 +36,8 @@ class RecordController extends Controller
         $date = Request::Get('date');
         $requiredfor = Request::Get('requiredfor');
 
-        if (!$type || !$date) new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,'Bad URL, try again'));
-        if ($type == 'workshop' && !$requiredfor) return new \Symfony\Component\HttpFoundation\Response(Template::Finalize('Bad URL, try again'));
+        if (!$type || !$date) Template::Finalize($this->container,'Bad URL, try again');
+        if ($type == 'workshop' && !$requiredfor) return Template::Finalize('Bad URL, try again');
 
 // Prepare a list of IDs that are required - all djs on all shows, respecting the classclub option
         $required = array();
@@ -110,6 +110,6 @@ class RecordController extends Controller
 
         Template::AddBodyContent("</div>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
 }

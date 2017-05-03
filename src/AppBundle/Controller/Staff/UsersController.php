@@ -206,6 +206,6 @@ class UsersController extends Controller
                 Template::AddInlineNotice("User ID #$useridfrom ($userfrom->name) has been permanently deleted.");
             }
         }
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
 }

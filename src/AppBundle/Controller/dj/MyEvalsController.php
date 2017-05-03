@@ -129,9 +129,7 @@ class MyEvalsController extends Controller
         }
 // finish up
         Template::AddBodyContent("</div>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
-
-
+        return Template::Finalize($this->container);
     }
     function totals($good,$bad) {
         return "<table style='margin:10px auto;'><tr>

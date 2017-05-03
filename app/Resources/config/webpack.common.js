@@ -3,9 +3,11 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var helpers = require('./helper')
 var path = require('path')
 
+
 module.exports = {
   entry: {
     'app': './app/Resources/src/app.js',
+    'backend': './app/Resources/src/backend.js',
     'style': './app/Resources/style/style.scss'
   },
   resolve: {

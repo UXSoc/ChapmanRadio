@@ -68,7 +68,7 @@ class GenreContentController extends  Controller{
 		<tr class='oddRow'><td style='text-align:center;'><input type='submit' value=' Edit Content ' /></td></tr>
 	</table></form>");
             Template::AddBodyContent("</div>");
-            return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+            return Template::Finalize($this->container);
         }
         else if(!in_array(ChapmanradioRequest::Get('genre'), $genres)) {
             error("You've entered an invalid genre. please go back and try again");
@@ -137,6 +137,6 @@ class GenreContentController extends  Controller{
 // close tags
         Template::AddBodyContent("</div></form>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
 }

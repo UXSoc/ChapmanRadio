@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 namespace GeoIp2\Database;
 

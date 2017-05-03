@@ -80,7 +80,7 @@ class StrikesController extends Controller
         $calcTime = round($calcTime*1000)/1000;
         Template::AddBodyContent("<p style='text-align:right;font-size:11px;color:#757575;'>Calculated in $calcTime seconds.</p>");
         Template::AddBodyContent("</div>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
 
     function formatStrikes($absences, $strikes){

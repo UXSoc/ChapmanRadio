@@ -56,7 +56,7 @@ class UploadController extends Controller
 	<div class='gloss' style='width:360px;margin:10px auto;text-align:center;'>$downloads</div>
 	</div>
 ");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
 
     }
 

@@ -52,7 +52,7 @@ class QuizController extends Controller
         $user = Session::GetCurrentUser();
 
         $passed = $user->HasQuizSeason(Site::CurrentSeason());
-        if($passed) Template::Error("You have already passed the quiz for this semester.");
+        if($passed) Template::Error($this->container,"You have already passed the quiz for this semester.");
 
         $action = "";
         $quizid = ChapmanRadioRequest::GetInteger('quizid', ChapmanRadioRequest::GetInteger('quiz', ChapmanRadioRequest::GetIntegerFrom($_SESSION, 'quizid')));
@@ -113,7 +113,7 @@ class QuizController extends Controller
             Template::AddBodyContent("</div>");
             unset($_SESSION['quizid']);
             DB::Query("UPDATE quizes SET `completed`='1',`right`='$right',`wrong`='$wrong',`total`='$total' WHERE quizid='$quizid'");
-            return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+            return Template::Finalize($this->container);
         }
 
         switch($action) {
@@ -195,7 +195,7 @@ class QuizController extends Controller
                 Template::AddBodyContent("<p>Hello, you've already taken the quiz for this semester.</p>");
                 break;
         }
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
     /* http://stackoverflow.com/questions/4102777/php-random-shuffle-array-maintaining-key-value */
     function shuffle_with_keys(&$array) {

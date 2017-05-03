@@ -24,7 +24,7 @@ class AttendanceController extends Controller
 {
 
     /**
-     * @Route("/dj/attendance", name="dj_attendence")
+     * @Route("/dj/attendance", name="dj_attendance")
      */
     public function indexAction()
     {
@@ -123,7 +123,7 @@ class AttendanceController extends Controller
 // little notice
         Template::AddBodyContent("<p style='margin:40px auto;font-size:12px;color:#757575;'>If you have questions about your attendance, please email <a href='mailto:attendance@chapmanradio.com'>attendance@chapmanradio.com</a></p>");
 // finish output
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,"</div>"));
+        return Template::Finalize($this->container,"</div>");
     }
 
     function notify($msg, $color = "#090")

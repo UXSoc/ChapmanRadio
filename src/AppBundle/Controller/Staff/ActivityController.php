@@ -53,7 +53,7 @@ class ActivityController extends Controller
         }
         Template::AddBodyContent("</table></div>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
 
 }

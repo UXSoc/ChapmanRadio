@@ -110,7 +110,7 @@ class NowController extends Controller
         Template::Add("</table><br />");
         self::DispEmailBox($userswithincompleteshows);
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
 
     function DispEmailBox($users){

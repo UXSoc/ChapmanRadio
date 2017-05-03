@@ -45,6 +45,6 @@ class SportsController extends Controller
         </div>
         
         <p><br class='clear' /></p>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return Template::Finalize($this->container);
     }
 }

@@ -27,6 +27,7 @@ class DefaultController extends Controller
      */
     public function indexAction(ContainerInterface $container = null)
     {
+
         define('PATH', '../');
         Template::SetPageTitle("DJ Account");
         Template::SetBodyHeading("Chapman Radio", "DJ Account");
@@ -74,7 +75,7 @@ class DefaultController extends Controller
 		</td>
 	</tr>");
         }
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container,"</table>"));
+        return Template::Finalize($this->container,"</table>");
 
     }
 }

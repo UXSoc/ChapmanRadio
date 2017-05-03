@@ -4,6 +4,7 @@ use AppBundle\Controller\DefaultController;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\Users;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Security\Core\User\User;
 
@@ -29,8 +30,9 @@ class Template
     private static $meta_description = "";
 
     private static $section = "";
-    private static $template = "inc/templates/default.template.html";
+    private static $template = "inc/templates/wrapper.template.html";
     private static $headerimg = "/legacy/img/logo/default.png";
+    private static $twigProxy = "backend/wrapper.html.twig";
 
     private static $notify = "";
     private static $alert = "";
@@ -101,7 +103,7 @@ class Template
 
 
         /* standard replaces */
-        $html = str_replace('[%html_title%]', Template::$title, $html);
+//        $html = str_replace('[%html_title%]', Template::$title, $html);
         $html = str_replace('[%html_prehead%]', implode("", Template::$prehead), $html);
         $html = str_replace('[%og:url%]', "http://chapmanradio.com" . $_SERVER['PHP_SELF'], $html);
         $html = str_replace('[%header_url%]', Template::$headerimg, $html);
@@ -134,9 +136,26 @@ class Template
         // Do head last in case anything here added to head
         $html = str_replace('[%html_head%]', implode("", Template::$head), $html);
 
-        /* calculate render time */
-        /* output */
-        return $html;
+        $parameter = array(
+            "main_content" => $html,
+            'title' => Template::$title,
+            'pre_head' =>  implode("", Template::$prehead),
+            'body_class' => Template::$bodyclass,
+            'html_head' => implode("", Template::$head));
+        $response = null;
+        if ($container->has('templating')) {
+            return $container->get('templating')->renderResponse(Template::$twigProxy ,$parameter, $response);
+        }
+
+        if (!$container->has('twig')) {
+            throw new \LogicException('You can not use the "render" method if the Templating Component or the Twig Bundle are not available.');
+        }
+
+        if (null === $response) {
+            $response = new Response();
+        }
+        return $response->setContent($container->get('twig')->render(Template::$twigProxy ,$parameter));
+
 //		print "\n<!-- Client: {$REMOTE_ADDR} Agent: {$HTTP_USER_AGENT} -->\n";
 //		exit;
     }

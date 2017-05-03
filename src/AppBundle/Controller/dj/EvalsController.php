@@ -52,6 +52,6 @@ class EvalsController extends Controller
 	</td></tr></table>
 	");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
 }

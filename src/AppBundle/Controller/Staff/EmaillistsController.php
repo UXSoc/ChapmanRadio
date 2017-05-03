@@ -75,7 +75,7 @@ class EmaillistsController extends Controller
         }
 
         Template::AddBodyContent("</div><br style='margin-bottom:20px' />");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
 
 }

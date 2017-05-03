@@ -43,7 +43,7 @@ class DupsController extends Controller
         }
         Template::Add("</tbody></table><br />");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
 
 }

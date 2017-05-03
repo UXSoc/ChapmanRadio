@@ -83,7 +83,7 @@ class ReportController extends Controller
 	<p>Total Absent: <b style='color:#A00'>$totals[absent]</b></p>
 	<p>Total Excused: <b style='color:#D60'>$totals[excused]</b></p>
 	" . implode($ccsections) . "");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return Template::Finalize($this->container);
     }
 
     /**
@@ -168,7 +168,7 @@ class ReportController extends Controller
             Template::AddBodyContent("<h3>" . ucfirst($type) . " Attendance Records</h3><table>" . implode($records) . "</table>");
         }
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return Template::Finalize($this->container);
 
     }
 
@@ -225,7 +225,7 @@ class ReportController extends Controller
 
         if (!$count) Template::AddBodyContent("<p style='color:#848484'>No data.</p>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return Template::Finalize($this->container);
 
     }
 
@@ -268,7 +268,7 @@ class ReportController extends Controller
         $show = DB::GetFirst("SELECT * FROM shows WHERE showid = :id", array(":id" => $rec['showid']));
         Template::AddBodyContent("<pre>Show: " . print_r($show, true) . "</pre>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return Template::Finalize($this->container);
     }
 
     /**
@@ -305,7 +305,7 @@ class ReportController extends Controller
         $user = DB::GetFirst("SELECT * FROM users WHERE userid = :id", array(":id" => $att['userid']));
         Template::AddBodyContent("<pre>User: " . print_r($user, true) . "</pre>");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return Template::Finalize($this->container);
     }
 
 
@@ -401,7 +401,7 @@ class ReportController extends Controller
 
 	" . implode($ccsections) . "");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return Template::Finalize($this->container);
     }
 
 
@@ -457,7 +457,7 @@ class ReportController extends Controller
         Template::AddBodyContent("</table>");
 
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize());
+        return Template::Finalize($this->container);
 
     }
 
@@ -540,7 +540,7 @@ class ReportController extends Controller
         if (!$count) Template::AddBodyContent("<p style='color:#848484'>No data.</p>");
 
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
 
     }
 

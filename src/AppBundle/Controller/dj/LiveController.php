@@ -48,7 +48,7 @@ class LiveController extends Controller
                 Template::AddBodyContent("<div style='color:red;margin: 10px;'>You're on staff so you can preview the DJ Live page even with the site not broadcasting</div>");
             } else {
                 Template::AddCoujuError("<b>Error: Not broadcasting.</b><br />Chapman Radio is not currently not broadcasting.<br />This probably means that we're on a break");
-                return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+                return Template::Finalize($this->container);
             }
         }
         if (!in_array(Request::ClientAddress(), Site::$StationIps) && !isset($_SESSION['djlive_override_ip_protection']) && !Session::isStaff()) {
@@ -65,11 +65,11 @@ class LiveController extends Controller
             $liveshowid = DJLive::getActive();
 // the user wants to login to their show
         else if (isset($_POST['LOGIN_TO_SHOW']) || isset($_POST['OVERRIDE_SCHEDULED_SHOW']) || isset($_POST['LOGIN_WITH_BYPASS']))
-            $liveshowid = DJLive::handleLogin();
+            $liveshowid = DJLive::handleLogin($this->container);
 // if the user didn't login correctly above, ask for login
         if (!isset($liveshowid)) {
-            DJLive::LoginForm();
-            return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+            DJLive::LoginForm($this->container);
+            return Template::Finalize($this->container);
         }
 
         /* AND NOW THE ACTUAL DJ LIVE PAGE!!!!!! */
@@ -216,7 +216,7 @@ class LiveController extends Controller
 </div>
 </div> </div>"); // column // container
         Template::script("\$(document).ready(function(){ live.genre=\"{$liveshow->genre}\"; });");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
 
     }
 

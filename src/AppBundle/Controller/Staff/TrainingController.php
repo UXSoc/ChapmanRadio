@@ -51,6 +51,6 @@ class TrainingController extends Controller
             Template::AddBodyContent("<tr><td>{$signup->datetime}</td><td>{$dj->name}</td><td>{$row['s_fname']} {$row['s_lname']}</td><td>{$button}</td></tr>");
         }
         Template::AddBodyContent("</table>");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
 }

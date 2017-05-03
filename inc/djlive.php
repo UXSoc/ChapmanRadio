@@ -78,7 +78,6 @@ class DJLive
         Template::AddBodyContent(self::WrongShowForm($show, $scheduledshow, $timestamp));
         Template::script("$('document').ready(function(){ var totalChecked = 0; $('#accept_override_form input[type=checkbox]').change(function(){ if($(this).is(':checked')) totalChecked++; else totalChecked--; $('#overridebutton').prop('disabled', (totalChecked != 5)); }); });");
         return Template::Finalize($container);
-        return null;
     }
 
     public static function handleOverrideLogin($showid, $timestamp, $userid)
@@ -128,7 +127,7 @@ class DJLive
         return self::Authorize($showid, $timestamp + 3599); // Good until the end of the last show we recorded
     }
 
-    public static function LoginForm()
+    public static function LoginForm($container)
     {
         $now = time();
         $user = Session::GetCurrentUser();
@@ -141,7 +140,7 @@ class DJLive
 			<br />");
 
         if (empty($usershows)) {
-            Template::Error("This user account <b>does not have any shows linked to it</b><br /><br />This means that although you have successfully logged on to the site, you are not listed as a DJ for any shows this season.<br /><br />Please contact the current <b>Webmaster</b>, <b>Program Manager</b>, and <b>General Manager</b> for help resolving this issue.<br /><br /><i>You will not be able to use the DJ Live page until your account has been linked up to a show.</i>");
+            Template::Error($container,"This user account <b>does not have any shows linked to it</b><br /><br />This means that although you have successfully logged on to the site, you are not listed as a DJ for any shows this season.<br /><br />Please contact the current <b>Webmaster</b>, <b>Program Manager</b>, and <b>General Manager</b> for help resolving this issue.<br /><br /><i>You will not be able to use the DJ Live page until your account has been linked up to a show.</i>");
         }
 
         Template::AddBodyContent("<form method='post'>

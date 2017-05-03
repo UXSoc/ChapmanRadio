@@ -145,7 +145,7 @@ class StaffController extends Controller
 
         Template::AddBodyContent("<br style='margin-bottom:20px' />");
 
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
 
 }

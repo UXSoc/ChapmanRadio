@@ -125,6 +125,6 @@ class EvalController extends Controller
         Template::script("if(typeof evals == 'undefined') evals = {}; ");
 // send categories data to javascript
         Template::script("evals.categories = " . json_encode($categories) . ";");
-        return new \Symfony\Component\HttpFoundation\Response(Template::Finalize($this->container));
+        return Template::Finalize($this->container);
     }
 }

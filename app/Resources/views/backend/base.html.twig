@@ -1,0 +1,67 @@
+{% extends 'layout/base.html.twig' %}
+
+
+{% set menu = [
+{'name' : 'DJ',
+    'sub_menu': [
+        {name: 'DJ Live', route : 'dj_live'},
+        {name: 'My Shows', route : 'dj_shows' },
+        {name: 'My Profile', route : 'dj_profile' },
+        {name: 'My Grades', route : 'dj_grades'},
+        {name: 'My Attendance', route : 'dj_attendance' },
+        {name: 'My Genre', route : 'dj_genre' },
+        {name: 'Evals', route : 'dj_evals' },
+        {name: 'Stats', route : 'dj_stats' },
+        {name: 'Class News', route : 'dj_news' }]
+},
+{'name' : 'Staff',
+    'sub_menu' : [
+        { route : "staff_attendance", name : "Attendance"  },
+        { route : "staff_features", name : "Features"  },
+        { route : "staff_genrecontent", name : "Genres" },
+        { route : "staff_users", name : " Users"  },
+        { route : "staff_shows", name : " Shows"  },
+        { route : "staff_events", name : "Events"  },
+        { route : "staff_schedule", name : "Schedule"  },
+        { route : "staff_awards", name : "Awards"  },
+        { route : "staff_sitins", name : "Sit"  },
+        { route : "staff_staff", name : "Staff"  },
+        { route : "staff_grades", name : "Grade Managment"  },
+        { route : "staff_log", name : "Edit Log"  },
+        { route : "staff_emaillists", name : "Email Alerts"  },
+        { route : "staff_alterations", name : "Scedule Alterations" },
+        { route : "staff_cancelledshows", name : "Cancelled Shows"  },
+        { route : "staff_loginissues", name : "Login Attemps"  },
+        { route : "staff_strikes", name : "Strikes"  },
+        { route : "staff_aliases", name : "URL Aliases" },
+        { route : "staff_listens", name : "Listen Log" },
+        { route : "staff_errors", name : "Error Log"  },
+        { route : "staff_timestamp", name : "Timestap Utility" },
+        { route : "staff_recordings", name : "Recording Log"  },
+        { route : "staff_sms", name : "Livechat History" },
+        { route : "staff_advanced", name : "Advance" }
+    ]}
+] %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="small-3 columns">
+
+            {% block menu %}
+                <ul class="vertical menu chapman_radio_main_menu"  data-accordion-menu >
+                    {{ include('templates/vertical_menu.html.twig', {items: menu}) }}
+                </ul>
+                {{ block('sub-menu') }}
+            {% endblock %}
+        </div>
+        <div class="small-9 columns">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+
+
+{% endblock %}
