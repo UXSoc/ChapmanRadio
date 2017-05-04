@@ -22,35 +22,31 @@ class Version20170430182316 extends AbstractMigration implements ContainerAwareI
      */
     public function up(Schema $schema)
     {
+        $this->addSql('ALTER TABLE users RENAME TO user;');
 
+        $this->addSql('ALTER TABLE user ADD confirmed TINYINT');
+        $this->addSql('ALTER TABLE user ADD confirmation_token VARCHAR(30)');
+        $this->addSql('ALTER TABLE user ADD username VARCHAR(30)');
 
+        $this->addSql('ALTER TABLE user DROP fname');
+        $this->addSql('ALTER TABLE user DROP lname');
+        $this->addSql('ALTER TABLE user DROP verifycode');
 
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE users ADD confirmed TINYINT');
-        $this->addSql('ALTER TABLE users ADD confirmation_token VARCHAR(30)');
-        $this->addSql('ALTER TABLE users ADD username VARCHAR(30)');
+        $this->addSql('ALTER TABLE user MODIFY fbid BIGINT(20) unsigned');
+        $this->addSql('ALTER TABLE user MODIFY phone VARCHAR(30)');
+        $this->addSql('ALTER TABLE user MODIFY staffgroup VARCHAR(200)');
+        $this->addSql('ALTER TABLE user MODIFY staffposition VARCHAR(200)');
+        $this->addSql('ALTER TABLE user MODIFY staffemail VARCHAR(200)');
+        $this->addSql('ALTER TABLE user MODIFY seasons VARCHAR(140);');
+        $this->addSql('ALTER TABLE user MODIFY lastlogin DATETIME;');
+        $this->addSql('ALTER TABLE user MODIFY djname VARCHAR(120);');
+        $this->addSql('ALTER TABLE user MODIFY gender VARCHAR(100);');
+        $this->addSql('ALTER TABLE user MODIFY lastip VARCHAR(30);');
+        $this->addSql('ALTER TABLE user MODIFY password VARCHAR(255) NOT NULL;');
+        $this->addSql('CREATE UNIQUE INDEX user_email_uindex ON user (email)');
+        $this->addSql('CREATE UNIQUE INDEX user_username_uindex ON user (username)');
 
-        $this->addSql('ALTER TABLE users DROP fname');
-        $this->addSql('ALTER TABLE users DROP lname');
-        $this->addSql('ALTER TABLE users DROP verifycode');
-
-        $this->addSql('ALTER TABLE users MODIFY fbid BIGINT(20) unsigned');
-        $this->addSql('ALTER TABLE users MODIFY phone VARCHAR(30)');
-        $this->addSql('ALTER TABLE users MODIFY staffgroup VARCHAR(200)');
-        $this->addSql('ALTER TABLE users MODIFY staffposition VARCHAR(200)');
-        $this->addSql('ALTER TABLE users MODIFY staffemail VARCHAR(200)');
-        $this->addSql('ALTER TABLE users MODIFY seasons VARCHAR(140);');
-        $this->addSql('ALTER TABLE users MODIFY lastlogin DATETIME;');
-        $this->addSql('ALTER TABLE users MODIFY djname VARCHAR(120);');
-        $this->addSql('ALTER TABLE users MODIFY gender VARCHAR(100);');
-        $this->addSql('ALTER TABLE users MODIFY lastip VARCHAR(30);');
-        $this->addSql('ALTER TABLE users MODIFY password VARCHAR(255) NOT NULL;');
-
-
-        $this->addSql('CREATE UNIQUE INDEX users_email_uindex ON users (email)');
-        $this->addSql('CREATE UNIQUE INDEX users_username_uindex ON users (username)');
-
-        $this->addSql('UPDATE users set confirmed=1');
+        $this->addSql('UPDATE user set confirmed=1');
 
     }
 
@@ -59,6 +55,7 @@ class Version20170430182316 extends AbstractMigration implements ContainerAwareI
      */
     public function down(Schema $schema)
     {
+        $this->addSql('ALTER TABLE user RENAME TO users;');
 
         $this->addSql('ALTER TABLE users DROP confirmed;');
         $this->addSql('ALTER TABLE users DROP confirmation_token;');
@@ -79,6 +76,8 @@ class Version20170430182316 extends AbstractMigration implements ContainerAwareI
         $this->addSql('ALTER TABLE users MODIFY gender VARCHAR(100) NOT NULL');
         $this->addSql('ALTER TABLE users MODIFY lastip VARCHAR(30) NOT NULL');
         $this->addSql('ALTER TABLE users MODIFY password VARCHAR(48) NOT NULL;');
+        $this->addSql('ALTER TABLE users CHANGE id userid BIGINT(20) unsigned NOT NULL AUTO_INCREMENT;');
+
 
         $this->addSql('DROP INDEX users_email_uindex ON users;');
         $this->addSql('DROP INDEX users_username_uindex ON users;');

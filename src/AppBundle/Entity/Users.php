@@ -25,7 +25,7 @@ class Users implements AdvancedUserInterface
     /**
      * @var integer
      *
-     * @ORM\Column(name="userid", type="bigint", nullable=false)
+     * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
