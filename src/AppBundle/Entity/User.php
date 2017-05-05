@@ -12,14 +12,14 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 
 /**
- * Users
+ * User
  *
- * @ORM\Table(name="users")
+ * @ORM\Table(name="user")
  * @UniqueEntity(fields="email", message="Email already taken")
  * @UniqueEntity(fields="username", message="Username already taken")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  */
-class Users implements AdvancedUserInterface
+class User implements AdvancedUserInterface
 {
 
     /**
@@ -29,7 +29,7 @@ class Users implements AdvancedUserInterface
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $userid;
+    private $id;
 
     /**
      * @var integer
@@ -213,10 +213,6 @@ class Users implements AdvancedUserInterface
         $this->roles = new ArrayCollection();
     }
 
-    public function getId()
-    {
-        return $this->userid;
-    }
 
     public  function getName()
     {
@@ -233,9 +229,9 @@ class Users implements AdvancedUserInterface
         $this->username = $username;
     }
 
-    public function getUserId()
+    public function getId()
     {
-        return $this->userid;
+        return $this->id;
     }
 
     public  function  setFacebookId($id)

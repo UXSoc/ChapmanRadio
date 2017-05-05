@@ -38,7 +38,7 @@ class Role implements RoleInterface
     private $userId;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Users", inversedBy="roles")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="roles")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="userid")
      */
     private $user;

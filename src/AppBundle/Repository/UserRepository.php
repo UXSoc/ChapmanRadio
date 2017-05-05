@@ -2,7 +2,7 @@
 
 namespace AppBundle\Repository;
 use AppBundle\Entity\Role;
-use AppBundle\Entity\Users;
+use AppBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
@@ -27,11 +27,11 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     }
 
     /**
-     * @return Users
+     * @return User
      */
     public  function  create()
     {
-        $user = new Users();
+        $user = new User();
         $user->addRole(Role::USER_ROLE);
         return $user;
     }

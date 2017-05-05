@@ -524,7 +524,7 @@ class MCAPI {
     }
 
     /**
-     * Get the top 5 performing email domains for this campaign. Users want more than 5 should use campaign campaignEmailStatsAIM()
+     * Get the top 5 performing email domains for this campaign. User want more than 5 should use campaign campaignEmailStatsAIM()
      * or campaignEmailStatsAIMAll() and generate any additional stats they require.
      * 
      * @section Campaign  Stats

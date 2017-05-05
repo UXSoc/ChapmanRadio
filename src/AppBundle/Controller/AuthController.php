@@ -9,7 +9,7 @@
 namespace AppBundle\Controller;
 
 
-use AppBundle\Entity\Users;
+use AppBundle\Entity\User;
 use AppBundle\Form\UserConfirmType;
 use AppBundle\Form\UserType;
 use AppBundle\Repository\UserRepository;
@@ -91,8 +91,8 @@ class AuthController extends Controller
     public function confirmationAction(Request $request,$token)
     {
 
-        /** @var $user Users*/
-        $user =  $this->getDoctrine()->getRepository('AppBundle:Users')->findOneBy(array('confirmation_token' => $token));
+        /** @var $user User*/
+        $user =  $this->getDoctrine()->getRepository('AppBundle:User')->findOneBy(array('confirmation_token' => $token));
         if (!$user) {
             throw $this->createNotFoundException('Unknown confimration key');
         }

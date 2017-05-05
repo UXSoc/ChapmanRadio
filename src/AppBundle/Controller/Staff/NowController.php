@@ -51,13 +51,13 @@ class NowController extends Controller
         Template::Add("Activated users: ".$users['count']."<br />");
 
         $usershows = DB::GetFirst("SELECT count(*) as count FROM users JOIN shows ON users.userid = shows.userid1 OR users.userid = shows.userid2 OR users.userid = shows.userid3 OR users.userid = shows.userid4 OR users.userid = shows.userid5 WHERE shows.seasons LIKE :season", array(":season" => "%".Site::CurrentSeason()."%"));
-        Template::Add("Users on activated show: ".$usershows['count']."<br />");
+        Template::Add("User on activated show: ".$usershows['count']."<br />");
 
         $showusers = DB::GetFirst("SELECT count(*) as count FROM users JOIN shows ON users.userid = shows.userid1 OR users.userid = shows.userid2 OR users.userid = shows.userid3 OR users.userid = shows.userid4 OR users.userid = shows.userid5 WHERE users.seasons LIKE :season", array(":season" => "%".Site::CurrentSeason()."%"));
         Template::Add("Shows with activated users: ".$showusers['count']."<br />");
 
         $usershowusers = DB::GetFirst("SELECT count(*) as count FROM users INNER JOIN shows ON (users.userid = shows.userid1 OR users.userid = shows.userid2 OR users.userid = shows.userid3 OR users.userid = shows.userid4 OR users.userid = shows.userid5) WHERE shows.seasons LIKE :season AND users.seasons LIKE :season", array(":season" => "%".Site::CurrentSeason()."%"));
-        Template::Add("Activated Users with activated shows: ".$usershowusers['count']."<br />");
+        Template::Add("Activated User with activated shows: ".$usershowusers['count']."<br />");
         Template::Add("<br />");
 
         $allshows = ShowModel::FromResults(DB::GetAll("SELECT * FROM shows WHERE seasons LIKE :season", array(":season" => "%".Site::CurrentSeason()."%")));

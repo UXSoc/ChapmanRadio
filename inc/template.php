@@ -2,7 +2,7 @@
 
 use AppBundle\Controller\DefaultController;
 use AppBundle\Entity\Role;
-use AppBundle\Entity\Users;
+use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
@@ -418,7 +418,7 @@ class Template
 
         $token =  $container->get('security.token_storage')->getToken();
         if ($token != null) {
-            /** @var Users $user */
+            /** @var User $user */
             $user = $token->getUser();
             if($user != null) {
                 if ($user->hasRole(Role::DJ_ROLE)) {
@@ -443,7 +443,7 @@ class Template
                         "/staff/attendance" => "Attendance",
                         "/staff/features" => "Features",
                         "/staff/genrecontent" => "Genres",
-                        "/staff/users" => "Users",
+                        "/staff/users" => "User",
                         "/staff/shows" => "Shows",
                         "/staff/promos" => "Promos",
                         "/staff/events" => "Events",

@@ -9,7 +9,7 @@
 namespace AppBundle\Controller\dj;
 
 
-use AppBundle\Entity\Users;
+use AppBundle\Entity\User;
 use ChapmanRadio\DB;
 use function ChapmanRadio\error;
 use ChapmanRadio\Evals;
@@ -41,7 +41,7 @@ class ShowsController extends Controller
         Template::SetPageTitle("My Shows");
         //Template::RequireLogin("/dj/shows","DJ Resources");
 
-        /** @var Users $user */
+        /** @var User $user */
         $user = $this->getUser();
 
 

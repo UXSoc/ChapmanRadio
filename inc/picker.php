@@ -7,7 +7,7 @@ class Picker {
 		if(!isset($config['name'])) $config['name'] = "userid";
 		if(!isset($config['showuserid'])) $config['showuserid'] = false;
 		$seasonName = Season::name($season);
-		$ret = "<select name='$config[name]'><option value=''> - Users in $seasonName - </option>";
+		$ret = "<select name='$config[name]'><option value=''> - User in $seasonName - </option>";
 		$result = DB::GetAll("SELECT userid, name FROM users WHERE seasons LIKE :season ORDER BY name", array(":season" => "%$season%"));
 		
 		$count = 0;
