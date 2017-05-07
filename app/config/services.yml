@@ -5,10 +5,10 @@ parameters:
 
 services:
     user_repository:
-        class: AppBundle\Repository\UserRepository
+        class: CoreBundle\Repository\UserRepository
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
-            - AppBundle\Entity\Users
+            - CoreBundle\Entity\User
     #service_name:
-    #    class: AppBundle\Directory\ClassName
+    #    class: CoreBundle\Directory\ClassName
     #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']

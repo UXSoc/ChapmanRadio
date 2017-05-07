@@ -1,8 +1,0 @@
-magic_quotes_gpc = Off
-magic_quotes_runtime = Off
-magic_quotes_sybase = Off
-default_charset = "utf-8"
-auto_prepend_file = "/home/content/c/h/a/chapmanradio/html/inc/error_handling.php"
-upload_max_filesize = 40M
-post_max_size = 40M
-memory_limit = 64M
