@@ -1,0 +1,83 @@
+{% extends 'layout/base.html.twig' %}
+
+
+{% set menu = [
+{'name' : 'DJ',}
+
+] %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+    <div class="off-canvas-wrapper">
+        <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
+
+            <div class="off-canvas position-left reveal-for-large" id="my-info" data-off-canvas data-position="left">
+                    {% block menu %}
+
+                        <ul class="vertical menu">
+                            <li>
+                                <a>Dashboard</a>
+                            </li>
+                            <li>
+                                <a href="#">Shows</a>
+                                <ul class="nested vertical menu">
+                                    <li class="active"><a href="#">All Shows</a></li>
+                                    <li><a href="#">Add New</a></li>
+                                    <li><a href="#">Categories</a></li>
+                                    <li><a href="#">Tags</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">Posts</a>
+                                <ul class="nested vertical menu">
+                                    <li class="active"><a href="#">All Posts</a></li>
+                                    <li><a href="#">Add New</a></li>
+                                    <li><a href="#">Categories</a></li>
+                                    <li><a href="#">Tags</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a>Comments</a>
+                            </li>
+                            <li>
+                                <a>Users</a>
+                                <ul class="nested vertical menu">
+                                    <li class="active"><a href="#">All Users</a></li>
+                                    <li><a href="#">Add New</a></li>
+                                    <li><a href="#">Your Profile</a></li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                <a>Settings</a>
+                                <ul class="nested vertical menu">
+                                </ul>
+                            </li>
+                        </ul>
+
+
+                        {#<ul class="vertical menu chapman_radio_main_menu"  data-accordion-menu >#}
+                        {#{{ include('templates/vertical_menu.html.twig', {items: menu}) }}#}
+                        {#</ul>#}
+                    {% endblock %}
+                    {{ block('sub-menu') }}
+            </div>
+
+            <div class="off-canvas-content" data-off-canvas-content>
+                <div class="title-bar hide-for-large">
+                    <div class="title-bar-left">
+                        <button class="menu-icon" type="button" data-open="my-info"></button>
+                        <span class="title-bar-title">Dashboard</span>
+                    </div>
+                </div>
+
+                {% block content %}
+
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

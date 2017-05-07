@@ -11,19 +11,8 @@ namespace CoreBundle\Controller;
 
 use CoreBundle\Entity\User;
 use CoreBundle\Form\UserConfirmType;
-use CoreBundle\Form\UserType;
+use CoreBundle\Form\UserRegisterType;
 use CoreBundle\Repository\UserRepository;
-use ChapmanRadio\DB;
-use ChapmanRadio\Imaging;
-use ChapmanRadio\Notify;
-use ChapmanRadio\Request as ChapmanRadioRequest;
-use ChapmanRadio\Season;
-use ChapmanRadio\Session;
-use ChapmanRadio\Template;
-use ChapmanRadio\Uploader;
-use ChapmanRadio\UserModel;
-use ChapmanRadio\Util;
-use ChapmanRadio\Validation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -48,7 +37,7 @@ class AuthController extends Controller
 
 
         /** @var $form Form*/
-        $form = $this->createForm(UserType::class,$user);
+        $form = $this->createForm(UserRegisterType::class,$user);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

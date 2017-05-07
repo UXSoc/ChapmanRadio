@@ -10,7 +10,7 @@
  */
 
 /*
- * User of PHP 5.2 should be able to run the requirements checks.
+ * Users of PHP 5.2 should be able to run the requirements checks.
  * This is why the file and all classes must be compatible with PHP 5.2+
  * (e.g. not using namespaces and closures).
  *

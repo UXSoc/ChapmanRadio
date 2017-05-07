@@ -7,7 +7,6 @@ var path = require('path')
 module.exports = {
   entry: {
     'app': './app/Resources/src/app.js',
-    'backend': './app/Resources/src/backend.js',
     'style': './app/Resources/style/style.scss'
   },
   resolve: {
