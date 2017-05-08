@@ -2,6 +2,7 @@ var webpack = require('webpack')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var helpers = require('./helper')
 var path = require('path')
+var CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   entry: {
@@ -12,6 +13,7 @@ module.exports = {
   },
   resolve: {
     modules: ['node_modules', 'bower_components'],
+    descriptionFiles: ['package.json', 'bower.json'],
     extensions: ['.vue', '.js', '.scss'],
     alias: {
       vue: 'vue/dist/vue.js'
@@ -47,6 +49,7 @@ module.exports = {
     new ExtractTextPlugin('./[name].css'),
     new webpack.optimize.CommonsChunkPlugin({
       name: ['vendor']
-    })
+    }),
+    new CopyWebpackPlugin([ {from : 'bower_components/tinymce/skins', to: 'skins'}])
   ]
 }

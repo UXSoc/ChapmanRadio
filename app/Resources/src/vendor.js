@@ -12,13 +12,10 @@ window.FConfig = Config
 import debounce from 'throttle-debounce/debounce'
 
 window.debounce = debounce
-
-import 'script-loader!codemirror/lib/codemirror'
-import 'script-loader!codemirror/mode/markdown/markdown'
-import 'script-loader!codemirror/addon/mode/overlay'
-import 'script-loader!codemirror/mode/xml/xml'
-import 'script-loader!codemirror/mode/gfm/gfm'
-import 'script-loader!marked/lib/marked'
+import 'tinymce/tinymce'
+import 'tinymce/themes/modern/theme'
+import 'tinymce/plugins/spellchecker/index'
+import 'tinymce/plugins/textpattern/index'
 
 import 'foundation-sites/dist/js/foundation'
 import 'foundation-sites/js/foundation.core'

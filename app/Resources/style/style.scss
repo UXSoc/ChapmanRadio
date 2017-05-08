@@ -1,7 +1,6 @@
 @import "~foundation-sites/scss/foundation.scss";
 @import "~font-awesome/scss/font-awesome.scss";
 
-
 @include foundation-global-styles;
 @include foundation-grid;
 @include foundation-flex-grid;
@@ -42,6 +41,5 @@
 @include foundation-visibility-classes;
 @include foundation-float-classes;
 
-@import "dashboard_marked";
 @import "dashboard_panel";
 @import "dashboard_menu";
