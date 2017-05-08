@@ -1,4 +1,4 @@
-import './bootstrap'
+import './vendor'
 import App from './App.vue'
 
 import SummaryPage from './pages/SummaryPage.vue'

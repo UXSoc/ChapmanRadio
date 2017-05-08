@@ -3,15 +3,19 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var helpers = require('./helper')
 var path = require('path')
 
-
 module.exports = {
   entry: {
     'app': './app/Resources/src/app.js',
-    'style': './app/Resources/style/style.scss'
+    'dashboard': './app/Resources/src/dashboard.js',
+    'style': './app/Resources/style/style.scss',
+    'vendor': './app/Resources/src/vendor.js'
   },
   resolve: {
     modules: ['node_modules', 'bower_components'],
-    extensions: ['.vue', '.js', '.scss']
+    extensions: ['.vue', '.js', '.scss'],
+    alias: {
+      vue: 'vue/dist/vue.js'
+    }
   },
   module: {
     rules: [
@@ -40,9 +44,9 @@ module.exports = {
   },
 
   plugins: [
-    new ExtractTextPlugin('./css/[name].css'),
+    new ExtractTextPlugin('./[name].css'),
     new webpack.optimize.CommonsChunkPlugin({
-      name: ['app', 'vendor', 'polyfills']
+      name: ['vendor']
     })
   ]
 }

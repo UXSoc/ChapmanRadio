@@ -2,57 +2,64 @@
 
 
 {% set menu = [
-{'name' : 'DJ',}
+    {'route':'dashboard_index',"name" : 'Dashboard','sub-group' : {}},
+    {'route':'',"name" : 'Shows','sub-group' : {}},
+    {'route':'',"name" : 'Posts','sub-group' : {}},
+    {'route':'',"name" : 'Comments','sub-group' : {}},
+    {'route':'',"name" : 'Users','sub-group' : {}},
+    {'route':'',"name" : 'Settings','sub-group' : {}}
+
 
 ] %}
 
 {% block head %}
+    <script src="{{ asset('bundles/vendor.js') }}"></script>
+   <script src="{{ asset('bundles/dashboard.js') }}"></script>
+
 {% endblock %}
 
 {% block body %}
-    <div class="off-canvas-wrapper">
-        <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
 
-            <div class="off-canvas position-left reveal-for-large" id="my-info" data-off-canvas data-position="left">
+            <div class="dashboard off-canvas position-left reveal-for-large" id="dashboard-menu" data-off-canvas>
                     {% block menu %}
 
-                        <ul class="vertical menu">
-                            <li>
+                        <ul class="dashboard-group vertical menu">
+                            <li class="dashboard-group-item">
                                 <a>Dashboard</a>
                             </li>
-                            <li>
+                            <li class="dashboard-group-item group-hover">
                                 <a href="#">Shows</a>
-                                <ul class="nested vertical menu">
+                                <ul class="sub-group vertical menu">
                                     <li class="active"><a href="#">All Shows</a></li>
                                     <li><a href="#">Add New</a></li>
                                     <li><a href="#">Categories</a></li>
                                     <li><a href="#">Tags</a></li>
                                 </ul>
                             </li>
-                            <li>
+                            <li class="dashboard-group-item group-hover">
                                 <a href="#">Posts</a>
-                                <ul class="nested vertical menu">
+                                <ul class="sub-group vertical menu">
                                     <li class="active"><a href="#">All Posts</a></li>
                                     <li><a href="#">Add New</a></li>
                                     <li><a href="#">Categories</a></li>
                                     <li><a href="#">Tags</a></li>
                                 </ul>
                             </li>
-                            <li>
+                            <li class="dashboard-group-item group-hover">
                                 <a>Comments</a>
                             </li>
-                            <li>
+                            <li class="dashboard-group-item group-hover">
                                 <a>Users</a>
-                                <ul class="nested vertical menu">
+                                <ul class="sub-group vertical menu">
                                     <li class="active"><a href="#">All Users</a></li>
                                     <li><a href="#">Add New</a></li>
                                     <li><a href="#">Your Profile</a></li>
                                 </ul>
                             </li>
 
-                            <li>
+                            <li class="dashboard-group-item group-hover">
                                 <a>Settings</a>
-                                <ul class="nested vertical menu">
+                                <ul class="sub-group vertical menu">
                                 </ul>
                             </li>
                         </ul>
@@ -68,16 +75,16 @@
             <div class="off-canvas-content" data-off-canvas-content>
                 <div class="title-bar hide-for-large">
                     <div class="title-bar-left">
-                        <button class="menu-icon" type="button" data-open="my-info"></button>
+                        <button class="menu-icon" type="button" data-open="dashboard-menu"></button>
                         <span class="title-bar-title">Dashboard</span>
                     </div>
                 </div>
-
+                <div id="dashboard">
                 {% block content %}
 
                 {% endblock %}
+                </div>
             </div>
-        </div>
-    </div>
+
 
 {% endblock %}

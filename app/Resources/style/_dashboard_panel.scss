@@ -1,0 +1,54 @@
+$dashboard-card-header-font-color: $black;
+$dashboard-card-body-color: $dark-gray;
+$dashboard-card-header-background-color: $light-gray;
+
+.dashboard-card{
+  &>.dashboard-card-header{
+    margin-top: 30px;
+    background-color: $dashboard-card-header-background-color;
+    padding: .1rem .1rem .1rem .5rem;
+    position: relative;
+
+    @include breakpoint(small) {
+      margin-top: 15px;
+    }
+
+    &.icon:after {
+      font: normal normal normal 14px/1 FontAwesome;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: $white;
+    }
+
+    &.hotel-icon:after {
+      content: "\f236";
+    }
+
+    &.car-icon:after {
+      content: "\f1b9"
+    }
+
+    .travel-feature-card-subtitle {
+      float: left;
+      font-weight: 800;
+      letter-spacing: 1px;
+      font-size: 1em;
+      text-transform: uppercase;
+      color: #fff;
+    };
+  }
+
+  &>.dashboard-card-content{
+      background: #f0f0f0;
+      border-left: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+      border-bottom: 1px solid #ddd;
+      padding: 20px;
+      color: #8a8a8a;
+  }
+}

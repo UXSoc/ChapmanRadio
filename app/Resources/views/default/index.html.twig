@@ -1,7 +1,8 @@
 {% extends 'layout/base.html.twig' %}
 
 {% block head %}
-    <script src="{{ asset('bundles/polyfills.js') }}"></script>
+    {#<script src="{{ asset('bundles/polyfills.js') }}"></script>#}
+    <script src="{{ asset('bundles/vendor.js') }}"></script>
     <script src="{{ asset('bundles/app.js') }}"></script>
 {% endblock %}
 

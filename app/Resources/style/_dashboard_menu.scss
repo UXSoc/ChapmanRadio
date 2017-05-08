@@ -1,0 +1,97 @@
+$dashboard-group-background: $white;
+$dashboard-group-active-background: $primary-color;
+$dashboard-group-hover-background: $light-gray;
+$dashboard-group-disabled-background: $white;
+$dashboard-group-font-color: $body-font-color;
+$dashboard-group-font-disabled-color: $dark-gray;
+$dashboard-group-font-active-color: $white;
+$dashboard-group-border: 1px solid $light-gray;
+$dashboard-group-active-border: 1px solid $primary-color;
+$dashboard-group-shadow: none;
+$dashboard-group-border-radius: $global-radius;
+$dashboard-group-margin: $global-margin;
+.dashboard{
+  overflow-y: initial;
+}
+
+
+
+.dashboard-group {
+  margin-bottom: $dashboard-group-margin;
+  border: $dashboard-group-border;
+  border-radius: $dashboard-group-border-radius;
+  background: $dashboard-group-background;
+  box-shadow: $dashboard-group-shadow;
+  margin-left:0;
+  color: $dashboard-group-font-color;
+
+  & > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+@media screen and (min-width: 64em) {
+  .group-hover {
+    & > .sub-group {
+      display: none;
+    }
+
+    &:hover > .sub-group {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 100%;
+      width: $offcanvas-size;
+    }
+  }
+}
+
+.dashboard-group-item {
+  border-bottom: $dashboard-group-border;
+  display: block;
+  position: relative;
+
+  &>a {
+    padding: $dashboard-group-margin;
+  }
+
+  &>.sub-group{
+
+    li a {
+      padding-left: 1.5rem;
+    }
+  }
+
+  li{
+    border: $dashboard-group-border;
+  }
+
+  & > :last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+  }
+
+  .active>a {
+    color: $dashboard-group-font-active-color;
+    background-color: $dashboard-group-active-background !important;
+    border-color: $dashboard-group-active-border;
+  }
+
+  a:hover, a:focus {
+    background-color: $dashboard-group-hover-background;
+    &.active {
+      background-color: $dashboard-group-active-background;
+    }
+  }
+
+  &.disabled,
+  &[disabled] {
+    &,
+    &:hover, &:focus {
+      color: $dashboard-group-font-disabled-color;
+      cursor: not-allowed;
+      background-color: $dashboard-group-disabled-background;
+    }
+  }
+}
+
