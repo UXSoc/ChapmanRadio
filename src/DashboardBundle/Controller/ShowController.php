@@ -47,4 +47,12 @@ class ShowController extends Controller
 
     }
 
+    /**
+     * @Route("/dashboard/shows", name="dashboard_shows")
+     */
+    public  function  showsAction(Request $request)
+    {
+        return $this->render('dashboard/shows/shows.html.twig');
+    }
+
 }
