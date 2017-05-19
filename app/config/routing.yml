@@ -4,3 +4,6 @@ app:
 dashboard:
     resource: '@DashboardBundle/Controller/'
     type: annotation
+logout:
+    path: /logout
+

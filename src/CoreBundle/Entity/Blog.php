@@ -2,6 +2,7 @@
 
 namespace CoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -9,6 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="blog", indexes={@ORM\Index(name="blog_user_id_fk", columns={"author_id"})})
  * @ORM\Entity
+ *
+ * @ORM\HasLifecycleCallbacks
  */
 class Blog
 {
@@ -45,9 +48,9 @@ class Blog
     /**
      * @var string
      *
-     * @ORM\Column(name="post_exceprt", type="text", length=65535, nullable=true)
+     * @ORM\Column(name="post_excerpt", type="text", length=65535, nullable=true)
      */
-    private $postExceprt;
+    private $postExcerpt;
 
     /**
      * @var string
@@ -71,7 +74,7 @@ class Blog
     private $content;
 
     /**
-     * @var \User
+     * @var User
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
@@ -80,6 +83,137 @@ class Blog
      */
     private $author;
 
+    /**
+     * Many Shows have Many Images.
+     * @ORM\ManyToMany(targetEntity="Image")
+     * @ORM\JoinTable(name="blog_image",
+     *      joinColumns={@ORM\JoinColumn(name="blog_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="image_id", referencedColumnName="id", unique=true)}
+     *      )
+     * @return ArrayCollection
+     */
+    private $images;
+
+    /**
+     * Many Shows have Many Images.
+     * @ORM\ManyToMany(targetEntity="Comment")
+     * @ORM\JoinTable(name="blog_comment",
+     *      joinColumns={@ORM\JoinColumn(name="blog_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="comment_id", referencedColumnName="id", unique=true)}
+     *      )
+     * @return ArrayCollection
+     */
+    private $comments;
+
+
+    /**
+     *
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function updatedTimestamps()
+    {
+        $this->updatedAt = new \DateTime('now');
+
+        if ($this->createdAt == null) {
+            $this->createdAt = new \DateTime('now');
+        }
+    }
+
+    public function __construct()
+    {
+        $this->images = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getAuthor()
+    {
+        return $this->author;
+    }
+
+    public function setAuthor($author)
+    {
+        $this->author = $author;
+    }
+
+    public function addImage($image)
+    {
+        $this->images->add($image);
+    }
+
+    public  function removeImage($image)
+    {
+        $this->images->remove($image);
+    }
+
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+    public  function getContent()
+    {
+        return $this->content;
+    }
+
+    public function getIsPinned()
+    {
+        return $this->isPinned;
+    }
+
+    public function setIsPinned($pinned)
+    {
+        $this->isPinned = $pinned;
+    }
+
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    public function setCategory($category)
+    {
+        $this->category = $category;
+    }
+
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    public function setPostExcerpt($postExcerpt)
+    {
+        $this->postExcerpt = $postExcerpt;
+    }
+
+    public function getPostExcerpt()
+    {
+        return $this->postExcerpt;
+    }
+
+    public function addComment($comment)
+    {
+        $this->comments->add($comment);
+    }
+
+    /**
+     * return array of comments
+     * @return array
+     */
+    public function getComments()
+    {
+        return $this->comments->toArray();
+    }
 
 }
 

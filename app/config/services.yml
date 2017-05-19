@@ -4,6 +4,10 @@ parameters:
     #parameter_name: value
 
 services:
+    image_upload_service:
+        class: CoreBundle\Service\ImageUploadService
+        arguments: ['%image_directory%']
+
     user_repository:
         class: CoreBundle\Repository\UserRepository
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
@@ -14,6 +18,7 @@ services:
             factory: ['@doctrine.orm.default_entity_manager', getRepository]
             arguments:
                 - CoreBundle\Entity\Show
+
     #service_name:
     #    class: CoreBundle\Directory\ClassName
     #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']

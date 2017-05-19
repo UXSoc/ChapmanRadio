@@ -43,7 +43,7 @@ class Dj
     private $attendWorkshop = false;
 
     /**
-     * @var \User
+     * @var User
      *
      * @ORM\OneToOne(targetEntity="User" , inversedBy="dj")
      * @ORM\JoinColumns({
@@ -51,6 +51,22 @@ class Dj
      * })
      */
     private $user;
+
+    /**
+     * Many Shows have Many Images.
+     * @ORM\ManyToMany(targetEntity="Image")
+     * @ORM\JoinTable(name="dj_image",
+     *      joinColumns={@ORM\JoinColumn(name="dj_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="image_id", referencedColumnName="id", unique=true)}
+     *      )
+     */
+    private $images;
+
+    /**
+     * Many Shows have Many Images.
+     * @ORM\OneToMany(targetEntity="ShowDj", mappedBy="dj")
+     */
+    private $showDj;
 
     public  function getId()
     {

@@ -2,12 +2,13 @@
 
 namespace CoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * ShowSchedule
  *
- * @ORM\Table(name="show_schedule", indexes={@ORM\Index(name="event_show_id_fk", columns={"show_id"})})
+ * @ORM\Table(name="show_schedule")
  * @ORM\Entity
  */
 class ShowSchedule
@@ -36,14 +37,36 @@ class ShowSchedule
     private $endTime;
 
     /**
-     * @var \Show
+     * @var Show
      *
-     * @ORM\ManyToOne(targetEntity="Show")
+     * @ORM\ManyToOne(targetEntity="Show", inversedBy="showSchedule")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="show_id", referencedColumnName="id")
      * })
      */
     private $show;
+
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="ShowScheduleMeta", mappedBy="showSchedule")
+     */
+    private $scheduleMeta;
+
+    public function __construct()
+    {
+        $this->scheduleMeta = new ArrayCollection();
+    }
+
+    public function setShow($show)
+    {
+        $this->show = $show;
+    }
+
+    public function getShow()
+    {
+        return $this->show;
+    }
 
 
 }

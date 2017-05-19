@@ -21,4 +21,12 @@ class UserSettingsController extends Controller
     {
         return $this->render('dashboard/user/user_settings.html.twig');
     }
+
+    /**
+     * @Route("/dashboard/user/settings", name="dashboard_user_settings")
+     */
+    public  function  djProfileAction(Request $request)
+    {
+        return $this->render('dashboard/user/user_settings.html.twig');
+    }
 }

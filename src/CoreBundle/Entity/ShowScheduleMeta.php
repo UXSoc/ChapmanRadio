@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ShowScheduleMeta
  *
- * @ORM\Table(name="show_schedule_meta", indexes={@ORM\Index(name="event_meta_event_id_fk", columns={"event_id"})})
+ * @ORM\Table(name="show_schedule_meta")
  * @ORM\Entity
  */
 class ShowScheduleMeta
@@ -36,14 +36,14 @@ class ShowScheduleMeta
     private $metaValue;
 
     /**
-     * @var \ShowSchedule
+     * @var ShowSchedule
      *
-     * @ORM\ManyToOne(targetEntity="ShowSchedule")
+     * @ORM\ManyToOne(targetEntity="ShowSchedule",inversedBy="scheduleMeta")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="event_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="show_schedule_id", referencedColumnName="id")
      * })
      */
-    private $event;
+    private $showSchedule;
 
 
 }
