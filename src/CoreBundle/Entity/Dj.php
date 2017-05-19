@@ -33,25 +33,68 @@ class Dj
      *
      * @ORM\Column(name="strike_count", type="integer", nullable=true)
      */
-    private $strikeCount;
+    private $strikeCount = 0;
 
     /**
      * @var boolean
      *
      * @ORM\Column(name="attend_workshop", type="boolean", nullable=true)
      */
-    private $attendWorkshop;
+    private $attendWorkshop = false;
 
     /**
      * @var \User
      *
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\OneToOne(targetEntity="User" , inversedBy="dj")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * })
      */
     private $user;
 
+    public  function getId()
+    {
+        return $this->id;
+    }
+
+    public  function setUser($user)
+    {
+        $this->user = $user;
+    }
+
+    public  function  getUser()
+    {
+        return $this->user;
+    }
+
+    public  function setDescription($description){
+        $this->description = $description;
+    }
+
+    public  function  getDescription()
+    {
+        return $this->description;
+    }
+
+    public  function  getStrikeCount()
+    {
+        return $this->strikeCount;
+    }
+
+    public  function  setStrikeCount($count)
+    {
+        $this->strikeCount = $count;
+    }
+
+    public  function setAttendWorkshop($workshop)
+    {
+        $this->attendWorkshop = $workshop;
+    }
+
+    public  function  getAttendWorkshop()
+    {
+        return $this->attendWorkshop;
+    }
 
 }
 

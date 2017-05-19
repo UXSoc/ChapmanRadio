@@ -7,8 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Show
  *
- * @ORM\Table(name="show")
- * @ORM\Entity
+ * @ORM\Table(name="shows")
+ * @ORM\Entity(repositoryClass="CoreBundle\Repository\ShowRepository")
  */
 class Show
 {

@@ -35,7 +35,6 @@ class AuthController extends Controller
         $userRepository = $this->get('user_repository');
         $user = $userRepository->create();
 
-
         /** @var $form Form*/
         $form = $this->createForm(UserRegisterType::class,$user);
 

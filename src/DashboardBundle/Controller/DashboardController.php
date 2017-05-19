@@ -1,5 +1,6 @@
 <?php
 namespace DashboardBundle\Controller;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -20,4 +21,15 @@ class DashboardController extends Controller
     {
         return $this->render('dashboard/dashboard.html.twig');
     }
+
+
+    /**
+     * @Route("/dashboard/profile", name="dashboard_user_profile")
+     */
+    public  function  profileAction(Request $request)
+    {
+        return $this->render('dashboard/dashboard.html.twig');
+    }
+
+
 }

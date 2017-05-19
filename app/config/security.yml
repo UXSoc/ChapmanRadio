@@ -13,8 +13,7 @@ security:
             memory: ~
 
     access_control:
-        - { path: ^/dj, roles: ROLE_DJ }
-        - { path: ^/staff, roles: ROLE_STAFF }
+        - { path: ^/dashboard, roles: [ROLE_DJ,ROLE_STAFF]}
 
 
     firewalls:

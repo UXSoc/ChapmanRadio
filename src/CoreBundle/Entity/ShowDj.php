@@ -7,10 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ShowUser
  *
- * @ORM\Table(name="show_user", indexes={@ORM\Index(name="show_user_show_id_fk", columns={"show_id"}), @ORM\Index(name="show_user_user_id_fk", columns={"user_id"})})
+ * @ORM\Table(name="show_dj", indexes={@ORM\Index(name="show_dj_show_id_fk", columns={"show_id"}), @ORM\Index(name="show_dj_id_fk", columns={"dj_id"})})
  * @ORM\Entity
  */
-class ShowUser
+class ShowDj
 {
     /**
      * @var integer
@@ -32,14 +32,14 @@ class ShowUser
     private $show;
 
     /**
-     * @var \User
+     * @var \Dj
      *
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="Dj")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="dj_id", referencedColumnName="id")
      * })
      */
-    private $user;
+    private $dj;
 
 
 }

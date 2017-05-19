@@ -24,7 +24,7 @@ class ShowController extends Controller
     }
 
     /**
-     * @Route("/dashboard/new-show", name="dashboard_new_show")
+     * @Route("/dashboard/shows/new-show", name="dashboard_new_show")
      */
     public  function  newShowAction(Request $request)
     {
@@ -32,7 +32,7 @@ class ShowController extends Controller
     }
 
     /**
-     * @Route("/dashboard/shows-categories", name="dashboard_show_categories")
+     * @Route("/dashboard/shows/shows-categories", name="dashboard_show_categories")
      */
     public  function  showCategoryAction(Request $request)
     {
@@ -40,7 +40,7 @@ class ShowController extends Controller
     }
 
     /**
-     * @Route("/dashboard/show-tags", name="dashboard_show_tags")
+     * @Route("/dashboard/shows/show-tags", name="dashboard_show_tags")
      */
     public  function  showTagsAction(Request $request)
     {
@@ -48,10 +48,11 @@ class ShowController extends Controller
     }
 
     /**
-     * @Route("/dashboard/shows", name="dashboard_shows")
+     * @Route("/dashboard/shows/shows", name="dashboard_shows")
      */
     public  function  showsAction(Request $request)
     {
+
         return $this->render('dashboard/shows/shows.html.twig');
     }
 

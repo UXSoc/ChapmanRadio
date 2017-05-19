@@ -23,7 +23,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     {
         $users = $this->createQueryBuilder('u')
             ->innerJoin('CoreBundle:Role','co','WITH','co.user_id = u.userid')
-            ->groupBy('u.userid');
+            ->groupBy('u.user_id');
         return $users;
     }
 

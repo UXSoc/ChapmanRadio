@@ -36,7 +36,7 @@ class User implements AdvancedUserInterface
     /**
      * @var integer
      *
-     * @ORM\Column(name="facebook_id", type="bigint", nullable=false)
+     * @ORM\Column(name="facebook_id", type="bigint", nullable=true)
      */
     private $facebookId;
 
@@ -130,14 +130,20 @@ class User implements AdvancedUserInterface
     private $plainPassword;
 
     /**
-     * @var Role[]
-     * @ORM\OneToMany(cascade={"persist"},targetEntity="UserRole", mappedBy="user", indexBy="role")
+     * @var Dj
+     * @ORM\OneToOne(targetEntity="Dj", mappedBy="user")
      */
-    private $roles;
+    private $dj;
+
+    /**
+     * @var Dj
+     * @ORM\OneToOne(targetEntity="Staff", mappedBy="user")
+     */
+    private $staff;
+
 
     public  function __construct()
     {
-        $this->roles = new ArrayCollection();
     }
 
     /**
@@ -154,7 +160,32 @@ class User implements AdvancedUserInterface
         }
     }
 
-    public  function UpdateLastLogin($date)
+    public function getDj(){
+        return $this->dj;
+    }
+
+    public function setDj($dj){
+        $this->dj = $dj;
+    }
+
+    public  function  isDj(){
+        return !is_null($this->dj);
+    }
+
+    public function getStaff(){
+        return $this->staff;
+    }
+
+    public  function setStaff($staff)
+    {
+        $this->staff = $staff;
+    }
+
+    public  function  isStaff(){
+        return !is_null($this->staff);
+    }
+
+    public  function updateLastLogin()
     {
         $this->lastLogin = new \DateTime('now');
     }
@@ -173,7 +204,6 @@ class User implements AdvancedUserInterface
     {
         return $this->createdAt;
     }
-
 
     public  function getName()
     {
@@ -255,34 +285,16 @@ class User implements AdvancedUserInterface
      */
     public function getRoles()
     {
-        return $this->roles->toArray();
+        $roles = [];
+        if($this->isDj())
+            $roles[] = "ROLE_DJ";
+        if($this->isStaff())
+            $roles[] = "ROLE_STAFF";
+
+        return $roles;
     }
 
-    public function addRole($role)
-    {
-        if(!isset($this->roles[$role]))
-        {
-            $r = new UserRole();
-            $r->setRole($role);
-            $r->setUser($this);
-            $this->roles->add($r);
-            return true;
-        }
-        return false;
-    }
-    public function  removeRole($role)
-    {
-        if(isset($this->roles[$role]))
-        {
-            unset($this->roles[$role]);
-            return true;
-        }
-        return false;
-    }
-    public  function  hasRole($role)
-    {
-        return isset($this->roles[$role]);
-    }
+
     /**
      * Returns the password used to authenticate the user.
      *
