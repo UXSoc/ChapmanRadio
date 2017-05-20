@@ -8,25 +8,61 @@
 
 namespace DashboardBundle\Controller;
 
+use CoreBundle\Entity\User;
+use DashboardBundle\Form\ChangePasswordType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 
 class UserSettingsController extends Controller
 {
     /**
-     * @Route("/dashboard/user/settings", name="dashboard_user_settings")
+     * @Route("/dashboard/user/settings/profile", name="dashboard_user_settings_profile")
      */
-    public  function  settingsAction(Request $request)
+    public  function  profileAction(Request $request)
     {
-        return $this->render('dashboard/user/user_settings.html.twig');
+        return $this->render('dashboard/user/settings/profile.html.twig');
     }
 
     /**
-     * @Route("/dashboard/user/settings", name="dashboard_user_settings")
+     * @Route("/dashboard/user/settings/account", name="dashboard_user_settings_account")
      */
-    public  function  djProfileAction(Request $request)
+    public  function  accountAction(Request $request)
     {
-        return $this->render('dashboard/user/user_settings.html.twig');
+        /** @var $form Form*/
+        $changePasswordForm = $this->createForm(ChangePasswordType::class);
+
+        $changePasswordForm->handleRequest($request);
+        if ($changePasswordForm->isSubmitted() && $changePasswordForm->isValid()) {
+            $data = $changePasswordForm->getData();
+            /** @var User $user */
+            $user =  $this->getUser();
+
+            /** @var UserPasswordEncoder  $encoder_service */
+            $encoder_service = $this->get('security.password_encoder');
+            if(!$encoder_service->isPasswordValid($user,$data["oldPassword"]))
+            {
+                $changePasswordForm->get("oldPassword")->addError(new FormError("Invalid Password"));
+            }
+            else
+            {
+                $this->addFlash('success','Your password has changed');
+
+                $new_password = $encoder_service->encodePassword($user,$data["newPassword"]);
+                $user->setPassword($new_password);
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($user);
+                $em->flush();
+            }
+        }
+
+        return $this->render('dashboard/user/settings/account.html.twig',
+            ["change_password" => $changePasswordForm->createView()]);
     }
+
 }

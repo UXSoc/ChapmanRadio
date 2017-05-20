@@ -9,20 +9,17 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-3">
-
                     <div class="list-group">
                         <a href="#" class="list-group-item disabled">
-                            Profile
+                            Personal Settings
                         </a>
-                        <a href="#" class="list-group-item">DJ Profile</a>
-                        <a href="#" class="list-group-item">Morbi leo risus</a>
-                        <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-                        <a href="#" class="list-group-item">Vestibulum at eros</a>
+                        <a href="#" class="list-group-item">Profile</a>
+                        <a href="#" class="list-group-item">Account</a>
                     </div>
-
-
                 </div>
                 <div class="col-lg-9">
+                    {{ include('components/flash-message.html.twig') }}
+
                     {% block profileContent %} {% endblock %}
                 </div>
             </div>
