@@ -6,4 +6,3 @@ dashboard:
     type: annotation
 logout:
     path: /logout
-

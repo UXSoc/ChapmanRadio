@@ -1,0 +1,12 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block pageHeader %}
+    New Show
+{% endblock %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <user-table source="{{ path('dashboard_users_ajax_datatable') }}"></user-table>
+    </div>
+
+{% endblock %}

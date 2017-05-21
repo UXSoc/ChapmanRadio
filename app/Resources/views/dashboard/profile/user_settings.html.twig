@@ -13,8 +13,8 @@
                         <a href="#" class="list-group-item disabled">
                             Personal Settings
                         </a>
-                        <a href="#" class="list-group-item">Profile</a>
-                        <a href="#" class="list-group-item">Account</a>
+                        <a href="{{ path('dashboard_user_settings_profile') }}" class="list-group-item {% if app.request.attributes.get('_route') == 'dashboard_user_settings_profile' %}active{% endif %}">Profile</a>
+                        <a href="{{ path('dashboard_user_settings_account') }}" class="list-group-item {% if app.request.attributes.get('_route') == 'dashboard_user_settings_account' %}active{% endif %}">Account</a>
                     </div>
                 </div>
                 <div class="col-lg-9">

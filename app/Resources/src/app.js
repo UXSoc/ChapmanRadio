@@ -2,6 +2,10 @@ import './vendor'
 import App from './App.vue'
 
 import SummaryPage from './pages/SummaryPage.vue'
+import VueRouter from 'vue-router'
+
+Vue.use(VueRouter)
+
 const router = new VueRouter({
   routes: [
      { name: 'summary', path: '/', component: SummaryPage }

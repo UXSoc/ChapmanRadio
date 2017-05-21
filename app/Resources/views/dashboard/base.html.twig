@@ -3,7 +3,7 @@
 
 {% block head %}
     <script src="{{ asset('bundles/vendor.js') }}"></script>
-   <script src="{{ asset('bundles/dashboard.js') }}"></script>
+
 {% endblock %}
 
 {% block body %}
@@ -74,16 +74,16 @@
                         <li>
                             <a href="/"><i class="fa fa-bar-chart-o fa-fw"></i> Users<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                <li ><a href="/">All Users</a></li>
-                                <li><a href="/">Add New</a></li>
-                                <li><a href="/">Your Profile</a></li>
+                                <li ><a href="{{ path('dashboard_users') }}">All Users</a></li>
+                                <li><a href="{{ path('dashboard_new_user') }}">Add New</a></li>
                             </ul>
                         </li>
                         <li>
                             <a href="/"><i class="fa fa-bar-chart-o fa-fw"></i> Settings</a>
                         </li>
                         {% endblock %}
-                        {{ block('sub-menu') }}
+                        {#{% block sub-menu %}#}
+                        {#{{ block('sub-menu') }}#}
 
                     </ul>
                 </div>
@@ -104,6 +104,7 @@
             </div>
             <!-- /.container-fluid -->
         </div>
+        <script src="{{ asset('bundles/dashboard.js') }}"></script>
 
     </div>
 

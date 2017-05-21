@@ -18,18 +18,18 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 
-class UserSettingsController extends Controller
+class UserProfileController extends Controller
 {
     /**
-     * @Route("/dashboard/user/settings/profile", name="dashboard_user_settings_profile")
+     * @Route("/dashboard/profile/settings/profile", name="dashboard_user_settings_profile")
      */
     public  function  profileAction(Request $request)
     {
-        return $this->render('dashboard/user/settings/profile.html.twig');
+        return $this->render('dashboard/profile/settings/profile.html.twig');
     }
 
     /**
-     * @Route("/dashboard/user/settings/account", name="dashboard_user_settings_account")
+     * @Route("/dashboard/profile/settings/account", name="dashboard_user_settings_account")
      */
     public  function  accountAction(Request $request)
     {
@@ -61,7 +61,7 @@ class UserSettingsController extends Controller
             }
         }
 
-        return $this->render('dashboard/user/settings/account.html.twig',
+        return $this->render('dashboard/profile/settings/account.html.twig',
             ["change_password" => $changePasswordForm->createView()]);
     }
 
