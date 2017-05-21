@@ -23,33 +23,24 @@
     props: {
       total: {
         type: Number,
-        default: function () {
-          return 0
-        }
+        default: 0
       },
       topRange: {
         type: Number,
-        default: function () {
-          return 3
-        }
+        default: 3
       },
       bottomRange: {
         type: Number,
-        default: function () {
-          return 3
-        }
+        default: 3
+
       },
       entriesPerPage: {
         type: Number,
-        default: function () {
-          return 10
-        }
+        default: 10
       },
       currentPage: {
         type: Number,
-        default: function () {
-          return 10
-        }
+        default: 10
       }
     },
     data () {

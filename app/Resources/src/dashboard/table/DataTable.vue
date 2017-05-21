@@ -127,6 +127,7 @@
               break
           }
         }
+        this.currentPage = 0
         this.query()
       },
       pageChange: function (page) {
@@ -159,6 +160,7 @@
         this.query()
       },
       additionalParameters: function (val) {
+        this.currentPage = 0
         this.query()
       }
 
