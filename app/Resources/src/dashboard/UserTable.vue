@@ -4,7 +4,13 @@
 
         </div>
         <div class="panel-body">
-            <data-table v-bind:format="format" v-bind:source="source" :multiSelect="true"></data-table>
+            <input @change="update" v-model="search" type="text">
+            <data-table
+                    :format="format"
+                    :source="source"
+                    :multiSelect="true"
+                    :additionalParameters="parameters"
+            ></data-table>
         </div>
     </div>
 </template>
@@ -35,8 +41,16 @@
             sortable: true
           }
 
-        ]
+        ],
+        parameters: {}
       }
+    },
+    methods: {
+      update: function (val) {
+        this.$set(this, 'parameters', {search: this.search})
+      }
+    },
+    watch: {
     },
     components: {
       DataTable

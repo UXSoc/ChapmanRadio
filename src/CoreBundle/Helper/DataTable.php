@@ -109,9 +109,6 @@ class DataTable  implements \Countable, \IteratorAggregate
                 $query->addOrderBy($this->columnAlias[$key], $value);
             }
         }
-        foreach ($this->columnAlias as $key => $value) {
-            $query->addSelect($value);
-        }
         $query->setMaxResults($this->perPage);
         $query->setFirstResult($this->perPage * $this->currentPage);
 
@@ -136,15 +133,6 @@ class DataTable  implements \Countable, \IteratorAggregate
         return $this->count;
     }
 
-    public  function getJson()
-    {
-        $result = array();
-        $result["perPage"] = $this->getPerPage();
-        $result["count"] = $this->count();
-        $result["result"] = $this->getQueryBuilder()->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
-        return $result;
-    }
-
 
 
     /**
@@ -156,7 +144,7 @@ class DataTable  implements \Countable, \IteratorAggregate
      */
     public function getIterator()
     {
-        // TODO: Implement getIterator() method.
+        return new \ArrayIterator($this->getQueryBuilder()->getQuery()->getResult());
     }
 
 

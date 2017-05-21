@@ -51,7 +51,21 @@ class UserController extends BaseController
         ->setIndex('u.id');
 
         $response = new JsonResponse();
-        $response->setData($dataTable->getJson());
+
+        $result = [];
+        foreach ($dataTable->getIterator() as $val)
+        {
+            $result[] = [
+              'id' => $val->getId(),
+              'name' => $val->getName(),
+              'roles' => $val->getRoles()
+            ];
+        }
+
+        $response->setData(array(
+             'perPage' => $dataTable->getPerPage(),
+             'count' => $dataTable->count(),
+            'result' => $result));
         return $response;
     }
 

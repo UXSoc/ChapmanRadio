@@ -15,10 +15,10 @@
                 <th v-for="f in format">
                     <a v-on:click="switchColumnSort(f.column)">
                         {{f.column}}
-                        <i v-if="!(f.column in state.sort) |  state.sort[f.column] == 'default'" class="fa fa-sort"
+                        <i v-if="!(f.column in sort) |  sort[f.column] == 'default'" class="fa fa-sort"
                            aria-hidden="true"></i>
-                        <i v-else-if="state.sort[f.column] == 'desc'" class="fa fa-sort-desc" aria-hidden="true"></i>
-                        <i v-else-if="state.sort[f.column] == 'asc'" class="fa fa-sort-asc" aria-hidden="true"></i>
+                        <i v-else-if="sort[f.column] == 'desc'" class="fa fa-sort-desc" aria-hidden="true"></i>
+                        <i v-else-if="sort[f.column] == 'asc'" class="fa fa-sort-asc" aria-hidden="true"></i>
                     </a>
                 </th>
             </tr>
@@ -36,7 +36,7 @@
         </table>
         <div class="pull-left">
             show
-            <select class="input-sm" v-model="state.perPage">
+            <select class="input-sm" v-model="perPage">
                 <option :value="10">10</option>
                 <option :value="20">20</option>
                 <option :value="50">50</option>
@@ -47,15 +47,15 @@
         <pagination class="pull-right"
                 @pageChange="pageChange"
                 v-if="enablePagination"
-                :currentPage="state.currentPage"
+                :currentPage="currentPage"
                 :total="total"
-                :entriesPerPage="state.perPage"></pagination>
+                :entriesPerPage="perPage"></pagination>
     </div>
 
 </template>
 
 <script>
-  import Pagination from '../../components/pagination.vue'
+  import Pagination from '../../components/Pagination.vue'
   export default{
     props: {
       format: {
@@ -75,7 +75,8 @@
         default: function () {
           return ''
         }
-      }, numRows: {
+      },
+      numRows: {
         type: Number,
         default: function () {
           return 10
@@ -93,65 +94,58 @@
           return 'id'
         }
       },
-      page: {}
-    },
-    data () {
-      let tempState = {
-        sort: {},
-        currentPage: 1,
-        perPage: 10
-      }
-
-      let decoded = decodeURI(window.location.hash).substring(1)
-      if(decoded !== '') {
-        let data = JSON.parse(decoded)
-        for (let k in data) {
-          if (tempState.hasOwnProperty(k)) {
-            tempState[k] = data[k]
-          }
+      additionalParameters: {
+        type: Object,
+        default: function () {
+          return []
         }
       }
-
-
+    },
+    data () {
       return {
         data: null,
         total: 0,
-        state: tempState
+        sort: {},
+        currentPage: 0,
+        perPage: 10
       }
     },
     methods: {
-      loadData: function () {
-      },
-      getAllQueryParams: function () {
-      },
       switchColumnSort: function (column) {
-        if (!(column in this.state.sort)) {
-          this.$set(this.state.sort, column, 'desc')
+        if (!(column in this.sort)) {
+          this.$set(this.sort, column, 'desc')
         } else {
-          switch (this.state.sort[column]) {
+          switch (this.sort[column]) {
             case 'desc':
-              this.$set(this.state.sort, column, 'asc')
+              this.$set(this.sort, column, 'asc')
               break
             case 'asc':
-              this.$set(this.state.sort, column, 'default')
+              this.$set(this.sort, column, 'default')
               break
             case 'default':
-              this.$set(this.state.sort, column, 'desc')
+              this.$set(this.sort, column, 'desc')
               break
           }
         }
         this.query()
       },
       pageChange: function (page) {
-        this.state.currentPage = page
+        this.currentPage = page
         this.query()
       },
       query: function () {
         let temp = this
-        axios.post(this.source, this.state).then(function (response) {
+        let result = {
+          sort: this.sort,
+          currentPage: this.currentPage,
+          perPage: this.perPage
+        }
+        for (let k in this.additionalParameters) {
+          result[k] = this.additionalParameters[k]
+        }
+        axios.post(this.source, result).then(function (response) {
           temp.$set(temp, 'data', response.data.result)
           temp.$set(temp, 'total', response.data.count)
-          window.location.hash = encodeURI(JSON.stringify(temp.state))
         }).catch(function (error) {
             console.log(error)
         })
@@ -161,9 +155,13 @@
       this.query()
     },
     watch: {
-      'state.perPage': function (val) {
+      perPage: function (val) {
+        this.query()
+      },
+      additionalParameters: function (val) {
         this.query()
       }
+
     },
     components: {
       Pagination
