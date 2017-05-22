@@ -4,16 +4,16 @@ parameters:
     #parameter_name: value
 
 services:
-    image_upload_service:
+    core.image_upload:
         class: CoreBundle\Service\ImageUploadService
         arguments: ['%image_directory%']
 
-    user_repository:
+    core.user_repository:
         class: CoreBundle\Repository\UserRepository
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - CoreBundle\Entity\User
-    show_repository:
+    core.show_repository:
             class: CoreBundle\Repository\ShowRepository
             factory: ['@doctrine.orm.default_entity_manager', getRepository]
             arguments:

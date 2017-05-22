@@ -154,7 +154,8 @@ class Show
     {
         $this->images = new ArrayCollection();
         $this->comments = new ArrayCollection();
-        $this->showSchedule = new ShowSchedule();
+        $this->showSchedule = new ArrayCollection();
+        $this->showDjs = new ArrayCollection();
     }
 
     public function addImage($image)
@@ -187,6 +188,15 @@ class Show
         }
     }
 
+    public function setScore($score)
+    {
+        $this->score = $score;
+    }
+
+    public  function getScore()
+    {
+        return $this->score;
+    }
 
     public function getId()
     {

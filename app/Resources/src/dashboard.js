@@ -1,12 +1,14 @@
 
 import './vendor'
 import UserTable from './dashboard/UserTable.vue'
+import ShowTable from './dashboard/ShowTable.vue'
 
 $(document).ready(function () {
   new Vue({
     el: '#page-wrapper',
     components: {
-      UserTable
+      UserTable,
+      ShowTable
     }
   })
 

@@ -32,7 +32,7 @@ class AuthController extends Controller
     {
 
         /** @var UserRepository $userRepository */
-        $userRepository = $this->get('user_repository');
+        $userRepository = $this->get('core.user_repository');
         $user = $userRepository->create();
 
         /** @var $form Form*/
@@ -80,7 +80,7 @@ class AuthController extends Controller
     {
 
         /** @var $user User*/
-        $user =  $this->getDoctrine()->getRepository('CoreBundle:User')->findOneBy(array('confirmationToken' => $token));
+        $user =  $this->getDoctrine()->getRepository('core.user_repository')->findOneBy(array('confirmationToken' => $token));
         if (!$user) {
             throw $this->createNotFoundException('Unknown confimration key');
         }

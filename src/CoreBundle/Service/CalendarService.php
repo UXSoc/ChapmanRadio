@@ -11,5 +11,8 @@ namespace CoreBundle\Service;
 
 class CalenderService
 {
+    function __construct()
+    {
 
+    }
 }

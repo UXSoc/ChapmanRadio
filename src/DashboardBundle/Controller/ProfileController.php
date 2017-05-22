@@ -16,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class ProfileController extends Controller
 {
     /**
-     * @Route("/dashboard/user/", name="dashboard_user_profile")
+     * @Route("/dashboard/profile/", name="dashboard_user_profile")
      */
     public  function  profileAction(Request $request)
     {

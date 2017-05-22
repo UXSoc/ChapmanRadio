@@ -12,10 +12,12 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class ImageUploadService
 {
     private $targetDir;
+    private $imageRepository;
 
-    public function __construct($targetDir)
+    public function __construct($targetDir,$imageRepository)
     {
         $this->targetDir = $targetDir;
+        $this->imageRepository = $imageRepository;
     }
 
     public  function uploadFile(UploadedFile $file)

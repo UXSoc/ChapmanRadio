@@ -31,14 +31,13 @@ class UserController extends BaseController
     }
 
     /**
-     * @Route("/dashboard/users/ajax/datatable",options = { "expose" = true }, name="dashboard_users_ajax_datatable")
+     * @Route("/dashboard/user/ajax/datatable",options = { "expose" = true }, name="dashboard_user_ajax_datatable")
      */
     public function userDataAction(Request $request)
     {
         /** @var UserRepository $userRepository */
-        $userRepository = $this->get('user_repository');
+        $userRepository = $this->get('core.user_repository');
 
-        $query = $userRepository->createQueryBuilder('u');
         $parameters  = $this->getJsonPayload();
 
         $dataTable = new DataTable($userRepository->createQueryBuilder('u'));
