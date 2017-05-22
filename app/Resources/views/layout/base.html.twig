@@ -2,6 +2,9 @@
 <html>
 <head>
     <meta charset="UTF-8" />
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+
     <link rel="stylesheet" href="{{ asset('bundles/style.css') }}">
     <meta name="referrer" content="origin">
 

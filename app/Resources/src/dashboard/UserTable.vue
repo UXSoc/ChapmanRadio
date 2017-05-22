@@ -10,6 +10,7 @@
                     :source="source"
                     :multiSelect="true"
                     :additionalParameters="parameters"
+                    @rowSelected="userSelected"
             ></data-table>
         </div>
     </div>
@@ -19,16 +20,9 @@
   import DataTable from './table/DataTable.vue'
 
   export default{
-    props: {
-      source: {
-        type: String,
-        default: function () {
-          return ''
-        }
-      }
-    },
     data () {
       return {
+        source: Routing.generate('dashboard_users_ajax_datatable'),
         format: [
           {
             column: 'id',
@@ -48,6 +42,9 @@
     methods: {
       update: function (val) {
         this.$set(this, 'parameters', {search: this.search})
+      },
+      userSelected: function (val) {
+        window.open(Routing.generate('dashboard_user',{"id" : val.id}),"_self")
       }
     },
     watch: {

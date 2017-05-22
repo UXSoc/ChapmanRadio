@@ -33,7 +33,6 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     public  function  create()
     {
         $user = new User();
-        $user->addRole(UserRole::USER_ROLE);
         return $user;
     }
 

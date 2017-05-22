@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Comment
  *
  * @ORM\Table(name="comment", indexes={@ORM\Index(name="comment_comment_id_id_fk", columns={"comment_id"}), @ORM\Index(name="comment_user_id_fk", columns={"user_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="CoreBundle\Repository\CommentRepository")
  */
 class Comment
 {
@@ -43,7 +43,7 @@ class Comment
     private $content;
 
     /**
-     * @var \Comment
+     * @var Comment
      *
      * @ORM\ManyToOne(targetEntity="Comment")
      * @ORM\JoinColumns({
@@ -53,7 +53,7 @@ class Comment
     private $comment;
 
     /**
-     * @var \User
+     * @var User
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({

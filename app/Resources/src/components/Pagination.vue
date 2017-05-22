@@ -2,7 +2,7 @@
     <nav aria-label="Page navigation">
         <ul class="pagination">
             <li v-bind:class="{disabled : currentPage == 0}">
-                <a href="#" aria-label="Previous" v-on:click="prevPage()">
+                <a href="#" aria-label="Previous" v-on:click.prevent="prevPage()">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
@@ -10,7 +10,7 @@
             <li v-if="currentPage + bottomRange < numberOfPages"> <a>...</a></li>
             <li v-if="currentPage + bottomRange < numberOfPages" v-for="n in findTopRange()"   v-bind:class="{active : currentPage == n}"><a href="#" v-on:click.prevent="switchPage(n)">{{n}}</a></li>
             <li v-bind:class="{disabled : currentPage == numberOfPages}">
-                <a href="#" aria-label="Next" v-on:click="nextPage()">
+                <a href="#" aria-label="Next" v-on:click.prevent="nextPage()">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>

@@ -39,11 +39,17 @@ class DataTable  implements \Countable, \IteratorAggregate
         return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getPerPage()
     {
         return $this->perPage;
     }
 
+    /**
+     * @return int
+     */
     public  function getCurrentPage()
     {
         return $this->currentPage;
@@ -53,24 +59,37 @@ class DataTable  implements \Countable, \IteratorAggregate
      * @param $page
      * @return DataTable $this
      */
-    public function withCurrentPage($page)
+    public function setCurrentPage($page)
     {
         $this->currentPage = $page;
         return $this;
     }
 
-    public  function withPerPage($count)
+    /**
+     * @param $count
+     * @return DataTable $this
+     */
+    public  function setPerPage($count)
     {
         $this->perPage = $count;
         return $this;
     }
 
+    /**
+     * @param $column
+     * @param $sort
+     * @return DataTable $this
+     */
     public function setSort($column,$sort)
     {
         $this->columnSort[$column] = $sort;
         return $this;
     }
 
+    /**
+     * @param $index
+     * @return DataTable $this
+     */
     public  function setIndex($index)
     {
         $this->index = $index;
@@ -100,7 +119,7 @@ class DataTable  implements \Countable, \IteratorAggregate
     }
 
 
-    public  function getQueryBuilder()
+    public function getQueryBuilder()
     {
         $query = clone $this->query;
 

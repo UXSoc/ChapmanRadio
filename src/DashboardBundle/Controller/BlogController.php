@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: michaelpollind
- * Date: 5/7/17
- * Time: 3:57 PM
+ * Date: 5/21/17
+ * Time: 2:40 PM
  */
 
 namespace DashboardBundle\Controller;
@@ -13,10 +13,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
-class ShowController extends Controller
+class BlogController extends Controller
 {
     /**
-     * @Route("/dashboard/shows", name="dashboard_shows")
+     * @Route("/dashboard/post/", name="dashboard_posts")
      */
     public  function  indexAction(Request $request)
     {
@@ -24,7 +24,7 @@ class ShowController extends Controller
     }
 
     /**
-     * @Route("/dashboard/shows/new-show", name="dashboard_new_show")
+     * @Route("/dashboard/post/new-post", name="dashboard_new_post")
      */
     public  function  newShowAction(Request $request)
     {
@@ -32,7 +32,7 @@ class ShowController extends Controller
     }
 
     /**
-     * @Route("/dashboard/shows/shows-categories", name="dashboard_show_categories")
+     * @Route("/dashboard/post/post-categories", name="dashboard_post_categories")
      */
     public  function  showCategoryAction(Request $request)
     {
@@ -40,13 +40,10 @@ class ShowController extends Controller
     }
 
     /**
-     * @Route("/dashboard/shows/show-tags", name="dashboard_show_tags")
+     * @Route("/dashboard/shows/post-tags", name="dashboard_post_tags")
      */
     public  function  showTagsAction(Request $request)
     {
 
     }
-
-
-
 }

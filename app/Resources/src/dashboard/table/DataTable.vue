@@ -8,12 +8,12 @@
                 <slot name="header-bar-right"></slot>
             </ul>
         </div>
-        <table class="table">
+        <table class="table table-hover">
             <thead>
             <tr>
                 <th v-if="multiSelect"></th>
                 <th v-for="f in format">
-                    <a v-on:click="switchColumnSort(f.column)">
+                    <a v-on:click.prevent="switchColumnSort(f.column)" href="#">
                         {{f.column}}
                         <i v-if="!(f.column in sort) |  sort[f.column] == 'default'" class="fa fa-sort"
                            aria-hidden="true"></i>
@@ -24,9 +24,8 @@
             </tr>
             </thead>
             <tbody>
-                <tr v-for="d in data">
+                <tr v-for="d in data"  v-on:click.prevent="$emit('rowSelected',d)">
                     <td v-if="multiSelect"></td>
-
                     <td v-for="f in format">
                         {{ d[f.column] }}
                     </td>
@@ -46,7 +45,6 @@
         </div>
         <pagination class="pull-right"
                 @pageChange="pageChange"
-                v-if="enablePagination"
                 :currentPage="currentPage"
                 :total="total"
                 :entriesPerPage="perPage"></pagination>
@@ -62,12 +60,6 @@
         type: Array,
         default: function () {
           return null
-        }
-      },
-      enablePagination: {
-        type: Boolean,
-        default: function () {
-          return true
         }
       },
       source: {

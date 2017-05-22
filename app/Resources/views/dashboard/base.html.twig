@@ -3,10 +3,40 @@
 
 {% block head %}
     <script src="{{ asset('bundles/vendor.js') }}"></script>
-
 {% endblock %}
 
 {% block body %}
+
+    {%
+        set menu = [
+            {'name' : 'Dashboard', 'route' : 'dashboard_index'},
+            {'name' : 'Shows',
+                'sub_menu': [
+                    {name: 'All Shows', route : 'dashboard_shows'},
+                    {name: 'Add New', route : 'dashboard_new_show'},
+                    {name: 'Categories', route : 'dashboard_show_categories'},
+                    {name: 'Tags', route : 'dashboard_show_tags'}
+                ]
+            },
+            {'name' : 'Posts',
+                'sub_menu': [
+                    {name: 'All Shows', route : 'dashboard_posts'},
+                    {name: 'Add New', route : 'dashboard_new_post'},
+                    {name: 'Categories', route : 'dashboard_post_categories'},
+                    {name: 'Tags', route : 'dashboard_post_tags'}
+                ]
+            },
+            {'name' : 'Comments','route' : 'dashboard_comments'},
+            {'name' : 'Users',
+                'sub_menu': [
+                    {name: 'All Users', route : 'dashboard_users'},
+                    {name: 'Add New', route : 'dashboard_new_user'}
+                ]
+            },
+            {'name' : 'Settings','route' : 'dashboard_settings'}
+        ]
+
+    %}
 
     <div id="wrapper">
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
@@ -44,43 +74,7 @@
                     <ul class="nav" id="side-menu">
 
                         {% block menu %}
-                        <li>
-                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-                        </li>
-                        <li>
-                            <a href="/"><i class="fa fa-bar-chart-o fa-fw"></i> Shows<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li><a href="/">All Shows</a></li>
-                                <li><a href="/">Add New</a></li>
-                                <li><a href="/">Categories</a></li>
-                                <li><a href="/">Tags</a></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a href="/"><i class="fa fa-bar-chart-o fa-fw"></i> Posts<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li><a href="/">All Posts</a></li>
-                                <li><a href="/">Add New</a></li>
-                                <li><a href="/">Categories</a></li>
-                                <li><a href="/">Tags</a></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a href="/"><i class="fa fa-bar-chart-o fa-fw"></i> Comments</a>
-                        </li>
-
-                        <li>
-                            <a href="/"><i class="fa fa-bar-chart-o fa-fw"></i> Users<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li ><a href="{{ path('dashboard_users') }}">All Users</a></li>
-                                <li><a href="{{ path('dashboard_new_user') }}">Add New</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="/"><i class="fa fa-bar-chart-o fa-fw"></i> Settings</a>
-                        </li>
+                            {% include 'dashboard/dashboard_menu.html.twig' with {'items': menu} %}
                         {% endblock %}
                         {#{% block sub-menu %}#}
                         {#{{ block('sub-menu') }}#}

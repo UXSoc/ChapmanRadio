@@ -31,7 +31,7 @@ class UserController extends BaseController
     }
 
     /**
-     * @Route("/dashboard/users/ajax/datatable", name="dashboard_users_ajax_datatable")
+     * @Route("/dashboard/users/ajax/datatable",options = { "expose" = true }, name="dashboard_users_ajax_datatable")
      */
     public function userDataAction(Request $request)
     {
@@ -46,8 +46,8 @@ class UserController extends BaseController
                 'name' => 'u.name',
                 'id' => 'u.id'
             ])->parseSort(['id','name'],$parameters->get('sort',array()))
-        ->withCurrentPage($parameters->get("currentPage",0))
-        ->withPerPage($parameters->get("perPage",10))
+        ->setCurrentPage($parameters->get("currentPage",0))
+        ->setPerPage($parameters->get("perPage",10))
         ->setIndex('u.id');
 
         $response = new JsonResponse();
@@ -69,7 +69,7 @@ class UserController extends BaseController
         return $response;
     }
 
-        /**
+    /**
      * @Route("/dashboard/user/new-user", name="dashboard_new_user")
      */
     public  function  newUserAction(Request $request)
@@ -79,7 +79,7 @@ class UserController extends BaseController
 
 
     /**
-     * @Route("/dashboard/user/{id}", name="dashboard_user")
+     * @Route("/dashboard/user/{id}",options = { "expose" = true },  name="dashboard_user")
      */
     public  function  userAction(Request $request,$id)
     {
