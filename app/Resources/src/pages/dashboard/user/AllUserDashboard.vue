@@ -17,12 +17,12 @@
 </template>
 
 <script>
-  import DataTable from './table/DataTable.vue'
+  import DataTable from '../../../components/DataTable.vue'
 
   export default{
     data () {
       return {
-        source: Routing.generate('dashboard_users_ajax_datatable'),
+        source: Routing.generate('dashboard_ajax_user'),
         format: [
           {
             column: 'id',
@@ -44,7 +44,7 @@
         this.$set(this, 'parameters', {search: this.search})
       },
       userSelected: function (val) {
-        window.open(Routing.generate('dashboard_user',{"id" : val.id}),"_self")
+        this.$router.push({name: 'dashboard_user', params: { id: val.id }})
       }
     },
     watch: {

@@ -10,6 +10,7 @@ namespace DashboardBundle\Controller;
 
 
 use CoreBundle\Controller\BaseController;
+use CoreBundle\Entity\User;
 use CoreBundle\Helper\DataTable;
 use CoreBundle\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -19,19 +20,24 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends BaseController
 {
+
+    //Some basic testing
     /**
-     * @Route("/dashboard/users", name="dashboard_users")
+     * @Route("/test", name="test")
      */
-    public  function  indexAction(Request $request)
+    public function test(Request $request)
     {
-        return $this->render('dashboard/user/users.html.twig');
+        $user = new User();
+        return new JsonResponse($this->getErrors($user));
+
     }
 
     /**
-     * @Route("/dashboard/user/ajax/datatable",options = { "expose" = true }, name="dashboard_user_ajax_datatable")
+     * @Route("/dashboard/ajax/user",options = { "expose" = true }, name="dashboard_ajax_user")
      */
     public function userDataAction(Request $request)
     {
@@ -68,21 +74,6 @@ class UserController extends BaseController
         return $response;
     }
 
-    /**
-     * @Route("/dashboard/user/new-user", name="dashboard_new_user")
-     */
-    public  function  newUserAction(Request $request)
-    {
-        return $this->render('dashboard/user/');
-    }
 
-
-    /**
-     * @Route("/dashboard/user/{id}",options = { "expose" = true },  name="dashboard_user")
-     */
-    public  function  userAction(Request $request,$id)
-    {
-        return $this->render('dashboard/shows/new-show.html.twig');
-    }
 
 }

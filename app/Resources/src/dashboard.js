@@ -1,7 +1,7 @@
 
 import './vendor'
-import UserTable from './dashboard/UserTable.vue'
-import ShowTable from './dashboard/ShowTable.vue'
+import UserTable from './dashboard/Pages/Users.vue'
+import ShowTable from './dashboard/Pages/Shows/AllShows.vue'
 
 $(document).ready(function () {
   new Vue({

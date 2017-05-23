@@ -53,7 +53,7 @@
 </template>
 
 <script>
-  import Pagination from '../../components/Pagination.vue'
+  import Pagination from './Pagination.vue'
   export default{
     props: {
       format: {

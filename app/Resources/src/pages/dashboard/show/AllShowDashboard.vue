@@ -17,7 +17,7 @@
 </template>
 
 <script>
-  import DataTable from './table/DataTable.vue'
+  import DataTable from '../../../components/DataTable.vue'
 
   export default{
     data () {
@@ -44,7 +44,7 @@
         this.$set(this, 'parameters', {search: this.search})
       },
       userSelected: function (val) {
-        window.open(Routing.generate('dashboard_show',{"id" : val.id}),"_self")
+        this.$router.push({name: 'dashboard_show', params: { id: val.id }})
       }
     },
     watch: {

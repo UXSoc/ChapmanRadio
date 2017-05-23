@@ -7,17 +7,13 @@ var CopyWebpackPlugin = require('copy-webpack-plugin')
 module.exports = {
   entry: {
     'app': './app/Resources/src/app.js',
-    'dashboard': './app/Resources/src/dashboard.js',
     'style': './app/Resources/style/style.scss',
     'vendor': './app/Resources/src/vendor.js'
   },
   resolve: {
     modules: ['node_modules', 'bower_components'],
     descriptionFiles: ['package.json', 'bower.json'],
-    extensions: ['.vue', '.js', '.scss'],
-    alias: {
-      vue: 'vue/dist/vue.js'
-    }
+    extensions: ['.vue', '.js', '.scss']
   },
   module: {
     rules: [

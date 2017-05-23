@@ -26,6 +26,7 @@ framework:
     default_locale: '%locale%'
     trusted_hosts: ~
     trusted_proxies: ~
+    validation: { enable_annotations: true }
     session:
         # http://symfony.com/doc/current/reference/configuration/framework.html#handler-id
         handler_id:  session.handler.native_file

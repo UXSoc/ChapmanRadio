@@ -8,17 +8,20 @@
 
 namespace DashboardBundle\Controller;
 
+use CoreBundle\Controller\BaseController;
 use CoreBundle\Entity\User;
 use DashboardBundle\Form\ChangePasswordType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
+use Symfony\Component\Validator\Validation;
 
-class UserProfileController extends Controller
+class UserProfileController extends BaseController
 {
     /**
      * @Route("/dashboard/profile/settings/profile", name="dashboard_user_settings_profile")
@@ -35,6 +38,8 @@ class UserProfileController extends Controller
     {
         /** @var $form Form*/
         $changePasswordForm = $this->createForm(ChangePasswordType::class);
+
+
 
         $changePasswordForm->handleRequest($request);
         if ($changePasswordForm->isSubmitted() && $changePasswordForm->isValid()) {
@@ -60,9 +65,8 @@ class UserProfileController extends Controller
                 $em->flush();
             }
         }
+        return new JsonResponse($changePasswordForm->getData());
 
-        return $this->render('dashboard/profile/settings/account.html.twig',
-            ["change_password" => $changePasswordForm->createView()]);
     }
 
 }
