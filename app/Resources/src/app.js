@@ -27,7 +27,6 @@ import AddNewUserDashboard from './pages/dashboard/user/AddNewUserDashboard.vue'
 import AllUserDashboard from './pages/dashboard/user/AllUserDashboard.vue'
 import UserDashboard from './pages/dashboard/user/UserDashboard.vue'
 
-import ProfileDashboard from './'
 
 const router = new VueRouter({
   routes: [

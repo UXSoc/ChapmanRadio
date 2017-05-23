@@ -36,7 +36,7 @@ class BaseController extends Controller
         return $result;
     }
 
-    public  function getJsonPayload()
+    public function getJsonPayload()
     {
         $content = $this->container->get('request_stack')->getCurrentRequest()->getContent();
         if(empty($content))
@@ -46,25 +46,20 @@ class BaseController extends Controller
         return $content;
     }
 
-    public  function JsonDeserializer($json,$class){
+    public  function denromalizeMapping($mapping,$class){
         $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
-        $mapping = $serializer->decode($json);
         return $serializer->denormalize($mapping,$class);
     }
 
+
     /**
      * @param $entity
-     * @return ConstraintViolationListInterface
+     * @return ConstraintViolationList
      */
     public function validateEntity($entity)
     {
-        $validate = $this->get('validator');
-        return $validate->validate($entity);
-    }
-
-    public function getErrors($entity)
-    {
-        $errors = $this->validateEntity($entity);
+        $validator = $this->get('validator');
+        $errors = $validator->validate($entity);
         $result = array();
         foreach($errors as $error)
         {
@@ -72,6 +67,7 @@ class BaseController extends Controller
         }
         return $result;
     }
+
 
 
 }

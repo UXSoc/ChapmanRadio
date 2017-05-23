@@ -10,7 +10,9 @@ namespace DashboardBundle\Controller;
 
 use CoreBundle\Controller\BaseController;
 use CoreBundle\Entity\User;
-use DashboardBundle\Form\ChangePasswordType;
+use CoreBundle\Helper\RestfulError;
+use CoreBundle\Helper\RestfulHelper;
+use DashboardBundle\Validation\ChangePasswordType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
@@ -19,7 +21,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validation;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 class UserProfileController extends BaseController
 {
@@ -32,41 +36,39 @@ class UserProfileController extends BaseController
     }
 
     /**
-     * @Route("/dashboard/profile/settings/account", name="dashboard_user_settings_account")
+     * @Route("/dashboard/ajax/profile/new-password", options = { "expose" = true }, name="dashboard_ajax_new_password", )
+     * @Method({"POST"})
      */
-    public  function  accountAction(Request $request)
+    public  function  putAccountAction(Request $request)
     {
-        /** @var $form Form*/
-        $changePasswordForm = $this->createForm(ChangePasswordType::class);
+        $mapping = $this->getJsonPayloadAsMapping();
+        /** @var ChangePasswordType $changePasswordType */
+        $changePasswordType = $this->denromalizeMapping($mapping,ChangePasswordType::class);
+        $errors = $this->validateEntity($changePasswordType);
+        $additionalErrors = [];
 
+        if(count($errors) == 0)
+        {
 
-
-        $changePasswordForm->handleRequest($request);
-        if ($changePasswordForm->isSubmitted() && $changePasswordForm->isValid()) {
-            $data = $changePasswordForm->getData();
-            /** @var User $user */
             $user =  $this->getUser();
-
-            /** @var UserPasswordEncoder  $encoder_service */
             $encoder_service = $this->get('security.password_encoder');
-            if(!$encoder_service->isPasswordValid($user,$data["oldPassword"]))
+
+            if(!$encoder_service->isPasswordValid($user,$changePasswordType->getOldPassword()))
             {
-                $changePasswordForm->get("oldPassword")->addError(new FormError("Invalid Password"));
+                $additionalErrors[] = new RestfulError("oldPassword","Invalid Password");
             }
             else
             {
-                $this->addFlash('success','Your password has changed');
-
-                $new_password = $encoder_service->encodePassword($user,$data["newPassword"]);
+                $new_password = $encoder_service->encodePassword($user,$changePasswordType->getNewPassword());
                 $user->setPassword($new_password);
 
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($user);
                 $em->flush();
+                return RestfulHelper::success("Password Changed");
             }
         }
-        return new JsonResponse($changePasswordForm->getData());
-
+        return RestfulHelper::error(400,"Couldn't change password",$errors,$additionalErrors);
     }
 
 }

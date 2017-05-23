@@ -28,7 +28,7 @@ import 'bootstrap-sass/assets/javascripts/bootstrap'
 import 'metisMenu/dist/metisMenu'
 
 Vue.use(VueRouter)
-Vue.use(VeeValidate);
+Vue.use(VeeValidate)
 
 
 
