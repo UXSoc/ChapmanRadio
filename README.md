@@ -79,6 +79,14 @@ As a developer you probably want something in the database to test on.
 ./bin/console doctrine:fixtures:load 
 ```
 
+To actually run the server and see if the app works.
+
+```
+./bin/console doctrine:fixtures:load 
+```
+
+Whew!!
+
 
 
 
