@@ -5,6 +5,7 @@
   "scripts": {
     "build": "webpack --config app/Resources/config/webpack.dev.js  --progress --profile --display-error-details",
     "watch": "webpack --config app/Resources/config/webpack.dev.js  --progress --profile --display-error-details --watch",
+    "hotload": "webpack-dev-server --config app/Resources/config/webpack.hotload.js --watch --progress --cache",
     "production": "webpack --config app/Resources/config/webpack.prod.js  --progress --profile --display-error-details",
     "lint": "eslint --ext .js,.vue src"
   },
@@ -67,7 +68,7 @@
     "vueify-insert-css": "^1.0.0",
     "watchify": "^3.9.0",
     "webpack": "^2.6.0",
-    "webpack-dev-server": "^1.16.2",
+    "webpack-dev-server": "^2.4.5",
     "webpack-merge": "^0.14.1"
   }
 }

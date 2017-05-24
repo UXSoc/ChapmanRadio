@@ -1,12 +1,17 @@
 {% extends 'layout/base.html.twig' %}
 
 {% block head %}
-    {#<script src="{{ asset('bundles/polyfills.js') }}"></script>#}
+
+    {#{% if(app.environment == 'hot') %}#}
+        {#<script src="http://localhost:9000/webpack-dev-server.js?http://localhost:9000"></script>#}
+    {#{% endif %}#}
     <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 
     <script src="{{ asset('bundles/vendor.js') }}"></script>
     <script src="{{ asset('bundles/app.js') }}"></script>
+
+
 {% endblock %}
 
 {% block body %}
