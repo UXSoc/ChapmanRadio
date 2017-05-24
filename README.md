@@ -65,7 +65,7 @@ Runs a linter on the code for consistency
 
 ## The Server
 
-Symfony has a file under /bin/console used for running commands for the application( Migrating the Database, verifying database model, clearing cache, etc.. ).
+Symfony has a file under /bin/console used for running commands for the application( Migrating the Database, verifying database model, clearing cache, etc.. ). You can run ./bin/console to see all the possible commands but the three below are the bare minimum to getting the application started.
 
 The first step after cloning is to run the migration and setup the database.
 
@@ -82,8 +82,9 @@ As a developer you probably want something in the database to test on.
 To actually run the server and see if the app works.
 
 ```
-./bin/console doctrine:fixtures:load 
+./bin/console server:run
 ```
+
 
 Whew!!
 
