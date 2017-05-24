@@ -5,10 +5,11 @@ A Symfony project created on April 16, 2017, 6:07 pm.
 
 ### Libraries
 
-- Bootstarp
-- Vue
-- Webpack
-- Symfony
+- Bootstarp: http://getbootstrap.com/
+- Vue: https://vuejs.org/
+- Webpack: https://webpack.js.org/
+- Symfony: https://symfony.com/
+- VeeValidation: http://vee-validate.logaretm.com/
 
 ### Requirments
 
