@@ -1,4 +1,5 @@
 <?php
+// Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace CoreBundle\Handler;
 
 use CoreBundle\Helper\RestfulError;
@@ -15,12 +16,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerI
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 5/23/17
- * Time: 11:54 AM
- */
+
 class AuthenticationHandler implements AuthenticationFailureHandlerInterface, AuthenticationSuccessHandlerInterface
 {
 

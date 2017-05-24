@@ -1,4 +1,5 @@
 <?php
+// Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 use CoreBundle\Entity\Show;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -6,12 +7,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 5/21/17
- * Time: 10:13 PM
- */
 class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
 

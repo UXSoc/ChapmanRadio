@@ -1,4 +1,5 @@
 <?php
+// Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace AppBundle\Validation;
 
 use Symfony\Component\Validator\Constraints as Assert;
@@ -21,10 +22,6 @@ class ChangePasswordType
      */
     private $newPassword;
 
-    /**
-     * @Assert\NotBlank()
-     */
-    private $repeatPassword;
 
     public function getOldPassword()
     {
@@ -36,12 +33,6 @@ class ChangePasswordType
         return $this->newPassword;
     }
 
-    public function getRepeatPassword()
-    {
-        return $this->repeatPassword;
-    }
-
-
     public function setOldPassword($value)
     {
         $this->oldPassword = $value;
@@ -51,13 +42,6 @@ class ChangePasswordType
     {
         $this->newPassword = $value;
     }
-
-    public function setRepeatPassword($value)
-    {
-        $this->repeatPassword = $value;
-    }
-
-
 
 
 }

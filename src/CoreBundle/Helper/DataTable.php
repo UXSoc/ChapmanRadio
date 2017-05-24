@@ -1,4 +1,5 @@
 <?php
+// Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace CoreBundle\Helper;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NoResultException;
@@ -8,12 +9,6 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Traversable;
 
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 5/20/17
- * Time: 6:51 PM
- */
 class DataTable  implements \Countable, \IteratorAggregate
 {
 

@@ -1,4 +1,5 @@
 <?php
+// Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;

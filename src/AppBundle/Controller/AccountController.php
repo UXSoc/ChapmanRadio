@@ -1,4 +1,5 @@
 <?php
+// Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace AppBundle\Controller;
 
 use AppBundle\Validation\ChangePasswordType;
@@ -11,14 +12,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
-
-
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 5/23/17
- * Time: 10:53 AM
- */
 class AccountController extends BaseController
 {
     /**
@@ -37,7 +30,6 @@ class AccountController extends BaseController
 
         if(count($errors) == 0)
         {
-
             $user =  $this->getUser();
             $encoder_service = $this->get('security.password_encoder');
 
@@ -45,7 +37,7 @@ class AccountController extends BaseController
             {
                 $additionalErrors[] = new RestfulError("oldPassword","Invalid Password");
             }
-            else if(count($additionalErrors) == 0)
+            else
             {
                 $new_password = $encoder_service->encodePassword($user,$changePasswordType->getNewPassword());
                 $user->setPassword($new_password);

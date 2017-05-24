@@ -1,4 +1,5 @@
 <?php
+// Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace AppBundle\Controller;
 
 use AppBundle\Form\UserRegisterType;
@@ -19,12 +20,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 5/23/17
- * Time: 10:54 AM
- */
 class AuthController extends BaseController
 {
     /**
@@ -100,9 +95,7 @@ class AuthController extends BaseController
      * @Route("/user/status", options = { "expose" = true }, name="user_status")
      */
     public function postLoggedInUser(Request $request)
-    {
-
-    }
+    {}
 
 
 

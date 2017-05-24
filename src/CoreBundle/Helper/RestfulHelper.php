@@ -1,11 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 5/22/17
- * Time: 11:30 PM
- */
-
+// Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace CoreBundle\Helper;
 
 

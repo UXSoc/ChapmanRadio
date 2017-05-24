@@ -34,10 +34,3 @@ security:
                 check_path: /login
                 success_handler: core.authentication_handler
                 failure_handler: core.authentication_handler
-            # activate different ways to authenticate
-
-            # http://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-            #http_basic: ~
-
-            # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
-            #form_login: ~
