@@ -1,5 +1,5 @@
 <?php
-namespace DashboardBundle\Validation;
+namespace AppBundle\Validation;
 
 use Symfony\Component\Validator\Constraints as Assert;
 

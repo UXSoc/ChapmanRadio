@@ -1,37 +1,47 @@
 import './vendor'
 import App from './App.vue'
 
-import SummaryPage from './pages/SummaryPage.vue'
+import SummaryPage from './page/SummaryPage.vue'
 
-import Dashboard from './pages/dashboard/Dashboard.vue'
+import Dashboard from './page/dashboard/Dashboard.vue'
 
-import AllCommentDashboard from './pages/dashboard/comment/AllCommentDashboard.vue'
+// -------------------------------DASHBOARD----------------------------------------------
+import AllCommentDashboard from './page/dashboard/comment/AllCommentDashboard.vue'
 
-import AllPostDashboard from './pages/dashboard/post/AllPostDashboard.vue'
-import AddNewPostDashboard from './pages/dashboard/post/AddNewPostDashboard.vue'
-import PostCategoryDashboard from './pages/dashboard/post/PostCategoryDashboard.vue'
-import PostTagDashboard from './pages/dashboard/post/PostTagDashboard.vue'
+import AllPostDashboard from './page/dashboard/post/AllPostDashboard.vue'
+import AddNewPostDashboard from './page/dashboard/post/AddNewPostDashboard.vue'
+import PostCategoryDashboard from './page/dashboard/post/PostCategoryDashboard.vue'
+import PostTagDashboard from './page/dashboard/post/PostTagDashboard.vue'
 
-import ProfileDashboard from './pages/dashboard/profile/ProfileDashboard.vue'
-import ProfileSettingsDashboard from './pages/dashboard/profile/ProfileSettingDashboard.vue'
+import ProfileDashboard from './page/dashboard/profile/ProfileDashboard.vue'
+import ProfileSettingsDashboard from './page/dashboard/profile/ProfileSettingDashboard.vue'
 
-import SettingDashboard from './pages/dashboard/setting/SettingDashboard.vue'
+import SettingDashboard from './page/dashboard/setting/SettingDashboard.vue'
 
-import AllShowDashboard from './pages/dashboard/show/AllShowDashboard.vue'
-import AddNewShowDashboard from './pages/dashboard/show/AddNewShowDashboard.vue'
-import ShowCategoryDashboard from './pages/dashboard/show/ShowCategoryDashboard.vue'
-import ShowTagDashboard from './pages/dashboard/show/ShowTagDashboard.vue'
-import ShowDashboard from './pages/dashboard/show/ShowDashboard.vue'
+import AllShowDashboard from './page/dashboard/show/AllShowDashboard.vue'
+import AddNewShowDashboard from './page/dashboard/show/AddNewShowDashboard.vue'
+import ShowCategoryDashboard from './page/dashboard/show/ShowCategoryDashboard.vue'
+import ShowTagDashboard from './page/dashboard/show/ShowTagDashboard.vue'
+import ShowDashboard from './page/dashboard/show/ShowDashboard.vue'
 
-import AddNewUserDashboard from './pages/dashboard/user/AddNewUserDashboard.vue'
-import AllUserDashboard from './pages/dashboard/user/AllUserDashboard.vue'
-import UserDashboard from './pages/dashboard/user/UserDashboard.vue'
+import AddNewUserDashboard from './page/dashboard/user/AddNewUserDashboard.vue'
+import AllUserDashboard from './page/dashboard/user/AllUserDashboard.vue'
+import UserDashboard from './page/dashboard/user/UserDashboard.vue'
+// -------------------------------App----------------------------------------------
 
+import AppPage from './page/app/AppPage.vue'
+import LoginPage from './page/LoginPage.vue'
 
 const router = new VueRouter({
   routes: [
-    {name: 'summary', path: '/', component: SummaryPage},
+    {name: 'index', path: '/', component: AppPage,
+      children: [
+        {name: 'login', path: 'login', component: LoginPage}
+      ]
+    },
+    // -------------------------------DASHBOARD----------------------------------------------
     {
+
       name: 'dashboard', path: '/dashboard/', component: Dashboard,
       children: [
 
@@ -62,9 +72,9 @@ const router = new VueRouter({
 
         // comment
         {name: 'dashboard_all_comment', path: 'comment', component: AllCommentDashboard}
-
       ]
     }
+    // -------------------------------App----------------------------------------------
   ]
 })
 

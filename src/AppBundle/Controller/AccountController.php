@@ -1,46 +1,34 @@
 <?php
+namespace AppBundle\Controller;
+
+use AppBundle\Validation\ChangePasswordType;
+use CoreBundle\Controller\BaseController;
+use CoreBundle\Helper\RestfulError;
+use CoreBundle\Helper\RestfulHelper;
+use Symfony\Component\HttpFoundation\Request;
+
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+
+
+
 /**
  * Created by PhpStorm.
  * User: michaelpollind
- * Date: 5/18/17
- * Time: 10:16 PM
+ * Date: 5/23/17
+ * Time: 10:53 AM
  */
-
-namespace DashboardBundle\Controller;
-
-use CoreBundle\Controller\BaseController;
-use CoreBundle\Entity\User;
-use CoreBundle\Helper\RestfulError;
-use CoreBundle\Helper\RestfulHelper;
-use DashboardBundle\Validation\ChangePasswordType;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Form;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
-use Symfony\Component\Validator\ConstraintViolation;
-use Symfony\Component\Validator\Validation;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-
-class UserProfileController extends BaseController
+class AccountController extends BaseController
 {
     /**
-     * @Route("/dashboard/profile/settings/profile", name="dashboard_user_settings_profile")
-     */
-    public  function  profileAction(Request $request)
-    {
-        return $this->render('dashboard/profile/settings/profile.html.twig');
-    }
-
-    /**
-     * @Route("/dashboard/ajax/profile/new-password", options = { "expose" = true }, name="dashboard_ajax_new_password", )
+     * @Security("has_role('ROLE_USER')")
+     * @Route("/ajax/user/new-password", options = { "expose" = true }, name="ajax_new_password", )
      * @Method({"POST"})
      */
-    public  function  putAccountAction(Request $request)
+    public  function  postChangePasswordAction(Request $request)
     {
+
         $mapping = $this->getJsonPayloadAsMapping();
         /** @var ChangePasswordType $changePasswordType */
         $changePasswordType = $this->denromalizeMapping($mapping,ChangePasswordType::class);
@@ -57,7 +45,7 @@ class UserProfileController extends BaseController
             {
                 $additionalErrors[] = new RestfulError("oldPassword","Invalid Password");
             }
-            else
+            else if(count($additionalErrors) == 0)
             {
                 $new_password = $encoder_service->encodePassword($user,$changePasswordType->getNewPassword());
                 $user->setPassword($new_password);
@@ -70,5 +58,4 @@ class UserProfileController extends BaseController
         }
         return RestfulHelper::error(400,"Couldn't change password",$errors,$additionalErrors);
     }
-
 }

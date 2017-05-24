@@ -13,7 +13,7 @@
 </template>
 
 <script>
-    import NewPasswordForm from './newPasswordForm.vue'
+    import NewPasswordForm from '../../../form/NewPasswordForm.vue'
   export default{
     data () {
       return {

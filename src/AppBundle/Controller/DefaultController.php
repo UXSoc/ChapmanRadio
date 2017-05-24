@@ -1,15 +1,20 @@
 <?php
+namespace AppBundle\Controller;
 
-namespace CoreBundle\Controller;
-
+use CoreBundle\Controller\BaseController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
-class DefaultController extends Controller
+/**
+ * Created by PhpStorm.
+ * User: michaelpollind
+ * Date: 5/23/17
+ * Time: 10:53 AM
+ */
+class DefaultController extends BaseController
 {
     /**
-     * @Route("/", name="homepage")
+     * @Route("/", name="index")
      */
     public function indexAction(Request $request)
     {

@@ -13,12 +13,16 @@ services:
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - CoreBundle\Entity\User
+    core.authentication_handler:
+        class: CoreBundle\Handler\AuthenticationHandler
+        arguments:
+            - "@router"
+            - "@session"
     core.show_repository:
-            class: CoreBundle\Repository\ShowRepository
-            factory: ['@doctrine.orm.default_entity_manager', getRepository]
-            arguments:
-                - CoreBundle\Entity\Show
-
+        class: CoreBundle\Repository\ShowRepository
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - CoreBundle\Entity\Show
     #service_name:
     #    class: CoreBundle\Directory\ClassName
     #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']

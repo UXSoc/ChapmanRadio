@@ -1,19 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 4/25/17
- * Time: 10:03 AM
- */
+namespace AppBundle\Controller;
 
-namespace CoreBundle\Controller;
-
-
+use AppBundle\Form\UserRegisterType;
+use CoreBundle\Controller\BaseController;
 use CoreBundle\Entity\User;
-use CoreBundle\Form\UserConfirmType;
-use CoreBundle\Form\UserRegisterType;
+use CoreBundle\Helper\RestfulHelper;
 use CoreBundle\Repository\UserRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -22,11 +14,21 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-class AuthController extends Controller
+/**
+ * Created by PhpStorm.
+ * User: michaelpollind
+ * Date: 5/23/17
+ * Time: 10:54 AM
+ */
+class AuthController extends BaseController
 {
     /**
-     * @Route("/join", name="join")
+     * @Route("/join", options = { "expose" = true }, name="join")
      */
     public function RegisterAction(Request $request)
     {
@@ -71,10 +73,8 @@ class AuthController extends Controller
         return $this->render('auth/register.html.twig', array("join_form" => $form->createView()));
     }
 
-
-
     /**
-     * @Route("/confirm/{token}", name="confirm_token")
+     * @Route("/confirm/{token}", options = { "expose" = true }, name="confirm_token")
      */
     public function confirmationAction(Request $request,$token)
     {
@@ -96,22 +96,26 @@ class AuthController extends Controller
     }
 
     /**
-     * @Route("/login", name="login")
+     * @Security("has_role('ROLE_USER')")
+     * @Route("/user/status", options = { "expose" = true }, name="user_status")
+     */
+    public function postLoggedInUser(Request $request)
+    {
+
+    }
+
+    /**
+     * @Route("/login", options = { "expose" = true }, name="login")
      */
     public  function  loginAction(Request $request)
     {
+        /** @var AuthenticationUtils $authenticationUtils */
         $authenticationUtils = $this->get('security.authentication_utils');
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
-
-        return $this->render('auth/login.html.twig', array(
-            'last_username' => $lastUsername,
-            'error'         => $error,
-        ));
+        return RestfulHelper::error(400, [],[] );
     }
 
 

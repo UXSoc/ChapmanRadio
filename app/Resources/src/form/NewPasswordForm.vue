@@ -51,7 +51,6 @@
             {
               temp.errors.add(e[i].field,e[i].message,'auth')
             }
-
           })
 
         })

@@ -1,11 +1,13 @@
-app:
+core:
     resource: '@CoreBundle/Controller/'
+    type: annotation
+app:
+    resource: '@AppBundle/Controller/'
     type: annotation
 dashboard:
     resource: '@DashboardBundle/Controller/'
     type: annotation
 logout:
     path: /logout
-
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"

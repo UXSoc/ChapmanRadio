@@ -14,22 +14,25 @@ security:
 
     access_control:
         - { path: ^/dashboard, roles: [ROLE_DJ,ROLE_STAFF]}
-
-
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-
         main:
             anonymous: ~
             logout:
-                path:   /logout
+                path:   /backend/logout
                 target: /
+            remember_me:
+                secret:   '%secret%'
+                lifetime: 604800 # 1 week in seconds
+                path:     /
             form_login:
-                login_path: login
-                check_path: login
+                check_path: /login
+                success_handler: core.authentication_handler
+                failure_handler: core.authentication_handler
             # activate different ways to authenticate
 
             # http://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate

@@ -286,6 +286,7 @@ class User implements AdvancedUserInterface
     public function getRoles()
     {
         $roles = [];
+        $roles[] = "ROLE_USER";
         if($this->isDj())
             $roles[] = "ROLE_DJ";
         if($this->isStaff())
