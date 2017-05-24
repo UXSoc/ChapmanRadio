@@ -38,7 +38,7 @@ During the composer installation, Composer should ask you for the configurations
 
 ## Building The Static Stuff
 
-package.json has been configured with some helper run call to build the static portions of the app.
+package.json has been configured with some helper to simplify the build process for the static porition of the app.
 
 - 'yarn run build' or 'npm run build'
 
