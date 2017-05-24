@@ -124,6 +124,9 @@
         }
       })
     },
+    beforeMount:{
+
+    },
     watch: {
     },
     components: {

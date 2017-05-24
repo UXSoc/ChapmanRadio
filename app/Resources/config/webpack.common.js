@@ -15,6 +15,13 @@ module.exports = {
     descriptionFiles: ['package.json', 'bower.json'],
     extensions: ['.vue', '.js', '.scss']
   },
+
+  output: {
+    path: helpers.root('web/bundles/'),
+    publicPath: '/bundles/',
+    filename: '[name].js',
+    chunkFilename: '[id].[hash].chunk.js'
+  },
   module: {
     rules: [
       {
@@ -24,6 +31,12 @@ module.exports = {
       {
         test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
         loader: 'file-loader?name=./[name].[ext]'
+      },
+      {
+        test: /\.js$/,
+        loader: 'babel-loader!eslint-loader',
+        // make sure to exclude 3rd party code in node_modules
+        exclude: ['/node_modules/', '/bower_components']
       },
       {
         test: /\.css/,

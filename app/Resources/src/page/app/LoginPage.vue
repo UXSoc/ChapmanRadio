@@ -28,8 +28,8 @@
 
 <script>
   import {Validator} from 'vee-validate'
-  import FormGroup from './../components/FormGroup.vue'
-  import Alert from './../components/Alert.vue'
+  import FormGroup from '../../components/FormGroup.vue'
+  import Alert from '../../components/Alert.vue'
   export default{
     data () {
       return {

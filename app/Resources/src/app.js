@@ -1,8 +1,6 @@
 import './vendor'
 import App from './App.vue'
 
-import SummaryPage from './page/SummaryPage.vue'
-
 import Dashboard from './page/dashboard/Dashboard.vue'
 
 // -------------------------------DASHBOARD----------------------------------------------
@@ -30,7 +28,10 @@ import UserDashboard from './page/dashboard/user/UserDashboard.vue'
 // -------------------------------App----------------------------------------------
 
 import AppPage from './page/app/AppPage.vue'
-import LoginPage from './page/LoginPage.vue'
+import LoginPage from './page/app/LoginPage.vue'
+
+import Vue from 'vue'
+import VueRouter from 'vue-router'
 
 const router = new VueRouter({
   routes: [
