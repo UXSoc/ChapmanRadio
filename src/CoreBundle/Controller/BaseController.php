@@ -19,7 +19,7 @@ class BaseController extends Controller
 {
     public function getJsonPayloadAsParameterBag()
     {
-        return new ParameterBag($this->getJsonPayload());
+        return new ParameterBag($this->getJsonPayloadAsMapping());
     }
 
     public function getJsonPayloadAsMapping(){
@@ -52,14 +52,7 @@ class BaseController extends Controller
      */
     public function validateEntity($entity)
     {
-        $validator = $this->get('validator');
-        $errors = $validator->validate($entity);
-        $result = array();
-        foreach($errors as $error)
-        {
-            $result[$error->getPropertyPath()] = $error->getMessage();
-        }
-        return $result;
+        return $this->get('validator')->validate($entity);
     }
 
 

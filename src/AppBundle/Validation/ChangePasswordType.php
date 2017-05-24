@@ -4,12 +4,6 @@ namespace AppBundle\Validation;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 5/22/17
- * Time: 8:26 PM
- */
 class ChangePasswordType
 {
     /**
@@ -19,6 +13,7 @@ class ChangePasswordType
 
     /**
      * @Assert\NotBlank()
+     * @Assert\Length(max=4096)
      */
     private $newPassword;
 

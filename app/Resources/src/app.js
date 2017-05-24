@@ -29,15 +29,18 @@ import UserDashboard from './page/dashboard/user/UserDashboard.vue'
 
 import AppPage from './page/app/AppPage.vue'
 import LoginPage from './page/app/LoginPage.vue'
+import RegisterPage from './page/app/RegisterPage.vue'
 
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 const router = new VueRouter({
   routes: [
-    {name: 'index', path: '/', component: AppPage,
+    {
+      name: 'index', path: '/', component: AppPage,
       children: [
-        {name: 'login', path: 'login', component: LoginPage}
+        {name: 'login', path: 'login', component: LoginPage},
+        {name: 'register', path: 'register', component: RegisterPage}
       ]
     },
     // -------------------------------DASHBOARD----------------------------------------------

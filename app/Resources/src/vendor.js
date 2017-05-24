@@ -4,11 +4,11 @@ import 'script-loader!jquery'
 import Config from './config'
 import VueRouter from 'vue-router'
 
+import {tinymce} from 'tinymce/tinymce'
 import 'tinymce/themes/modern/theme'
 import 'tinymce/plugins/spellchecker/index'
 import 'tinymce/plugins/textpattern/index'
 
-import {tinymce} from 'tinymce/tinymce'
 import axios from 'axios/dist/axios'
 import VeeValidate from 'vee-validate'
 

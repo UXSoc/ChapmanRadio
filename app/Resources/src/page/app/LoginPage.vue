@@ -42,10 +42,6 @@
       }
     },
     methods: {
-      validateForm: function () {
-      },
-      getParameters: function () {
-      },
       login: function () {
         this.validator.validateAll({
           'username': this.username,

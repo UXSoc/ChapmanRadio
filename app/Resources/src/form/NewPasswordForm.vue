@@ -40,7 +40,7 @@
           }).catch(function (error) {
             let e = error.response.data.errors
             for (let i = 0; i < e.length; i++) {
-              _this.validator.errorBag.add(e[i].field, e[i].message, 'auth')
+              _this.validator.errorBag.add(e[i].field, e[i].message)
             }
           })
 

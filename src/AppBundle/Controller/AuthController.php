@@ -7,6 +7,7 @@ use CoreBundle\Controller\BaseController;
 use CoreBundle\Entity\User;
 use CoreBundle\Helper\RestfulHelper;
 use CoreBundle\Repository\UserRepository;
+use Swift_Message;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -23,29 +24,31 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class AuthController extends BaseController
 {
     /**
-     * @Route("/join", options = { "expose" = true }, name="join")
+     * @Route("/register", options = { "expose" = true }, name="register")
      */
     public function RegisterAction(Request $request)
     {
 
-        /** @var UserRepository $userRepository */
-        $userRepository = $this->get('core.user_repository');
-        $user = $userRepository->create();
+        $bag = $this->getJsonPayloadAsParameterBag();
+        $user = new User();
+        $user->setName($bag->get("name"));
+        $user->setUsername($bag->get("username"));
+        $user->setEmail($bag->get("email"));
+        $user->setPlainPassword($bag->get("password"));
+        $user->setStudentId($bag->get("studentId"));
 
-        /** @var $form Form*/
-        $form = $this->createForm(UserRegisterType::class,$user);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-
+        $errors = $this->validateEntity($user);
+        if(count($errors) == 0)
+        {
             $user->setConfirmationToken(substr(md5(random_bytes(10)),20));
 
             $password = $this->get('security.password_encoder')
                 ->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
 
-            $message = \Swift_Message::newInstance()
-                ->setSubject('Welcome')
+
+            $message =new Swift_Message();
+            $message->setSubject('Welcome')
                 ->setFrom($user->getEmail())
                 ->setTo($user->getEmail())
                 ->setBody(
@@ -61,11 +64,9 @@ class AuthController extends BaseController
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
-
-            return $this->render('auth/register_confirm.html.twig');
+            return RestfulHelper::success("User Registered");
         }
-
-        return $this->render('auth/register.html.twig', array("join_form" => $form->createView()));
+        return RestfulHelper::error(400,"Couldn't Register User",$errors);
     }
 
     /**
@@ -77,7 +78,7 @@ class AuthController extends BaseController
         /** @var $user User*/
         $user =  $this->getDoctrine()->getRepository('core.user_repository')->findOneBy(array('confirmationToken' => $token));
         if (!$user) {
-            throw $this->createNotFoundException('Unknown confimration key');
+            return RestfulHelper::error(400,"Unknown Confirmation Token",[]);
         }
         $user->setConfirmationToken(null);
         $user->setConfirmed(true);
@@ -86,7 +87,7 @@ class AuthController extends BaseController
         $em->persist($user);
         $em->flush();
 
-        return $this->redirect($this->generateUrl('login'));
+        return RestfulHelper::success("Confirmation Token is Valid");
 
     }
 
