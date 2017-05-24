@@ -9,5 +9,7 @@ dashboard:
     type: annotation
 logout:
     path: /logout
+login:
+    path: /login
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"

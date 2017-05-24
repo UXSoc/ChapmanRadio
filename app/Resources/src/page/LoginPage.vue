@@ -6,6 +6,7 @@
             </div>
             <div class="panel-body">
                 <form>
+                    <alert v-show="showAlert" alert="alert-danger" :message="alert" @close="showAlert = false"></alert>
                     <form-group :validator="validator" attribute="username" name="username" title="Username Or Email">
                         <input class="form-control" type="text" name="username" v-model="username" id="username">
                     </form-group>
@@ -19,21 +20,6 @@
                         </label>
                     </div>
                     <button  class="btn btn-default" @click="login" type="button" name="button">Login</button>
-                    <!--<fieldset>-->
-                        <!--<div class="form-group">-->
-                            <!--<input class="form-control" placeholder="E-mail" name="email" type="email" autofocus="">-->
-                        <!--</div>-->
-                        <!--<div class="form-group">-->
-                            <!--<input class="form-control" placeholder="Password" name="password" type="password" value="">-->
-                        <!--</div>-->
-                        <!--<div class="checkbox">-->
-                            <!--<label>-->
-                                <!--<input name="remember" type="checkbox" value="Remember Me">Remember Me-->
-                            <!--</label>-->
-                        <!--</div>-->
-                        <!--&lt;!&ndash; Change this to a button or input when using this as a form &ndash;&gt;-->
-                        <!--<a href="index.html" class="btn btn-lg btn-success btn-block">Login</a>-->
-                    <!--</fieldset>-->
                 </form>
             </div>
         </div>
@@ -43,13 +29,16 @@
 <script>
   import {Validator} from 'vee-validate'
   import FormGroup from './../components/FormGroup.vue'
+  import Alert from './../components/Alert.vue'
   export default{
     data () {
       return {
         username: '',
         password: '',
         remember_me: false,
-        validator: null
+        validator: null,
+        alert: '',
+        showAlert: false
       }
     },
     methods: {
@@ -62,36 +51,32 @@
           'username': this.username,
           'password': this.password
         }).then(() => {
-
           let params = new URLSearchParams()
           params.append('_username', this.username)
           params.append('_password', this.password)
           params.append('_remember_me', this.remember_me)
 
-          let temp = this
+          let _this = this
           axios.post('/login', params).then(function (response) {
-            this.$router.push({name: 'index'})
+            _this.$router.push({name: 'index'})
           }).catch(function (error) {
-            let e = error.response.data.errors
-            console.log(error)
-            for(let i = 0; i < e.length; i++)
-            {
-              temp.errors.add(e[i].field,e[i].message,'auth')
-            }
+            _this.showAlert = true
+            _this.alert = error.response.data.message
           })
         })
       }
     },
     watch: {
     },
-    created() {
+    created () {
       this.validator = new Validator()
 
       this.validator.attach('username', 'required', { prettyName: 'Username Or Email' })
       this.validator.attach('password', 'required', { prettyName: 'Password' })
     },
     components: {
-      FormGroup
+      FormGroup,
+      Alert
     }
   }
 </script>

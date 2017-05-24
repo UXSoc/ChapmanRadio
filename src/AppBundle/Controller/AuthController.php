@@ -104,19 +104,6 @@ class AuthController extends BaseController
 
     }
 
-    /**
-     * @Route("/login", options = { "expose" = true }, name="login")
-     */
-    public  function  loginAction(Request $request)
-    {
-        /** @var AuthenticationUtils $authenticationUtils */
-        $authenticationUtils = $this->get('security.authentication_utils');
-
-        // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
-
-        return RestfulHelper::error(400, [],[] );
-    }
 
 
 }
