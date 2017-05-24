@@ -85,8 +85,14 @@ To actually run the server and see if the app works.
 ./bin/console server:run
 ```
 
+# Hot Loading
 
-Whew!!
+Hot Loading allows you to hot replace javascript on the run
+
+```
+./bin/console server:run --env=hot --router=app/config/router_hot.php
+yarn run hotload
+```
 
 
 
