@@ -54,7 +54,7 @@
 
           let _this = this
           axios.post('/login', params).then(function (response) {
-            _this.$router.push({name: 'index'})
+            _this.$router.push({name: 'home'})
           }).catch(function (error) {
             _this.showAlert = true
             _this.alert = error.response.data.message

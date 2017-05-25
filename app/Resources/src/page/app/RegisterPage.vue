@@ -42,6 +42,7 @@
 <script>
   import { Validator } from 'vee-validate'
   import FormGroup from '../../components/FormGroup.vue'
+  import axios from 'axios/dist/axios'
   export default{
     data () {
       return {
@@ -58,19 +59,23 @@
     methods: {
       validateForm: function () {
       },
-      getParameters: function () {
-        return {
+      register: function () {
+        let params = new URLSearchParams()
+        params.append('name', this.name)
+        params.append('username', this.username)
+        params.append('password', this.password)
+        params.append('studentId', this.studentId)
+        params.append('email', this.email)
+
+        this.validator.validateAll({
           name: this.name,
           username: this.username,
           password: this.password,
           studentId: this.studentId,
           email: this.email
-        }
-      },
-      register: function () {
-        this.validator.validateAll(this.getParameters()).then(() => {
+        }).then(() => {
           let _this = this
-          axios.post(Routing.generate('register'), this.getParameters()).then(function (response) {
+          axios.post(Routing.generate('register'), params).then(function (response) {
             _this.showVerification = true
           }).catch(function (error) {
             let e = error.response.data.errors

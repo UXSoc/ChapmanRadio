@@ -1,11 +1,11 @@
 <?php
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
-namespace AppBundle\Controller;
+namespace AppBundle\Controller\Api\V3;
 
-use AppBundle\Form\UserRegisterType;
 use CoreBundle\Controller\BaseController;
 use CoreBundle\Entity\User;
 use CoreBundle\Helper\RestfulHelper;
+use CoreBundle\Helper\RestfulJsonResponse;
 use CoreBundle\Repository\UserRepository;
 use Swift_Message;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
@@ -21,13 +22,18 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
+/**
+ * @Route("/api/v3")
+ */
 class AuthController extends BaseController
 {
     /**
-     * @Route("/register", options = { "expose" = true }, name="register")
+     * @Route("/auth/register", options = { "expose" = true }, name="post_register")
+     * @Method({"POST"})
      */
     public function RegisterAction(Request $request)
     {
+        $restfulJson = new RestfulJsonResponse();
 
         $bag = $this->getJsonPayloadAsParameterBag();
         $user = new User();
@@ -37,17 +43,16 @@ class AuthController extends BaseController
         $user->setPlainPassword($bag->get("password"));
         $user->setStudentId($bag->get("studentId"));
 
-        $errors = $this->validateEntity($user);
-        if(count($errors) == 0)
-        {
-            $user->setConfirmationToken(substr(md5(random_bytes(10)),20));
+        $restfulJson->addErrors($this->validateEntity($user));
+        if (!$restfulJson->hasErrors()) {
+            $user->setConfirmationToken(substr(md5(random_bytes(10)), 20));
 
             $password = $this->get('security.password_encoder')
                 ->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
 
 
-            $message =new Swift_Message();
+            $message = new Swift_Message();
             $message->setSubject('Welcome')
                 ->setFrom($user->getEmail())
                 ->setTo($user->getEmail())
@@ -64,21 +69,29 @@ class AuthController extends BaseController
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
-            return RestfulHelper::success("User Registered");
+
+            $restfulJson->setMessage("User Registered");
+            return $restfulJson;
         }
-        return RestfulHelper::error(400,"Couldn't Register User",$errors);
+        $restfulJson->setStatusCode(400);
+        $restfulJson->setMessage("Couldn't Register User");
+        return $restfulJson;
     }
 
     /**
-     * @Route("/confirm/{token}", options = { "expose" = true }, name="confirm_token")
+     * @Route("/auth/confirm/{token}", options = { "expose" = true }, name="post_confirm_token")
+     * @Method({"POST"})
      */
-    public function confirmationAction(Request $request,$token)
+    public function confirmationAction(Request $request, $token)
     {
+        $restfulJson = new RestfulJsonResponse();
 
-        /** @var $user User*/
-        $user =  $this->getDoctrine()->getRepository('core.user_repository')->findOneBy(array('confirmationToken' => $token));
+        /** @var $user User */
+        $user = $this->getDoctrine()->getRepository('core.user_repository')->findOneBy(array('confirmationToken' => $token));
         if (!$user) {
-            return RestfulHelper::error(400,"Unknown Confirmation Token",[]);
+            $restfulJson->setMessage("Unknown Confirmation Token");
+            $restfulJson->setStatusCode(400);
+            return $restfulJson;
         }
         $user->setConfirmationToken(null);
         $user->setConfirmed(true);
@@ -87,17 +100,34 @@ class AuthController extends BaseController
         $em->persist($user);
         $em->flush();
 
-        return RestfulHelper::success("Confirmation Token is Valid");
-
+        $restfulJson->setMessage("Confirmation Token is Valid");
+        return $restfulJson;
     }
 
     /**
      * @Security("has_role('ROLE_USER')")
-     * @Route("/user/status", options = { "expose" = true }, name="user_status")
+     * @Route("/auth/status", options = { "expose" = true }, name="get_user_status")
+     * @Method({"GET"})
      */
-    public function postLoggedInUser(Request $request)
-    {}
+    public function getUserStatusAction(Request $request)
+    {
+        /** @var User $user */
+        $user = $this->getUser();
 
+        $restfulJson = new RestfulJsonResponse();
+        $restfulJson->setMessage("User Status");
+        $restfulJson->setData([
+            "email" => $user->getEmail(),
+            "last_login" => $user->getLastLogin(),
+            "username" => $user->getUsername(),
+            "created_at" => $user->getCreatedAt(),
+            "updated_at" => $user->getUpdatedAt(),
+            "roles" => $user->getRoles()
+        ]);
+
+        return $restfulJson;
+
+    }
 
 
 }

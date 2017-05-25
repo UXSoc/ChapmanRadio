@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Blog
  *
  * @ORM\Table(name="blog", indexes={@ORM\Index(name="blog_user_id_fk", columns={"author_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="CoreBundle\Repository\BlogRepository")
  *
  * @ORM\HasLifecycleCallbacks
  */

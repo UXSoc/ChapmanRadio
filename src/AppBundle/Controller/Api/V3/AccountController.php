@@ -1,41 +1,47 @@
 <?php
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
-namespace AppBundle\Controller;
+namespace AppBundle\Controller\Api\V3;
 
 use AppBundle\Validation\ChangePasswordType;
 use CoreBundle\Controller\BaseController;
 use CoreBundle\Helper\RestfulError;
 use CoreBundle\Helper\RestfulHelper;
+use CoreBundle\Helper\RestfulJsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
+/**
+ * @Route("/api/v3")
+ */
 class AccountController extends BaseController
 {
     /**
      * @Security("has_role('ROLE_USER')")
-     * @Route("/ajax/user/new-password", options = { "expose" = true }, name="ajax_new_password", )
-     * @Method({"POST"})
+     * @Route("/account/new-password", options = { "expose" = true }, name="patch_account_password")
+     * @Method({"PATCH"})
      */
-    public  function  postChangePasswordAction(Request $request)
+    public  function  patchChangePasswordAction(Request $request)
     {
+        $restfulJson = new RestfulJsonResponse();
 
-        $mapping = $this->getJsonPayloadAsMapping();
-        /** @var ChangePasswordType $changePasswordType */
-        $changePasswordType = $this->denromalizeMapping($mapping,ChangePasswordType::class);
-        $errors = $this->validateEntity($changePasswordType);
-        $additionalErrors = [];
+        $changePasswordType = new ChangePasswordType();
 
-        if(count($errors) == 0)
+        $changePasswordType->setOldPassword($request->get("oldPassword"));
+        $changePasswordType->setNewPassword($request->get("newPassword"));
+
+        $restfulJson->addErrors($this->validateEntity($changePasswordType));
+
+        if(!$restfulJson->hasErrors())
         {
             $user =  $this->getUser();
             $encoder_service = $this->get('security.password_encoder');
 
             if(!$encoder_service->isPasswordValid($user,$changePasswordType->getOldPassword()))
             {
-                $additionalErrors[] = new RestfulError("oldPassword","Invalid Password");
+                $restfulJson->addKeyError("oldPassword","Invalid Password");
             }
             else
             {
@@ -45,9 +51,14 @@ class AccountController extends BaseController
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($user);
                 $em->flush();
-                return RestfulHelper::success("Password Changed");
+
+                $restfulJson->setMessage("Password Changed");
+                return $restfulJson;
             }
         }
-        return RestfulHelper::error(400,"Couldn't change password",$errors,$additionalErrors);
+
+        $restfulJson->setMessage("Couldn't change password");
+        $restfulJson->setStatusCode(400);
+        return $restfulJson;
     }
 }

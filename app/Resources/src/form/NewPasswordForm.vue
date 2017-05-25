@@ -19,6 +19,7 @@
   import { Validator } from 'vee-validate'
   import FormGroup from './../components/FormGroup.vue'
   import Alert from './../components/Alert.vue'
+  import axios from 'axios/dist/axios'
 
   export default{
     data () {
@@ -32,10 +33,16 @@
     },
     methods: {
       validateForm: function () {
-        this.validator.validateAll(this.getParameters()).then(() => {
+        this.validator.validateAll({
+          oldPassword: this.oldPassword,
+          newPassword: this.newPassword
+        }).then(() => {
+          let params = new URLSearchParams()
+          params.append('oldPassword', this.oldPassword)
+          params.append('newPassword', this.newPassword)
 
           let _this = this
-          axios.post(Routing.generate('ajax_new_password'), this.getParameters()).then(function (response) {
+          axios.patch(Routing.generate('account_patch_password'), params).then(function (response) {
             _this.showSuccess = true
           }).catch(function (error) {
             let e = error.response.data.errors
@@ -43,14 +50,7 @@
               _this.validator.errorBag.add(e[i].field, e[i].message)
             }
           })
-
         })
-      },
-      getParameters: function () {
-        return {
-          oldPassword: this.oldPassword,
-          newPassword: this.newPassword
-        }
       }
     },
     watch: {
@@ -65,7 +65,7 @@
       }
 
     },
-    created() {
+    created () {
       this.validator = new Validator()
 
       this.validator.attach('oldPassword', 'required', {prettyName: 'Old Password'})
