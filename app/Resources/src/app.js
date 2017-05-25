@@ -30,25 +30,34 @@ import UserDashboard from './page/dashboard/user/UserDashboard.vue'
 import AppPage from './page/app/AppPage.vue'
 import LoginPage from './page/app/LoginPage.vue'
 import RegisterPage from './page/app/RegisterPage.vue'
+import BlogPage from './page/app/BlogPage.vue'
+import ContactPage from './page/app/ContactPage.vue'
+import EventPage from './page/app/EventPage.vue'
+import SchedulePage from './page/app/SchedulePage.vue'
+import ShowPage from './page/app/ShowPage.vue'
+import HomePage from './page/app/HomePage.vue'
 
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-const router = new VueRouter({
-  routes: [
-    {
-      name: 'index', path: '/', component: AppPage,
-      children: [
+const router = new VueRouter({ routes: [
+  {
+    path: '/', component: AppPage,
+    children: [
+        {name: 'home', path: '', component: HomePage},
         {name: 'login', path: 'login', component: LoginPage},
-        {name: 'register', path: 'register', component: RegisterPage}
-      ]
-    },
-    // -------------------------------DASHBOARD----------------------------------------------
-    {
-
-      name: 'dashboard', path: '/dashboard/', component: Dashboard,
-      children: [
-
+        {name: 'register', path: 'register', component: RegisterPage},
+        {name: 'blog', path: 'blog', component: BlogPage},
+        {name: 'contact', path: 'contact', component: ContactPage},
+        {name: 'event', path: 'event', component: EventPage},
+        {name: 'schedule', path: 'schedule', component: SchedulePage},
+        {name: 'show', path: 'show', component: ShowPage}
+    ]
+  },
+  // -------------------------------DASHBOARD----------------------------------------------
+  {
+    name: 'dashboard', path: '/dashboard/', component: Dashboard,
+    children: [
         // shows
         {name: 'dashboard_all_show', path: 'show', component: AllShowDashboard},
         {name: 'dashboard_add_new_show', path: 'show/add', component: AddNewShowDashboard},
@@ -76,14 +85,13 @@ const router = new VueRouter({
 
         // comment
         {name: 'dashboard_all_comment', path: 'comment', component: AllCommentDashboard}
-      ]
-    }
-    // -------------------------------App----------------------------------------------
-  ]
-})
+    ]
+  }
+  // -------------------------------App----------------------------------------------
+]})
 
 window.onload = function () {
-  // router.push({name : "summary"})
+    // router.push({name : "summary"})
   new Vue({
     router,
     render: h => h(App)
