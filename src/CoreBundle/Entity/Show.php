@@ -75,14 +75,6 @@ class Show
 
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="genre", type="string", length=80, nullable=true)
-     */
-    private $genre;
-
-
-    /**
      * @var integer
      *
      * @ORM\Column(name="strike_count", type="integer", nullable=true)
@@ -144,6 +136,17 @@ class Show
     private $showSchedule;
 
     /**
+     * Many Shows have Many Images.
+     * @ORM\ManyToMany(targetEntity="Genre", indexBy="genre")
+     * @ORM\JoinTable(name="show_genre",
+     *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="genre_id", referencedColumnName="id")}
+     *      )
+     * @var  Genre[]
+     */
+    private $genres;
+
+    /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="ShowDj", mappedBy="show")
@@ -203,9 +206,17 @@ class Show
         return $this->id;
     }
 
-    public function getGenre()
+    public function getGenres()
     {
-        return $this->genre;
+        return $this->genres;
+    }
+
+    /**
+     * @param Genre $genre
+     */
+    public function addGenre($genre)
+    {
+        $this->genres[$genre->getGenre()] = $genre;
     }
 
     public function getHeaderImage()
@@ -328,6 +339,10 @@ class Show
     {
         return $this->comments->toArray();
     }
+
+
+
+
 
 }
 

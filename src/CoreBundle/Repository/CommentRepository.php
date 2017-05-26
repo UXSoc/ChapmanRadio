@@ -3,8 +3,16 @@
 namespace CoreBundle\Repository;
 
 
+use CoreBundle\Entity\Comment;
 use Doctrine\ORM\EntityRepository;
 
 class CommentRepository  extends EntityRepository
 {
+    /**
+     * @param Comment $comment
+     */
+    public function getChildComments($comment)
+    {
+
+    }
 }

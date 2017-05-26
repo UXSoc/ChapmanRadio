@@ -9,9 +9,67 @@
 namespace CoreBundle\Repository;
 
 
+use CoreBundle\Entity\Blog;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping;
+use Symfony\Bundle\FrameworkBundle\Tests\Fixtures\Validation\Category;
 
 class BlogRepository extends EntityRepository
 {
+
+    private $commentRepository;
+
+    /**
+     * BlogRepository constructor.
+     * @param EntityManager $em
+     * @param Mapping\ClassMetadata $class
+     * @param CommentRepository $commentRepository
+     */
+    public function __construct(EntityManager $em, Mapping\ClassMetadata $class,CommentRepository $commentRepository)
+    {
+        $this->commentRepository -> $commentRepository;
+        parent::__construct($em, $class);
+    }
+
+    public function findPostByName($name)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.name = :name')
+            ->setParameter('name',$name)
+            ->getQuery()
+            ->getSingleResult();
+    }
+
+    /**
+     * @param Blog $post
+     * @param  $tag
+     */
+    public function getPostsByTag($post,$tag)
+    {
+
+    }
+
+    /**
+     * @param Blog $post
+     * @param Category $category
+     */
+    public  function getPostsByCategory( $post, $category)
+    {
+    }
+
+
+    /**
+     * @param Blog $post
+     * @param Blog $parent
+     * @return Collection
+     */
+    public  function getAllCommentsByParent($post,$parent = null)
+    {
+        $criterea = Criteria::create()->where(Criteria::expr()->eq("comment_id",$parent->getId()));
+        return $post->getComments()->matching($criterea);
+    }
 
 }

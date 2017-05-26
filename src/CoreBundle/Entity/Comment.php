@@ -2,6 +2,7 @@
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace CoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -9,6 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="comment", indexes={@ORM\Index(name="comment_comment_id_id_fk", columns={"comment_id"}), @ORM\Index(name="comment_user_id_fk", columns={"user_id"})})
  * @ORM\Entity(repositoryClass="CoreBundle\Repository\CommentRepository")
+ *
+ * @ORM\HasLifecycleCallbacks
  */
 class Comment
 {
@@ -45,23 +48,102 @@ class Comment
     /**
      * @var Comment
      *
-     * @ORM\ManyToOne(targetEntity="Comment")
+     * @ORM\ManyToOne(targetEntity="Comment",inversedBy="childrenComment")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="comment_id", referencedColumnName="id")
      * })
      */
-    private $comment;
+    private $parentComment = null;
+
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="parentComment")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id", referencedColumnName="comment_id")
+     * })
+     */
+    private $childrenComment = null;
 
     /**
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $user;
 
+    function __construct()
+    {
+        $this->childrenComment = new ArrayCollection();
+    }
+
+    /**
+     *
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function updatedTimestamps()
+    {
+        $this->updatedAt = new \DateTime('now');
+
+        if ($this->createdAt == null) {
+            $this->createdAt = new \DateTime('now');
+        }
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public  function getContent()
+    {
+        return $this->content;
+    }
+
+    public  function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+    public function getParentComment()
+    {
+        return $this->parentComment;
+    }
+
+    public  function setParentComment($parentComment)
+    {
+        $this->parentComment = $parentComment;
+    }
+
+    public function getChildrenComments()
+    {
+        return $this->childrenComment;
+    }
+
+    public  function getUser()
+    {
+        return $this->user;
+    }
+
+    public  function setUser($user)
+    {
+        $this->user = $user;
+    }
+
+    public function getUpdateAt()
+    {
+        return $this->updateAt;
+    }
+
+    public  function getCreateAt()
+    {
+        return $this->createdAt;
+    }
 
 }
 

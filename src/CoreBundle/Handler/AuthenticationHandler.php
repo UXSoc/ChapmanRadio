@@ -43,6 +43,7 @@ class AuthenticationHandler implements AuthenticationFailureHandlerInterface, Au
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
+
         return RestfulHelper::error(400,"Failed Authentication",[],[]);
     }
 

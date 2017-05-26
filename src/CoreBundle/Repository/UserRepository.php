@@ -27,15 +27,6 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         return $users;
     }
 
-    /**
-     * @return User
-     */
-    public  function  create()
-    {
-        $user = new User();
-        return $user;
-    }
-
     public function loadUserByUsername($username)
     {
         $user = $this->findOneByUsernameOrEmail($username);

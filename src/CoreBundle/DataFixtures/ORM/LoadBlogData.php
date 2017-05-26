@@ -1,8 +1,9 @@
 <?php
-// Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
+use CoreBundle\Entity\Blog;
+use CoreBundle\Entity\Category;
 use CoreBundle\Entity\Comment;
-use CoreBundle\Entity\Genre;
-use CoreBundle\Entity\Show;
+use CoreBundle\Entity\Tag;
+use CoreBundle\Entity\User;
 use CoreBundle\Repository\UserRepository;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -10,13 +11,24 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
+class LoadBlogData extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
+
 
     /**
      * @var ContainerInterface
      */
     private $container;
+
+    /**
+     * Sets the container.
+     *
+     * @param \Symfony\Component\DependencyInjection\ContainerInterface|null $container A ContainerInterface instance or null
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
 
     /**
      * Load data fixtures with the passed EntityManager
@@ -27,21 +39,21 @@ class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, C
     {
         $faker = Faker\Factory::create();
 
-        $genres = $manager->getRepository(Genre::class)->findAll();
-
         /** @var UserRepository $userRepository */
         $userRepository = $this->container->get("core.user_repository");
         $users = $userRepository->findAll();
 
+        $categories = $manager->getRepository(Category::class)->findAll();
+        $tags = $manager->getRepository(Tag::class)->findAll();
+
         for ($i = 0; $i < 20; $i++)
         {
-            $show = new Show();
-            $show->setName($faker->name);
-            $show->setDescription($faker->paragraph);
-            $show->setStrikeCount(0);
-            $show->setAttendenceOptional(0);
-            $show->setScore($faker->randomNumber(2));
-
+            $blog = new Blog();
+            $blog->setName($faker->name);
+            $blog->setContent($faker->paragraph);
+            $blog->setAuthor($users[array_rand($users,1)]);
+            $blog->setIsPinned($faker->boolean());
+            $blog->setPostExcerpt($faker->paragraph(1));
 
             /** @var Comment[] $comments */
             $comments = array();
@@ -50,7 +62,7 @@ class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, C
                 $c = new Comment();
                 $c->setUser($users[array_rand($users,1)]);
                 $c->setContent($faker->paragraph(3));
-                $show->addComment($c);
+                $blog->addComment($c);
                 $manager->persist($c);
                 $comments[] = $c;
             }
@@ -61,14 +73,15 @@ class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, C
             }
 
 
-            for($b =0; $b < 3; $b++)
+            for($b = 0; $b < 15; $b++)
             {
-                $show->addGenre($genres[array_rand($genres,1)]);
+                $blog->addTag($tags[array_rand($tags,1)]);
+                $blog->addCategory($categories[array_rand($categories,1)]);
             }
-            $manager->persist($show);
-
+            $manager->persist($blog);
         }
         $manager->flush();
+
     }
 
     /**
@@ -79,10 +92,5 @@ class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, C
     public function getOrder()
     {
         return 3;
-    }
-
-    public function setContainer(\Symfony\Component\DependencyInjection\ContainerInterface $container = null)
-    {
-        $this->container = $container;
     }
 }

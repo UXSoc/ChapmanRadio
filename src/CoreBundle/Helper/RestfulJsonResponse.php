@@ -25,6 +25,8 @@ class RestfulJsonResponse extends JsonResponse
     /** @var array  */
     private $errors = [];
 
+
+
     public function __construct($status = 200, array $headers = array(), $json = false)
     {
         parent::__construct(null, $status, $headers, $json);
@@ -33,13 +35,14 @@ class RestfulJsonResponse extends JsonResponse
     public function setMessage($message)
     {
         $this->message = $message;
+        $this->setData($this->payload);
     }
 
     public  function setData($payload = array())
     {
         $this->payload = $payload;
 
-        if(count($this->errors) == 0) {
+        if(count($this->errors) == 0 && $this->statusCode < 400) {
             return parent::setData([
                 'success' => true,
                 'message' =>  $this->message,
@@ -65,6 +68,7 @@ class RestfulJsonResponse extends JsonResponse
     public function addKeyError($key,$error)
     {
         $this->errors[] = ["field" => $key, "message" => $error];
+        $this->setData($this->payload);
     }
 
     /**

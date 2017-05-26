@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Blog
  *
- * @ORM\Table(name="blog", indexes={@ORM\Index(name="blog_user_id_fk", columns={"author_id"})})
+ * @ORM\Table(name="blog")
  * @ORM\Entity(repositoryClass="CoreBundle\Repository\BlogRepository")
  *
  * @ORM\HasLifecycleCallbacks
@@ -25,6 +25,14 @@ class Blog
     private $id;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string",length=100, nullable=false,unique=true)
+     *
+     */
+    private $name;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
@@ -38,12 +46,6 @@ class Blog
      */
     private $updatedAt;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="category", type="string", length=60, nullable=true)
-     */
-    private $category;
 
     /**
      * @var string
@@ -61,10 +63,9 @@ class Blog
 
     /**
      * @var boolean
-     *
      * @ORM\Column(name="is_pinned", type="boolean", nullable=true)
      */
-    private $isPinned;
+    private $isPinned = 0;
 
     /**
      * @var string
@@ -77,9 +78,7 @@ class Blog
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="author_id", referencedColumnName="id")
-     * })
+     * @ORM\JoinColumn(name="author_id", referencedColumnName="id", nullable=false)
      */
     private $author;
 
@@ -95,15 +94,39 @@ class Blog
     private $images;
 
     /**
+     * @var ArrayCollection
      * Many Shows have Many Images.
      * @ORM\ManyToMany(targetEntity="Comment")
      * @ORM\JoinTable(name="blog_comment",
      *      joinColumns={@ORM\JoinColumn(name="blog_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="comment_id", referencedColumnName="id", unique=true)}
      *      )
-     * @return ArrayCollection
      */
     private $comments;
+
+    /**
+     * @var Category[]
+     *
+     * Many Shows have Many Images.
+     * @ORM\ManyToMany(targetEntity="Category", indexBy="category")
+     * @ORM\JoinTable(name="blog_category",
+     *      joinColumns={@ORM\JoinColumn(name="blog_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="category_id", referencedColumnName="id")}
+     *      )
+     */
+    private $categories;
+
+    /**
+     * @var Tag[]
+     *
+     * Many Shows have Many Images.
+     * @ORM\ManyToMany(targetEntity="Tag", indexBy="tag")
+     * @ORM\JoinTable(name="blog_tag",
+     *      joinColumns={@ORM\JoinColumn(name="blog_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
+     *      )
+     */
+    private $tags;
 
 
     /**
@@ -154,6 +177,16 @@ class Blog
     public function setContent($content)
     {
         $this->content = $content;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public  function setName($name)
+    {
+        $this->name = $name;
     }
 
     public  function getContent()
@@ -208,11 +241,49 @@ class Blog
 
     /**
      * return array of comments
-     * @return array
+     * @return ArrayCollection
      */
     public function getComments()
     {
-        return $this->comments->toArray();
+       return $this->comments;
+    }
+
+    public  function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+    public  function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param Tag $tag
+     */
+    public function addTag($tag)
+    {
+        $this->tags[$tag->getTag()] = $tag;
+    }
+
+    /**
+     * @param Category $category
+     */
+    public  function addCategory($category)
+    {
+        $this->categories[$category->getCategory()] = $category;
+    }
+
+    public  function getCategories()
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @return Tag[]
+     */
+    public  function getTags()
+    {
+        return $this->tags;
     }
 
 }
