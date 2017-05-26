@@ -22,17 +22,6 @@ class BlogRepository extends EntityRepository
 
     private $commentRepository;
 
-    /**
-     * BlogRepository constructor.
-     * @param EntityManager $em
-     * @param Mapping\ClassMetadata $class
-     * @param CommentRepository $commentRepository
-     */
-    public function __construct(EntityManager $em, Mapping\ClassMetadata $class,CommentRepository $commentRepository)
-    {
-        $this->commentRepository -> $commentRepository;
-        parent::__construct($em, $class);
-    }
 
     public function findPostByName($name)
     {
