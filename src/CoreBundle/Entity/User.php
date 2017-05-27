@@ -5,6 +5,7 @@ namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Keygen\Keygen;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -39,6 +40,14 @@ class User implements AdvancedUserInterface
      * @ORM\Column(name="facebook_id", type="bigint", nullable=true)
      */
     private $facebookId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string",length=100, nullable=false,unique=true)
+     *
+     */
+    private $token;
 
     /**
      * @var string
@@ -156,6 +165,7 @@ class User implements AdvancedUserInterface
         $this->updatedAt =  new \DateTime('now');
 
         if ($this->createdAt == null) {
+            $this->token = Keygen::alphanum(10)->generate();
             $this->createdAt = new \DateTime('now');
         }
     }
@@ -259,14 +269,7 @@ class User implements AdvancedUserInterface
     {
         $this->plainPassword = $password;
     }
-    public  function getConfirmationToken()
-    {
-        return $this->confirmation_token;
-    }
-    public  function  setConfirmationToken($token)
-    {
-        $this->confirmation_token = $token;
-    }
+
     /**
      * Returns the roles granted to the user.
      *
@@ -401,6 +404,11 @@ class User implements AdvancedUserInterface
     public function isEnabled()
     {
         return $this->confirmed;
+    }
+
+    public function getToken()
+    {
+        return $this->token;
     }
 }
 

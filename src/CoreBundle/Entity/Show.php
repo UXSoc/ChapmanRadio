@@ -4,6 +4,7 @@ namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Keygen\Keygen;
 
 /**
  * Show
@@ -33,6 +34,22 @@ class Show
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="token", type="string",length=100, nullable=false,unique=true)
+     *
+     */
+    private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="slug", type="string",length=100, nullable=false,unique=true)
+     * @@Assert\Regex("^[a-zA-Z0-9\-]+$/")
+     */
+    private $slug;
+
+    /**
+     * @var resource
      *
      * @ORM\Column(name="description", type="blob", length=65535, nullable=false)
      */
@@ -108,7 +125,7 @@ class Show
 
     /**
     * Many Shows have Many Images.
-    * @ORM\ManyToMany(targetEntity="Comment")
+    * @ORM\ManyToMany(targetEntity="Comment", inversedBy="shows")
     * @ORM\JoinTable(name="show_comment",
     *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id")},
     *      inverseJoinColumns={@ORM\JoinColumn(name="comment_id", referencedColumnName="id", unique=true)}
@@ -187,6 +204,7 @@ class Show
         $this->updatedAt = new \DateTime('now');
 
         if ($this->createdAt == null) {
+            $this->token = Keygen::alphanum(10)->generate();
             $this->createdAt = new \DateTime('now');
         }
     }
@@ -309,7 +327,7 @@ class Show
 
     /**
      * Returns the description of the show
-     * @return string
+     * @return resource
      */
     public function getDescription()
     {
@@ -333,14 +351,29 @@ class Show
 
     /**
      * return array of comments
-     * @return array
+     * @return ArrayCollection
      */
     public function getComments()
     {
-        return $this->comments->toArray();
+        return $this->comments;
     }
 
+    public function getToken()
+    {
+        return $this->token;
+    }
 
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    public function setSlug($slug)
+    {
+        $result = str_replace(' ','-',$slug);
+        $result = preg_replace('/\-+/', '-',$result);
+        $this->slug = $result;
+    }
 
 
 

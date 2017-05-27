@@ -50,10 +50,11 @@ class LoadBlogData extends AbstractFixture implements OrderedFixtureInterface, C
         {
             $blog = new Blog();
             $blog->setName($faker->name);
-            $blog->setContent($faker->paragraph);
+            $blog->setContent($faker->paragraph(10));
             $blog->setAuthor($users[array_rand($users,1)]);
             $blog->setIsPinned($faker->boolean());
-            $blog->setPostExcerpt($faker->paragraph(1));
+            $blog->setExcerpt($faker->paragraph(1));
+            $blog->setSlug($blog->getName());
 
             /** @var Comment[] $comments */
             $comments = array();

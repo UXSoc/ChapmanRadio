@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "aca4ca3a6b141d4798af84511565223b",
+    "content-hash": "daf7a0bd42448e8cd45fc251f888bc18",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -1026,6 +1026,50 @@
                 "routing"
             ],
             "time": "2015-10-28T15:08:39+00:00"
+        },
+        {
+            "name": "gladcodes/keygen",
+            "version": "1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gladchinda/keygen-php.git",
+                "reference": "f0f29b4df0e3f9f2f0e31d7b0ac97c8f806a8c83"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gladchinda/keygen-php/zipball/f0f29b4df0e3f9f2f0e31d7b0ac97c8f806a8c83",
+                "reference": "f0f29b4df0e3f9f2f0e31d7b0ac97c8f806a8c83",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Keygen\\": "src/Keygen"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Glad Chinda",
+                    "email": "gladxeqs@gmail.com"
+                }
+            ],
+            "description": "A fluent PHP random key generator.",
+            "keywords": [
+                "generator",
+                "key",
+                "key generator",
+                "keygen",
+                "php",
+                "random"
+            ],
+            "time": "2017-02-24T07:19:08+00:00"
         },
         {
             "name": "incenteev/composer-parameter-handler",

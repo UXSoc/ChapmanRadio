@@ -4,6 +4,11 @@ namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
+use Keygen\Keygen;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * Blog
@@ -21,6 +26,7 @@ class Blog
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @Groups({"all"})
      */
     private $id;
 
@@ -31,6 +37,22 @@ class Blog
      *
      */
     private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string",length=100, nullable=false,unique=true)
+     *
+     */
+    private $token;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="slug", type="string",length=100, nullable=false,unique=true)
+     * @@Assert\Regex("^[a-zA-Z0-9\-]+$/")
+     */
+    private $slug;
 
     /**
      * @var \DateTime
@@ -50,9 +72,9 @@ class Blog
     /**
      * @var string
      *
-     * @ORM\Column(name="post_excerpt", type="text", length=65535, nullable=true)
+     * @ORM\Column(name="excerpt", type="text", length=65535, nullable=true)
      */
-    private $postExcerpt;
+    private $excerpt;
 
     /**
      * @var string
@@ -68,7 +90,7 @@ class Blog
     private $isPinned = 0;
 
     /**
-     * @var string
+     * @var resource
      *
      * @ORM\Column(name="content", type="blob", length=65535, nullable=true)
      */
@@ -96,7 +118,7 @@ class Blog
     /**
      * @var ArrayCollection
      * Many Shows have Many Images.
-     * @ORM\ManyToMany(targetEntity="Comment")
+     * @ORM\ManyToMany(targetEntity="Comment",inversedBy="posts")
      * @ORM\JoinTable(name="blog_comment",
      *      joinColumns={@ORM\JoinColumn(name="blog_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="comment_id", referencedColumnName="id", unique=true)}
@@ -105,7 +127,7 @@ class Blog
     private $comments;
 
     /**
-     * @var Category[]
+     * @var PersistentCollection
      *
      * Many Shows have Many Images.
      * @ORM\ManyToMany(targetEntity="Category", indexBy="category")
@@ -117,7 +139,7 @@ class Blog
     private $categories;
 
     /**
-     * @var Tag[]
+     * @var PersistentCollection
      *
      * Many Shows have Many Images.
      * @ORM\ManyToMany(targetEntity="Tag", indexBy="tag")
@@ -139,6 +161,7 @@ class Blog
         $this->updatedAt = new \DateTime('now');
 
         if ($this->createdAt == null) {
+            $this->token = Keygen::alphanum(10)->generate();
             $this->createdAt = new \DateTime('now');
         }
     }
@@ -189,6 +212,9 @@ class Blog
         $this->name = $name;
     }
 
+    /**
+     * @return resource
+     */
     public  function getContent()
     {
         return $this->content;
@@ -214,24 +240,14 @@ class Blog
         return $this->status;
     }
 
-    public function setCategory($category)
+    public function setExcerpt($postExcerpt)
     {
-        $this->category = $category;
+        $this->excerpt = $postExcerpt;
     }
 
-    public function getCategory()
+    public function getExcerpt()
     {
-        return $this->category;
-    }
-
-    public function setPostExcerpt($postExcerpt)
-    {
-        $this->postExcerpt = $postExcerpt;
-    }
-
-    public function getPostExcerpt()
-    {
-        return $this->postExcerpt;
+        return $this->excerpt;
     }
 
     public function addComment($comment)
@@ -278,12 +294,26 @@ class Blog
         return $this->categories;
     }
 
-    /**
-     * @return Tag[]
-     */
     public  function getTags()
     {
         return $this->tags;
+    }
+
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    public function setSlug($slug)
+    {
+        $result = str_replace(' ','-',$slug);
+        $result = preg_replace('/\-+/', '-',$result);
+        $this->slug = $result;
     }
 
 }

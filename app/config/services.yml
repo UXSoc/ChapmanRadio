@@ -4,6 +4,13 @@ parameters:
     #parameter_name: value
 
 services:
+    core.comment_voter:
+        class: CoreBundle\Security\CommentVoter
+        arguments: ['@security.access.decision_manager']
+        tags:
+            - { name: security.voter }
+        public: false
+
     core.image_upload_service:
         class: CoreBundle\Service\ImageUploadService
         arguments: ['%image_directory%']

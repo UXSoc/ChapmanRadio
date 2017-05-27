@@ -5,28 +5,20 @@
  * Date: 5/24/17
  * Time: 11:21 PM
  */
-
 namespace CoreBundle\Helper;
-
-
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
-
 class RestfulJsonResponse extends JsonResponse
 {
     /** @var  string */
     private $message;
-
     private $payload;
-
     /** @var array  */
     private $errors = [];
-
-
-
     public function __construct($status = 200, array $headers = array(), $json = false)
     {
         parent::__construct(null, $status, $headers, $json);
@@ -38,10 +30,22 @@ class RestfulJsonResponse extends JsonResponse
         $this->setData($this->payload);
     }
 
+    public function normalize($normalize,$data, $format = null, array $context = array()){
+       $normalize =  new Serializer($normalize);
+       return $this->setData($normalize->normalize($data,$format,$context));
+    }
+
+    public  function  setStatusCode($code, $text = null)
+    {
+        $status = parent::setStatusCode($code, $text);
+        $this->setData($this->payload);
+        return $status ;
+    }
+
+
     public  function setData($payload = array())
     {
         $this->payload = $payload;
-
         if(count($this->errors) == 0 && $this->statusCode < 400) {
             return parent::setData([
                 'success' => true,
@@ -53,10 +57,7 @@ class RestfulJsonResponse extends JsonResponse
             "message" => $this->message,
             "errors" => $this->errors
         ]);
-
     }
-
-
     /**
      * @param ConstraintViolationInterface  $error
      */
@@ -64,13 +65,11 @@ class RestfulJsonResponse extends JsonResponse
     {
         $this->addKeyError($error->getPropertyPath(), $error->getMessage());
     }
-
     public function addKeyError($key,$error)
     {
         $this->errors[] = ["field" => $key, "message" => $error];
         $this->setData($this->payload);
     }
-
     /**
      * @param array | ConstraintViolationList $errors
      */
@@ -91,5 +90,4 @@ class RestfulJsonResponse extends JsonResponse
     {
         return count($this->errors) != 0;
     }
-
 }

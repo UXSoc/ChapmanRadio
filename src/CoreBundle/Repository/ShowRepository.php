@@ -4,6 +4,10 @@
 namespace CoreBundle\Repository;
 
 
+use CoreBundle\Entity\Comment;
+use CoreBundle\Entity\Show;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
 
 class ShowRepository extends EntityRepository

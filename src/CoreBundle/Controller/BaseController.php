@@ -45,6 +45,13 @@ class BaseController extends Controller
         return $serializer->denormalize($mapping,$class);
     }
 
+    public function getSerializer()
+    {
+        $serializer = new Serializer(array(new BlogNormalizer(),new UserNormalizer(),new PaginatorNormalizer(),new RestfulContainerNormalizer(),new TagNormalizer(),new CategoryNormalizer()),array(new JsonEncoder()));
+
+    }
+
+
 
     /**
      * @param $entity

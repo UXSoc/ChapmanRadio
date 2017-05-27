@@ -10,17 +10,17 @@ namespace CoreBundle\Repository;
 
 
 use CoreBundle\Entity\Blog;
+use CoreBundle\Entity\Comment;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping;
+use Doctrine\ORM\Query\Expr;
 use Symfony\Bundle\FrameworkBundle\Tests\Fixtures\Validation\Category;
 
 class BlogRepository extends EntityRepository
 {
-
-    private $commentRepository;
 
 
     public function findPostByName($name)
@@ -47,18 +47,6 @@ class BlogRepository extends EntityRepository
      */
     public  function getPostsByCategory( $post, $category)
     {
-    }
-
-
-    /**
-     * @param Blog $post
-     * @param Blog $parent
-     * @return Collection
-     */
-    public  function getAllCommentsByParent($post,$parent = null)
-    {
-        $criterea = Criteria::create()->where(Criteria::expr()->eq("comment_id",$parent->getId()));
-        return $post->getComments()->matching($criterea);
     }
 
 }

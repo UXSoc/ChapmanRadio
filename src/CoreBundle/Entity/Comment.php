@@ -4,6 +4,7 @@ namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Keygen\Keygen;
 
 /**
  * Comment
@@ -46,6 +47,14 @@ class Comment
     private $content;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string",length=100, nullable=false,unique=true)
+     *
+     */
+    private $token;
+
+    /**
      * @var Comment
      *
      * @ORM\ManyToOne(targetEntity="Comment",inversedBy="childrenComment")
@@ -76,6 +85,21 @@ class Comment
      */
     private $user;
 
+    /**
+     * @var
+     * @ORM\ManyToMany(targetEntity="Blog",mappedBy="comments")
+     *
+     */
+    private $posts;
+
+    /**
+     * @var
+     * @ORM\ManyToMany(targetEntity="Show",mappedBy="comments")
+     *
+     */
+    private $shows;
+
+
     function __construct()
     {
         $this->childrenComment = new ArrayCollection();
@@ -89,8 +113,8 @@ class Comment
     public function updatedTimestamps()
     {
         $this->updatedAt = new \DateTime('now');
-
         if ($this->createdAt == null) {
+            $this->token = Keygen::alphanum(10)->generate();
             $this->createdAt = new \DateTime('now');
         }
     }
@@ -145,5 +169,9 @@ class Comment
         return $this->createdAt;
     }
 
+    public function getToken()
+    {
+        return $this->token;
+    }
 }
 

@@ -13,17 +13,20 @@ use CoreBundle\Controller\BaseController;
 
 use CoreBundle\Entity\Blog;
 use CoreBundle\Entity\Comment;
-use CoreBundle\Entity\User;
-use CoreBundle\Filter\BlogFilter;
-use CoreBundle\Helper\Paginator;
 use CoreBundle\Helper\RestfulJsonResponse;
+use CoreBundle\Normalizer\BlogNormalizer;
+use CoreBundle\Normalizer\CommentNormalizer;
+use CoreBundle\Normalizer\PaginatorNormalizer;
+use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Repository\BlogRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Query;
+use CoreBundle\Repository\CommentRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Component\HttpFoundation\Request;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\HttpFoundation\Request;
+
 
 /**
  * @Route("/api/v3/")
@@ -32,73 +35,47 @@ class BlogController extends BaseController
 {
 
     /**
-     * @param User $user
-     * @return array
-     */
-    private function  asAuthorMapping($user)
-    {
-        return [
-            "name" => $user->getName(),
-            "createad_at" => $user->getCreatedAt()
-        ];
-    }
-
-    /**
-     * @Route("blog/post", options = { "expose" = true }, name="get_blog_posts", )
+     * @Route("post", options = { "expose" = true }, name="get_blog_posts", )
      * @Method({"GET"})
      */
     public  function  getBlogPostsAction(Request $request)
     {
-        $response = new RestfulJsonResponse();
-
         /** @var BlogRepository $blogRepository */
         $blogRepository = $this->get('core.blog_repository');
 
-        $filter = new BlogFilter($blogRepository->createQueryBuilder('p')->where(
-            'p.isPinned = 1'
-        ),'p');
-        $filter->nameIsLike($request->get('name'));
+        $q = $blogRepository->createQueryBuilder('p');
 
-        $pagination = new Paginator($filter->query());
-        $pagination->setEntriesPerPage($request->get("entries",10),50);
-        $pagination->setCurrentPage($request->get("page",0));
+        $name = $request->get('name',null);
+        if($name)
+            $q->where($q->expr()->like('p.name',':name'))
+              ->setParameter('name','%'.$request->get('name').'%');
 
-        $response->setData(
-        $pagination->asRestfulResponse(function ($q) {
-            $blogPosts = $q->getResult();
-            $result = array();
+        $pagination = new Paginator($q->getQuery());
+        $perPage = $request->get("entries",10) > 20 ? 20 :  $request->get("entries",20);
+        $pagination->getQuery()->setMaxResults($perPage);
+        $pagination->getQuery()->setFirstResult($perPage * $request->get("page",0));
 
-            /** @var Blog $post */
-            foreach ($blogPosts as $post) {
-                $result[] = [
-                    "name" => $post->getName(),
-                    "created_at" => $post->getCreatedAt(),
-                    "updated_at" => $post->getUpdatedAt(),
-                    "excerpt" => $post->getPostExcerpt(),
-                    "pinned" => $post->getIsPinned()
-                ];
-                if($post->getAuthor())
-                    $result["author"] =  $this->asAuthorMapping($post->getAuthor());
-            }
-            return $result;
-
-        }));
-        $response->setMessage("Query Accepted");
-        return $response;
+        $restfulResponse = new RestfulJsonResponse();
+        $restfulResponse->setMessage("Query Accepted");
+        $restfulResponse->normalize(array(
+            new BlogNormalizer(),
+            new UserNormalizer(),
+            new PaginatorNormalizer()),$pagination);
+        return $restfulResponse;
 
     }
 
     /**
-     * @Route("blog/post/{name}", options = { "expose" = true }, name="get_blog_post", )
+     * @Route("post/{token}/{slug}", options = { "expose" = true }, name="get_blog_post", )
      * @Method({"GET"})
      */
-    public  function  getBlogPostAction(Request $request,$name)
+    public  function  getBlogPostAction(Request $request,$token,$slug)
     {
         /** @var BlogRepository $blogRepository */
         $blogRepository = $this->get('core.blog_repository');
 
         /** @var Blog $post */
-        $post = $blogRepository->findOneBy(['name' => $name]);
+        $post = $blogRepository->findOneBy(['token' => $token,'slug' => $slug]);
         $restful = new RestfulJsonResponse();
 
         if($post == null)
@@ -107,41 +84,64 @@ class BlogController extends BaseController
             $restful->setStatusCode(410);
             return $restful;
         }
-
-        $restful->setData([
-            'name' => $post->getName(),
-            "created_at" => $post->getCreatedAt(),
-            "updated_at" => $post->getUpdatedAt()
-        ]);
-        if($post->getAuthor())
-            $result["author"] =  $this->asAuthorMapping($post->getAuthor());
+        $restful->normalize(array(
+            new BlogNormalizer(),
+            new UserNormalizer(),
+            new PaginatorNormalizer()
+        ),$post,null);
         return $restful;
 
     }
 
     /**
      * @Security("has_role('ROLE_USER')")
-     * @Route("blog/post/{name}/comment/{comment_id}",
+     * @Route("post/{token}/{slug}/comment/{comment_token}",
      *     options = { "expose" = true },
-     *     name="post_show_comment",
-     *     requirements={"coment_id" = "\d+"},
-     *     defaults={"coment_id" = null})
+     *     name="post_show_comment")
      * @Method({"POST"})
      */
-    public function postBlogPostCommentAction(Request $request,$name,$commentId){
-
-    }
-
-    /**
-     * @Route("blog/post/{name}/comment/{commentId}", options = { "expose" = true }, name="shows")
-     * @Method({"GET"})
-     */
-    public function getBlogPostCommentAction(Request $request,$name,$commentId){
+    public function postBlogPostCommentAction(Request $request,$token,$slug,$comment_token){
         /** @var BlogRepository $blogRepository */
         $blogRepository = $this->get('core.blog_repository');
 
+        /** @var CommentRepository $commentRepository */
+        $commentRepository = $this->get('core.comment_repository');
+
         /** @var Blog $post */
-        $post = $blogRepository->findOneBy(['name' => $name]);
+        $post = $blogRepository->findOneBy(['token' => $token,'slug' => $slug]);
+
+        $restful = new RestfulJsonResponse();
+        if($post == null)
+        {
+            $restful->setMessage("Blog Post Not Found");
+            $restful->setStatusCode(410);
+            return $restful;
+        }
+
+        if($comment_token == null)
+        {
+            $comment = new Comment();
+
+        }
+        else
+        {
+
+        }
+    }
+
+    /**
+     * @Route("post/{token}/{slug}/comment/{comment_token}", options = { "expose" = true }, name="get_blog_comment")
+     * @Method({"GET"})
+     */
+    public function getBlogPostCommentAction(Request $request,$token,$slug,$comment_token = null){
+        /** @var BlogRepository $blogRepository */
+        $blogRepository = $this->get('core.blog_repository');
+
+        /** @var CommentRepository $commentRepository */
+        $commentRepository = $this->get('core.comment_repository');
+
+        /** @var Blog $post */
+        $post = $blogRepository->findOneBy(['token' => $token,'slug' => $slug]);
         $restful = new RestfulJsonResponse();
 
         if($post == null)
@@ -150,34 +150,21 @@ class BlogController extends BaseController
             $restful->setStatusCode(410);
             return $restful;
         }
-        $restful->setData($this->commentWalk($blogRepository->getAllCommentsByParent($post)));
+
+        $restful->normalize(array(
+            new CommentNormalizer(),
+            new UserNormalizer()
+        ),$commentRepository->getAllRootCommentsForBlogEntiry($post)->getQuery()->getResult());
 
         $restful->setMessage("Comments found for post");
         return $restful;
 
     }
-    private function commentWalk($comments)
-    {
-        $result = array();
-        /** @var Comment $comment */
-        foreach ($comments as $comment)
-        {
-            $result[] = [
-                "id" => $comment->getId(),
-                "content" => $comment->getContent(),
-                "created_at" => $comment->getCreateAt(),
-                "updated_at" => $comment->getUpdateAt(),
-                "result" => $this->commentWalk($comment->getChildrenComments())
-            ];
-
-        }
-        return $result;
-    }
 
 
     /**
      * @Security("has_role('ROLE_USER')")
-     * @Route("blog/post/{name}/comment/{commendId}", options = { "expose" = true }, name="shows")
+     * @Route("post/{name}/comment/{commendId}", options = { "expose" = true }, name="shows")
      * @Method({"PATCH"})
      */
     public function patchBlogPostCommentAction(Request $request,$name,$commentId){

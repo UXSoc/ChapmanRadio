@@ -37,11 +37,11 @@ class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, C
         {
             $show = new Show();
             $show->setName($faker->name);
-            $show->setDescription($faker->paragraph);
+            $show->setDescription($faker->paragraph(10));
             $show->setStrikeCount(0);
             $show->setAttendenceOptional(0);
             $show->setScore($faker->randomNumber(2));
-
+            $show->setSlug($show->getName());
 
             /** @var Comment[] $comments */
             $comments = array();
