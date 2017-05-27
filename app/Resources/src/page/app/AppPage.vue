@@ -30,7 +30,7 @@
                             <a class="nav-link">Schedule</a>
                         </router-link>
                         <router-link active-class="active" :to="{name: 'show'}" :exact="true" tag="li">
-                            <a class="nav-link">Show</a>
+                            <a class="nav-link">Shows</a>
                         </router-link>
                         <router-link active-class="active" :to="{name: 'event'}" :exact="true" tag="li">
                             <a class="nav-link">Events</a>
