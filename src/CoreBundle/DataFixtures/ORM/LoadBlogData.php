@@ -1,5 +1,5 @@
 <?php
-use CoreBundle\Entity\Blog;
+use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Category;
 use CoreBundle\Entity\Comment;
 use CoreBundle\Entity\Tag;
@@ -48,13 +48,13 @@ class LoadBlogData extends AbstractFixture implements OrderedFixtureInterface, C
 
         for ($i = 0; $i < 20; $i++)
         {
-            $blog = new Blog();
-            $blog->setName($faker->name);
-            $blog->setContent($faker->paragraph(10));
-            $blog->setAuthor($users[array_rand($users,1)]);
-            $blog->setIsPinned($faker->boolean());
-            $blog->setExcerpt($faker->paragraph(1));
-            $blog->setSlug($blog->getName());
+            $post = new Post();
+            $post->setName($faker->name);
+            $post->setContent($faker->paragraph(10));
+            $post->setAuthor($users[array_rand($users,1)]);
+            $post->setIsPinned($faker->boolean());
+            $post->setExcerpt($faker->paragraph(1));
+            $post->setSlug($post->getName());
 
             /** @var Comment[] $comments */
             $comments = array();
@@ -63,7 +63,7 @@ class LoadBlogData extends AbstractFixture implements OrderedFixtureInterface, C
                 $c = new Comment();
                 $c->setUser($users[array_rand($users,1)]);
                 $c->setContent($faker->paragraph(3));
-                $blog->addComment($c);
+                $post->addComment($c);
                 $manager->persist($c);
                 $comments[] = $c;
             }
@@ -73,13 +73,12 @@ class LoadBlogData extends AbstractFixture implements OrderedFixtureInterface, C
                 $manager->persist($comments[$j]);
             }
 
-
             for($b = 0; $b < 15; $b++)
             {
-                $blog->addTag($tags[array_rand($tags,1)]);
-                $blog->addCategory($categories[array_rand($categories,1)]);
+                $post->addTag($tags[array_rand($tags,1)]);
+                $post->addCategory($categories[array_rand($categories,1)]);
             }
-            $manager->persist($blog);
+            $manager->persist($post);
         }
         $manager->flush();
 

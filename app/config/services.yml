@@ -30,11 +30,11 @@ services:
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - CoreBundle\Entity\Show
-    core.blog_repository:
-        class: CoreBundle\Repository\BlogRepository
+    core.post_repository:
+        class: CoreBundle\Repository\PostRepository
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
-            - CoreBundle\Entity\Blog
+            - CoreBundle\Entity\Post
     core.comment_repository:
         class: CoreBundle\Repository\CommentRepository
         factory: ['@doctrine.orm.default_entity_manager', getRepository]

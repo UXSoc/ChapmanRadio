@@ -11,14 +11,14 @@ namespace AppBundle\Controller\Api\V3;
 
 use CoreBundle\Controller\BaseController;
 
-use CoreBundle\Entity\Blog;
+use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Comment;
 use CoreBundle\Helper\RestfulJsonResponse;
 use CoreBundle\Normalizer\BlogNormalizer;
 use CoreBundle\Normalizer\CommentNormalizer;
 use CoreBundle\Normalizer\PaginatorNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
-use CoreBundle\Repository\BlogRepository;
+use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\CommentRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,8 +40,8 @@ class BlogController extends BaseController
      */
     public  function  getBlogPostsAction(Request $request)
     {
-        /** @var BlogRepository $blogRepository */
-        $blogRepository = $this->get('core.blog_repository');
+        /** @var PostRepository $blogRepository */
+        $blogRepository = $this->get('core.post_repository');
 
         $q = $blogRepository->createQueryBuilder('p');
 
@@ -71,10 +71,10 @@ class BlogController extends BaseController
      */
     public  function  getBlogPostAction(Request $request,$token,$slug)
     {
-        /** @var BlogRepository $blogRepository */
-        $blogRepository = $this->get('core.blog_repository');
+        /** @var PostRepository $blogRepository */
+        $blogRepository = $this->get('core.post_repository');
 
-        /** @var Blog $post */
+        /** @var Post $post */
         $post = $blogRepository->findOneBy(['token' => $token,'slug' => $slug]);
         $restful = new RestfulJsonResponse();
 
@@ -101,13 +101,13 @@ class BlogController extends BaseController
      * @Method({"POST"})
      */
     public function postBlogPostCommentAction(Request $request,$token,$slug,$comment_token){
-        /** @var BlogRepository $blogRepository */
-        $blogRepository = $this->get('core.blog_repository');
+        /** @var PostRepository $blogRepository */
+        $blogRepository = $this->get('core.post_repository');
 
         /** @var CommentRepository $commentRepository */
         $commentRepository = $this->get('core.comment_repository');
 
-        /** @var Blog $post */
+        /** @var Post $post */
         $post = $blogRepository->findOneBy(['token' => $token,'slug' => $slug]);
 
         $restful = new RestfulJsonResponse();
@@ -134,13 +134,13 @@ class BlogController extends BaseController
      * @Method({"GET"})
      */
     public function getBlogPostCommentAction(Request $request,$token,$slug,$comment_token = null){
-        /** @var BlogRepository $blogRepository */
-        $blogRepository = $this->get('core.blog_repository');
+        /** @var PostRepository $blogRepository */
+        $blogRepository = $this->get('core.post_repository');
 
         /** @var CommentRepository $commentRepository */
         $commentRepository = $this->get('core.comment_repository');
 
-        /** @var Blog $post */
+        /** @var Post $post */
         $post = $blogRepository->findOneBy(['token' => $token,'slug' => $slug]);
         $restful = new RestfulJsonResponse();
 

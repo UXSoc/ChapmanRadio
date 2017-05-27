@@ -9,7 +9,7 @@
 namespace CoreBundle\Repository;
 
 
-use CoreBundle\Entity\Blog;
+use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Comment;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
@@ -19,7 +19,7 @@ use Doctrine\ORM\Mapping;
 use Doctrine\ORM\Query\Expr;
 use Symfony\Bundle\FrameworkBundle\Tests\Fixtures\Validation\Category;
 
-class BlogRepository extends EntityRepository
+class PostRepository extends EntityRepository
 {
 
 
@@ -33,7 +33,7 @@ class BlogRepository extends EntityRepository
     }
 
     /**
-     * @param Blog $post
+     * @param Post $post
      * @param  $tag
      */
     public function getPostsByTag($post,$tag)
@@ -42,7 +42,7 @@ class BlogRepository extends EntityRepository
     }
 
     /**
-     * @param Blog $post
+     * @param Post $post
      * @param Category $category
      */
     public  function getPostsByCategory( $post, $category)

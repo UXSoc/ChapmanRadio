@@ -13,12 +13,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Blog
  *
- * @ORM\Table(name="blog")
- * @ORM\Entity(repositoryClass="CoreBundle\Repository\BlogRepository")
+ * @ORM\Table(name="post")
+ * @ORM\Entity(repositoryClass="CoreBundle\Repository\PostRepository")
  *
  * @ORM\HasLifecycleCallbacks
  */
-class Blog
+class Post
 {
     /**
      * @var integer
@@ -118,7 +118,7 @@ class Blog
     /**
      * @var ArrayCollection
      * Many Shows have Many Images.
-     * @ORM\ManyToMany(targetEntity="Comment",inversedBy="posts")
+     * @ORM\ManyToMany(targetEntity="Comment",inversedBy="post")
      * @ORM\JoinTable(name="blog_comment",
      *      joinColumns={@ORM\JoinColumn(name="blog_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="comment_id", referencedColumnName="id", unique=true)}

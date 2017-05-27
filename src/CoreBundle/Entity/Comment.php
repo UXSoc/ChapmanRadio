@@ -3,6 +3,7 @@
 namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Keygen\Keygen;
 
@@ -86,19 +87,18 @@ class Comment
     private $user;
 
     /**
-     * @var
-     * @ORM\ManyToMany(targetEntity="Blog",mappedBy="comments")
+     * @var Collection
+     * @ORM\ManyToMany(targetEntity="Post",mappedBy="comments")
      *
      */
-    private $posts;
+    private $post;
 
     /**
-     * @var
+     * @var Collection
      * @ORM\ManyToMany(targetEntity="Show",mappedBy="comments")
      *
      */
-    private $shows;
-
+    private $show;
 
     function __construct()
     {
@@ -172,6 +172,16 @@ class Comment
     public function getToken()
     {
         return $this->token;
+    }
+
+    public function getBlog()
+    {
+        return $this->post->first();
+    }
+
+    public function getShow()
+    {
+        return $this->show->first();
     }
 }
 

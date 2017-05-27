@@ -9,7 +9,7 @@
 namespace CoreBundle\Normalizer;
 
 
-use CoreBundle\Entity\Blog;
+use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Comment;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;

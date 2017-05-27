@@ -125,7 +125,7 @@ class Show
 
     /**
     * Many Shows have Many Images.
-    * @ORM\ManyToMany(targetEntity="Comment", inversedBy="shows")
+    * @ORM\ManyToMany(targetEntity="Comment", inversedBy="show")
     * @ORM\JoinTable(name="show_comment",
     *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id")},
     *      inverseJoinColumns={@ORM\JoinColumn(name="comment_id", referencedColumnName="id", unique=true)}

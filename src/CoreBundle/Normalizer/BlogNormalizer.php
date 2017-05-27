@@ -1,6 +1,6 @@
 <?php
 namespace CoreBundle\Normalizer;
-use CoreBundle\Entity\Blog;
+use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Tag;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -31,7 +31,7 @@ class BlogNormalizer implements NormalizerInterface, NormalizerAwareInterface
     /**
      * Normalizes an object into a set of arrays/scalars.
      *
-     * @param Blog $object object to normalize
+     * @param Post $object object to normalize
      * @param string $format format the normalization result will be encoded as
      * @param array $context Context options for the normalizer
      *
@@ -67,7 +67,7 @@ class BlogNormalizer implements NormalizerInterface, NormalizerAwareInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof Blog;
+        return $data instanceof Post;
     }
 
 }
