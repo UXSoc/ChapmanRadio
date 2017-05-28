@@ -4,9 +4,14 @@ namespace AppBundle\Controller\Api\V3;
 
 use AppBundle\Validation\ChangePasswordType;
 use CoreBundle\Controller\BaseController;
+use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\RestfulError;
 use CoreBundle\Helper\RestfulHelper;
 use CoreBundle\Helper\RestfulJsonResponse;
+use CoreBundle\Helper\SuccessWrapper;
+use CoreBundle\Normalizer\UserNormalizer;
+use CoreBundle\Normalizer\WrapperNormalizer;
+use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -25,40 +30,38 @@ class AccountController extends BaseController
      */
     public  function  patchChangePasswordAction(Request $request)
     {
-        $restfulJson = new RestfulJsonResponse();
 
         $changePasswordType = new ChangePasswordType();
 
         $changePasswordType->setOldPassword($request->get("oldPassword"));
         $changePasswordType->setNewPassword($request->get("newPassword"));
 
-        $restfulJson->addErrors($this->validateEntity($changePasswordType));
-
-        if(!$restfulJson->hasErrors())
-        {
-            $user =  $this->getUser();
-            $encoder_service = $this->get('security.password_encoder');
-
-            if(!$encoder_service->isPasswordValid($user,$changePasswordType->getOldPassword()))
-            {
-                $restfulJson->addKeyError("oldPassword","Invalid Password");
-            }
-            else
-            {
-                $new_password = $encoder_service->encodePassword($user,$changePasswordType->getNewPassword());
-                $user->setPassword($new_password);
-
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($user);
-                $em->flush();
-
-                $restfulJson->setMessage("Password Changed");
-                return $restfulJson;
-            }
+        $errors = $this->validateEntity($changePasswordType);
+        if($errors->count() > 0) {
+            $e = new ErrorWrapper("Unknown User");
+            $e->addErrors($errors);
+            return $this->restful([new WrapperNormalizer()],$e,400);
         }
 
-        $restfulJson->setMessage("Couldn't change password");
-        $restfulJson->setStatusCode(400);
-        return $restfulJson;
+
+        $user =  $this->getUser();
+        $encoder_service = $this->get('security.password_encoder');
+
+        if(!$encoder_service->isPasswordValid($user,$changePasswordType->getOldPassword()))
+        {
+            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Invalid Password"),400);
+        }
+        else
+        {
+            $new_password = $encoder_service->encodePassword($user,$changePasswordType->getNewPassword());
+            $user->setPassword($new_password);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            return $this->restful([new WrapperNormalizer(),new UserNormalizer()],new SuccessWrapper($user,"Password Changed"),400);
+        }
+
     }
 }

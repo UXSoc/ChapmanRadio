@@ -4,6 +4,7 @@ parameters:
     #parameter_name: value
 
 services:
+
     core.comment_voter:
         class: CoreBundle\Security\CommentVoter
         arguments: ['@security.access.decision_manager']
@@ -40,6 +41,10 @@ services:
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - CoreBundle\Entity\Comment
+    core.user_service:
+        class: CoreBundle\Service\UserService
+        arguments: ['@doctrine_cache.providers.core.cache']
+
     #service_name:
     #    class: CoreBundle\Directory\ClassName
     #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']

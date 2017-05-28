@@ -61,6 +61,7 @@ class CommentVoter extends  Voter
             //user must be logged in
             return false;
         }
+
         if ($this->decisionManager->decide($token, array('ROLE_STAFF'))) {
             return true;
         }

@@ -264,6 +264,11 @@ class User implements AdvancedUserInterface
         $this->plainPassword = $password;
     }
 
+    public function setConfirmed($confirmed)
+    {
+        $this->confirmed = $confirmed;
+    }
+
     /**
      * Returns the roles granted to the user.
      *

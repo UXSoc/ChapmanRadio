@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new CoreBundle\CoreBundle(),
             new AppBundle\AppBundle(),
             new DashboardBundle\DashboardBundle(),
+            new Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle(),
             new FOS\JsRoutingBundle\FOSJsRoutingBundle()
         ];
 

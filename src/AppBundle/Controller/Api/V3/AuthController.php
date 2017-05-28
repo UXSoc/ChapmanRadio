@@ -1,34 +1,22 @@
 <?php
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace AppBundle\Controller\Api\V3;
-
 use CoreBundle\Controller\BaseController;
 use CoreBundle\Entity\User;
 use CoreBundle\Helper\ErrorWrapper;
-use CoreBundle\Helper\RestfulHelper;
-use CoreBundle\Helper\RestfulJsonResponse;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\AccountNormalizer;
-use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\UserRepository;
+use CoreBundle\Service\UserService;
 use Swift_Message;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Symfony\Component\Cache\CacheItem;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\HttpFoundation\Response;
+
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-
 /**
  * @Route("/api/v3")
  */
@@ -40,6 +28,9 @@ class AuthController extends BaseController
      */
     public function RegisterAction(Request $request)
     {
+        /** @var UserService $userService */
+        $userService = $this->get('core.user_service');
+
         $user = new User();
         $user->setName($request->get("name"));
         $user->setUsername($request->get("username"));
@@ -59,19 +50,9 @@ class AuthController extends BaseController
         $user->setPassword($password);
 
 
-        $message = new Swift_Message();
-        $message->setSubject('Welcome')
-            ->setFrom($user->getEmail())
-            ->setTo($user->getEmail())
-            ->setBody(
-                $this->renderView(
-                // app/Resources/views/Emails/registration.html.twig
-                    'auth/email/confirm.html.twig',
-                    array('user' => $user)
-                ),
-                'text/html'
-            );
-        $this->get('mailer')->send($message);
+        //create a confirmation token
+        $token = $userService->createConfirmationToken($user);
+        $this->confirmationEmail($user,$token);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($user);
@@ -81,29 +62,85 @@ class AuthController extends BaseController
     }
 
     /**
-     * @Route("/auth/confirm/{token}", options = { "expose" = true }, name="post_confirm_token")
+     * @param User $user
+     * @param string $token
+     */
+    public function confirmationEmail($user,$token)
+    {
+        $message = new Swift_Message();
+        $message->setSubject('Welcome')
+            ->setFrom($user->getEmail())
+            ->setTo($user->getEmail())
+            ->setBody(
+                $this->renderView(
+                    'email/confirm.html.twig',
+                    array('user' => $user,'token' => $token)
+                ),
+                'text/html'
+            );
+        $this->get('mailer')->send($message);
+    }
+
+    /**
+     * @Route("/auth/confirm/{token}/request", options = { "expose" = true }, name="post_confirm_token")
      * @Method({"POST"})
      */
-    public function confirmationAction(Request $request, $token)
+    public function postRequestConfirmationAction(Request $request, $token,$confirmToken)
     {
-        $restfulJson = new RestfulJsonResponse();
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->get('core.user_repository');
+        /** @var UserService $userService */
+        $userService = $this->get('core.user_service');
 
-        /** @var $user User */
-        $user = $this->getDoctrine()->getRepository('core.user_repository')->findOneBy(array('confirmationToken' => $token));
-        if (!$user) {
-            $restfulJson->setMessage("Unknown Confirmation Token");
-            $restfulJson->setStatusCode(400);
-            return $restfulJson;
+        /** @var User $user */
+        $user = $userRepository->findOneBy(['token' => $token]);
+        if($user == null)
+            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown User"),410);
+
+        //create a confirmation token
+        $token = $userService->createConfirmationToken($user);
+        $this->confirmationEmail($user,$token);
+
+        return $this->restful([new WrapperNormalizer()],new SuccessWrapper("New confirmation token sent"));
+    }
+
+    /**
+     * @Route("/auth/confirm/{token}/{confirmToken}", options = { "expose" = true }, name="post_confirm_token")
+     * @Method({"POST"})
+     */
+    public function postConfirmationAction(Request $request, $token,$confirmToken)
+    {
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->get('core.user_repository');
+        /** @var UserService $userService */
+        $userService = $this->get('core.user_service');
+
+        /** @var User $user */
+        $user = $userRepository->findOneBy(['token' => $token]);
+        if($user == null)
+            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown User"),410);
+
+        $result = $userService->verifyConfirmationToken($confirmToken);
+        if($result == null)
+            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown Token"),410);
+
+        /** @var User $tokenUser */
+        $tokenUser = $userRepository->findOneBy(['token' => $result]);
+        if($tokenUser == null)
+            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown User"),410);
+
+        if($tokenUser->getId() == $user->getId())
+        {
+            $user->setConfirmed(true);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            return $this->restful([new WrapperNormalizer(),new AccountNormalizer()],new SuccessWrapper($user,"User Confirmed"));
         }
-        $user->setConfirmationToken(null);
-        $user->setConfirmed(true);
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($user);
-        $em->flush();
-
-        $restfulJson->setMessage("Confirmation Token is Valid");
-        return $restfulJson;
+        return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown Token"),410);
     }
 
     /**
