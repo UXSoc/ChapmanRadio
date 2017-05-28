@@ -50,7 +50,7 @@ class Post
      * @var string
      *
      * @ORM\Column(name="slug", type="string",length=100, nullable=false,unique=true)
-     * @@Assert\Regex("^[a-zA-Z0-9\-]+$/")
+     * @Assert\Regex("^[a-zA-Z0-9\-]+$/")
      */
     private $slug;
 

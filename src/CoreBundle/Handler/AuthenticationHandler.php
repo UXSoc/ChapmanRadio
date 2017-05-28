@@ -2,8 +2,10 @@
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace CoreBundle\Handler;
 
-use CoreBundle\Helper\RestfulError;
-use CoreBundle\Helper\RestfulHelper;
+use CoreBundle\Helper\ErrorWrapper;
+use CoreBundle\Helper\SuccessWrapper;
+use CoreBundle\Normalizer\WrapperNormalizer;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +17,7 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
+use Symfony\Component\Serializer\Serializer;
 
 
 class AuthenticationHandler implements AuthenticationFailureHandlerInterface, AuthenticationSuccessHandlerInterface
@@ -39,12 +42,13 @@ class AuthenticationHandler implements AuthenticationFailureHandlerInterface, Au
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Symfony\Component\Security\Core\Exception\AuthenticationException $exception
      *
-     * @return \Symfony\Component\HttpFoundation\Response The response to return, never null
+     * @return JsonResponse The response to return, never null
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
+        $normalizer =  new Serializer([new WrapperNormalizer()]);
+        return new JsonResponse($normalizer->normalize(new ErrorWrapper("Failed Authentication")),400);
 
-        return RestfulHelper::error(400,"Failed Authentication",[],[]);
     }
 
     /**
@@ -59,7 +63,8 @@ class AuthenticationHandler implements AuthenticationFailureHandlerInterface, Au
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
-        return RestfulHelper::success("Authenticated Successful",[]);
+        $normalizer =  new Serializer([new WrapperNormalizer()]);
+        return new JsonResponse($normalizer->normalize(new SuccessWrapper("Authenticated Successful")),400);
     }
 
 }

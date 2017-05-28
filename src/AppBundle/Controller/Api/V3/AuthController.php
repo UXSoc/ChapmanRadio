@@ -4,11 +4,18 @@ namespace AppBundle\Controller\Api\V3;
 
 use CoreBundle\Controller\BaseController;
 use CoreBundle\Entity\User;
+use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\RestfulHelper;
 use CoreBundle\Helper\RestfulJsonResponse;
+use CoreBundle\Helper\SuccessWrapper;
+use CoreBundle\Normalizer\AccountNormalizer;
+use CoreBundle\Normalizer\UserNormalizer;
+use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\UserRepository;
 use Swift_Message;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Form;
@@ -33,49 +40,44 @@ class AuthController extends BaseController
      */
     public function RegisterAction(Request $request)
     {
-        $restfulJson = new RestfulJsonResponse();
-
-        $bag = $this->getJsonPayloadAsParameterBag();
         $user = new User();
-        $user->setName($bag->get("name"));
-        $user->setUsername($bag->get("username"));
-        $user->setEmail($bag->get("email"));
-        $user->setPlainPassword($bag->get("password"));
-        $user->setStudentId($bag->get("studentId"));
+        $user->setName($request->get("name"));
+        $user->setUsername($request->get("username"));
+        $user->setEmail($request->get("email"));
+        $user->setPlainPassword($request->get("password"));
+        $user->setStudentId($request->get("studentId"));
 
-        $restfulJson->addErrors($this->validateEntity($user));
-        if (!$restfulJson->hasErrors()) {
-            $user->setConfirmationToken(substr(md5(random_bytes(10)), 20));
-
-            $password = $this->get('security.password_encoder')
-                ->encodePassword($user, $user->getPlainPassword());
-            $user->setPassword($password);
-
-
-            $message = new Swift_Message();
-            $message->setSubject('Welcome')
-                ->setFrom($user->getEmail())
-                ->setTo($user->getEmail())
-                ->setBody(
-                    $this->renderView(
-                    // app/Resources/views/Emails/registration.html.twig
-                        'auth/email/confirm.html.twig',
-                        array('user' => $user)
-                    ),
-                    'text/html'
-                );
-            $this->get('mailer')->send($message);
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
-
-            $restfulJson->setMessage("User Registered");
-            return $restfulJson;
+        $errors = $this->validateEntity($user);
+        if ($errors->count() > 0) {
+            $errorWrapper = new ErrorWrapper("Couldn't Register User");
+            $errorWrapper->addErrors($errors);
+            return $this->restful([new WrapperNormalizer()],$errorWrapper, 400);
         }
-        $restfulJson->setStatusCode(400);
-        $restfulJson->setMessage("Couldn't Register User");
-        return $restfulJson;
+
+        $password = $this->get('security.password_encoder')
+            ->encodePassword($user, $user->getPlainPassword());
+        $user->setPassword($password);
+
+
+        $message = new Swift_Message();
+        $message->setSubject('Welcome')
+            ->setFrom($user->getEmail())
+            ->setTo($user->getEmail())
+            ->setBody(
+                $this->renderView(
+                // app/Resources/views/Emails/registration.html.twig
+                    'auth/email/confirm.html.twig',
+                    array('user' => $user)
+                ),
+                'text/html'
+            );
+        $this->get('mailer')->send($message);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($user);
+        $em->flush();
+
+        return $this->restful([new WrapperNormalizer()],new SuccessWrapper($user,"User Registed"));
     }
 
     /**
@@ -114,18 +116,9 @@ class AuthController extends BaseController
         /** @var User $user */
         $user = $this->getUser();
 
-        $restfulJson = new RestfulJsonResponse();
-        $restfulJson->setMessage("User Status");
-        $restfulJson->setData([
-            "email" => $user->getEmail(),
-            "last_login" => $user->getLastLogin(),
-            "username" => $user->getUsername(),
-            "created_at" => $user->getCreatedAt(),
-            "updated_at" => $user->getUpdatedAt(),
-            "roles" => $user->getRoles()
-        ]);
-
-        return $restfulJson;
+        return $this->restful([
+            new AccountNormalizer()
+        ],$user);
 
     }
 

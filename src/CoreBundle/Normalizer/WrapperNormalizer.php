@@ -2,24 +2,25 @@
 /**
  * Created by PhpStorm.
  * User: michaelpollind
- * Date: 5/26/17
- * Time: 9:12 AM
+ * Date: 5/27/17
+ * Time: 7:10 PM
  */
 
 namespace CoreBundle\Normalizer;
 
 
-use CoreBundle\Entity\User;
+use CoreBundle\Helper\ErrorWrapper;
+use CoreBundle\Helper\SuccessWrapper;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\scalar;
 use Symfony\Component\Serializer\SerializerAwareInterface;
-use Symfony\Component\Serializer\SerializerAwareTrait;
+use Symfony\Component\Serializer\SerializerInterface;
 
-class UserNormalizer implements NormalizerInterface, NormalizerAwareInterface
+class WrapperNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     /** @var  NormalizerInterface */
     private  $normalizer;
-
 
     /**
      * Sets the owning Normalizer object.
@@ -34,23 +35,30 @@ class UserNormalizer implements NormalizerInterface, NormalizerAwareInterface
     /**
      * Normalizes an object into a set of arrays/scalars.
      *
-     * @param User $object object to normalize
+     * @param ErrorWrapper|SuccessWrapper $object object to normalize
      * @param string $format format the normalization result will be encoded as
      * @param array $context Context options for the normalizer
      *
-     * @return array|scalar
+     * @return array
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        $result =  [
-            "roles" => $object->getRoles(),
-            "username" => $object->getUsername(),
-            "created_at" => $object->getCreatedAt(),
-            "updated_at" => $object->getUpdatedAt(),
-            "token" => $object->getToken()
-        ];
-
-        return $result;
+        if($object instanceof SuccessWrapper)
+        {
+           return [
+               'success' => true,
+               'message' => $object->getMessage(),
+               'data' => $this->normalizer->normalize($object->getPayload(),$format,$context),
+           ];
+        }
+        else
+        {
+            return [
+                'success' => false,
+                'message' => $object->getMessage(),
+                'errors' => $object->getErrors()
+            ];
+        }
     }
 
     /**
@@ -63,6 +71,9 @@ class UserNormalizer implements NormalizerInterface, NormalizerAwareInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof User;
+        return ($data instanceof ErrorWrapper) | ($data instanceof SuccessWrapper);
     }
+
+
+
 }

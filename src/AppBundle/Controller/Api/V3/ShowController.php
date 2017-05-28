@@ -5,13 +5,17 @@ namespace AppBundle\Controller\Api\V3;
 use CoreBundle\Controller\BaseController;
 
 use CoreBundle\Entity\Show;
+use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\RestfulJsonResponse;
+use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\CommentNormalizer;
 use CoreBundle\Normalizer\PaginatorNormalizer;
 use CoreBundle\Normalizer\ShowNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
+use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\CommentRepository;
 use CoreBundle\Repository\ShowRepository;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Proxies\__CG__\CoreBundle\Entity\Comment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -43,13 +47,11 @@ class ShowController extends BaseController
         $pagination->getQuery()->setMaxResults($perPage);
         $pagination->getQuery()->setFirstResult($perPage * $request->get("page",0));
 
-        $restfulResponse = new RestfulJsonResponse();
-        $restfulResponse->setMessage("Query Accepted");
-        $restfulResponse->normalize(array(
+        return $this->restful([
             new ShowNormalizer(),
-            new PaginatorNormalizer()
-        ),$pagination);
-        return $restfulResponse;
+            new PaginatorNormalizer(),
+            new WrapperNormalizer()
+        ],new SuccessWrapper($pagination));
     }
 
     /**
@@ -61,25 +63,19 @@ class ShowController extends BaseController
         $showRepository = $this->get('core.show_repository');
 
         $show = $showRepository->findOneBy(['token' => $token,'slug' => $slug]);
-        $restful = new RestfulJsonResponse();
 
         if($show == null)
-        {
-            $restful->setMessage("Show Not Found");
-            $restful->setStatusCode(410);
-            return $restful;
-        }
+            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Show Not Found"),410);
 
-        $restful->normalize(array(
+        return $this->restful([
             new ShowNormalizer()
-        ),$show,null);
-        return $restful;
+        ],$show);
     }
 
-
-
     /**
-     * @Route("show/{token}/{slug}/comment/{comment_token}", options = { "expose" = true }, name="get_show_comment")
+     * @Route("show/{token}/{slug}/comment/{comment_token}",
+     *     options = { "expose" = true },
+     *     name="get_show_comment")
      * @Method({"GET"})
      */
     public function getShowCommentAction(Request $request,$token,$slug,$comment_token = null){
@@ -89,117 +85,79 @@ class ShowController extends BaseController
         /** @var ShowRepository $showRepository */
         $showRepository = $this->get('core.show_repository');
 
+        /** @var Show $show */
         $show = $showRepository->findOneBy(['token' => $token,'slug' => $slug]);
-        $restful = new RestfulJsonResponse();
 
         if($show == null)
-        {
-            $restful->setMessage("Show Not Found");
-            $restful->setStatusCode(410);
-            return $restful;
+            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Blog Post Not Found"),410);
+
+        if($comment_token == null) {
+            return $this->restful([new CommentNormalizer(),
+                new UserNormalizer(),
+                new WrapperNormalizer()],
+                new SuccessWrapper($commentRepository->getAllRootCommentsForShow($show)));
         }
-
-        if($show->getEnableComments() == false)
+        else
         {
-            $restful->setMessage("Comments Disabled For Show");
-            $restful->setStatusCode(400);
-            return $restful;
+            try {
+                $comment = $commentRepository->getCommentByShowAndToken($show, $comment_token);
+                return $this->restful([new CommentNormalizer(),
+                    new UserNormalizer(),
+                    new WrapperNormalizer()],
+                    new SuccessWrapper($comment));
+
+            } catch (NoResultException $e) {
+                return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Unknown Comment"), 410);
+            }
+
         }
-
-        $restful->normalize(array(
-            new CommentNormalizer(),
-            new UserNormalizer()
-        ),$commentRepository->getAllRootCommentsForShowEntiry($show));
-
-        $restful->setMessage("Comments found for Show");
-        return $restful;
 
     }
+
     /**
      * @Security("has_role('ROLE_USER')")
-     * @Route("show/{name}/comment/{commentId}", options = { "expose" = true }, name="post_show_comment")
+     * @Route("show/{token}/{slug}/comment/{comment_token}", options = { "expose" = true }, name="post_show_comment")
      * @Method({"POST"})
      */
-    public function postShowCommentAction(Request $request,$name,$commentId = null){
+    public function postShowCommentAction(Request $request,$token,$slug,$comment_token = null){
         /** @var ShowRepository $showRepository */
         $showRepository = $this->get('core.show_repository');
 
         /** @var CommentRepository $commentRepository */
         $commentRepository = $this->get('core.show_repository');
 
-        $restful = new RestfulJsonResponse();
-
         /** @var Show $show */
-        $show = $showRepository->findOneBy(['name' => $name]);
+        $show = $showRepository->findOneBy(['token' => $token,'slug' => $slug]);
+
         if($show == null)
-        {
-            $restful->setMessage("Show Not Found");
-            $restful->setStatusCode(410);
-            return $restful;
-        }
+            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Show Not Found"),410);
 
-        $body = $request->get("body");
-        $restful = new RestfulJsonResponse();
-        if($body == null)
-        {
-            $restful->setMessage("Comment needs a body");
-            $restful->setStatusCode(400);
-            return $restful;
-        }
+        $comment = new Comment();
+        $comment->setContent($request->get("content"));
+        $comment->setUser($this->getUser());
 
-        $parentComment = null;
-        if($commentId != null) {
-            $parentComment = $showRepository->getComment($show, $commentId);
-            if($parentComment == null)
-            {
-                $restful->setMessage("Unknown comment");
-                $restful->setStatusCode(400);
-                return $restful;
+        if($comment_token != null) {
+            try {
+                $comment->setParentComment($commentRepository->getCommentByShowAndToken($show, $comment_token));
+            } catch (NoResultException $e) {
+                return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Unknown Comment"), 410);
             }
         }
-        $em = $this->getDoctrine()->getManager();
 
-        //create comment
-        $comment = new Comment();
-        $comment->setContent($body);
-        $comment->setUser($this->getUser());
-        $comment->setParentComment($parentComment);
+        $errors = $this->validateEntity($comment);
+        if($errors->count() > 0)
+        {
+            $error = new ErrorWrapper("invalid token");
+            $error->addErrors($this->validateEntity($comment));
+            $error->setMessage("Invalid Comment");
+            return $this->restful([new WrapperNormalizer()],$error,400);
+        }
 
-        $em->persist($comment);
-        //add comment to show and persist
-        $show->addComment($comment);
-        $em->persist($show);
-        $em->flush();
-
-        $restful->normalize(array(
+        return $this->restful([
+            new WrapperNormalizer(),
             new CommentNormalizer(),
             new UserNormalizer()
-        ),$comment);
-        return $restful;
-
+        ],new SuccessWrapper($comment,"Comment Added"));
     }
-//
-//    /**
-//     * @Route("show/{name}/comment/{commentId}", options = { "expose" = true }, name="patch_comment")
-//     * @Method({"PATCH"})
-//     */
-//    public function patchShowCommentAction($name,$commentId = null){
-//
-//        /** @var ShowRepository $blogRepository */
-//        $showRepository = $this->get('core.show_repository');
-//        $restful = new RestfulJsonResponse();
-//
-//        /** @var Show $show */
-//        $show = $showRepository->findOneBy(['name' => $name]);
-//        if($show == null)
-//        {
-//            $restful->setMessage("Show Not Found");
-//            $restful->setStatusCode(410);
-//            return $restful;
-//        }
-//
-//        $parentComment = $showRepository->getComment($show, $commentId);
-//
-//    }
 
 }

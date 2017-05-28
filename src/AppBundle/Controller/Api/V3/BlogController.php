@@ -13,13 +13,16 @@ use CoreBundle\Controller\BaseController;
 
 use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Comment;
-use CoreBundle\Helper\RestfulJsonResponse;
+use CoreBundle\Helper\ErrorWrapper;
+use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\BlogNormalizer;
 use CoreBundle\Normalizer\CommentNormalizer;
 use CoreBundle\Normalizer\PaginatorNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
+use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\CommentRepository;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -35,7 +38,9 @@ class BlogController extends BaseController
 {
 
     /**
-     * @Route("post", options = { "expose" = true }, name="get_blog_posts", )
+     * @Route("post",
+     *     options = { "expose" = true },
+     *     name="get_blog_posts")
      * @Method({"GET"})
      */
     public  function  getBlogPostsAction(Request $request)
@@ -55,41 +60,37 @@ class BlogController extends BaseController
         $pagination->getQuery()->setMaxResults($perPage);
         $pagination->getQuery()->setFirstResult($perPage * $request->get("page",0));
 
-        $restfulResponse = new RestfulJsonResponse();
-        $restfulResponse->setMessage("Query Accepted");
-        $restfulResponse->normalize(array(
-            new BlogNormalizer(),
+
+        $s = new SuccessWrapper();
+        $s->setPayload($pagination);
+        return $this->restful([new BlogNormalizer(),
             new UserNormalizer(),
-            new PaginatorNormalizer()),$pagination);
-        return $restfulResponse;
+            new PaginatorNormalizer(),
+            new WrapperNormalizer()],$s,200);
 
     }
 
     /**
-     * @Route("post/{token}/{slug}", options = { "expose" = true }, name="get_blog_post", )
+     * @Route("post/{token}/{slug}",
+     *     options = { "expose" = true },
+     *     name="get_blog_post", )
      * @Method({"GET"})
      */
     public  function  getBlogPostAction(Request $request,$token,$slug)
     {
         /** @var PostRepository $blogRepository */
         $blogRepository = $this->get('core.post_repository');
-
         /** @var Post $post */
         $post = $blogRepository->findOneBy(['token' => $token,'slug' => $slug]);
-        $restful = new RestfulJsonResponse();
 
         if($post == null)
-        {
-            $restful->setMessage("Blog Post Not Found");
-            $restful->setStatusCode(410);
-            return $restful;
-        }
-        $restful->normalize(array(
+            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Blog Post Not Found"),410);
+
+        return $this->restful([
             new BlogNormalizer(),
             new UserNormalizer(),
-            new PaginatorNormalizer()
-        ),$post,null);
-        return $restful;
+            new PaginatorNormalizer(),
+            new WrapperNormalizer()],new SuccessWrapper($post));
 
     }
 
@@ -100,7 +101,7 @@ class BlogController extends BaseController
      *     name="post_show_comment")
      * @Method({"POST"})
      */
-    public function postBlogPostCommentAction(Request $request,$token,$slug,$comment_token){
+    public function postBlogPostCommentAction(Request $request,$token,$slug,$comment_token = null){
         /** @var PostRepository $blogRepository */
         $blogRepository = $this->get('core.post_repository');
 
@@ -110,24 +111,39 @@ class BlogController extends BaseController
         /** @var Post $post */
         $post = $blogRepository->findOneBy(['token' => $token,'slug' => $slug]);
 
-        $restful = new RestfulJsonResponse();
+
         if($post == null)
-        {
-            $restful->setMessage("Blog Post Not Found");
-            $restful->setStatusCode(410);
-            return $restful;
+            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Blog Post Not Found"),410);
+
+        $comment = new Comment();
+        $comment->setContent($request->get("content"));
+        $comment->setUser($this->getUser());
+
+        if($comment_token != null) {
+            try {
+                $comment->setParentComment($commentRepository->getCommentByPostAndToken($post, $comment_token));
+            } catch (NoResultException $e) {
+                return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Unknown Comment"), 410);
+            }
         }
 
-        if($comment_token == null)
+        $errors = $this->validateEntity($comment);
+        if($errors->count() > 0)
         {
-            $comment = new Comment();
-
+            $error = new ErrorWrapper("invalid token");
+            $error->addErrors($this->validateEntity($comment));
+            $error->setMessage("Invalid Comment");
+            return $this->restful([new WrapperNormalizer()],$error,400);
         }
-        else
-        {
 
-        }
+        return $this->restful([
+            new WrapperNormalizer(),
+            new CommentNormalizer(),
+            new UserNormalizer()
+        ],new SuccessWrapper($comment,"Comment Added"));
+
     }
+
 
     /**
      * @Route("post/{token}/{slug}/comment/{comment_token}", options = { "expose" = true }, name="get_blog_comment")
@@ -142,34 +158,34 @@ class BlogController extends BaseController
 
         /** @var Post $post */
         $post = $blogRepository->findOneBy(['token' => $token,'slug' => $slug]);
-        $restful = new RestfulJsonResponse();
 
         if($post == null)
+            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Blog Post Not Found"),410);
+
+        if($comment_token == null) {
+            return $this->restful([new CommentNormalizer(),
+                new UserNormalizer(),
+                new WrapperNormalizer()],
+                new SuccessWrapper($commentRepository->getAllRootCommentsForPost($post)));
+        }
+        else
         {
-            $restful->setMessage("Blog Post Not Found");
-            $restful->setStatusCode(410);
-            return $restful;
+            try {
+                $comment = $commentRepository->getCommentByPostAndToken($post, $comment_token);
+                return $this->restful([new CommentNormalizer(),
+                    new UserNormalizer(),
+                    new WrapperNormalizer()],
+                    new SuccessWrapper($comment));
+
+            } catch (NoResultException $e) {
+                return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Unknown Comment"), 410);
+            }
+
         }
 
-        $restful->normalize(array(
-            new CommentNormalizer(),
-            new UserNormalizer()
-        ),$commentRepository->getAllRootCommentsForBlogEntiry($post)->getQuery()->getResult());
-
-        $restful->setMessage("Comments found for post");
-        return $restful;
-
     }
 
 
-    /**
-     * @Security("has_role('ROLE_USER')")
-     * @Route("post/{name}/comment/{commendId}", options = { "expose" = true }, name="shows")
-     * @Method({"PATCH"})
-     */
-    public function patchBlogPostCommentAction(Request $request,$name,$commentId){
-
-    }
 
 
 }

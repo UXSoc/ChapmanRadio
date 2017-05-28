@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: michaelpollind
- * Date: 5/26/17
- * Time: 9:12 AM
+ * Date: 5/27/17
+ * Time: 10:17 PM
  */
 
 namespace CoreBundle\Normalizer;
@@ -12,10 +12,8 @@ namespace CoreBundle\Normalizer;
 use CoreBundle\Entity\User;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\SerializerAwareInterface;
-use Symfony\Component\Serializer\SerializerAwareTrait;
 
-class UserNormalizer implements NormalizerInterface, NormalizerAwareInterface
+class AccountNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     /** @var  NormalizerInterface */
     private  $normalizer;
@@ -47,7 +45,10 @@ class UserNormalizer implements NormalizerInterface, NormalizerAwareInterface
             "username" => $object->getUsername(),
             "created_at" => $object->getCreatedAt(),
             "updated_at" => $object->getUpdatedAt(),
-            "token" => $object->getToken()
+            "token" => $object->getToken(),
+            "email" => $object->getEmail(),
+            "suspended" => $object->isSuspended(),
+
         ];
 
         return $result;

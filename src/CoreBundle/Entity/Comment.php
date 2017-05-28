@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Keygen\Keygen;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Comment
@@ -42,7 +43,7 @@ class Comment
 
     /**
      * @var string
-     *
+     * @Assert\NotBlank()
      * @ORM\Column(name="content", type="text", length=65535, nullable=true)
      */
     private $content;

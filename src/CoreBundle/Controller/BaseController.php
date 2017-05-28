@@ -3,8 +3,12 @@
 namespace CoreBundle\Controller;
 
 
+use CoreBundle\Helper\ErrorWrapper;
+use CoreBundle\Helper\SuccessWrapper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\Config\Tests\Util\Validator;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -32,7 +36,7 @@ class BaseController extends Controller
 
     public function getJsonPayload()
     {
-        $content = $this->container->get('request_stack')->getCurrentRequest()->getContent();
+        $content = $this->get('request_stack')->getCurrentRequest()->getContent();
         if(empty($content))
         {
             throw new BadRequestHttpException("Content is empty");
@@ -45,10 +49,18 @@ class BaseController extends Controller
         return $serializer->denormalize($mapping,$class);
     }
 
-    public function getSerializer()
-    {
-        $serializer = new Serializer(array(new BlogNormalizer(),new UserNormalizer(),new PaginatorNormalizer(),new RestfulContainerNormalizer(),new TagNormalizer(),new CategoryNormalizer()),array(new JsonEncoder()));
 
+    /**
+     * @param SuccessWrapper|ErrorWrapper $wrapper
+     * @param $data
+     * @param null $format
+     * @param array $context
+     * @return array|object|\Symfony\Component\Serializer\Normalizer\scalar
+     */
+    public function restful($normalizers,$data,$status = 200, $format = null, array $context = array())
+    {
+        $normalizer =  new Serializer($normalizers);
+        return new JsonResponse($normalizer->normalize($data,$format,$context),$status);
     }
 
 

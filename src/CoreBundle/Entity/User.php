@@ -126,12 +126,6 @@ class User implements AdvancedUserInterface
      */
     private $confirmed;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="confirmation_token", type="string", length=30, nullable=true)
-     */
-    private $confirmationToken;
 
     /**
      * @Assert\Length(max=4096)
@@ -335,10 +329,7 @@ class User implements AdvancedUserInterface
     {
         return $this->username;
     }
-    public function setConfirmed($confirm)
-    {
-        return $this->confirmed = $confirm;
-    }
+
     /**
      * Removes sensitive data from the user.
      *
@@ -409,6 +400,11 @@ class User implements AdvancedUserInterface
     public function getToken()
     {
         return $this->token;
+    }
+
+    public function isSuspended()
+    {
+        return $this->suspended;
     }
 }
 
