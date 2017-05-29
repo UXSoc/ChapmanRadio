@@ -23,7 +23,7 @@ class AccountControllerCest
     {
     }
 
-    public function changePassword(ApiTester $I, \AppBundle\Helper\Step\Auth $auth)
+    public function tryChangePassword(ApiTester $I, \AppBundle\Helper\Step\Auth $auth)
     {
         $auth->loginUser($this->user->getEmail(),"password");
         $I->seeResponseCodeIs(HttpCode::OK);

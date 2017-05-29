@@ -67,8 +67,9 @@ class ShowController extends BaseController
             return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Show Not Found"),410);
 
         return $this->restful([
-            new ShowNormalizer()
-        ],$show);
+            new ShowNormalizer(),
+            new WrapperNormalizer()
+        ],new SuccessWrapper($show));
     }
 
     /**

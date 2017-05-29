@@ -51,7 +51,7 @@ class Show
     /**
      * @var resource
      *
-     * @ORM\Column(name="description", type="blob", length=65535, nullable=false)
+     * @ORM\Column(name="description", type="text", length=65535, nullable=false)
      */
     private $description;
 
@@ -94,9 +94,9 @@ class Show
     /**
      * @var integer
      *
-     * @ORM\Column(name="strike_count", type="integer", nullable=true)
+     * @ORM\Column(name="strike_count", type="integer", nullable=false)
      */
-    private $strikeCount;
+    private $strikeCount = 0;
 
     /**
      * @var boolean
@@ -164,18 +164,21 @@ class Show
     private $genres;
 
     /**
-     * @var ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="ShowDj", mappedBy="show")
+     * @ORM\ManyToMany(targetEntity="Dj", mappedBy="shows")
+     * @ORM\JoinTable(name="show_comment",
+     *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="dj_id", referencedColumnName="id", unique=true)}
+     *      )
+     * @return ArrayCollection
      */
-    private $showDjs;
+    private $djs;
 
     public function __construct()
     {
         $this->images = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->showSchedule = new ArrayCollection();
-        $this->showDjs = new ArrayCollection();
+        $this->djs = new ArrayCollection();
     }
 
     public function addImage($image)
@@ -191,6 +194,16 @@ class Show
     public function addShowSchedule($showSchedule)
     {
         $this->showSchedule = $showSchedule;
+    }
+
+    public function addDj($dj)
+    {
+        $this->djs->add($dj);
+    }
+
+    public function getDjs()
+    {
+        return $this->djs;
     }
 
 

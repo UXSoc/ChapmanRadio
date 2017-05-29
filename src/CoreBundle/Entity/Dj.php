@@ -2,6 +2,7 @@
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace CoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -59,14 +60,27 @@ class Dj
      *      joinColumns={@ORM\JoinColumn(name="dj_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="image_id", referencedColumnName="id", unique=true)}
      *      )
+     * @return ArrayCollection
      */
     private $images;
 
     /**
      * DJ's can have multiple shows.
-     * @ORM\OneToMany(targetEntity="ShowDj", mappedBy="dj")
+     * @ORM\ManyToMany(targetEntity="Show", inversedBy="djs")
+     * @return ArrayCollection
      */
-    private $showDj;
+    private $shows;
+
+    function __construct()
+    {
+        $this->shows =  new ArrayCollection();
+        $this->images = new ArrayCollection();
+    }
+
+    public function getShows()
+    {
+        return $this->shows;
+    }
 
     public  function getId()
     {

@@ -10,6 +10,7 @@ use Codeception\TestInterface;
 use CoreBundle\Entity\Comment;
 use CoreBundle\Entity\Dj;
 use CoreBundle\Entity\Post;
+use CoreBundle\Entity\Show;
 use CoreBundle\Entity\Staff;
 use CoreBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
@@ -36,6 +37,7 @@ class FactoryHelper extends \Codeception\Module
         $symfony = $this->getModule('Symfony2');
         $this->factory = new FactoryMuffin(new RepositoryStore($symfony->_getEntityManager()));
 
+
         $this->factory->define(User::class)->setDefinitions([
             'email' => Faker::unique()->email(),
             'name' => Faker::unique()->name(),
@@ -53,6 +55,13 @@ class FactoryHelper extends \Codeception\Module
             'slug' => Faker::unique()->slug(),
             'excerpt' => Faker::paragraph(3),
             'content' => Faker::paragraph(10),
+        ]);
+
+        $this->factory->define(Show::class)->setDefinitions([
+            'name' => Faker::unique()->name(),
+            'slug' => Faker::unique()->slug(),
+            'description' =>Faker::paragraph(10),
+            'score' => Faker::randomNumber(2)
         ]);
 
         $this->factory->define(Dj::class)->setDefinitions([

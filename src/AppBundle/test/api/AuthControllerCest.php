@@ -2,6 +2,7 @@
 namespace AppBundle\test\api;
 use AppBundle\ApiTester;
 use AppBundle\Helper\Api;
+use AppBundle\Helper\Step\Auth;
 use Codeception\Util\HttpCode;
 use CoreBundle\Entity\User;
 use CoreBundle\Repository\UserRepository;
@@ -27,7 +28,7 @@ class AuthControllerCest
     }
 
     // tests
-    public function register(ApiTester $I)
+    public function tryRegister(ApiTester $I)
     {
 
         /** @var User $user */
@@ -63,7 +64,7 @@ class AuthControllerCest
     /**
      * @param ApiTester $I
      */
-    public function login(ApiTester $I, \AppBundle\Helper\Step\Auth $auth)
+    public function tryLoginWithUsername(ApiTester $I, \AppBundle\Helper\Step\Auth $auth)
     {
         $auth->loginUser($this->user->getUsername(),"password");
         $I->seeResponseContainsJson(array(
@@ -74,7 +75,7 @@ class AuthControllerCest
         $I->isRestfulSuccessResponse();
     }
 
-    public function loginWithEmail(ApiTester $I, \AppBundle\Helper\Step\Auth $auth)
+    public function tryLoginWithEmail(ApiTester $I, \AppBundle\Helper\Step\Auth $auth)
     {
         $auth->loginUser($this->user->getEmail(),"password");
         $I->seeResponseContainsJson(array(
@@ -94,10 +95,11 @@ class AuthControllerCest
 
     /**
      * @param ApiTester $I
-     * @before login
      */
-    public function status(ApiTester $I)
+    public function TryGetStatus(ApiTester $I,Auth $auth)
     {
+        $auth->loginUser($this->user->getUsername(),"password");
+
         $I->sendGET('/api/v3/auth/status');
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(HttpCode::OK);

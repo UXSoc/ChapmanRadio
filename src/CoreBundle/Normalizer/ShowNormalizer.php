@@ -1,13 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 5/26/17
- * Time: 3:38 PM
- */
-
 namespace CoreBundle\Normalizer;
-
 
 use CoreBundle\Entity\Show;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
@@ -35,7 +27,7 @@ class ShowNormalizer implements NormalizerInterface, NormalizerAwareInterface
      * @param string $format format the normalization result will be encoded as
      * @param array $context Context options for the normalizer
      *
-     * @return array|scalar
+     * @return array
      */
     public function normalize($object, $format = null, array $context = array())
     {
@@ -43,8 +35,8 @@ class ShowNormalizer implements NormalizerInterface, NormalizerAwareInterface
             'token' => $object->getToken(),
             'slug' => $object->getSlug(),
             'name' => $object->getName(),
-            'description' => stream_get_contents($object->getDescription()),
-            'createad_at' => $object->createdAt(),
+            'description' => $object->getDescription(),
+            'created_at' => $object->createdAt(),
             'profanity' => $object->getProfanity(),
             'updated_at' => $object->updatedAt(),
             'enable_comments' => $object->getEnableComments(),
