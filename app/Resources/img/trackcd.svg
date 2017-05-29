@@ -1,0 +1,30 @@
+<svg width="200" height="200" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<title>Group</title>
+<desc>Created using Figma</desc>
+<g id="Canvas" transform="translate(-966 -500)">
+<g id="Group">
+<g id="Rectangle 91">
+<use xlink:href="#path0_fill" transform="translate(966 500)" fill="#3A4B3A"/>
+</g>
+<g id="Ellipse 8">
+<use xlink:href="#path1_fill" transform="translate(986 520)" fill="#C4C4C4"/>
+</g>
+<g id="Ellipse 9">
+<use xlink:href="#path2_fill" transform="translate(1036 570)" fill="#3A4B3A"/>
+</g>
+<g id="Ellipse 10">
+<use xlink:href="#path3_fill" transform="translate(1042 576)" fill="#828282"/>
+</g>
+<g id="Ellipse 3">
+<use xlink:href="#path4_fill" transform="translate(1060 594)" fill="#3A4B3A"/>
+</g>
+</g>
+</g>
+<defs>
+<path id="path0_fill" d="M 0 0L 200 0L 200 200L 0 200L 0 0Z"/>
+<path id="path1_fill" d="M 160 80C 160 124.183 124.183 160 80 160C 35.8172 160 0 124.183 0 80C 0 35.8172 35.8172 0 80 0C 124.183 0 160 35.8172 160 80Z"/>
+<path id="path2_fill" d="M 60 30C 60 46.5685 46.5685 60 30 60C 13.4315 60 0 46.5685 0 30C 0 13.4315 13.4315 0 30 0C 46.5685 0 60 13.4315 60 30Z"/>
+<path id="path3_fill" d="M 49 24.5C 49 38.031 38.031 49 24.5 49C 10.969 49 0 38.031 0 24.5C 0 10.969 10.969 0 24.5 0C 38.031 0 49 10.969 49 24.5Z"/>
+<path id="path4_fill" d="M 13 6.5C 13 10.0899 10.0899 13 6.5 13C 2.91015 13 0 10.0899 0 6.5C 0 2.91015 2.91015 0 6.5 0C 10.0899 0 13 2.91015 13 6.5Z"/>
+</defs>
+</svg>

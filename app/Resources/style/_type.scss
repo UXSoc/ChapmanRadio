@@ -97,11 +97,47 @@ h1.cr_header, h2.cr_header, h3.cr_header, h4.cr_header, h5.cr_header,h6.cr_heade
 }
 
 .wn-widebox:after,
-.wn-smallbox:after {
+.wn-smallbox:after,
+.lt-trackbox:after {
   display: block;
   height: 2px;
   background-color: #79C043;
   content: " ";
   width: 90%;
   margin: 0 auto;
+}
+
+.trackview img {
+  width: 100%
+}
+
+.lt-text {
+  height: 134px;
+  background-color: rgba(58, 75, 58, .9);
+}
+
+.lt-track {
+  height: 183px;
+}
+
+.lt-title {
+  padding: 20px 15px 0 15px;
+  height: 25%;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 5px;
+}
+
+.lt-artist {
+  padding: 0 15px 0 15px;
+  font-size: 90%;
+  height: 40%;
+  color: #bdbdbd;
+}
+
+.lt-minsago {
+  padding: 0 15px 0 15px;
+  height: 35%;
+  font-size: 80%;
+  color: #ffffff;
 }
