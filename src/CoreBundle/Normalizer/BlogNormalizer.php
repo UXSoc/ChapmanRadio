@@ -1,5 +1,7 @@
 <?php
+
 namespace CoreBundle\Normalizer;
+
 use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Tag;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
@@ -16,7 +18,7 @@ use Symfony\Component\Serializer\SerializerAwareTrait;
 class BlogNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     /** @var  NormalizerInterface */
-    private  $normalizer;
+    private $normalizer;
 
 
     /**
@@ -28,6 +30,7 @@ class BlogNormalizer implements NormalizerInterface, NormalizerAwareInterface
     {
         $this->normalizer = $normalizer;
     }
+
     /**
      * Normalizes an object into a set of arrays/scalars.
      *
@@ -40,18 +43,18 @@ class BlogNormalizer implements NormalizerInterface, NormalizerAwareInterface
     public function normalize($object, $format = null, array $context = array())
     {
         $result = [
-           'token' => $object->getToken(),
-           'slug' => $object->getSlug(),
-           'name' => $object->getName(),
-           'created_at' => $object->getCreatedAt(),
-           'updated_at'=> $object->getUpdatedAt(),
-           'exceprt' => $object->getExcerpt(),
-           'tags' => $object->getTags()->getKeys(),
-           'categories' => $object->getCategories()->getKeys(),
-           'is_pinned' => $object->getIsPinned(),
-           'author' =>  $this->normalizer->normalize($object->getAuthor(),$format,$context),
-           'content' => stream_get_contents($object->getContent())
-       ];
+            'token' => $object->getToken(),
+            'slug' => $object->getSlug(),
+            'name' => $object->getName(),
+            'created_at' => $object->getCreatedAt(),
+            'updated_at' => $object->getUpdatedAt(),
+            'excerpt' => $object->getExcerpt(),
+            'categories' => $object->getCategories() != null ? $object->getCategories()->getKeys() : null,
+            'tags' => $object->getTags() != null ? $object->getTags()->getKeys() : null,
+            'is_pinned' => $object->getIsPinned(),
+            'author' => $this->normalizer->normalize($object->getAuthor(), $format, $context),
+            'content' => $object->getContent()
+        ];
 
 
         return $result;

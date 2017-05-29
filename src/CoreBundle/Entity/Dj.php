@@ -63,7 +63,7 @@ class Dj
     private $images;
 
     /**
-     * Many Shows have Many Images.
+     * DJ's can have multiple shows.
      * @ORM\OneToMany(targetEntity="ShowDj", mappedBy="dj")
      */
     private $showDj;

@@ -125,6 +125,6 @@ class CommentRepository  extends EntityRepository
             ->where('c.token = :token')
             ->setParameter('token',$token)
             ->getQuery()
-            ->getResult();
+            ->getSingleResult();
     }
 }

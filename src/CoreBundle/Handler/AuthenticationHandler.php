@@ -6,6 +6,7 @@ use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
+use function PHPSTORM_META\type;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\InsufficientAuthenticationException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
@@ -21,7 +23,7 @@ use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface
 use Symfony\Component\Serializer\Serializer;
 
 
-class AuthenticationHandler implements AuthenticationFailureHandlerInterface, AuthenticationSuccessHandlerInterface
+class AuthenticationHandler implements AuthenticationEntryPointInterface,AuthenticationFailureHandlerInterface, AuthenticationSuccessHandlerInterface
 {
 
 
@@ -68,4 +70,31 @@ class AuthenticationHandler implements AuthenticationFailureHandlerInterface, Au
         return new JsonResponse($normalizer->normalize(new SuccessWrapper($token->getUser(),"Authenticated Successful")),200);
     }
 
+    /**
+     * Returns a response that directs the user to authenticate.
+     *
+     * This is called when an anonymous request accesses a resource that
+     * requires authentication. The job of this method is to return some
+     * response that "helps" the user start into the authentication process.
+     *
+     * Examples:
+     *  A) For a form login, you might redirect to the login page
+     *      return new RedirectResponse('/login');
+     *  B) For an API token authentication system, you return a 401 response
+     *      return new Response('Auth header required', 401);
+     *
+     * @param Request $request The request that resulted in an AuthenticationException
+     * @param AuthenticationException $authException The exception that started the authentication process
+     *
+     * @return Response
+     */
+    public function start(Request $request, AuthenticationException $authException = null)
+    {
+        $normalizer =  new Serializer([new WrapperNormalizer()]);
+
+        if($authException instanceof InsufficientAuthenticationException) {
+            return new JsonResponse($normalizer->normalize(new ErrorWrapper("Permission Error")),400);
+        }
+        return new JsonResponse($normalizer->normalize(new ErrorWrapper("Authentication Error")),400);
+    }
 }

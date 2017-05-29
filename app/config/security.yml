@@ -23,6 +23,7 @@ security:
             security: false
         main:
             anonymous: ~
+            entry_point: core.authentication_handler
             logout:
                 path:   /logout
                 target: /

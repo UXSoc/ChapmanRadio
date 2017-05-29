@@ -15,6 +15,7 @@ use Doctrine\ORM\NoResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -25,22 +26,28 @@ class CommentController extends BaseController
 
     /**
      * @Security("has_role('ROLE_USER')")
-     * @Route("comment/{slug}", options = { "expose" = true }, name="patch_comment")
+     * @Route("comment/{token}", options = { "expose" = true }, name="patch_comment")
      * @Method({"PATCH"})
      */
-    public function patchCommentAction(Request $request,$slug ){
+    public function patchCommentAction(Request $request,$token ){
         /** @var CommentRepository $commentRepository */
         $commentRepository = $this->get('core.comment_repository');
 
         /** @var Comment $comment */
         $comment = null;
         try {
-            $comment = $commentRepository->getCommentByToken($slug);
+            $comment = $commentRepository->getCommentByToken($token);
         } catch (NoResultException $e) {
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Unknown Comment"), 410);
         }
 
-        $this->denyAccessUnlessGranted('edit',$comment);
+        try {
+            $this->denyAccessUnlessGranted('edit', $comment);
+        }
+        catch (\Exception $exception)
+        {
+            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Comment Permission Error"),400);
+        }
 
         $comment->setContent($request->get("content"));
 

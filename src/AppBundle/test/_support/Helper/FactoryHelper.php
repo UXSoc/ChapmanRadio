@@ -7,6 +7,10 @@ namespace AppBundle\Helper;
 use Codeception\Module\Symfony2;
 use Codeception\Test\Metadata;
 use Codeception\TestInterface;
+use CoreBundle\Entity\Comment;
+use CoreBundle\Entity\Dj;
+use CoreBundle\Entity\Post;
+use CoreBundle\Entity\Staff;
 use CoreBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use League\FactoryMuffin\FactoryMuffin;
@@ -44,6 +48,22 @@ class FactoryHelper extends \Codeception\Module
             'username' => Faker::unique()->userName()
         ]);
 
+        $this->factory->define(Post::class)->setDefinitions([
+            'name' => Faker::unique()->name(),
+            'slug' => Faker::unique()->slug(),
+            'excerpt' => Faker::paragraph(3),
+            'content' => Faker::paragraph(10),
+        ]);
+
+        $this->factory->define(Dj::class)->setDefinitions([
+            'description' => Faker::paragraph(3)
+        ]);
+
+        $this->factory->define(Staff::class)->setDefinitions();
+
+        $this->factory->define(Comment::class)->setDefinitions([
+            'content' => Faker::paragraph(1)
+        ]);
     }
 
 

@@ -23,17 +23,19 @@ class ApiTester extends \Codeception\Actor
 {
     use _generated\ApiTesterActions;
 
-    public function login($username, $password)
-    {
 
-        $I = $this;
-        $I->sendPOST('/login',[
-            "_username" => $username,
-            "_password" => $password,
-            "_remember_me" => false
-        ]);
-        $I->seeResponseIsJson();
+    public function isRestfulSuccessResponse()
+    {
+        $this->seeResponseContainsJson(array(
+            "success" => true
+        ));
     }
 
+    public  function isRestfulFailedResponse()
+    {
+        $this->seeResponseContainsJson(array(
+            "success" => false
+        ));
+    }
 
 }

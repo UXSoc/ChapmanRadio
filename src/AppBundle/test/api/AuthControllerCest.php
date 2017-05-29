@@ -1,6 +1,7 @@
 <?php
 namespace AppBundle\test\api;
 use AppBundle\ApiTester;
+use AppBundle\Helper\Api;
 use Codeception\Util\HttpCode;
 use CoreBundle\Entity\User;
 use CoreBundle\Repository\UserRepository;
@@ -40,9 +41,9 @@ class AuthControllerCest
             "studentId" => $user->getStudentId()
         ]);
         $I->seeResponseIsJson();
+        $I->isRestfulSuccessResponse();
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseContainsJson(array(
-            "success" => true,
             "data" => [
             "username" => $user->getUsername(),
             'roles' => ["ROLE_USER"]]
@@ -62,23 +63,33 @@ class AuthControllerCest
     /**
      * @param ApiTester $I
      */
-    public function login(ApiTester $I)
+    public function login(ApiTester $I, \AppBundle\Helper\Step\Auth $auth)
     {
-        $I->login($this->user->getUsername(),"password");
+        $auth->loginUser($this->user->getUsername(),"password");
         $I->seeResponseContainsJson(array(
-            "success" => true,
             "data" => [
                 "username" => $this->user->getUsername(),
                 'roles' => ["ROLE_USER"]]
         ));
+        $I->isRestfulSuccessResponse();
     }
 
-    public function failLogin(ApiTester $I)
+    public function loginWithEmail(ApiTester $I, \AppBundle\Helper\Step\Auth $auth)
     {
-        $I->login($this->user->getUsername(),"wrongpassword");
+        $auth->loginUser($this->user->getEmail(),"password");
         $I->seeResponseContainsJson(array(
-            "success" => false
+            "data" => [
+                "username" => $this->user->getUsername(),
+                'roles' => ["ROLE_USER"]]
         ));
+        $I->isRestfulSuccessResponse();
+    }
+
+    public function failLogin(ApiTester $I, \AppBundle\Helper\Step\Auth $auth)
+    {
+        $auth->loginUser($this->user->getUsername(),"wrongpassword");
+        $I->isRestfulFailedResponse();
+
     }
 
     /**
@@ -90,6 +101,7 @@ class AuthControllerCest
         $I->sendGET('/api/v3/auth/status');
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(HttpCode::OK);
+        $I->isRestfulSuccessResponse();
         $I->seeResponseContainsJson(array(
             "success" => true,
             "data" => [

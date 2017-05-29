@@ -92,9 +92,9 @@ class Post
     /**
      * @var resource
      *
-     * @ORM\Column(name="content", type="blob", length=65535, nullable=true)
+     * @ORM\Column(name="content", type="text", length=65535, nullable=false)
      */
-    private $content;
+    private $content = "";
 
     /**
      * @var User
