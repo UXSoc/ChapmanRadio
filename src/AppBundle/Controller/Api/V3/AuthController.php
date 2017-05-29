@@ -6,9 +6,11 @@ use CoreBundle\Entity\User;
 use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\AccountNormalizer;
+use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\UserRepository;
-use CoreBundle\Service\UserService;
+use CoreBundle\Service\CacheService;
+use Keygen\Keygen;
 use Swift_Message;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,6 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use UserService;
+
 /**
  * @Route("/api/v3")
  */
@@ -26,10 +30,10 @@ class AuthController extends BaseController
      * @Route("/auth/register", options = { "expose" = true }, name="post_register")
      * @Method({"POST"})
      */
-    public function RegisterAction(Request $request)
+    public function postRegisterAction(Request $request)
     {
-        /** @var UserService $userService */
-        $userService = $this->get('core.user_service');
+        /** @var CacheService $cacheService */
+        $cacheService = $this->get('core.cache_service');
 
         $user = new User();
         $user->setName($request->get("name"));
@@ -51,15 +55,18 @@ class AuthController extends BaseController
 
 
         //create a confirmation token
-        $token = $userService->createConfirmationToken($user);
+        $token = Keygen::alphanum(20)->generate();
+        $cacheService->setNamespace('user_keys_confirm');
+        $cacheService->save($token,$user,1000);
         $this->confirmationEmail($user,$token);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($user);
         $em->flush();
 
-        return $this->restful([new WrapperNormalizer()],new SuccessWrapper($user,"User Registed"));
+        return $this->restful([new WrapperNormalizer(),new UserNormalizer()],new SuccessWrapper($user,"User Registed"));
     }
+
 
     /**
      * @param User $user
@@ -89,8 +96,9 @@ class AuthController extends BaseController
     {
         /** @var UserRepository $userRepository */
         $userRepository = $this->get('core.user_repository');
-        /** @var UserService $userService */
-        $userService = $this->get('core.user_service');
+
+        /** @var CacheService $cacheService */
+        $cacheService = $this->get('core.cache_service');
 
         /** @var User $user */
         $user = $userRepository->findOneBy(['token' => $token]);
@@ -98,9 +106,11 @@ class AuthController extends BaseController
             return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown User"),410);
 
         //create a confirmation token
-        $token = $userService->createConfirmationToken($user);
-        $this->confirmationEmail($user,$token);
+        $token = Keygen::alphanum(20)->generate();
+        $cacheService->setNamespace('user_keys_confirm');
+        $cacheService->save($token,$user,1000);
 
+        $this->confirmationEmail($user,$token);
         return $this->restful([new WrapperNormalizer()],new SuccessWrapper("New confirmation token sent"));
     }
 
@@ -112,22 +122,19 @@ class AuthController extends BaseController
     {
         /** @var UserRepository $userRepository */
         $userRepository = $this->get('core.user_repository');
-        /** @var UserService $userService */
-        $userService = $this->get('core.user_service');
+
+        /** @var CacheService $cacheService */
+        $cacheService = $this->get('core.cache_service');
 
         /** @var User $user */
         $user = $userRepository->findOneBy(['token' => $token]);
         if($user == null)
             return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown User"),410);
 
-        $result = $userService->verifyConfirmationToken($confirmToken);
-        if($result == null)
+        $cacheService->setNamespace('user_keys_confirm');
+        $tokenUser = $cacheService->fetch($confirmToken);
+        if($tokenUser)
             return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown Token"),410);
-
-        /** @var User $tokenUser */
-        $tokenUser = $userRepository->findOneBy(['token' => $result]);
-        if($tokenUser == null)
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown User"),410);
 
         if($tokenUser->getId() == $user->getId())
         {
@@ -154,10 +161,12 @@ class AuthController extends BaseController
         $user = $this->getUser();
 
         return $this->restful([
+            new WrapperNormalizer(),
             new AccountNormalizer()
-        ],$user);
-
+        ],new SuccessWrapper($user,"Account status"));
     }
+
+
 
 
 }

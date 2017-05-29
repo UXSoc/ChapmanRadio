@@ -14,7 +14,7 @@ web_profiler:
 doctrine_cache:
     providers:
         core.cache:
-            php_file:
+            file_system:
                 extension: '.cache'
                 directory: '%kernel.cache_dir%/core/'
 

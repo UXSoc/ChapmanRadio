@@ -5,9 +5,6 @@ namespace AppBundle\Controller\Api\V3;
 use AppBundle\Validation\ChangePasswordType;
 use CoreBundle\Controller\BaseController;
 use CoreBundle\Helper\ErrorWrapper;
-use CoreBundle\Helper\RestfulError;
-use CoreBundle\Helper\RestfulHelper;
-use CoreBundle\Helper\RestfulJsonResponse;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
@@ -25,8 +22,8 @@ class AccountController extends BaseController
 {
     /**
      * @Security("has_role('ROLE_USER')")
-     * @Route("/account/new-password", options = { "expose" = true }, name="patch_account_password")
-     * @Method({"PATCH"})
+     * @Route("/account/new-password", options = { "expose" = true }, name="post_account_password")
+     * @Method({"POST"})
      */
     public  function  patchChangePasswordAction(Request $request)
     {
@@ -62,6 +59,5 @@ class AccountController extends BaseController
 
             return $this->restful([new WrapperNormalizer(),new UserNormalizer()],new SuccessWrapper($user,"Password Changed"),400);
         }
-
     }
 }

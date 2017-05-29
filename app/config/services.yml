@@ -4,6 +4,16 @@ parameters:
     #parameter_name: value
 
 services:
+    core.authentication_handler:
+        class: CoreBundle\Handler\AuthenticationHandler
+        arguments:
+            - "@router"
+            - "@session"
+    core.cache_service:
+        class: CoreBundle\Service\CacheService
+        shared: false
+        arguments:
+            - "@doctrine_cache.providers.core.cache"
 
     core.comment_voter:
         class: CoreBundle\Security\CommentVoter
@@ -16,16 +26,12 @@ services:
         class: CoreBundle\Service\ImageUploadService
         arguments: ['%image_directory%']
 
+
     core.user_repository:
         class: CoreBundle\Repository\UserRepository
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - CoreBundle\Entity\User
-    core.authentication_handler:
-        class: CoreBundle\Handler\AuthenticationHandler
-        arguments:
-            - "@router"
-            - "@session"
     core.show_repository:
         class: CoreBundle\Repository\ShowRepository
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
@@ -41,9 +47,6 @@ services:
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - CoreBundle\Entity\Comment
-    core.user_service:
-        class: CoreBundle\Service\UserService
-        arguments: ['@doctrine_cache.providers.core.cache']
 
     #service_name:
     #    class: CoreBundle\Directory\ClassName

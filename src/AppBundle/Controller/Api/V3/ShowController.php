@@ -4,9 +4,9 @@ namespace AppBundle\Controller\Api\V3;
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 use CoreBundle\Controller\BaseController;
 
+use CoreBundle\Entity\Comment;
 use CoreBundle\Entity\Show;
 use CoreBundle\Helper\ErrorWrapper;
-use CoreBundle\Helper\RestfulJsonResponse;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\CommentNormalizer;
 use CoreBundle\Normalizer\PaginatorNormalizer;
@@ -17,7 +17,6 @@ use CoreBundle\Repository\CommentRepository;
 use CoreBundle\Repository\ShowRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Proxies\__CG__\CoreBundle\Entity\Comment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;

@@ -64,7 +64,7 @@ class AuthenticationHandler implements AuthenticationFailureHandlerInterface, Au
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
         $normalizer =  new Serializer([new WrapperNormalizer()]);
-        return new JsonResponse($normalizer->normalize(new SuccessWrapper("Authenticated Successful")),400);
+        return new JsonResponse($normalizer->normalize(new SuccessWrapper("Authenticated Successful")),200);
     }
 
 }

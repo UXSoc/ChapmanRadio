@@ -66,7 +66,7 @@ class User implements AdvancedUserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="phone", type="string", length=30, nullable=false)
+     * @ORM\Column(name="phone", type="string", length=30, nullable=true)
      */
     private $phone;
 
@@ -80,7 +80,7 @@ class User implements AdvancedUserInterface
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="last_login", type="datetime", nullable=false)
+     * @ORM\Column(name="last_login", type="datetime", nullable=true)
      */
     private $lastLogin;
 

@@ -34,3 +34,4 @@ security:
                 check_path: /login
                 success_handler: core.authentication_handler
                 failure_handler: core.authentication_handler
+                require_previous_session: false

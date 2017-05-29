@@ -38,7 +38,6 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, C
     {
         $faker = Faker\Factory::create();
 
-
         //generate DJs
         for ($i = 0; $i < 50; $i++)
         {
@@ -95,6 +94,18 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, C
         return $user;
     }
 
+
+
+    /**
+     * @param \Faker\Generator $faker
+     * @return \CoreBundle\Entity\Staff
+     */
+    public  function  generateStaff($faker)
+    {
+        $staff = new \CoreBundle\Entity\Staff();
+        return $staff;
+    }
+
     /**
      * @param \Faker\Generator $faker
      * @return \CoreBundle\Entity\Dj
@@ -106,16 +117,6 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, C
         $dj->setDescription($faker->paragraphs($nb = 3, $asText = true));
         $dj->setAttendWorkshop($faker->boolean());
         return $dj;
-    }
-
-    /**
-     * @param \Faker\Generator $faker
-     * @return \CoreBundle\Entity\Staff
-     */
-    public  function  generateStaff($faker)
-    {
-        $staff = new \CoreBundle\Entity\Staff();
-        return $staff;
     }
 
 
