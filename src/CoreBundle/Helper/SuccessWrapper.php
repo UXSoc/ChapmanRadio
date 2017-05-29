@@ -16,6 +16,11 @@ class SuccessWrapper
     private $message;
     private $payload;
 
+    /**
+     * SuccessWrapper constructor.
+     * @param mixed $payload
+     * @param string $message
+     */
     function __construct($payload = null, $message = null)
     {
         $this->payload = $payload;

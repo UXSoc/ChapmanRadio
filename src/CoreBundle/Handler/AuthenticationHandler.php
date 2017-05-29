@@ -4,6 +4,7 @@ namespace CoreBundle\Handler;
 
 use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;
+use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -63,8 +64,8 @@ class AuthenticationHandler implements AuthenticationFailureHandlerInterface, Au
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
-        $normalizer =  new Serializer([new WrapperNormalizer()]);
-        return new JsonResponse($normalizer->normalize(new SuccessWrapper("Authenticated Successful")),200);
+        $normalizer =  new Serializer([new WrapperNormalizer(),new UserNormalizer()]);
+        return new JsonResponse($normalizer->normalize(new SuccessWrapper($token->getUser(),"Authenticated Successful")),200);
     }
 
 }

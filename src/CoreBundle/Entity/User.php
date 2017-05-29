@@ -122,15 +122,11 @@ class User implements AdvancedUserInterface
     /**
      * @var boolean
      *
-     * @ORM\Column(name="confirmed", type="boolean", nullable=true)
+     * @ORM\Column(name="confirmed", type="boolean", nullable=false)
      */
-    private $confirmed;
+    private $confirmed = 0;
 
 
-    /**
-     * @Assert\Length(max=4096)
-     */
-    private $plainPassword;
 
     /**
      * @var Dj
@@ -255,14 +251,7 @@ class User implements AdvancedUserInterface
     {
         $this->studentId = $id;
     }
-    public function getPlainPassword()
-    {
-        return $this->plainPassword;
-    }
-    public function setPlainPassword($password)
-    {
-        $this->plainPassword = $password;
-    }
+
 
     public function setConfirmed($confirmed)
     {
@@ -335,16 +324,7 @@ class User implements AdvancedUserInterface
         return $this->username;
     }
 
-    /**
-     * Removes sensitive data from the user.
-     *
-     * This is important if, at any given point, sensitive information like
-     * the plain-text password is stored on this object.
-     */
-    public function eraseCredentials()
-    {
-        $this->plainPassword = "";
-    }
+
     /**
      * Checks whether the user's account has expired.
      *
@@ -410,6 +390,16 @@ class User implements AdvancedUserInterface
     public function isSuspended()
     {
         return $this->suspended;
+    }
+
+    /**
+     * Removes sensitive data from the user.
+     *
+     * This is important if, at any given point, sensitive information like
+     * the plain-text password is stored on this object.
+     */
+    public function eraseCredentials()
+    {
     }
 }
 

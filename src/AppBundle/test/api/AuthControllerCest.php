@@ -15,16 +15,12 @@ class AuthControllerCest
 {
     /** @var  User */
     private $user;
-    private $tempUser;
 
     public function _before(ApiTester $I)
     {
         /** @var User $user */
         $this->user  =  $I->factory()->create(User::class);
-        $this->tempUser = $I->factory()->instance(User::class);
-
     }
-
     public function _after(ApiTester $I)
     {
     }
@@ -60,8 +56,7 @@ class AuthControllerCest
         $I->assertEquals($user->getStudentId(),$user->getStudentId());
         $I->assertEquals($user->getUsername() ,$user->getUsername());
 
-
-
+        //TODO: can't test verification
     }
 
     /**
@@ -71,7 +66,18 @@ class AuthControllerCest
     {
         $I->login($this->user->getUsername(),"password");
         $I->seeResponseContainsJson(array(
-            "success" => true
+            "success" => true,
+            "data" => [
+                "username" => $this->user->getUsername(),
+                'roles' => ["ROLE_USER"]]
+        ));
+    }
+
+    public function failLogin(ApiTester $I)
+    {
+        $I->login($this->user->getUsername(),"wrongpassword");
+        $I->seeResponseContainsJson(array(
+            "success" => false
         ));
     }
 
