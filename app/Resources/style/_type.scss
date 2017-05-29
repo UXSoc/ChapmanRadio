@@ -64,36 +64,44 @@ h1.cr_header, h2.cr_header, h3.cr_header, h4.cr_header, h5.cr_header,h6.cr_heade
   background: url(img/gradient1.svg);
 }
 
-.whatsnew-widebox img {
-  height: 305px;
-  width: 490px;
+.wn-widebox img {
+  width: 100%;
 }
 
-.wn-text {
+.wn-smallbox img {
+  width: 100%;
+}
+
+.wn-widebox-text {
   height: 100px;
-  width: 490px;
+  background-color: rgba(58, 75, 58, .9);
+
+}
+
+.wn-smallbox-text {
+  height: 270.45px;
   background-color: rgba(58, 75, 58, .9);
 }
 
-.wn-text:after {
-  display: block;
-  height: 2px;
-  background-color: #79C043;
-  content: " ";
-  width: 468px;
-  margin: 0 auto;
-}
-
-.wn-title {
-  width: 100%;
+.wn-wb-title,
+.wn-sb-title {
   padding: 10px 5px 5px 10px;
   font-weight: bold;
   color: #ffffff;
 }
 
-.wn-desc {
-  width: 100%;
-  padding: 10px 5px 0px 10px;
+.wn-wb-desc,
+.wn-sb-desc {
+  padding: 10px 5px 0 10px;
   color: #BDBDBD;
-  margin-bottom: 8px;
+}
+
+.wn-widebox:after,
+.wn-smallbox:after {
+  display: block;
+  height: 2px;
+  background-color: #79C043;
+  content: " ";
+  width: 90%;
+  margin: 0 auto;
 }

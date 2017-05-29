@@ -40,18 +40,26 @@
             <div class="container">
                 <div class="whatsnew">
                     <div class="row">
-                        <div class="col-md-6 whatsnew-widebox">
+                        <div class="col-md-6 wn-widebox">
                             <img src="./../../../img/dj-wide.jpeg">
-                            <div class="wn-text">
-                                <p class="wn-title">Lorem ipsum dolor sit amet consectetur adispiscing elit</p>
-                                <p class="wn-desc">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa </p>
+                            <div class="wn-widebox-text">
+                                <p class="wn-wb-title">Lorem ipsum dolor sit amet consectetur adispiscing elit</p>
+                                <p class="wn-wb-desc">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa </p>
                             </div>
                         </div>
-                        <div class="col-md-3 whatsnew-smallbox">
-                            <img src="img/apple-laptop.jpg">
+                        <div class="col-md-3 wn-smallbox">
+                            <img src="./../../../img/apple-laptop.jpg">
+                            <div class="wn-smallbox-text">
+                                <p class="wn-sb-title">Lorem ipsum dolor sit amet consectetur adispiscing elit</p>
+                                <p class="wn-sb-desc">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa </p>
+                            </div>
                         </div>
-                        <div class="col-md-3 whatsnew-smallbox">
-                            <img src="img/concert.jpg">
+                        <div class="col-md-3 wn-smallbox">
+                            <img src="./../../../img/concert.jpeg">
+                            <div class="wn-smallbox-text">
+                                <p class="wn-sb-title">Lorem ipsum dolor sit amet consectetur adispiscing elit</p>
+                                <p class="wn-sb-desc">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa </p>
+                            </div>
                         </div>
                     </div>
                 </div>
