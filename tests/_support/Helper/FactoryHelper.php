@@ -1,12 +1,13 @@
 <?php
 
-namespace AppBundle\Helper;
+namespace Helper;
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
 
 use Codeception\Module\Symfony2;
 use Codeception\Test\Metadata;
 use Codeception\TestInterface;
+use CoreBundle\CoreBundle;
 use CoreBundle\Entity\Comment;
 use CoreBundle\Entity\Dj;
 use CoreBundle\Entity\Post;

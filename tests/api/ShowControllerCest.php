@@ -1,22 +1,24 @@
 <?php
-use AppBundle\ApiTester;
 use Codeception\Util\HttpCode;
 use CoreBundle\Entity\Post;
+use CoreBundle\Entity\Show;
 use CoreBundle\Entity\User;
 
-class BlogControllerCest
+/**
+ * Created by PhpStorm.
+ * User: michaelpollind
+ * Date: 5/29/17
+ * Time: 2:23 PM
+ */
+class ShowControllerCest
 {
-    private $posts = array();
+    private $shows = array();
 
     public function _before(ApiTester $I)
     {
-        $users = $I->factory()->seed(10,User::class);
+        /** @var Show $show */
+        $this->shows = $I->factory()->seed(20,Show::class);
 
-        $this->posts = $I->factory()->seed(20,Post::class,[
-            'author' => function($object,$save) use ($users){
-                return $users[array_rand($users,1)];
-            }
-        ]);
 
     }
     public function _after(ApiTester $I)
@@ -27,9 +29,9 @@ class BlogControllerCest
     /**
      * @param ApiTester $I
      */
-    public function tryGetPosts(ApiTester $I)
+    public function tryGetShows(ApiTester $I)
     {
-        $I->sendGET('/api/v3/post');
+        $I->sendGET('/api/v3/show');
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->isRestfulSuccessResponse();
@@ -42,23 +44,21 @@ class BlogControllerCest
                     'token' => 'string',
                     'slug' => 'string',
                     'name' => 'string',
+                    'description' => 'string',
                     'created_at'=> 'array',
                     'updated_at' => 'array',
-                    'excerpt' => 'string',
-                    'categories' => 'null|array',
-                    'tags' => 'null|array',
-                    'is_pinned' => 'integer'
+                    'enable_comments' => 'boolean',
                 ]
             ]
         ],'$.data');
     }
 
-    public function tryGetPost(ApiTester $I)
+    public function tryGetShow(ApiTester $I)
     {
-        /** @var Post $post */
-        $post = $this->posts[array_rand($this->posts,1)];
+        /** @var Show $show */
+        $show = $this->shows[array_rand($this->shows,1)];
 
-        $I->sendGET('/api/v3/post/'.$post->getToken().'/'.$post->getSlug());
+        $I->sendGET('/api/v3/show/'.$show->getToken().'/'.$show->getSlug());
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->isRestfulSuccessResponse();
@@ -67,38 +67,35 @@ class BlogControllerCest
                 'token' => 'string',
                 'slug' => 'string',
                 'name' => 'string',
+                'description' => 'string',
                 'created_at'=> 'array',
                 'updated_at' => 'array',
-                'excerpt' => 'string',
-                'categories' => 'null|array',
-                'tags' => 'null|array',
-                'is_pinned' => 'integer'
+                'enable_comments' => 'boolean'
             ]
         ]);
     }
 
-    public function tryToGetPostWithInvalidSlug(ApiTester $I)
+    public function tryToGetShowWithInvalidSlug(ApiTester $I)
     {
-        /** @var Post $post */
-        $post = $this->posts[array_rand($this->posts,1)];
+        /** @var Show $show */
+        $show = $this->shows[array_rand($this->shows,1)];
 
-        $I->sendGET('/api/v3/post/'.$post->getToken().'/'."wrongslug");
+        $I->sendGET('/api/v3/show/'.$show->getToken().'/'."wrongslug");
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(HttpCode::GONE);
         $I->isRestfulFailedResponse();
 
     }
 
-    public function tryToGetPostWithInvalidToken(ApiTester $I)
+    public function tryToGetShowWithInvalidToken(ApiTester $I)
     {
-        /** @var Post $post */
-        $post = $this->posts[array_rand($this->posts,1)];
+        /** @var Show $show */
+        $post = $this->shows[array_rand($this->shows,1)];
 
-        $I->sendGET('/api/v3/post/apples/'.$post->getSlug());
+        $I->sendGET('/api/v3/post/show/'.$post->getSlug());
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(HttpCode::GONE);
         $I->isRestfulFailedResponse();
 
     }
-
 }

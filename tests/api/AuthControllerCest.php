@@ -1,8 +1,5 @@
 <?php
-namespace AppBundle\test\api;
-use AppBundle\ApiTester;
-use AppBundle\Helper\Api;
-use AppBundle\Helper\Step\Auth;
+
 use Codeception\Util\HttpCode;
 use CoreBundle\Entity\User;
 use CoreBundle\Repository\UserRepository;
@@ -10,6 +7,7 @@ use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\Tests\Common\DataFixtures\TestFixtures\UserFixture;
+use Helper\Step\UserStep;
 use League\FactoryMuffin\FactoryMuffin;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -64,7 +62,7 @@ class AuthControllerCest
     /**
      * @param ApiTester $I
      */
-    public function tryLoginWithUsername(ApiTester $I, \AppBundle\Helper\Step\Auth $auth)
+    public function tryLoginWithUsername(ApiTester $I, UserStep $auth)
     {
         $auth->loginUser($this->user->getUsername(),"password");
         $I->seeResponseContainsJson(array(
@@ -75,7 +73,7 @@ class AuthControllerCest
         $I->isRestfulSuccessResponse();
     }
 
-    public function tryLoginWithEmail(ApiTester $I, \AppBundle\Helper\Step\Auth $auth)
+    public function tryLoginWithEmail(ApiTester $I, UserStep $auth)
     {
         $auth->loginUser($this->user->getEmail(),"password");
         $I->seeResponseContainsJson(array(
@@ -86,7 +84,7 @@ class AuthControllerCest
         $I->isRestfulSuccessResponse();
     }
 
-    public function failLogin(ApiTester $I, \AppBundle\Helper\Step\Auth $auth)
+    public function failLogin(ApiTester $I, UserStep $auth)
     {
         $auth->loginUser($this->user->getUsername(),"wrongpassword");
         $I->isRestfulFailedResponse();
@@ -96,7 +94,7 @@ class AuthControllerCest
     /**
      * @param ApiTester $I
      */
-    public function TryGetStatus(ApiTester $I,Auth $auth)
+    public function TryGetStatus(ApiTester $I, UserStep $auth)
     {
         $auth->loginUser($this->user->getUsername(),"password");
 

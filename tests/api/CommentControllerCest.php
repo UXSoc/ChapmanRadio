@@ -1,6 +1,6 @@
 <?php
-use AppBundle\ApiTester;
 use CoreBundle\Entity\Comment;
+use Helper\Step\UserStep;
 
 /**
  * Created by PhpStorm.
@@ -12,7 +12,7 @@ class CommentControllerCest
 {
     /** @var  \CoreBundle\Entity\User */
     private  $user;
-    public function _before(ApiTester $I,\AppBundle\Helper\Step\Auth $auth)
+    public function _before(ApiTester $I,UserStep $auth)
     {
         $this->user = $auth->createUser();
 
@@ -21,7 +21,7 @@ class CommentControllerCest
     {
     }
 
-    public function tryUpdatePostNotLoggedIn(ApiTester $I,\AppBundle\Helper\Step\Auth $auth)
+    public function tryUpdatePostNotLoggedIn(ApiTester $I,UserStep $auth)
     {
         /** @var Comment $comment */
         $comment = $I->factory()->create(Comment::class,[
@@ -38,7 +38,7 @@ class CommentControllerCest
 
     }
 
-    public function tryUpdatePostAsWrongUser(ApiTester $I,\AppBundle\Helper\Step\Auth $auth)
+    public function tryUpdatePostAsWrongUser(ApiTester $I,UserStep $auth)
     {
         /** @var Comment $comment */
         $comment = $I->factory()->create(Comment::class,[
@@ -55,7 +55,7 @@ class CommentControllerCest
 
     }
 
-    public function tryUpdatePostAsStaff(ApiTester $I, \AppBundle\Helper\Step\Auth $auth)
+    public function tryUpdatePostAsStaff(ApiTester $I, UserStep $auth)
     {
         /** @var Comment $comment */
         $comment = $I->factory()->create(Comment::class,[
@@ -74,7 +74,7 @@ class CommentControllerCest
     }
 
 
-    public function tryUpdatePostAsUser(ApiTester $I,\AppBundle\Helper\Step\Auth $auth)
+    public function tryUpdatePostAsUser(ApiTester $I,UserStep $auth)
     {
         /** @var Comment $comment */
         $comment = $I->factory()->create(Comment::class,[

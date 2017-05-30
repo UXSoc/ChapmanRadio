@@ -1,5 +1,4 @@
 <?php
-namespace AppBundle;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Component\HttpKernel\Kernel;

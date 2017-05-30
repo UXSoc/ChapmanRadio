@@ -1,7 +1,7 @@
 <?php
-use AppBundle\ApiTester;
 use Codeception\Util\HttpCode;
 use CoreBundle\Entity\User;
+use Helper\Step\UserStep;
 
 /**
  * Created by PhpStorm.
@@ -23,7 +23,7 @@ class AccountControllerCest
     {
     }
 
-    public function tryChangePassword(ApiTester $I, \AppBundle\Helper\Step\Auth $auth)
+    public function tryChangePassword(ApiTester $I, UserStep $auth)
     {
         $auth->loginUser($this->user->getEmail(),"password");
         $I->seeResponseCodeIs(HttpCode::OK);
@@ -37,5 +37,6 @@ class AccountControllerCest
         $I->seeResponseCodeIs(HttpCode::OK);
 
     }
+
 
 }

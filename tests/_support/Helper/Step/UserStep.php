@@ -1,12 +1,12 @@
 <?php
-namespace AppBundle\Helper\Step;
+namespace Helper\Step;
 
-use AppBundle\ApiTester;
+use ApiTester;
 use CoreBundle\Entity\Dj;
 use CoreBundle\Entity\Staff;
 use CoreBundle\Entity\User;
 
-class Auth extends ApiTester
+class UserStep extends ApiTester
 {
 
     public function loginUser($username,$password)

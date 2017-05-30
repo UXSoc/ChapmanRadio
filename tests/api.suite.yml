@@ -1,10 +1,10 @@
-actor: ApiTester
+class_name: ApiTester
 modules:
     enabled:
         - Asserts
         - Symfony2:
-            app_path: '../../app'
-            var_path: '../../app'
+            app_path: 'app'
+            var_path: 'app'
         - PhpBrowser:
             url: 'http://localhost:8000'
         - REST:
@@ -13,6 +13,5 @@ modules:
         - Doctrine2:
             depends: Symfony2
             cleanup: true
-        - \AppBundle\Helper\Api
-        - \AppBundle\Helper\Fixtures
-        - \AppBundle\Helper\FactoryHelper
+        - \Helper\Api
+        - \Helper\FactoryHelper
