@@ -2,10 +2,7 @@ core:
     resource: '@CoreBundle/Controller/'
     type: annotation
 app:
-    resource: '@AppBundle/Controller/'
-    type: annotation
-dashboard:
-    resource: '@DashboardBundle/Controller/'
+    resource: '@RestfulBundle/Controller/'
     type: annotation
 logout:
     path: /logout

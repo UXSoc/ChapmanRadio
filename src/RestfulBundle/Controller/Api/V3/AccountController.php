@@ -1,9 +1,9 @@
 <?php
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
-namespace AppBundle\Controller\Api\V3;
+namespace RestfulBundle\Controller\Api\V3;
 
-use AppBundle\Validation\ChangePasswordType;
-use AppBundle\Validation\PasswordType;
+use RestfulBundle\Validation\ChangePasswordType;
+use RestfulBundle\Validation\PasswordType;
 use CoreBundle\Controller\BaseController;
 use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;

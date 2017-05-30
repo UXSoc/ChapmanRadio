@@ -13,7 +13,7 @@ security:
             memory: ~
 
     access_control:
-        - { path: ^/dashboard, roles: [ROLE_DJ,ROLE_STAFF]}
+        - { path: ^/api/v3/private, roles: [ROLE_DJ,ROLE_STAFF]}
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/logout$, role: IS_AUTHENTICATED_ANONYMOUSLY }
     firewalls:

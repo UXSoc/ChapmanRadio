@@ -1,5 +1,5 @@
 <?php
-namespace DashboardBundle\Controller\Api\V1;
+namespace RestfulBundle\Controller\Api\V3\Secure;
 
 use CoreBundle\Controller\BaseController;
 
@@ -9,16 +9,16 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 
 /**
- * @Route("/api/v3/")
+ * @Route("/api/v3/private")
  */
-class DashShowController extends BaseController
+class ShowController extends BaseController
 {
 
     /**
      * @Security("has_role('ROLE_DJ')")
      * @Route("show/{name}",
      *     options = { "expose" = true },
-     *     name="shows")
+     *     name="patch_show")
      * @Method({"PATCH"})
      */
     public function patchModifyShowAction(){
@@ -30,7 +30,7 @@ class DashShowController extends BaseController
      * @Security("has_role('ROLE_DJ') | has_role('ROLE_STAFF')")
      * @Route("show/{name}",
      *     options = { "expose" = true },
-     *     name="shows")
+     *     name="delete_show")
      * @Method({"PATCH"})
      */
     public function deleteModfiyShowAction(){
@@ -39,7 +39,7 @@ class DashShowController extends BaseController
 
     /**
      * @Security("has_role('ROLE_DJ')")
-     * @Route("show", options = { "expose" = true }, name="shows")
+     * @Route("post_show", options = { "expose" = true }, name="shows")
      * @Method({"POST"})
      */
     public function postCreateShowAction() {

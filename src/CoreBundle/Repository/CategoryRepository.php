@@ -42,7 +42,18 @@ class CategoryRepository extends EntityRepository
         return $result;
     }
 
-    public function findCategory($category)
+    public function findCategory($category,$limit = -1)
+    {
+        $qb = $this->createQueryBuilder("t");
+        $categories = $qb->where($qb->expr()->like('t.category',':category'))
+            ->setParameter("category",'%'. $category.'%')
+            ->getQuery();
+        if($limit > 0)
+            $categories->setMaxResults($limit);
+        return $categories->getResult();
+    }
+
+    public function getCategory($category)
     {
         return $this->findOneBy(["category" => $category]);
     }

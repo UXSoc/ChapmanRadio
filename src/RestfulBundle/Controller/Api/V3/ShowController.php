@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Controller\Api\V3;
+namespace RestfulBundle\Controller\Api\V3;
 
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 use CoreBundle\Controller\BaseController;
@@ -116,7 +116,9 @@ class ShowController extends BaseController
 
     /**
      * @Security("has_role('ROLE_USER')")
-     * @Route("show/{token}/{slug}/comment/{comment_token}", options = { "expose" = true }, name="post_show_comment")
+     * @Route("show/{token}/{slug}/comment/{comment_token}",
+     *     options = { "expose" = true },
+     *     name="post_show_comment")
      * @Method({"POST"})
      */
     public function postShowCommentAction(Request $request,$token,$slug,$comment_token = null){

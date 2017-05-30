@@ -1,5 +1,5 @@
 <?php
-namespace DashboardBundle\Controller\Api\V1;
+namespace RestfulBundle\Controller\Api\V3\Secure;
 
 use CoreBundle\Controller\BaseController;
 
@@ -12,15 +12,16 @@ use CoreBundle\Normalizer\PaginatorNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\PostRepository;
+use CoreBundle\Repository\TagRepository;
 use CoreBundle\Security\PostVoter;
+use Symfony\Component\HttpFoundation\Request;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\HttpFoundation\Request;
-
 
 /**
- * @Route("/dashboard/api/v1/")
+ * @Route("/api/v3/private")
  */
 class BlogController extends BaseController
 {
@@ -87,10 +88,10 @@ class BlogController extends BaseController
      * @Method({"DELETE"})
      */
     public function deletePostAction(Request $request,$token,$slug){
-        /** @var PostRepository $blogRepository */
-        $blogRepository = $this->get('core.post_repository');
+        /** @var PostRepository $postRepository */
+        $postRepository = $this->get('core.post_repository');
         /** @var Post $post */
-        $post = $blogRepository->findOneBy(['token' => $token,'slug' => $slug]);
+        $post = $postRepository->getPostByTokenAndSlug($token,$slug);
 
         if($post == null)
             return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Blog Post Not Found"),410);
@@ -129,6 +130,17 @@ class BlogController extends BaseController
         }
         if($post->getTags()->containsKey($tag))
             return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Duplicate Tag Found"),400);
+
+        /** @var TagRepository $tagRepository */
+        $tagRepository = $this->get("core.tag_repository");
+        $tag = $tagRepository->findOrCreateTag($tag);
+        $post->addTag($tag);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($post);
+        $em->flush();
+
+        return $this->restful([new WrapperNormalizer()],new SuccessWrapper(null,"Tag added"));
 
 
     }

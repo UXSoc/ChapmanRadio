@@ -32,6 +32,11 @@ class PostRepository extends EntityRepository
             ->getSingleResult();
     }
 
+    public function getPostByTokenAndSlug($token,$slug)
+    {
+        return $this->findOneBy(["token" => $token,"slug" => $slug]);
+    }
+
     /**
      * @param Post $post
      * @param  $tag

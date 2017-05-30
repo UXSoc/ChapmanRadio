@@ -2,21 +2,19 @@
 /**
  * Created by PhpStorm.
  * User: michaelpollind
- * Date: 5/26/17
- * Time: 11:37 AM
+ * Date: 5/30/17
+ * Time: 9:26 AM
  */
 
 namespace CoreBundle\Normalizer;
 
 
-use CoreBundle\Entity\Tag;
-use phpDocumentor\Reflection\Types\Scalar;
+use CoreBundle\Entity\Genre;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\SerializerAwareInterface;
-use Symfony\Component\Serializer\SerializerAwareTrait;
+use Symfony\Component\Serializer\Normalizer\scalar;
 
-class TagNormalizer implements NormalizerInterface, NormalizerAwareInterface
+class GenreNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     /** @var  NormalizerInterface */
     private  $normalizer;
@@ -34,7 +32,7 @@ class TagNormalizer implements NormalizerInterface, NormalizerAwareInterface
     /**
      * Normalizes an object into a set of arrays/scalars.
      *
-     * @param Tag $object object to normalize
+     * @param Genre $object object to normalize
      * @param string $format format the normalization result will be encoded as
      * @param array $context Context options for the normalizer
      *
@@ -42,7 +40,7 @@ class TagNormalizer implements NormalizerInterface, NormalizerAwareInterface
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        return $object->getTag();
+        return $object->getGenre();
     }
 
     /**
@@ -55,6 +53,6 @@ class TagNormalizer implements NormalizerInterface, NormalizerAwareInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof Tag;
+        return $data instanceof Genre;
     }
 }

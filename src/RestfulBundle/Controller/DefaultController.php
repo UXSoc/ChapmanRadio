@@ -1,6 +1,6 @@
 <?php
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
-namespace AppBundle\Controller;
+namespace RestfulBundle\Controller;
 
 use CoreBundle\Controller\BaseController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;

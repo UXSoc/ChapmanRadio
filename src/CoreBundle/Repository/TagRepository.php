@@ -24,7 +24,7 @@ class TagRepository  extends EntityRepository
         $result = null;
         $qb =  $this->createQueryBuilder('t');
         try {
-            $result = $qb->where($qb->expr()->eq("tag", ":tag"))
+            $result = $qb->where($qb->expr()->eq("t.tag", ":tag"))
                 ->setParameter("tag", $tag)
                 ->getQuery()
                 ->getSingleResult();
@@ -40,7 +40,19 @@ class TagRepository  extends EntityRepository
         return $result;
     }
 
-    public function findTag($tag)
+    public function findTag($tag,$limit = -1)
+    {
+        $qb = $this->createQueryBuilder("t");
+        $tags = $qb->where($qb->expr()->like('t.tag',':tag'))
+            ->setParameter("tag",'%'. $tag.'%')
+            ->getQuery();
+        if($limit > 0)
+            $tags->setMaxResults($limit);
+        return $tags->getResult();
+    }
+
+
+    public function getTag($tag)
     {
         return $this->findOneBy(["tag" => $tag]);
     }

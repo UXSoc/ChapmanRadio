@@ -39,7 +39,7 @@ class CategoryNormalizer implements NormalizerInterface, NormalizerAwareInterfac
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        return [$object->getCategory()];
+        return $object->getCategory();
     }
 
     /**

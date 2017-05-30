@@ -1,7 +1,7 @@
 <?php
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
-namespace AppBundle\Controller\Api\V3;
-use AppBundle\Validation\PasswordType;
+namespace RestfulBundle\Controller\Api\V3;
+use RestfulBundle\Validation\PasswordType;
 use CoreBundle\Controller\BaseController;
 use CoreBundle\Entity\User;
 use CoreBundle\Helper\ErrorWrapper;

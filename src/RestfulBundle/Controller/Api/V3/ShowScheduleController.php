@@ -1,5 +1,5 @@
 <?php
-namespace AppBundle\Controller\Api\V3;
+namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Controller\BaseController;
 
