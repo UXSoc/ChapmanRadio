@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * BlogCategory
  *
  * @ORM\Table(name="tag")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="CoreBundle\Repository\TagRepository")
  *
  */
 class Tag

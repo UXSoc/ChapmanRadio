@@ -37,4 +37,16 @@ class ApiTester extends \Codeception\Actor
         ));
     }
 
+
+    public function loginUser($username,$password)
+    {
+        $I = $this;
+        $I->sendPOST('/login',[
+            "_username" => $username,
+            "_password" => $password,
+            "_remember_me" => false
+        ]);
+        $I->seeResponseIsJson();
+    }
+
 }

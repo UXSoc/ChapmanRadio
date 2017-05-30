@@ -10,6 +10,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * User
  *
@@ -135,13 +136,13 @@ class User implements AdvancedUserInterface
     /**
      * @var ArrayCollection
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="Role", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="Role", mappedBy="user", cascade={"persist"})
      *
      */
     private $roles;
 
 
-    public  function __construct()
+    public function __construct()
     {
         $this->roles = new ArrayCollection();
     }
@@ -153,7 +154,7 @@ class User implements AdvancedUserInterface
      */
     public function updatedTimestamps()
     {
-        $this->updatedAt =  new \DateTime('now');
+        $this->updatedAt = new \DateTime('now');
 
         if ($this->createdAt == null) {
             $this->token = Keygen::alphanum(10)->generate();
@@ -161,86 +162,109 @@ class User implements AdvancedUserInterface
         }
     }
 
-    public function getDj(){
+    public function getDj()
+    {
         return $this->dj;
     }
 
-    public function setDj($dj){
+    public function setDj($dj)
+    {
         $this->dj = $dj;
     }
 
-    public  function  isDj(){
+    public function isDj()
+    {
         return !is_null($this->dj);
     }
 
-    public  function updateLastLogin()
+    public function updateLastLogin()
     {
         $this->lastLogin = new \DateTime('now');
     }
 
-    public  function getLastLogin()
+    public function getLastLogin()
     {
         return $this->lastLogin;
     }
 
-    public  function getUpdatedAt()
+    public function getUpdatedAt()
     {
         return $this->updatedAt;
     }
 
-    public  function getCreatedAt()
+    public function getCreatedAt()
     {
         return $this->createdAt;
     }
 
-    public  function getName()
+    public function getName()
     {
         return $this->name;
     }
-    public  function setName($name)
+
+    public function setName($name)
     {
         $this->name = $name;
     }
-    public  function setUsername($username)
+
+    public function setUsername($username)
     {
         $this->username = $username;
     }
+
     public function getId()
     {
         return $this->id;
     }
-    public  function  setFacebookId($id)
+
+    public function setFacebookId($id)
     {
         $this->fbid = $id;
     }
-    public  function  getEmail()
+
+    public function getEmail()
     {
         return $this->email;
     }
-    public  function  setEmail($email)
+
+    public function setEmail($email)
     {
         $this->email = $email;
     }
-    public  function  getPhone()
+
+    public function getPhone()
     {
         return $this->phone;
     }
+
     public function setPhone($phone)
     {
         $this->phone = $phone;
     }
 
+    /**
+     * Retrieves Chapman Student Id
+     * @return string
+     */
     public function getStudentId()
     {
         return $this->studentId;
     }
 
+    /**
+     * Sets the student Id
+     * @param $id
+     */
     public function setStudentId($id)
     {
         $this->studentId = $id;
     }
 
 
+    /**
+     * Marks the user as confirmed
+     * @param $confirmed
+     */
     public function setConfirmed($confirmed)
     {
         $this->confirmed = $confirmed;
@@ -260,13 +284,13 @@ class User implements AdvancedUserInterface
      * and populated in any number of different ways when the user object
      * is created.
      *
-     * @return (Role|string)[] The user roles
+     * @return Role The user roles
      */
     public function getRoles()
     {
         $roles = [];
         $roles[] = new \Symfony\Component\Security\Core\Role\Role("ROLE_USER");
-        if($this->isDj())
+        if ($this->isDj())
             $roles[] = new \Symfony\Component\Security\Core\Role\Role("ROLE_DJ");
         $roles = array_merge($roles, $this->roles->toArray());
 
@@ -295,10 +319,16 @@ class User implements AdvancedUserInterface
     {
         return $this->password;
     }
-    public  function setPassword($password)
+
+    /**
+     * set the user password
+     * @param $password
+     */
+    public function setPassword($password)
     {
         $this->password = $password;
     }
+
     /**
      * Returns the salt that was originally used to encode the password.
      *
@@ -310,6 +340,7 @@ class User implements AdvancedUserInterface
     {
         return null;
     }
+
     /**
      * Returns the username used to authenticate the user.
      *
@@ -335,6 +366,7 @@ class User implements AdvancedUserInterface
     {
         return true;
     }
+
     /**
      * Checks whether the user is locked.
      *
@@ -349,6 +381,7 @@ class User implements AdvancedUserInterface
     {
         return (!$this->suspended);
     }
+
     /**
      * Checks whether the user's credentials (password) has expired.
      *
@@ -363,6 +396,7 @@ class User implements AdvancedUserInterface
     {
         return true;
     }
+
     /**
      * Checks whether the user is enabled.
      *
@@ -378,11 +412,19 @@ class User implements AdvancedUserInterface
         return $this->confirmed;
     }
 
+    /**
+     * User token to hide user ids
+     * @return string
+     */
     public function getToken()
     {
         return $this->token;
     }
 
+    /**
+     * tells if the user is suspended
+     * @return bool
+     */
     public function isSuspended()
     {
         return $this->suspended;

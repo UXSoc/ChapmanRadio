@@ -2,13 +2,13 @@
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace CoreBundle\Handler;
 
+use CoreBundle\Entity\User;
 use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
-use function PHPSTORM_META\type;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -16,7 +16,6 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\InsufficientAuthenticationException;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
@@ -25,16 +24,15 @@ use Symfony\Component\Serializer\Serializer;
 
 class AuthenticationHandler implements AuthenticationEntryPointInterface,AuthenticationFailureHandlerInterface, AuthenticationSuccessHandlerInterface
 {
-
-
     private $router;
     private $session;
+    private $registry;
 
-
-    public function __construct(RouterInterface $router, Session $session)
+    public function __construct(RouterInterface $router, Session $session, Registry $registry)
     {
         $this->router = $router;
         $this->session = $session;
+        $this->registry = $registry;
     }
 
     /**
@@ -66,6 +64,15 @@ class AuthenticationHandler implements AuthenticationEntryPointInterface,Authent
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
+
+        /** @var User $user */
+        $user = $token->getUser();
+        $user->updateLastLogin();
+
+        $em = $this->registry->getManager();
+        $em->persist($user);
+        $em->flush();
+
         $normalizer =  new Serializer([new WrapperNormalizer(),new UserNormalizer()]);
         return new JsonResponse($normalizer->normalize(new SuccessWrapper($token->getUser(),"Authenticated Successful")),200);
     }

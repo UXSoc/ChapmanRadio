@@ -2,7 +2,6 @@
 use CoreBundle\Entity\Comment;
 use CoreBundle\Entity\Role;
 use CoreBundle\Entity\User;
-use Helper\Step\UserStep;
 
 /**
  * Created by PhpStorm.
@@ -14,7 +13,7 @@ class CommentControllerCest
 {
     /** @var  \CoreBundle\Entity\User */
     private  $user;
-    public function _before(ApiTester $I,UserStep $auth)
+    public function _before(ApiTester $I)
     {
         $this->user = $I->factory()->create(User::class);
 
@@ -23,7 +22,7 @@ class CommentControllerCest
     {
     }
 
-    public function tryUpdatePostNotLoggedIn(ApiTester $I,UserStep $auth)
+    public function tryUpdatePostNotLoggedIn(ApiTester $I)
     {
         /** @var Comment $comment */
         $comment = $I->factory()->create(Comment::class,[
@@ -40,13 +39,13 @@ class CommentControllerCest
 
     }
 
-    public function tryUpdatePostAsWrongUser(ApiTester $I,UserStep $auth)
+    public function tryUpdatePostAsWrongUser(ApiTester $I)
     {
         /** @var Comment $comment */
         $comment = $I->factory()->create(Comment::class,[
             "user" => $I->factory()->create(User::class)
         ]);
-        $auth->loginUser($this->user->getEmail(), "password");
+        $I->loginUser($this->user->getEmail(), "password");
         $I->sendPATCH('/api/v3/comment/' . $comment->getToken());
         $I->seeResponseIsJson();
         $I->isRestfulFailedResponse();
@@ -57,7 +56,7 @@ class CommentControllerCest
 
     }
 
-    public function tryUpdatePostAsStaff(ApiTester $I, UserStep $auth)
+    public function tryUpdatePostAsStaff(ApiTester $I)
     {
         /** @var Comment $comment */
         $comment = $I->factory()->create(Comment::class,[
@@ -66,7 +65,7 @@ class CommentControllerCest
         /** @var User $staff */
         $staff = $I->factory()->create(User::class);
         $staff->addRole(new Role(Role::ROLE_STAFF));
-        $auth->loginUser($staff->getEmail(), "password");
+        $I->loginUser($staff->getEmail(), "password");
 
         $I->sendPATCH('/api/v3/comment/' . $comment->getToken(),["content" => "here is the updated comment"]);
         $I->seeResponseIsJson();
@@ -78,13 +77,13 @@ class CommentControllerCest
     }
 
 
-    public function tryUpdatePostAsUser(ApiTester $I,UserStep $auth)
+    public function tryUpdatePostAsUser(ApiTester $I)
     {
         /** @var Comment $comment */
         $comment = $I->factory()->create(Comment::class,[
             "user" => $this->user
         ]);
-        $auth->loginUser($this->user->getEmail(), "password");
+        $I->loginUser($this->user->getEmail(), "password");
 
         $I->sendPATCH('/api/v3/comment/' . $comment->getToken(),["content" => "here is the updated comment"]);
         $I->seeResponseIsJson();

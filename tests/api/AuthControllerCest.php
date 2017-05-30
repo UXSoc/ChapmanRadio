@@ -7,7 +7,6 @@ use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\Tests\Common\DataFixtures\TestFixtures\UserFixture;
-use Helper\Step\UserStep;
 use League\FactoryMuffin\FactoryMuffin;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -62,9 +61,9 @@ class AuthControllerCest
     /**
      * @param ApiTester $I
      */
-    public function tryLoginWithUsername(ApiTester $I, UserStep $auth)
+    public function tryLoginWithUsername(ApiTester $I)
     {
-        $auth->loginUser($this->user->getUsername(),"password");
+        $I->loginUser($this->user->getUsername(),"password");
         $I->seeResponseContainsJson(array(
             "data" => [
                 "username" => $this->user->getUsername(),
@@ -73,9 +72,9 @@ class AuthControllerCest
         $I->isRestfulSuccessResponse();
     }
 
-    public function tryLoginWithEmail(ApiTester $I, UserStep $auth)
+    public function tryLoginWithEmail(ApiTester $I)
     {
-        $auth->loginUser($this->user->getEmail(),"password");
+        $I->loginUser($this->user->getEmail(),"password");
         $I->seeResponseContainsJson(array(
             "data" => [
                 "username" => $this->user->getUsername(),
@@ -84,9 +83,9 @@ class AuthControllerCest
         $I->isRestfulSuccessResponse();
     }
 
-    public function failLogin(ApiTester $I, UserStep $auth)
+    public function failLogin(ApiTester $I)
     {
-        $auth->loginUser($this->user->getUsername(),"wrongpassword");
+        $I->loginUser($this->user->getUsername(),"wrongpassword");
         $I->isRestfulFailedResponse();
 
     }
@@ -94,9 +93,9 @@ class AuthControllerCest
     /**
      * @param ApiTester $I
      */
-    public function TryGetStatus(ApiTester $I, UserStep $auth)
+    public function TryGetStatus(ApiTester $I)
     {
-        $auth->loginUser($this->user->getUsername(),"password");
+        $I->loginUser($this->user->getUsername(),"password");
 
         $I->sendGET('/api/v3/auth/status');
         $I->seeResponseIsJson();

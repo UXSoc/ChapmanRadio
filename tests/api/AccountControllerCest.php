@@ -1,7 +1,6 @@
 <?php
 use Codeception\Util\HttpCode;
 use CoreBundle\Entity\User;
-use Helper\Step\UserStep;
 
 /**
  * Created by PhpStorm.
@@ -23,9 +22,9 @@ class AccountControllerCest
     {
     }
 
-    public function tryChangePassword(ApiTester $I, UserStep $auth)
+    public function tryChangePassword(ApiTester $I)
     {
-        $auth->loginUser($this->user->getEmail(),"password");
+        $I->loginUser($this->user->getEmail(),"password");
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->sendPOST('/api/v3/account/new-password',[
             "oldPassword" => "password",
@@ -33,7 +32,7 @@ class AccountControllerCest
         ]);
         $I->isRestfulSuccessResponse();
         $I->seeResponseCodeIs(HttpCode::OK);
-        $auth->loginUser($this->user->getEmail(),"password2");
+        $I->loginUser($this->user->getEmail(),"password2");
         $I->seeResponseCodeIs(HttpCode::OK);
 
     }

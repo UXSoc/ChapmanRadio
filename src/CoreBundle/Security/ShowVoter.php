@@ -2,13 +2,13 @@
 namespace CoreBundle\Security;
 
 use CoreBundle\Entity\Comment;
+use CoreBundle\Entity\Post;
+use CoreBundle\Entity\Show;
 use CoreBundle\Entity\User;
-use CoreBundle\Repository\ShowRepository;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class CommentVoter extends  Voter
+class ShowVoter extends  Voter
 {
     const EDIT = 'edit';
     const VIEW = 'view';
@@ -35,11 +35,10 @@ class CommentVoter extends  Voter
             return false;
         }
 
-        if(!$subject instanceof Comment)
+        if(!$subject instanceof Post)
         {
             return false;
         }
-
         return true;
     }
 
@@ -49,11 +48,11 @@ class CommentVoter extends  Voter
      *
      * @param string $attribute
      * @param mixed $subject
-     * @param TokenInterface $token
+     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token
      *
      * @return bool
      */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token)
     {
         $user = $token->getUser();
         if(!$user instanceof User) {
@@ -65,30 +64,29 @@ class CommentVoter extends  Voter
             return true;
         }
 
-        /** @var Comment $post */
-        $comment = $subject;
+        /** @var Show $show */
+        $show = $subject;
 
         switch ($attribute){
             case self::VIEW:
-                return $this->canView($comment,$user);
+                return $this->canView($show,$user);
             case self::EDIT:
-                return $this->canEdit($token,$comment,$user);
+                return $this->canEdit($token,$show,$user);
         }
+
 
         throw new \LogicException('This code should not be reached!');
     }
 
-    private function canView(Comment $comment,User $user)
+    private function canView(Show $show,User $user)
     {
         return true;
     }
 
-    private  function canEdit($token,Comment $comment,User $user)
+    private  function canEdit($token,Show $show,User $user)
     {
-
-        if($comment->getUser() == $user) {
-            return true;
-        }
-        return false;
+        if(!$user->isDj())
+            return false;
+        return $show->getDjs()->contains($user->getDj());
     }
 }
