@@ -108,6 +108,23 @@ h1.cr_header, h2.cr_header, h3.cr_header, h4.cr_header, h5.cr_header,h6.cr_heade
   margin: 0 auto;
 }
 
+.schedulephoto img {
+  padding-bottom: 20px;
+  padding-top: 20px;
+}
+
+.schedulephoto:last-child {
+  padding-bottom: 0;
+}
+
+.schedulephoto:after {
+  display: block;
+  height: 2px;
+  background-color: #c4c4c4;
+  content: " ";
+  width: 100%;
+}
+
 .trackview img {
   width: 100%
 }
@@ -227,7 +244,92 @@ input[type=submit] {
   display:         flex;
 }
 
+// No padding trick for bootstrap columns
 .nopadding {
   padding: 0 !important;
   margin: 0 !important;
+}
+
+.schedule-bkgrnd {
+  height: 1024px;
+  background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url(img/schedule-back.jpeg);
+}
+
+.bold-date {
+  background-color: rgba(67, 90, 72, 0.8);
+  font-size: 150%;
+  font-weight: bold;
+  color: #ffffff;
+  width: 100%;
+  margin: 0;
+  padding: 10px 0 20px 10px;
+}
+
+.schedule-shows {
+  background-color: #ffffff;
+}
+
+.schedule-bar {
+  display: table;
+  background-color: rgba(67, 90, 72, 0.9);
+}
+
+.schedule-tab,
+.schedule-tab-today {
+  display: table-cell;
+  text-align: center;
+  color: #ffffff;
+  width: 6.666666%;
+  font-weight: bold;
+  padding: 5px;
+}
+
+.schedule-tab-today {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+.schedule-showname {
+  font-weight: bold;
+  font-size: 120%;
+  color: #007B0A;
+  padding: 5px;
+  margin-bottom: 0;
+}
+
+.schedule-showdesc {
+  color: #007b0a;
+  padding: 5px;
+}
+
+.schedule-epdesc {
+  color: #4f4f4f;
+  padding: 0 5px 50px 5px;
+}
+
+// 00:00, 01:00, etc.
+.schedule-time {
+  color: #000000;
+  width: 100%;
+  font-size: 120%;
+  padding: 5px 0 0 20px;
+}
+
+// EARLY, MORNING, AFTERNOON, EVENING, LATE
+.schedule-time-heading {
+  font-size: 120%;
+  font-weight: bold;
+  padding: 20px 0 0 20px;
+}
+
+.schedule-nextday {
+  background-color: rgba(0, 123, 10, 0.24);
+  color: #007B0A;
+  text-align: right;
+  font-weight: bold;
+}
+
+.nextday {
+  padding: 20px;
+  margin: 0;
 }
