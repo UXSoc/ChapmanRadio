@@ -41,7 +41,9 @@ class AccountNormalizer implements NormalizerInterface, NormalizerAwareInterface
     public function normalize($object, $format = null, array $context = array())
     {
         $result =  [
-            "roles" => $object->getRoles(),
+            "roles" => array_map(function ($object) use ($format,$context){
+                return $object->getRole();
+            },$object->getRoles()),
             "username" => $object->getUsername(),
             "created_at" => $object->getCreatedAt(),
             "updated_at" => $object->getUpdatedAt(),

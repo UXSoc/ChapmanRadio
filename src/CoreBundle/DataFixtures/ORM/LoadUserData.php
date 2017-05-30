@@ -49,16 +49,6 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, C
         }
         $manager->flush();
 
-        //generate staff
-        for ($i = 0; $i < 10; $i++)
-        {
-            $user = $this->generateUser($faker);
-            $staff = $this->generateStaff($faker);
-            $manager->persist($user);
-            $staff->setUser($user);
-            $manager->persist($staff);
-        }
-
         //generate users
         for ($i = 0; $i < 500; $i++)
         {
@@ -96,15 +86,6 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, C
 
 
 
-    /**
-     * @param \Faker\Generator $faker
-     * @return \CoreBundle\Entity\Staff
-     */
-    public  function  generateStaff($faker)
-    {
-        $staff = new \CoreBundle\Entity\Staff();
-        return $staff;
-    }
 
     /**
      * @param \Faker\Generator $faker

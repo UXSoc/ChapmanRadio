@@ -4,14 +4,12 @@ namespace CoreBundle\Entity;
 
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
 use Keygen\Keygen;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
-use Symfony\Component\Security\Core\User\EquatableInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * User
  *
@@ -127,22 +125,25 @@ class User implements AdvancedUserInterface
     private $confirmed = 0;
 
 
-
     /**
      * @var Dj
      * @ORM\OneToOne(targetEntity="Dj", mappedBy="user")
      */
     private $dj;
 
+
     /**
-     * @var Dj
-     * @ORM\OneToOne(targetEntity="Staff", mappedBy="user")
+     * @var ArrayCollection
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="Role", mappedBy="user")
+     *
      */
-    private $staff;
+    private $roles;
 
 
     public  function __construct()
     {
+        $this->roles = new ArrayCollection();
     }
 
     /**
@@ -170,19 +171,6 @@ class User implements AdvancedUserInterface
 
     public  function  isDj(){
         return !is_null($this->dj);
-    }
-
-    public function getStaff(){
-        return $this->staff;
-    }
-
-    public  function setStaff($staff)
-    {
-        $this->staff = $staff;
-    }
-
-    public  function  isStaff(){
-        return !is_null($this->staff);
     }
 
     public  function updateLastLogin()
@@ -277,13 +265,21 @@ class User implements AdvancedUserInterface
     public function getRoles()
     {
         $roles = [];
-        $roles[] = "ROLE_USER";
+        $roles[] = new \Symfony\Component\Security\Core\Role\Role("ROLE_USER");
         if($this->isDj())
-            $roles[] = "ROLE_DJ";
-        if($this->isStaff())
-            $roles[] = "ROLE_STAFF";
+            $roles[] = new \Symfony\Component\Security\Core\Role\Role("ROLE_DJ");
+        $roles = array_merge($roles, $this->roles->toArray());
 
         return $roles;
+    }
+
+    /**
+     * @param Role $role
+     */
+    public function addRole($role)
+    {
+
+        $this->roles->add($role);
     }
 
 

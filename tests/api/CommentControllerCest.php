@@ -1,5 +1,7 @@
 <?php
 use CoreBundle\Entity\Comment;
+use CoreBundle\Entity\Role;
+use CoreBundle\Entity\User;
 use Helper\Step\UserStep;
 
 /**
@@ -14,7 +16,7 @@ class CommentControllerCest
     private  $user;
     public function _before(ApiTester $I,UserStep $auth)
     {
-        $this->user = $auth->createUser();
+        $this->user = $I->factory()->create(User::class);
 
     }
     public function _after(ApiTester $I)
@@ -25,7 +27,7 @@ class CommentControllerCest
     {
         /** @var Comment $comment */
         $comment = $I->factory()->create(Comment::class,[
-            "user" => $auth->createUser()
+            "user" => $I->factory()->create(User::class)
         ]);
         $I->sendPATCH('/api/v3/comment/' . $comment->getToken());
         $I->seeResponseIsJson();
@@ -42,7 +44,7 @@ class CommentControllerCest
     {
         /** @var Comment $comment */
         $comment = $I->factory()->create(Comment::class,[
-            "user" => $auth->createUser()
+            "user" => $I->factory()->create(User::class)
         ]);
         $auth->loginUser($this->user->getEmail(), "password");
         $I->sendPATCH('/api/v3/comment/' . $comment->getToken());
@@ -59,9 +61,11 @@ class CommentControllerCest
     {
         /** @var Comment $comment */
         $comment = $I->factory()->create(Comment::class,[
-            "user" => $auth->createUser()
+            "user" => $I->factory()->create(User::class)
         ]);
-        $staff = $auth->createStaff();
+        /** @var User $staff */
+        $staff = $I->factory()->create(User::class);
+        $staff->addRole(new Role(Role::ROLE_STAFF));
         $auth->loginUser($staff->getEmail(), "password");
 
         $I->sendPATCH('/api/v3/comment/' . $comment->getToken(),["content" => "here is the updated comment"]);
