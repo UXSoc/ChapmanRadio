@@ -121,7 +121,19 @@
 
             <div class="container">
                 <h1 class="cr_header">Show of the Week</h1>
-
+                <div class="showoftheweek">
+                    <div class="row row-eq-height">
+                        <div class="col-md-7 trackview nopadding">
+                            <img src="./../../../img/showoftheweek.jpg">
+                        </div>
+                        <div class="col-md-5 sotw-text nopadding">
+                            <p class="sotw-showname">pantherBuck$</p>
+                            <p class="sotw-djnames">Courtney Bankhead & Taylor Cox</p>
+                            <p class="sotw-desc">Not strictly pop. You will hear everything that has good acoustics, a beat, and vocals. Plus, we're pretty funny so please listen to us!</p>
+                            <a class="btn btn-full btncenter" href="#">VIEW EPISODES</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

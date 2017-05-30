@@ -98,7 +98,8 @@ h1.cr_header, h2.cr_header, h3.cr_header, h4.cr_header, h5.cr_header,h6.cr_heade
 
 .wn-widebox:after,
 .wn-smallbox:after,
-.lt-trackbox:after {
+.lt-trackbox:after,
+.showoftheweek:after {
   display: block;
   height: 2px;
   background-color: #79C043;
@@ -140,4 +141,93 @@ h1.cr_header, h2.cr_header, h3.cr_header, h4.cr_header, h5.cr_header,h6.cr_heade
   height: 35%;
   font-size: 80%;
   color: #ffffff;
+}
+
+.sotw-text {
+  background-color: rgba(58, 75, 58, .9);
+}
+
+.sotw-showname {
+  font-size: 200%;
+  font-weight: bold;
+  color: #ffffff;
+  padding: 20px 20px 0 20px;
+}
+
+.sotw-djnames {
+  margin: 20px 20px;
+  color: #ffffff;
+  font-size: 150%;
+}
+
+.sotw-desc {
+  margin: 20px;
+  line-height: 150%;
+  font-size: 110%;
+  color: #bdbdbd;
+  height: 50%;
+}
+
+/* ----- BUTTONS ----- */
+.btn:link,
+.btn:visited,
+input[type=submit] {
+  display: inline-block;
+  padding: 10px 30px;
+  font-weight: 300;
+  text-decoration: none;
+  border-radius: 200px;
+  transition: background-color 0.2s, border 0.2s, color 0.2s;
+}
+
+.btn-full:link,
+.btn-full:visited,
+input[type=submit] {
+  background-color: #79c043;
+  border: 1px solid #79c043;
+  color: #fff;
+  margin: 0 auto;
+  width: 80%;
+  display: block;
+}
+
+.btn-ghost:link,
+.btn-ghost:visited {
+  border: 1px solid #79c043;
+  color: #79c043;
+}
+
+.btn:hover,
+.btn:active,
+input[type=submit]:hover,
+input[type=submit]:active {
+  background-color: #5e9434;
+}
+
+.btn-full:hover,
+.btn-full:active,
+input[type=submit] {
+  border: 1px solid #5e9434;
+}
+
+.btn-ghost:hover,
+.btn-ghost:active {
+  border: 1px solid #5e9434;
+  color: #fff;
+}
+
+/*
+ * Row with equal height columns
+ * --------------------------------------------------
+ */
+.row-eq-height {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display:         flex;
+}
+
+.nopadding {
+  padding: 0 !important;
+  margin: 0 !important;
 }
