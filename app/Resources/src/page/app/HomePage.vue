@@ -1,50 +1,13 @@
 <template>
     <div>
         <div class="homepage-gradient">
-            <div class="play-window">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-3 onair-left">
-                            Radiohead Logo
-                        </div>
-                        <div class="col-md-8">
-                            <div class="row">
-                                <div class="col-md-4 onair-listenlive">
-                                    DJ Picture & Listen Live
-                                </div>
-                                <div class="col-md-8 onair-description">
-                                    <div class="onair"><strong>On air</strong></div>
-                                    <div class="onair --onair-times">22:00 - 23:00</div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="showname"><strong>Planet Moon</strong></div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="showdesc">Cosmin TRG, Cleric and Sound of Vast!</div>
-                                        </div>
-                                    </div>
-                                    <div class="djnames">Ted Davis & Jackson Cripe</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-1 onair-right">
-                            next show
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <play-window></play-window>
 
             <div class="container">
                 <h1 class="cr_header">What's New</h1>
                 <div class="whatsnew">
                     <div class="row">
-                        <div class="col-md-6 wn-widebox">
-                            <img src="./../../../img/dj-wide.jpeg">
-                            <div class="wn-widebox-text">
-                                <p class="wn-wb-title">Lorem ipsum dolor sit amet consectetur adispiscing elit</p>
-                                <p class="wn-wb-desc">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa </p>
-                            </div>
-                        </div>
+                        <wide-box></wide-box>
                         <div class="col-md-3 wn-smallbox">
                             <img src="./../../../img/apple-laptop.jpg">
                             <div class="wn-smallbox-text">
@@ -140,6 +103,8 @@
 </template>
 
 <script>
+    import PlayWindow from '../../components/PlayWindow.vue'
+    import WideBox from '../../components/WideBox.vue'
     export default{
         data () {
             return {}
@@ -150,7 +115,8 @@
         watch: {
         },
         components: {
-
+            PlayWindow,
+            WideBox
         }
     }
 </script>
