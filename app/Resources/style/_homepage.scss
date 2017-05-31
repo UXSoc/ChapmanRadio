@@ -1,63 +1,116 @@
+$accent-color: #79C043;
+$white: #fff;
+
 body {
   background-color: #313D31;
 }
 
-h1.cr_header, h2.cr_header, h3.cr_header, h4.cr_header, h5.cr_header,h6.cr_header{
-  margin-left: 10px;
-  border-left-color: #79C043;
+p {
+  margin: 0;
+}
+
+// What's New, Latest Tracks, Show of the Week, etc.
+h1.cr_header,
+h2.cr_header,
+h3.cr_header,
+h4.cr_header,
+h5.cr_header,
+h6.cr_header {
+  border-left-color: $accent-color;
   border-left-width: 7px;
   border-left-style: solid;
   padding-left: 10px;
-  color: #ffffff;
+  color: $white;
   font-weight: normal;
 }
 
+/*---------------------
+     PLAY WINDOW
+----------------------*/
 .play-window {
   padding-top: 20px;
 }
 
-.onair-left {
+.radiohead-logo {
   height: 132px;
   background: #2E4A34;
 }
 
-.onair-listenlive {
+.oa-picture {
   height: 132px;
-  background: #E1D8CD;
+  background-image: url('./../img/grimshaw.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  position: relative;
+  text-align: center;
 }
 
-.onair-description {
-  height: 132px;
-  background: #FFFFFF;
+.oa-btn:link,
+.oa-btn:visited,
+input[type=submit] {
+  display: inline-block;
+  padding: 5px 30px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.2s, border 0.2s, color 0.2s;
 }
 
-.onair-right {
+.oa-btn-full:link,
+.oa-btn-full:visited,
+input[type=submit] {
+  background-color: rgba(121, 192, 67, 0.9);
+  border: 1px solid rgba(121, 192, 67, 0.9);
+  color: $white;
+  width: 80%;
+  position: absolute;
+  bottom: 5px;
+  right: 30px;
+}
+
+.oa-btn:hover,
+.oa-btn:active,
+input[type=submit]:hover,
+input[type=submit]:active {
+  background-color: $accent-color;
+}
+
+.oa-btn-full:hover,
+.oa-btn-full:active,
+input[type=submit] {
+  border: 1px solid $accent-color;
+}
+
+.oa-desc {
+  height: 132px;
+  background: $white;
+}
+
+.oa-nextshow {
   height: 132px;
   background: #4F4F4F;
 }
 
-.onair {
-  display: inline-block;
-  padding-bottom: 15px;
+.oa-timeslot {
+  div {
+    display: inline-block;
+  }
+  padding-top: 5px;
 }
 
-.--onair-times {
+.oa-startendtime {
+  padding-bottom: 15px;
   padding-left: 10px;
 }
 
-.showname {
+.oa-showname {
   padding-bottom: 5px;
   font-size: 120%;
 }
 
-.djnames {
-
-}
-
-.showdesc {
-
-}
-
+/*-----------------------------
+     COOL LOOKING GRADIENT
+-------------------------------*/
 .homepage-gradient {
   height: 610px;
   width: 100%;
@@ -200,8 +253,8 @@ input[type=submit] {
 .btn-full:link,
 .btn-full:visited,
 input[type=submit] {
-  background-color: #79c043;
-  border: 1px solid #79c043;
+  background-color: $accent-color;
+  border: 1px solid $accent-color;
   color: #fff;
   margin: 0 auto;
   width: 80%;
@@ -210,8 +263,8 @@ input[type=submit] {
 
 .btn-ghost:link,
 .btn-ghost:visited {
-  border: 1px solid #79c043;
-  color: #79c043;
+  border: 1px solid $accent-color;
+  color: $accent-color;
 }
 
 .btn:hover,

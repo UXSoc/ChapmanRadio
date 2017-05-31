@@ -1,9 +1,9 @@
 <template>
-    <div class="col-md-6 wn-widebox">
-        <img src="./../../img/dj-wide.jpeg">
-        <div class="wn-widebox-text">
-            <p class="wn-wb-title">{{ title }}</p>
-            <p class="wn-wb-desc">{{ description }}</p>
+    <div class="col-md-3 wn-smallbox">
+        <img src="./../../img/apple-laptop.jpg">
+        <div class="wn-smallbox-text">
+            <p class="wn-sb-title">{{ title }}</p>
+            <p class="wn-sb-desc">{{ description }}</p>
         </div>
     </div>
 </template>

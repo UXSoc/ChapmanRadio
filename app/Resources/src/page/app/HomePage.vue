@@ -7,21 +7,9 @@
                 <h1 class="cr_header">What's New</h1>
                 <div class="whatsnew">
                     <div class="row">
-                        <wide-box></wide-box>
-                        <div class="col-md-3 wn-smallbox">
-                            <img src="./../../../img/apple-laptop.jpg">
-                            <div class="wn-smallbox-text">
-                                <p class="wn-sb-title">Lorem ipsum dolor sit amet consectetur adispiscing elit</p>
-                                <p class="wn-sb-desc">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa </p>
-                            </div>
-                        </div>
-                        <div class="col-md-3 wn-smallbox">
-                            <img src="./../../../img/concert.jpeg">
-                            <div class="wn-smallbox-text">
-                                <p class="wn-sb-title">Lorem ipsum dolor sit amet consectetur adispiscing elit</p>
-                                <p class="wn-sb-desc">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa </p>
-                            </div>
-                        </div>
+                        <wide-box title="Greg James' Muscochella Highlights" description="Watch Greg's favorite performances from Chapman Radio's Muscochella at Musco Lawn"></wide-box>
+                        <small-box></small-box>
+                        <small-box></small-box>
                     </div>
                 </div>
             </div>
@@ -105,6 +93,7 @@
 <script>
     import PlayWindow from '../../components/PlayWindow.vue'
     import WideBox from '../../components/WideBox.vue'
+    import SmallBox from '../../components/SmallBox.vue'
     export default{
         data () {
             return {}
@@ -116,7 +105,8 @@
         },
         components: {
             PlayWindow,
-            WideBox
+            WideBox,
+            SmallBox
         }
     }
 </script>
