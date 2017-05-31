@@ -191,12 +191,28 @@ class SecureBlogControllerCest
         $I->persistEntity($this->user);
         $I->loginUser($this->user->getUsername(),'password');
 
-
-
         $I->sendPUT('/api/v3/private/post/'. $post->getToken(). '/' . $post->getSlug() . '/image',[],[
             'image' => codecept_data_dir('concert.jpeg'),
         ]);
         $I->isRestfulSuccessResponse();
+        $I->seeResponseCodeIs(HttpCode::OK);
+
+        $I->sendPUT('/api/v3/private/post/'. $post->getToken(). '/' . $post->getSlug() . '/image',[],[
+            'image' => codecept_data_dir('attention.jpg'),
+        ]);
+        $I->isRestfulSuccessResponse();
+        $I->seeResponseCodeIs(HttpCode::OK);
+
+        /** @var Post $post */
+        $post = $I->grabEntityFromRepository(Post::class,['slug'=> $post->getSlug(),'token' => $post->getToken()]);
+
+        /** @var \CoreBundle\Entity\Image $image */
+        foreach ($post->getImages() as $image)
+        {
+            $I->sendGET('/image/' . $image->getToken());
+            $I->seeResponseCodeIs(HttpCode::OK);
+
+        }
 
     }
 

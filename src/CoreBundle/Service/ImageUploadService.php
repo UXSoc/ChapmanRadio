@@ -59,6 +59,11 @@ class ImageUploadService
 
     }
 
+    public function getTargetDir()
+    {
+        return $this->targetDir;
+    }
+
     public function getImagePath(Image $image)
     {
         return $this->generatePath($image->getSource(),'png');

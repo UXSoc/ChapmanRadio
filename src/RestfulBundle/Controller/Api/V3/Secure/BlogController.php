@@ -201,7 +201,11 @@ class BlogController extends BaseController
         if ($post == null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
 
-
+        try {
+            $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
+        } catch (\Exception $exception) {
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
+        }
 
         $src = $request->files->get('image',null);
         $image = new Image();
@@ -224,14 +228,6 @@ class BlogController extends BaseController
         return $this->restful([new WrapperNormalizer()], new SuccessWrapper(null, "Image Uploaded"));
     }
 
-    /**
-     * @Route("/post/{token}/{slug}/images", options = { "expose" = true }, name="get_image_post")
-     * @Method({"GET"})
-     */
-    public function getImagesForPostAction(Request $request,$token,$slug)
-    {
-
-    }
 
 
     /**

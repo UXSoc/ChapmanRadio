@@ -41,12 +41,6 @@ class Image
      */
     private $token;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="mimetype", type="string", length=30, nullable=true)
-     */
-    private $mimetype;
 
     /**
      * @var \DateTime
@@ -54,6 +48,7 @@ class Image
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
     private $createdAt;
+
 
     /**
      * @var UploadedFile
@@ -112,15 +107,11 @@ class Image
         return $this->source;
     }
 
-    public function setMimeType($mimeType)
+    public function getToken()
     {
-        $this->mimetype = $mimeType;
+        return $this->token;
     }
 
-    public function getMimeType()
-    {
-        return $this->mimetype;
-    }
 
 }
 

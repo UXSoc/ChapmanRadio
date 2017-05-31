@@ -197,6 +197,14 @@ class Post
         $this->images->remove($image);
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getImages()
+    {
+        return $this->images;
+    }
+
     public function setContent($content)
     {
         $this->content = $content;

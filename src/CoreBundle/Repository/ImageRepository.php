@@ -21,4 +21,9 @@ class ImageRepository extends EntityRepository
     {
 
     }
+
+    public function getImageByToken($token)
+    {
+        return $this->findOneBy(["token" => $token]);
+    }
 }
