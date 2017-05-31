@@ -252,6 +252,4 @@ class BlogController extends BaseController
     }
 
 
-
-
 }

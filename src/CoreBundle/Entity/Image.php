@@ -4,6 +4,8 @@ namespace CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Keygen\Keygen;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Image
@@ -31,6 +33,14 @@ class Image
      */
     private $source;
 
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="token", type="string", length=10, nullable=false)
+     */
+    private $token;
+
     /**
      * @var string
      *
@@ -45,6 +55,16 @@ class Image
      */
     private $createdAt;
 
+    /**
+     * @var UploadedFile
+     * @Assert\File(
+     *     maxSize = "1024k",
+     *     mimeTypes = {"image/png", "image/jpeg"},
+     *     mimeTypesMessage = "Please upload a valid image file"
+     * )
+     */
+    private $image;
+
 
     /**
      *
@@ -54,8 +74,22 @@ class Image
     public function updatedTimestamps()
     {
         if ($this->createdAt == null) {
+            $this->token = Keygen::alphanum(10)->generate();
             $this->createdAt = new \DateTime('now');
         }
+    }
+
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+
+    /**
+     * @return UploadedFile
+     */
+    public function getImage()
+    {
+        return $this->image;
     }
 
     public function getId()
@@ -87,10 +121,6 @@ class Image
     {
         return $this->mimetype;
     }
-
-
-
-
 
 }
 

@@ -180,6 +180,26 @@ class SecureBlogControllerCest
     }
 
 
+    public function tryUploadImage(ApiTester $I)
+    {
+        $faker = Faker\Factory::create();
+        $post = $I->factory()->create(Post::class,[
+            'author' =>$I->factory()->create(User::class)]);
+
+        $role = new Role(Role::ROLE_STAFF);
+        $this->user->addRole($role);
+        $I->persistEntity($this->user);
+        $I->loginUser($this->user->getUsername(),'password');
+
+
+
+        $I->sendPUT('/api/v3/private/post/'. $post->getToken(). '/' . $post->getSlug() . '/image',[],[
+            'image' => codecept_data_dir('concert.jpeg'),
+        ]);
+        $I->isRestfulSuccessResponse();
+
+    }
+
 
 
 }

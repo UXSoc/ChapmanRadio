@@ -5,6 +5,7 @@ namespace RestfulBundle\Controller\Api\V3\Secure;
 use Codeception\Util\HttpCode;
 use CoreBundle\Controller\BaseController;
 
+use CoreBundle\Entity\Image;
 use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Tag;
 use CoreBundle\Helper\ErrorWrapper;
@@ -16,9 +17,11 @@ use CoreBundle\Normalizer\TagNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\CategoryRepository;
+use CoreBundle\Repository\ImageRepository;
 use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\TagRepository;
 use CoreBundle\Security\PostVoter;
+use CoreBundle\Service\ImageUploadService;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -177,6 +180,59 @@ class BlogController extends BaseController
         return $this->restful([new WrapperNormalizer()], new SuccessWrapper(null, "Tag added"));
 
     }
+
+
+    /**
+     * @Route("/post/{token}/{slug}/image", options = { "expose" = true }, name="put_image_post")
+     * @Method({"PUT"})
+     */
+    public function putImageForPostAction(Request $request,$token,$slug)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var PostRepository $postRepository */
+        $postRepository = $this->get('core.post_repository');
+
+        /** @var ImageUploadService $imageService */
+        $imageService = $this->get('core.image_upload_service');
+
+        /** @var Post $post */
+        $post = $postRepository->getPostByTokenAndSlug($token,$slug);
+        if ($post == null)
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
+
+
+
+        $src = $request->files->get('image',null);
+        $image = new Image();
+        $image->setImage($src);
+
+        $errors = $this->validateEntity($image);
+        if ($errors->count() > 0) {
+            $error = new ErrorWrapper(null);
+            $error->addErrors($errors);
+            return $this->restful([new WrapperNormalizer()], $error, 400);
+        }
+        $imageService->saveImage($image);
+        $em->persist($image);
+        $em->flush();
+
+        $post->addImage($image);
+        $em->persist($post);
+        $em->flush();
+
+        return $this->restful([new WrapperNormalizer()], new SuccessWrapper(null, "Image Uploaded"));
+    }
+
+    /**
+     * @Route("/post/{token}/{slug}/images", options = { "expose" = true }, name="get_image_post")
+     * @Method({"GET"})
+     */
+    public function getImagesForPostAction(Request $request,$token,$slug)
+    {
+
+    }
+
 
     /**
      * @Route("/post/{token}/{slug}/tag/{tag}", options = { "expose" = true }, name="delete_tag_post")
