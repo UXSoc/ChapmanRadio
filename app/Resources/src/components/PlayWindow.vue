@@ -43,19 +43,19 @@
     props: {
         show_name: {
             type: String,
-            default: 'Planet Moon'
+            default: ''
         },
         episode_desc: {
             type: String,
-            default: 'Cosmin TRG, Cleric and Sound of Vast!'
+            default: ''
         },
         dj_names: {
             type: String,
-            default: 'Ted Davis & Jackson Cripe'
+            default: ''
         },
         timeslot: {
             type: String,
-            default: '22:00 - 23:00'
+            default: ''
         }
     },
     methods: {

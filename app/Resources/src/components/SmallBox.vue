@@ -2,8 +2,8 @@
     <div class="col-md-3 wn-smallbox">
         <img src="./../../img/apple-laptop.jpg">
         <div class="wn-smallbox-text">
-            <p class="wn-sb-title">{{ title }}</p>
-            <p class="wn-sb-desc">{{ description }}</p>
+            <p class="wn-box-title wn-sb-title">{{ title }}</p>
+            <p class="wn-box-desc wn-sb-desc">{{ description }}</p>
         </div>
     </div>
 </template>

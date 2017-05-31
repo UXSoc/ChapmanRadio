@@ -1,5 +1,9 @@
 $accent-color: #79C043;
 $white: #fff;
+$black: #000;
+$box-color: rgba(58, 75, 58, .9);
+$box-desc-color: #bdbdbd;
+$schedule-text-color: #007b0a;
 
 body {
   background-color: #313D31;
@@ -19,9 +23,11 @@ h6.cr_header {
   border-left-color: $accent-color;
   border-left-width: 7px;
   border-left-style: solid;
-  padding-left: 10px;
+  padding-left: 15px;
   color: $white;
   font-weight: normal;
+  margin-top: 20px;
+  margin-bottom: 15px;
 }
 
 /*---------------------
@@ -34,6 +40,10 @@ h6.cr_header {
 .radiohead-logo {
   height: 132px;
   background: #2E4A34;
+  img {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .oa-picture {
@@ -117,36 +127,46 @@ input[type=submit] {
   background: url(img/gradient1.svg);
 }
 
-.wn-widebox img {
-  width: 100%;
-}
-
-.wn-smallbox img {
-  width: 100%;
+/*--------------------------
+    Boxes (What's New)
+----------------------------*/
+.wn-widebox,
+.wn-smallbox {
+  img {
+    width: 100%;
+  }
 }
 
 .wn-widebox-text {
   height: 100px;
-  background-color: rgba(58, 75, 58, .9);
+  background-color: $box-color;
 
 }
 
 .wn-smallbox-text {
   height: 270.45px;
-  background-color: rgba(58, 75, 58, .9);
+  background-color: $box-color;
+}
+
+.wn-box-title {
+  padding: 10px 20px 5px 20px;
+  font-weight: bold;
+  color: $white;
+}
+
+.wn-box-desc {
+  padding: 5px 20px 5px 20px;
+  color: $box-desc-color;
 }
 
 .wn-wb-title,
-.wn-sb-title {
-  padding: 10px 5px 5px 10px;
-  font-weight: bold;
-  color: #ffffff;
+.wn-wb-desc {
+  font-size: 16px;
 }
 
-.wn-wb-desc,
+.wn-sb-title,
 .wn-sb-desc {
-  padding: 10px 5px 0 10px;
-  color: #BDBDBD;
+  font-size: 14px;
 }
 
 .wn-widebox:after,
@@ -155,12 +175,15 @@ input[type=submit] {
 .showoftheweek:after {
   display: block;
   height: 2px;
-  background-color: #79C043;
+  background-color: $accent-color;
   content: " ";
   width: 90%;
   margin: 0 auto;
 }
 
+/*-----------------
+     SCHEDULE
+-------------------*/
 .schedulephoto img {
   padding-bottom: 20px;
   padding-top: 20px;
@@ -178,13 +201,16 @@ input[type=submit] {
   width: 100%;
 }
 
+/*------------------
+    LATEST TRACKS
+ ------------------*/
 .trackview img {
   width: 100%
 }
 
 .lt-text {
   height: 134px;
-  background-color: rgba(58, 75, 58, .9);
+  background-color: $box-color;
 }
 
 .lt-track {
@@ -195,7 +221,7 @@ input[type=submit] {
   padding: 20px 15px 0 15px;
   height: 25%;
   font-weight: bold;
-  color: #ffffff;
+  color: $white;
   margin-bottom: 5px;
 }
 
@@ -203,30 +229,30 @@ input[type=submit] {
   padding: 0 15px 0 15px;
   font-size: 90%;
   height: 40%;
-  color: #bdbdbd;
+  color: $box-desc-color;
 }
 
 .lt-minsago {
   padding: 0 15px 0 15px;
   height: 35%;
   font-size: 80%;
-  color: #ffffff;
+  color: $white;
 }
 
 .sotw-text {
-  background-color: rgba(58, 75, 58, .9);
+  background-color: $box-color;
 }
 
 .sotw-showname {
   font-size: 200%;
   font-weight: bold;
-  color: #ffffff;
+  color: $white;
   padding: 20px 20px 0 20px;
 }
 
 .sotw-djnames {
   margin: 20px 20px;
-  color: #ffffff;
+  color: $white;
   font-size: 150%;
 }
 
@@ -234,7 +260,7 @@ input[type=submit] {
   margin: 20px;
   line-height: 150%;
   font-size: 110%;
-  color: #bdbdbd;
+  color: $box-desc-color;
   height: 50%;
 }
 
@@ -255,7 +281,7 @@ input[type=submit] {
 input[type=submit] {
   background-color: $accent-color;
   border: 1px solid $accent-color;
-  color: #fff;
+  color: $white;
   margin: 0 auto;
   width: 80%;
   display: block;
@@ -312,14 +338,14 @@ input[type=submit] {
   background-color: rgba(67, 90, 72, 0.8);
   font-size: 150%;
   font-weight: bold;
-  color: #ffffff;
+  color: $white;
   width: 100%;
   margin: 0;
   padding: 10px 0 10px 10px;
 }
 
 .schedule-shows {
-  background-color: #ffffff;
+  background-color: $white;
 }
 
 .schedule-bar {
@@ -331,27 +357,27 @@ input[type=submit] {
 .schedule-tab-today {
   display: table-cell;
   text-align: center;
-  color: #ffffff;
+  color: $white;
   width: 6.666666%;
   font-weight: bold;
   padding: 5px;
 }
 
 .schedule-tab-today {
-  background-color: #ffffff;
+  background-color: $white;
   color: #333333;
 }
 
 .schedule-showname {
   font-weight: bold;
   font-size: 120%;
-  color: #007B0A;
+  color: $schedule-text-color;
   padding: 20px 5px 5px 5px;
   margin-bottom: 0;
 }
 
 .schedule-showdesc {
-  color: #007b0a;
+  color: $schedule-text-color;
   padding: 5px;
 }
 
@@ -362,7 +388,7 @@ input[type=submit] {
 
 // 00:00, 01:00, etc.
 .schedule-time {
-  color: #000000;
+  color: $black;
   width: 100%;
   font-size: 120%;
   padding: 5px 0 0 20px;
@@ -377,7 +403,7 @@ input[type=submit] {
 
 .schedule-nextday {
   background-color: rgba(0, 123, 10, 0.24);
-  color: #007B0A;
+  color: $schedule-text-color;
   text-align: right;
   font-weight: bold;
 }
