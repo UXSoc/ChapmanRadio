@@ -13,7 +13,7 @@ security:
             memory: ~
 
     access_control:
-        - { path: ^/api/v3/private, roles: [ROLE_DJ,ROLE_STAFF]}
+        - { path: ^/api/v3/private, role: [ROLE_DJ,ROLE_STAFF] }
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/logout$, role: IS_AUTHENTICATED_ANONYMOUSLY }
     firewalls:
@@ -24,6 +24,7 @@ security:
         main:
             anonymous: ~
             entry_point: core.authentication_handler
+            access_denied_handler: core.access_handler
             logout:
                 path:   /logout
                 target: /

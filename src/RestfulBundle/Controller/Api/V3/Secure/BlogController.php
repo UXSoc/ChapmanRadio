@@ -1,6 +1,8 @@
 <?php
+
 namespace RestfulBundle\Controller\Api\V3\Secure;
 
+use Codeception\Util\HttpCode;
 use CoreBundle\Controller\BaseController;
 
 use CoreBundle\Entity\Post;
@@ -8,9 +10,12 @@ use CoreBundle\Entity\Tag;
 use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\BlogNormalizer;
+use CoreBundle\Normalizer\CategoryNormalizer;
 use CoreBundle\Normalizer\PaginatorNormalizer;
+use CoreBundle\Normalizer\TagNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
+use CoreBundle\Repository\CategoryRepository;
 use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\TagRepository;
 use CoreBundle\Security\PostVoter;
@@ -28,184 +33,262 @@ class BlogController extends BaseController
 
 
     /**
-     * @Route("post", options = { "expose" = true }, name="post_post")
-     * @Method({"POST"})
+     * @Security("has_role('ROLE_STAFF')")
+     * @Route("/post", options = { "expose" = true }, name="put_post")
+     * @Method({"PUT"})
      */
-    public function postPostAction() {
+    public function putPostAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $post = new Post();
+        $post->setIsPinned($request->get('pinned'));
+        $post->setContent($request->get('content'));
+        $post->setSlug($request->get('slug',$request->get('name')));
+        $post->setExcerpt($request->get('excerpt'));
+        $post->setAuthor($this->getUser());
+        $post->setName($request->get('name'));
+
+        $errors = $this->validateEntity($post);
+        if($errors->count() > 0) {
+            $error = new ErrorWrapper();
+            $error->addErrors($errors);
+            return $this->restful([new WrapperNormalizer()], $error, 400);
+        }
+
+        $em->persist($post);
+        $em->flush();
+        return $this->restful([
+            new WrapperNormalizer(),
+            new BlogNormalizer(),
+            new UserNormalizer()
+        ],new SuccessWrapper($post,"Post Created"));
 
     }
 
 
-
     /**
-     * @Route("post/{token}/{slug}", options = { "expose" = true }, name="patch_post")
+     * @Route("/post/{token}/{slug}", options = { "expose" = true }, name="patch_post")
      * @Method({"PATCH"})
      */
-    public function patchPostAction(Request $request,$token,$slug){
+    public function patchPostAction(Request $request, $token, $slug)
+    {
 
-        /** @var PostRepository $blogRepository */
-        $blogRepository = $this->get('core.post_repository');
+        /** @var PostRepository $postRepository */
+        $postRepository = $this->get('core.post_repository');
         /** @var Post $post */
-        $post = $blogRepository->findOneBy(['token' => $token,'slug' => $slug]);
+        $post = $postRepository->getPostByTokenAndSlug($token,$slug);
 
-        if($post == null)
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Blog Post Not Found"),410);
+        if ($post == null)
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
 
         try {
             $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
-        }
-        catch (\Exception $exception)
-        {
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Post Permission Error"),400);
+        } catch (\Exception $exception) {
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 403);
         }
 
-        $post->setContent($request->get("content",$post->getContent()));
-        $post->setName($request->get("name",$post->getName()));
-        $post->setSlug($request->get("slug",$post->getSlug()));
-        $post->setExcerpt($request->get("excerpt",$post->getExcerpt()));
-        $post->setIsPinned($request->get("pinned",$post->getIsPinned()));
+        $post->setContent($request->get("content", $post->getContent()));
+        $post->setName($request->get("name", $post->getName()));
+        $post->setSlug($request->get("slug", $post->getSlug()));
+        $post->setExcerpt($request->get("excerpt", $post->getExcerpt()));
+        $post->setIsPinned($request->get("pinned", $post->getIsPinned()));
 
         $errors = $this->validateEntity($post);
-        if($errors->count() > 0)
-        {
+        if ($errors->count() > 0) {
             $error = new ErrorWrapper(null);
             $error->addErrors($errors);
-            return $this->restful([new WrapperNormalizer()],$error,400);
+            return $this->restful([new WrapperNormalizer()], $error, 400);
         }
 
         return $this->restful([
             new BlogNormalizer(),
             new UserNormalizer(),
             new PaginatorNormalizer(),
-            new WrapperNormalizer()],new SuccessWrapper($post));
+            new WrapperNormalizer()], new SuccessWrapper($post));
 
     }
 
 
     /**
      * @Security("has_role('ROLE_STAFF')")
-     * @Route("post/{token}/{slug}", options = { "expose" = true }, name="delete_post")
+     * @Route("/post/{token}/{slug}", options = { "expose" = true }, name="delete_post")
      * @Method({"DELETE"})
      */
-    public function deletePostAction(Request $request,$token,$slug){
+    public function deletePostAction(Request $request, $token, $slug)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+
+        /** @var PostRepository $postRepository */
+        $postRepository = $this->get('core.post_repository');
+        /** @var Post $post */
+        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
+
+        if ($post == null)
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
+        try {
+            $this->denyAccessUnlessGranted(PostVoter::DELETE, $post);
+        } catch (\Exception $exception) {
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
+        }
+        $em->remove($post);
+        $em->flush();
+
+        return $this->restful([new WrapperNormalizer()], new SuccessWrapper(null, "Blog Post Deleted"));
+
+    }
+    //----------------------------------------------------------------------------------------
+
+    /**
+     * @Route("/post/{token}/{slug}/tag/{tag}", options = { "expose" = true }, name="put_tag_post")
+     * @Method({"PUT"})
+     */
+    public function putTagForPostAction(Request $request, $token, $slug, $tag)
+    {
+        $em = $this->getDoctrine()->getManager();
+
         /** @var PostRepository $postRepository */
         $postRepository = $this->get('core.post_repository');
         /** @var Post $post */
         $post = $postRepository->getPostByTokenAndSlug($token,$slug);
 
-        if($post == null)
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Blog Post Not Found"),410);
-
-        try {
-            $this->denyAccessUnlessGranted(PostVoter::DELETE, $post);
-        }
-        catch (\Exception $exception)
-        {
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Post Permission Error"),400);
-        }
-        return $this->restful([new WrapperNormalizer()],new SuccessWrapper(null,"Blog Post Deleted"));
-
-    }
-    //----------------------------------------------------------------------------------------
-
-    /**
-     * @Route("post/{token}/{slug}/tag/{tag}", options = { "expose" = true }, name="put_tag_post")
-     * @Method({"PUT"})
-     */
-    public function putTagForPostAction(Request $request,$token,$slug,$tag) {
-        /** @var PostRepository $blogRepository */
-        $blogRepository = $this->get('core.post_repository');
-        /** @var Post $post */
-        $post = $blogRepository->findOneBy(['token' => $token,'slug' => $slug]);
-
-        if($post == null)
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Blog Post Not Found"),410);
+        if ($post == null)
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
 
         try {
             $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
+        } catch (\Exception $exception) {
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
         }
-        catch (\Exception $exception)
-        {
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Post Permission Error"),400);
-        }
-        if($post->getTags()->containsKey($tag))
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Duplicate Tag Found"),400);
+        if ($post->getTags()->containsKey($tag))
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Duplicate Tag Found"), 400);
 
         /** @var TagRepository $tagRepository */
         $tagRepository = $this->get("core.tag_repository");
-        $tag = $tagRepository->findOrCreateTag($tag);
+        $tag = $tagRepository->getOrCreateTag($tag);
+        $em->persist($tag);
+        $em->flush();
         $post->addTag($tag);
 
-        $em = $this->getDoctrine()->getManager();
         $em->persist($post);
         $em->flush();
 
-        return $this->restful([new WrapperNormalizer()],new SuccessWrapper(null,"Tag added"));
-
+        return $this->restful([new WrapperNormalizer()], new SuccessWrapper(null, "Tag added"));
 
     }
 
     /**
-     * @Route("blog/post/{post}/tag/{tag}", options = { "expose" = true }, name="delete_tag_post")
+     * @Route("/post/{token}/{slug}/tag/{tag}", options = { "expose" = true }, name="delete_tag_post")
      * @Method({"DELETE"})
      */
-    public function deleteTagForPostAction() {
+    public function deleteTagForPostAction(Request $request, $token, $slug, $tag)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var PostRepository $postRepository */
+        $postRepository = $this->get('core.post_repository');
+        /** @var Post $post */
+        $post = $postRepository->getPostByTokenAndSlug($token,$slug);
+
+        if ($post == null)
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
+
+        try {
+            $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
+        } catch (\Exception $exception) {
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
+        }
+
+        $result = $post->removeTag($tag);
+        if($result == null)
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Does Not Have Tag"), 410);
+
+        $em->persist($post);
+        $em->flush();
+
+        return $this->restful([
+            new WrapperNormalizer(),
+            new TagNormalizer()],new SuccessWrapper($result,"Tag Deleted"));
 
     }
 
 
     /**
-     * @Route("blog/post/{post}/category/{category}", options = { "expose" = true }, name="put_category_post")
+     * @Route("/post/{token}/{slug}/category/{category}", options = { "expose" = true }, name="put_category_post")
      * @Method({"PUT"})
      */
-    public function putCategoryForPostAction() {
+    public function putCategoryForPostAction(Request $request, $token, $slug, $category)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var PostRepository $postRepository */
+        $postRepository = $this->get('core.post_repository');
+        /** @var Post $post */
+        $post = $postRepository->getPostByTokenAndSlug($token,$slug);
 
+        /** @var CategoryRepository $categoryRepository */
+        $categoryRepository = $this->get('core.category_repository');
+        if ($post == null)
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
+
+        try {
+            $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
+        } catch (\Exception $exception) {
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
+        }
+
+        $category = $categoryRepository->getOrCreateCategory($category);
+        $errors = $this->validateEntity($category);
+        if($errors->count() > 0)
+        {
+            $error = new ErrorWrapper("Invalid Tag");
+            $error->addErrors($errors);
+            return $this->restful([new WrapperNormalizer()], $error, 410);
+        }
+        $em->persist($category);
+        $em->flush();
+
+        $post->addCategory($category);
+        $em->persist($post);
+        $em->flush();
+
+        return $this->restful([
+            new WrapperNormalizer(),
+            new CategoryNormalizer()],new SuccessWrapper($category,"Tag Deleted"));
     }
 
     /**
-     * @Route("blog/post/{post}/category/{category}", options = { "expose" = true }, name="delete_category_post")
+     * @Route("/post/{token}/{slug}/category/{category}", options = { "expose" = true }, name="delete_category_post")
      * @Method({"DELETE"})
      */
-    public function deleteCategoryForPostAction() {
+    public function deleteCategoryForPostAction(Request $request, $token, $slug, $category)
+    {
+        $em = $this->getDoctrine()->getManager();
 
-    }
+        /** @var PostRepository $postRepository */
+        $postRepository = $this->get('core.post_repository');
+        /** @var Post $post */
+        $post = $postRepository->getPostByTokenAndSlug($token,$slug);
 
+        if ($post == null)
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
 
-    //----------------------------------------------------------------------------------------
+        try {
+            $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
+        } catch (\Exception $exception) {
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
+        }
 
-    /**
-     * @Security("has_role('ROLE_STAFF')")
-     * @Route("blog/tag", options = { "expose" = true }, name="put_tag")
-     * @Method({"PUT"})
-     */
-    public function putTagAction() {
+        $result = $post->removeCategory($category);
+        if($result == null)
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Does Not Have Tag"), 410);
 
-    }
+        $em->persist($post);
+        $em->flush();
 
-    /**
-     * @Security("has_role('ROLE_STAFF')")
-     * @Route("blog/tag", options = { "expose" = true }, name="delete_tag")
-     * @Method({"DELETE"})
-     */
-    public function deleteTagAction(){
-
-    }
-
-    /**
-     * @Security("has_role('ROLE_STAFF')")
-     * @Route("blog/tag", options = { "expose" = true }, name="put_category")
-     * @Method({"PUT"})
-     */
-    public function putCategoryAction() {
-
-    }
-
-    /**
-     * @Security("has_role('ROLE_STAFF')")
-     * @Route("blog/tag", options = { "expose" = true }, name="delete_category")
-     * @Method({"DELETE"})
-     */
-    public function deleteCategoryAction(){
+        return $this->restful([
+            new WrapperNormalizer(),
+            new TagNormalizer()],new SuccessWrapper($result,"Tag Deleted"));
 
     }
 

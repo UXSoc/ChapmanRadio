@@ -4,6 +4,7 @@ namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Keygen\Keygen;
 
 /**
@@ -67,7 +68,7 @@ class Show
      *
      * @ORM\Column(name="score", type="integer", nullable=false)
      */
-    private $score;
+    private $score = 0;
 
     /**
      * @var boolean
@@ -159,9 +160,24 @@ class Show
      *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="genre_id", referencedColumnName="id")}
      *      )
-     * @var  Genre[]
+     * @var PersistentCollection
      */
     private $genres;
+
+
+    /**
+     * @var PersistentCollection
+     *
+     * Many Shows have Many Images.
+     * @ORM\ManyToMany(targetEntity="Tag", indexBy="tag")
+     * @ORM\JoinTable(name="show_tag",
+     *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
+     *      )
+     */
+    private $tags;
+
+
 
     /**
      * @ORM\ManyToMany(targetEntity="Dj", mappedBy="shows")
@@ -179,6 +195,22 @@ class Show
         $this->comments = new ArrayCollection();
         $this->showSchedule = new ArrayCollection();
         $this->djs = new ArrayCollection();
+
+    }
+
+    /**
+     *
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function updatedTimestamps()
+    {
+        $this->updatedAt = new \DateTime('now');
+
+        if ($this->createdAt == null) {
+            $this->token = Keygen::alphanum(10)->generate();
+            $this->createdAt = new \DateTime('now');
+        }
     }
 
     public function addImage($image)
@@ -206,22 +238,6 @@ class Show
         return $this->djs;
     }
 
-
-    /**
-     *
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function updatedTimestamps()
-    {
-        $this->updatedAt = new \DateTime('now');
-
-        if ($this->createdAt == null) {
-            $this->token = Keygen::alphanum(10)->generate();
-            $this->createdAt = new \DateTime('now');
-        }
-    }
-
     public function setScore($score)
     {
         $this->score = $score;
@@ -237,6 +253,10 @@ class Show
         return $this->id;
     }
 
+
+    /**
+     * @return PersistentCollection
+     */
     public function getGenres()
     {
         return $this->genres;
@@ -247,7 +267,41 @@ class Show
      */
     public function addGenre($genre)
     {
-        $this->genres[$genre->getGenre()] = $genre;
+        $this->genres->add($genre);
+    }
+
+    /**
+     * @param string $key
+     */
+    public  function removeGenre($key)
+    {
+        $this->genres->remove($key);
+    }
+
+    /**
+     * @param Tag $tag
+     */
+    public function addTag($tag)
+    {
+        $this->tags->add($tag);
+    }
+
+    /**
+     * @param $tag
+     * @return mixed
+     */
+    public function removeTag($tag)
+    {
+        return $this->tags->remove($tag);
+    }
+
+
+    /**
+     * @return PersistentCollection
+     */
+    public  function getTags()
+    {
+        return $this->tags;
     }
 
     public function getHeaderImage()

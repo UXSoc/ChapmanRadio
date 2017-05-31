@@ -12,5 +12,8 @@ use Doctrine\ORM\EntityRepository;
 
 class ShowRepository extends EntityRepository
 {
-
+    public function getPostByTokenAndSlug($token,$slug)
+    {
+        return $this->findOneBy(["token" => $token,"slug" => $slug]);
+    }
 }

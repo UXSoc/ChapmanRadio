@@ -97,6 +97,7 @@ class AuthenticationHandler implements AuthenticationEntryPointInterface,Authent
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
+
         $normalizer =  new Serializer([new WrapperNormalizer()]);
 
         if($authException instanceof InsufficientAuthenticationException) {

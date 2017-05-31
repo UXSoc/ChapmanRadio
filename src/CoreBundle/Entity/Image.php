@@ -3,12 +3,15 @@
 namespace CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Keygen\Keygen;
 
 /**
  * Image
  *
  * @ORM\Table(name="image")
  * @ORM\Entity(repositoryClass="CoreBundle\Repository\ImageRepository")
+ *
+ * @ORM\HasLifecycleCallbacks
  */
 class Image
 {
@@ -41,6 +44,52 @@ class Image
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
     private $createdAt;
+
+
+    /**
+     *
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function updatedTimestamps()
+    {
+        if ($this->createdAt == null) {
+            $this->createdAt = new \DateTime('now');
+        }
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    public function setSource($source)
+    {
+        $this->source = $source;
+    }
+
+    public function getSource()
+    {
+        return $this->source;
+    }
+
+    public function setMimeType($mimeType)
+    {
+        $this->mimetype = $mimeType;
+    }
+
+    public function getMimeType()
+    {
+        return $this->mimetype;
+    }
+
+
+
 
 
 }

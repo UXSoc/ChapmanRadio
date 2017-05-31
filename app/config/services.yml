@@ -10,6 +10,8 @@ services:
             - "@router"
             - "@session"
             - "@doctrine"
+    core.access_handler:
+        class: CoreBundle\Handler\AccessDeniedHandler
     core.image_upload_service:
         class: CoreBundle\Service\ImageUploadService
         arguments: ['%image_directory%']
@@ -68,6 +70,11 @@ services:
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - CoreBundle\Entity\Category
+    core.genre_repository:
+        class: CoreBundle\Repository\GenreRepository
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - CoreBundle\Entity\Genre
     #service_name:
     #    class: CoreBundle\Directory\ClassName
     #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']

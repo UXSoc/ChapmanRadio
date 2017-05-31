@@ -41,37 +41,21 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 class BlogController extends BaseController
 {
 
-    /**
-     * @Route("tags/{name}",
-     *     options = { "expose" = true },
-     *     name="get_tags")
-     * @Method({"GET"})
-     */
-    public function getTags(Request $request,$name)
-    {
-        /** @var TagRepository $tagRepository */
-        $tagRepository = $this->get('core.tag_repository');
-
-        $tags = $tagRepository->findTag($name,20);
-        return $this->restful([new WrapperNormalizer(),
-            new TagNormalizer()],new SuccessWrapper($tags,null));
-    }
 
     /**
-     * @Route("categories/{name}",
+     * @Route("categories",
      *     options = { "expose" = true },
      *     name="get_categories")
      * @Method({"GET"})
      */
-    public function getCategories(Request $request,$name)
+    public function getCategories(Request $request)
     {
         /** @var CategoryRepository $categoryRepository */
         $categoryRepository = $this->get('core.category_repository');
 
-        $categories = $categoryRepository->findCategory($name,20);
         return $this->restful([
             new WrapperNormalizer(),
-            new CategoryNormalizer()],new SuccessWrapper($categories,null));
+            new CategoryNormalizer()],new SuccessWrapper($categoryRepository->findAll(),null));
     }
 
     /**

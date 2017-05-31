@@ -50,7 +50,7 @@ class Post
      * @var string
      *
      * @ORM\Column(name="slug", type="string",length=100, nullable=false,unique=true)
-     * @Assert\Regex("^[a-zA-Z0-9\-]+$/")
+     * @Assert\Regex("/^[a-zA-Z0-9\-]+$/")
      */
     private $slug;
 
@@ -272,13 +272,30 @@ class Post
     {
         return $this->updatedAt;
     }
-
     /**
      * @param Tag $tag
      */
     public function addTag($tag)
     {
-        $this->tags[$tag->getTag()] = $tag;
+        $this->tags->add($tag);
+    }
+
+    /**
+     * @param $tag
+     * @return mixed
+     */
+    public function removeTag($tag)
+    {
+        return $this->tags->remove($tag);
+    }
+
+
+    /**
+     * @return PersistentCollection
+     */
+    public  function getTags()
+    {
+        return $this->tags;
     }
 
     /**
@@ -286,7 +303,16 @@ class Post
      */
     public  function addCategory($category)
     {
-        $this->categories[$category->getCategory()] = $category;
+        $this->categories->add($category);
+    }
+
+    /**
+     * @param string $category
+     * @return mixed
+     */
+    public function removeCategory($category)
+    {
+        return $this->categories->remove($category);
     }
 
     public  function getCategories()
@@ -294,10 +320,6 @@ class Post
         return $this->categories;
     }
 
-    public  function getTags()
-    {
-        return $this->tags;
-    }
 
     public function getToken()
     {

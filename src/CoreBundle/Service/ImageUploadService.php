@@ -2,6 +2,7 @@
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace CoreBundle\Service;
 
+use Keygen\Keygen;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -23,6 +24,6 @@ class ImageUploadService
 
     public  function uploadFile(UploadedFile $file)
     {
-
+        $file->move($this->targetDir, Keygen::alphanum(10)->generate() . $file->getExtension());
     }
 }

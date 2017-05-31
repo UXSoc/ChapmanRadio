@@ -12,6 +12,7 @@ class ShowVoter extends  Voter
 {
     const EDIT = 'edit';
     const VIEW = 'view';
+    const DELETE = 'delete';
 
     private $decisionManager;
 
@@ -31,11 +32,11 @@ class ShowVoter extends  Voter
     protected function supports($attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if (!in_array($attribute, array(self::VIEW, self::EDIT))) {
+        if (!in_array($attribute, array(self::VIEW, self::EDIT,self::DELETE))) {
             return false;
         }
 
-        if(!$subject instanceof Post)
+        if(!$subject instanceof Show)
         {
             return false;
         }
@@ -72,10 +73,18 @@ class ShowVoter extends  Voter
                 return $this->canView($show,$user);
             case self::EDIT:
                 return $this->canEdit($token,$show,$user);
+            case self::DELETE:
+                return $this->canDelete($show,$user);
+
         }
 
 
         throw new \LogicException('This code should not be reached!');
+    }
+
+    private function canDelete(Show $show,User $user)
+    {
+        return false;
     }
 
     private function canView(Show $show,User $user)

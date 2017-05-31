@@ -17,7 +17,7 @@ class TagRepository  extends EntityRepository
     /**
      * @param string $tag
      */
-    public function findOrCreateTag($tag)
+    public function getOrCreateTag($tag)
     {
         $em = $this->getEntityManager();
 
@@ -33,9 +33,6 @@ class TagRepository  extends EntityRepository
         {
             $result = new Tag();
             $result->setTag($tag);
-
-            $em->persist($result);
-            $em->flush();
         }
         return $result;
     }

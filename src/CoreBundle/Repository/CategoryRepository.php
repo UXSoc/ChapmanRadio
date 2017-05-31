@@ -18,7 +18,7 @@ class CategoryRepository extends EntityRepository
     /**
      * @param string $tag
      */
-    public function findOrCreateCategory($category)
+    public function getOrCreateCategory($category)
     {
 
         $em = $this->getEntityManager();

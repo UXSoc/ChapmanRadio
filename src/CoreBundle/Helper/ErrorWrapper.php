@@ -40,6 +40,11 @@ class ErrorWrapper
         return $this->errors;
     }
 
+    public function hasErrors()
+    {
+        return count($this->errors) > 0;
+    }
+
     /**
      * @param ConstraintViolationInterface  $error
      */

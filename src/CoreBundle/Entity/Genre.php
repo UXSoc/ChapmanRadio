@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Genre
  *
  * @ORM\Table(name="genre")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="CoreBundle\Repository\GenreRepository")
  *
  */
 class Genre
