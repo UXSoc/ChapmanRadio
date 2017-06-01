@@ -1,6 +1,6 @@
 <template>
     <div class="lt-trackbox">
-        <img src="https://images.genius.com/6d4830a2f394d01e91ef6f378fdb0c76.1000x1000x1.jpg">
+        <img v-bind:src="img_url">
         <div class="lt-text">
             <p class="lt-title">{{ track_name }}</p>
             <p class="lt-artist">{{ artist }}</p>
@@ -24,6 +24,10 @@
             default: ''
         },
         mins_ago: {
+            type: String,
+            default: ''
+        },
+        img_url: {
             type: String,
             default: ''
         }
