@@ -9,11 +9,13 @@ use CoreBundle\Entity\Show;
 use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\CommentNormalizer;
+use CoreBundle\Normalizer\EventNormalizer;
 use CoreBundle\Normalizer\PaginatorNormalizer;
 use CoreBundle\Normalizer\ShowNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\CommentRepository;
+use CoreBundle\Repository\EventRepository;
 use CoreBundle\Repository\ShowRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -28,7 +30,9 @@ use Symfony\Component\HttpFoundation\Request;
 class ShowController extends BaseController
 {
     /**
-     * @Route("show", options = { "expose" = true }, name="get_shows")
+     * @Route("show",
+     *     options = { "expose" = true },
+     *     name="get_shows")
      * @Method({"GET"})
      */
     public function getShowsAction(Request $request){
@@ -52,6 +56,8 @@ class ShowController extends BaseController
             new WrapperNormalizer()
         ],new SuccessWrapper($pagination));
     }
+
+
 
     /**
      * @Route("show/{token}/{slug}", options = { "expose" = true }, name="get_show")
@@ -112,6 +118,20 @@ class ShowController extends BaseController
 
         }
 
+    }
+
+    /**
+     * @Route("show/active",
+     *     options = { "expose" = true },
+     *     name="get_show_active")
+     * @Method({"GET"})
+     */
+    public function getActiveShowAction(Request $request)
+    {
+        /** @var EventRepository $eventRepository */
+        $eventRepository = $this->get('core.event_repository');
+        $activeEvent = $eventRepository->getCurrentActiveEvent();
+        return $this->restful([new WrapperNormalizer(), new EventNormalizer()],new SuccessWrapper($activeEvent,'active event'));
     }
 
     /**

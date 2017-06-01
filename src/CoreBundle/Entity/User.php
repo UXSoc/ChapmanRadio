@@ -4,6 +4,8 @@ namespace CoreBundle\Entity;
 
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
+use phpDocumentor\Reflection\Types\String_;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -134,15 +136,22 @@ class User implements AdvancedUserInterface
 
     /**
      * @var ArrayCollection
-     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="Role", mappedBy="user", cascade={"persist"})
      *
      */
     private $roles;
 
+    /**
+     * @var ShowSchedule
+     * @var PersistentCollection
+     * @ORM\OneToMany(targetEntity="UserMeta",mappedBy="user", indexBy="metaKey")
+     */
+    private $userMeta;
+
 
     public function __construct()
     {
+        $this->userMeta = new ArrayCollection();
         $this->roles = new ArrayCollection();
     }
 
@@ -159,6 +168,33 @@ class User implements AdvancedUserInterface
             $this->token = substr(bin2hex(random_bytes(12)),10);
             $this->createdAt = new \DateTime('now');
         }
+    }
+
+    /**
+     * @param UserMeta $meta
+     * @return bool
+     */
+    public function addUserMeta($meta)
+    {
+        return $this->userMeta->add($meta);
+    }
+
+    /**
+     * @param string $key
+     * @return mixed|null
+     */
+    public function getUserMeta($key)
+    {
+        return $this->userMeta->get($key);
+    }
+
+    /**
+     * @param string $key
+     * @return bool
+     */
+    public function hasUserMeta($key)
+    {
+        return $this->userMeta->containsKey($key);
     }
 
     public function getDj()

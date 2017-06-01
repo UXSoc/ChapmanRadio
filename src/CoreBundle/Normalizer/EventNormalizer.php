@@ -2,19 +2,19 @@
 /**
  * Created by PhpStorm.
  * User: michaelpollind
- * Date: 5/30/17
- * Time: 9:26 AM
+ * Date: 5/31/17
+ * Time: 10:40 PM
  */
 
 namespace CoreBundle\Normalizer;
 
 
-use CoreBundle\Entity\Genre;
+use CoreBundle\Entity\Event;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\scalar;
 
-class GenreNormalizer implements NormalizerInterface, NormalizerAwareInterface
+class EventNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     /** @var  NormalizerInterface */
     private  $normalizer;
@@ -32,7 +32,7 @@ class GenreNormalizer implements NormalizerInterface, NormalizerAwareInterface
     /**
      * Normalizes an object into a set of arrays/scalars.
      *
-     * @param Genre $object object to normalize
+     * @param Event $object object to normalize
      * @param string $format format the normalization result will be encoded as
      * @param array $context Context options for the normalizer
      *
@@ -40,7 +40,11 @@ class GenreNormalizer implements NormalizerInterface, NormalizerAwareInterface
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        return $object->getGenre();
+        return [
+          'start' => $object->getStart(),
+          'end' => $object->getEnd(),
+          'show' => $this->normalizer->normalize($object->getShow(),$format,$context)
+        ];
     }
 
     /**
@@ -53,6 +57,8 @@ class GenreNormalizer implements NormalizerInterface, NormalizerAwareInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof Genre;
+        return $data instanceof Event;
     }
+
+
 }
