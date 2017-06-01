@@ -24,29 +24,29 @@ class Event
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="start", type="datetime", nullable=true)
+     * @ORM\Column(name="start", type="datetime", nullable=false)
      */
     private $start;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="end", type="datetime", nullable=true)
+     * @ORM\Column(name="end", type="datetime", nullable=false)
      */
     private $end;
 
     /**
-     * @var \Show
+     * @var Show
      *
-     * @ORM\ManyToOne(targetEntity="Show")
+     * @ORM\ManyToOne(targetEntity="Show",inversedBy="events")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="show_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="show_id", referencedColumnName="id",nullable=false)
      * })
      */
     private $show;
 
     /**
-     * @var \ShowSchedule
+     * @var ShowSchedule
      *
      * @ORM\ManyToOne(targetEntity="ShowSchedule")
      * @ORM\JoinColumns({
@@ -55,6 +55,40 @@ class Event
      */
     private $showSchedule;
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setStart($start)
+    {
+        $this->start = $start;
+    }
+
+    public function getStart()
+    {
+        return $this->start;
+    }
+
+    public function setEnd($end)
+    {
+        $this->end = $end;
+    }
+
+    public function getEnd()
+    {
+        return $this->end;
+    }
+
+    public function getShow()
+    {
+        return $this->show;
+    }
+
+    public function getShowSchedule()
+    {
+        return $this->showSchedule;
+    }
 
 }
 

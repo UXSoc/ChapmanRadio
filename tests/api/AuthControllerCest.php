@@ -97,7 +97,7 @@ class AuthControllerCest
     {
         $I->loginUser($this->user->getUsername(),"password");
 
-        $I->sendGET('/api/v3/auth/status');
+        $I->sendGET('/api/v3/user/me');
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->isRestfulSuccessResponse();

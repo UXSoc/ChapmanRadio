@@ -11,6 +11,7 @@ namespace RestfulBundle\Controller;
 
 use CoreBundle\Controller\BaseController;
 
+use CoreBundle\Entity\Image;
 use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\ImageRepository;
@@ -37,6 +38,8 @@ class ImageController  extends BaseController
         /** @var ImageRepository $imageRepository */
         $imageRepository = $this->get('core.image_repository');
 
+
+        /** @var Image $image */
         $image = $imageRepository->getImageByToken($token);
         if($image == null)
             return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown image"),410);

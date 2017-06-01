@@ -4,7 +4,6 @@ namespace CoreBundle\Entity;
 
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Keygen\Keygen;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -43,7 +42,7 @@ class User implements AdvancedUserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="token", type="string",length=100, nullable=false,unique=true)
+     * @ORM\Column(name="token", type="string",length=20, nullable=false,unique=true)
      *
      */
     private $token;
@@ -157,7 +156,7 @@ class User implements AdvancedUserInterface
         $this->updatedAt = new \DateTime('now');
 
         if ($this->createdAt == null) {
-            $this->token = Keygen::alphanum(10)->generate();
+            $this->token = substr(bin2hex(random_bytes(12)),10);
             $this->createdAt = new \DateTime('now');
         }
     }

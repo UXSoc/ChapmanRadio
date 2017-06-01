@@ -3,7 +3,6 @@
 namespace CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Keygen\Keygen;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -37,7 +36,7 @@ class Image
     /**
      * @var string
      *
-     * @ORM\Column(name="token", type="string", length=10, nullable=false)
+     * @ORM\Column(name="token", type="string", length=20, nullable=false)
      */
     private $token;
 
@@ -62,6 +61,16 @@ class Image
 
 
     /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="author_id", referencedColumnName="id", nullable=false)
+     */
+    private $author;
+
+
+
+    /**
      *
      * @ORM\PrePersist
      * @ORM\PreUpdate
@@ -69,7 +78,7 @@ class Image
     public function updatedTimestamps()
     {
         if ($this->createdAt == null) {
-            $this->token = Keygen::alphanum(10)->generate();
+            $this->token = substr(bin2hex(random_bytes(12)),10);
             $this->createdAt = new \DateTime('now');
         }
     }
@@ -110,6 +119,19 @@ class Image
     public function getToken()
     {
         return $this->token;
+    }
+
+    /**
+     * @param User $author
+     */
+    public function setAuthor(User $author)
+    {
+        $this->author = $author;
+    }
+
+    public function getAuthor()
+    {
+        return $this->author;
     }
 
 

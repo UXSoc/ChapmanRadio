@@ -11,7 +11,6 @@ use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\UserRepository;
 use CoreBundle\Service\CacheService;
-use Keygen\Keygen;
 use Swift_Message;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -100,7 +99,7 @@ class AuthController extends BaseController
 
 
         //create a confirmation token
-        $token = Keygen::alphanum(20)->generate();
+        $token = substr(bin2hex(random_bytes(20)),20);
         $cacheService->setNamespace('user_keys_confirm');
         $cacheService->save($token,$user,1000);
         $this->confirmationEmail($user,$token);
@@ -130,7 +129,7 @@ class AuthController extends BaseController
         if($user == null)
             return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown User"),410);
 
-        $token = Keygen::alphanum(20)->generate();
+        $token = substr(bin2hex(random_bytes(20)),20);
         $cacheService->setNamespace("user_key_reset_password");
         $cacheService->save($token,$user,1000);
 
@@ -205,7 +204,7 @@ class AuthController extends BaseController
             return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown User"),410);
 
         //create a confirmation token
-        $token = Keygen::alphanum(20)->generate();
+        $token = substr(bin2hex(random_bytes(20)),20);
         $cacheService->setNamespace('user_keys_confirm');
         $cacheService->save($token,$user,1000);
 
@@ -252,7 +251,7 @@ class AuthController extends BaseController
 
     /**
      * @Security("has_role('ROLE_USER')")
-     * @Route("/auth/status", options = { "expose" = true }, name="get_user_status")
+     * @Route("/user/me", options = { "expose" = true }, name="get_user_status")
      * @Method({"GET"})
      */
     public function getUserStatusAction(Request $request)

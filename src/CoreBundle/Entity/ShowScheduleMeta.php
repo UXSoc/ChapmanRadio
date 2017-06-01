@@ -46,5 +46,34 @@ class ShowScheduleMeta
     private $showSchedule;
 
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getMetaKey()
+    {
+        return $this->metaKey;
+    }
+
+    public function setMetaKey($key)
+    {
+        $this->metaKey = $key;
+    }
+
+    public function getMetaValue()
+    {
+        return $this->metaValue;
+    }
+
+    public function setMetaValue($value)
+    {
+        $this->metaValue = $value;
+    }
+
+    public function getShowSchedule()
+    {
+        return $this->showSchedule;
+    }
 }
 

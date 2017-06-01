@@ -5,7 +5,6 @@ namespace CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Keygen\Keygen;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -115,7 +114,7 @@ class Comment
     {
         $this->updatedAt = new \DateTime('now');
         if ($this->createdAt == null) {
-            $this->token = Keygen::alphanum(10)->generate();
+            $this->token = substr(bin2hex(random_bytes(12)),10);
             $this->createdAt = new \DateTime('now');
         }
     }

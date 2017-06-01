@@ -4,6 +4,7 @@ namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\Time;
 
 /**
  * ShowSchedule
@@ -23,14 +24,14 @@ class ShowSchedule
     private $id;
 
     /**
-     * @var \DateTime
+     * @var Time
      *
      * @ORM\Column(name="start_time", type="time", nullable=true)
      */
     private $startTime;
 
     /**
-     * @var \DateTime
+     * @var Time
      *
      * @ORM\Column(name="end_time", type="time", nullable=true)
      */
@@ -53,9 +54,15 @@ class ShowSchedule
      */
     private $scheduleMeta;
 
+
     public function __construct()
     {
         $this->scheduleMeta = new ArrayCollection();
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 
     public function setShow($show)
@@ -68,6 +75,30 @@ class ShowSchedule
         return $this->show;
     }
 
+    public function setStartTime($time)
+    {
+        $this->startTime = $time;
+    }
+
+    public function getStartTime()
+    {
+        return $this->startTime;
+    }
+
+    public function setEndTime($time)
+    {
+        $this->endTime = $time;
+    }
+
+    public function getEndTime()
+    {
+        return $this->endTime;
+    }
+
+    public function getScheduleMeta()
+    {
+        return $this->scheduleMeta;
+    }
 
 }
 

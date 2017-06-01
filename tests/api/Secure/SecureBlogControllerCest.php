@@ -182,7 +182,41 @@ class SecureBlogControllerCest
 
     public function tryUploadImage(ApiTester $I)
     {
-        $faker = Faker\Factory::create();
+        $post = $I->factory()->create(Post::class,[
+            'author' =>$I->factory()->create(User::class)]);
+
+        $role = new Role(Role::ROLE_STAFF);
+        $this->user->addRole($role);
+        $I->persistEntity($this->user);
+        $I->loginUser($this->user->getUsername(),'password');
+
+        $I->sendPUT('/api/v3/private/post/'. $post->getToken(). '/' . $post->getSlug() . '/image',[],[
+            'image' => codecept_data_dir('concert.jpeg'),
+        ]);
+        $I->isRestfulSuccessResponse();
+        $I->seeResponseCodeIs(HttpCode::OK);
+
+        $I->sendPUT('/api/v3/private/post/'. $post->getToken(). '/' . $post->getSlug() . '/image',[],[
+            'image' => codecept_data_dir('apple-laptop.jpg'),
+        ]);
+        $I->isRestfulSuccessResponse();
+        $I->seeResponseCodeIs(HttpCode::OK);
+
+        /** @var Post $post */
+        $post = $I->grabEntityFromRepository(Post::class,['slug'=> $post->getSlug(),'token' => $post->getToken()]);
+
+        /** @var \CoreBundle\Entity\Image $image */
+        foreach ($post->getImages() as $image)
+        {
+            $I->sendGET('/image/' . $image->getToken());
+            $I->seeResponseCodeIs(HttpCode::OK);
+
+        }
+
+    }
+
+    public function tryGetImagesForPost(ApiTester $I)
+    {
         $post = $I->factory()->create(Post::class,[
             'author' =>$I->factory()->create(User::class)]);
 
@@ -203,16 +237,20 @@ class SecureBlogControllerCest
         $I->isRestfulSuccessResponse();
         $I->seeResponseCodeIs(HttpCode::OK);
 
-        /** @var Post $post */
-        $post = $I->grabEntityFromRepository(Post::class,['slug'=> $post->getSlug(),'token' => $post->getToken()]);
-
-        /** @var \CoreBundle\Entity\Image $image */
-        foreach ($post->getImages() as $image)
-        {
-            $I->sendGET('/image/' . $image->getToken());
-            $I->seeResponseCodeIs(HttpCode::OK);
-
-        }
+        $I->sendGET('/api/v3/private/post/'.$post->getToken() . '/' . $post->getSlug() . '/image');
+        $I->isRestfulSuccessResponse();
+        $I->seeResponseMatchesJsonType(array(
+            "data" => [
+                [
+                    'token' => 'string',
+                    'created_at' => 'array'
+                ],
+                [
+                    'token' => 'string',
+                    'created_at' => 'array'
+                ]
+            ]
+        ));
 
     }
 

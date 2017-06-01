@@ -94,6 +94,7 @@
     import PlayWindow from '../../components/PlayWindow.vue'
     import WideBox from '../../components/WideBox.vue'
     import SmallBox from '../../components/SmallBox.vue'
+    import TrackBox from '../../components/Trackbox.vue'
     export default{
         data () {
             return {}
@@ -106,7 +107,8 @@
         components: {
             PlayWindow,
             WideBox,
-            SmallBox
+            SmallBox,
+            TrackBox
         }
     }
 </script>

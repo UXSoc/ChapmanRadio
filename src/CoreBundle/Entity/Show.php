@@ -5,7 +5,7 @@ namespace CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
-use Keygen\Keygen;
+
 
 /**
  * Show
@@ -36,7 +36,7 @@ class Show
     /**
      * @var string
      *
-     * @ORM\Column(name="token", type="string",length=100, nullable=false,unique=true)
+     * @ORM\Column(name="token", type="string",length=20, nullable=false,unique=true)
      *
      */
     private $token;
@@ -171,9 +171,9 @@ class Show
      * Many Shows have Many Images.
      * @ORM\ManyToMany(targetEntity="Tag", indexBy="tag")
      * @ORM\JoinTable(name="show_tag",
-     *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
-     *      )
+     *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id",onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id",onDelete="CASCADE")}
+     * )
      */
     private $tags;
 
@@ -188,6 +188,14 @@ class Show
      * @return ArrayCollection
      */
     private $djs;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="Event", mappedBy="show")
+     *
+     */
+    private $events;
+
 
     public function __construct()
     {
@@ -208,7 +216,7 @@ class Show
         $this->updatedAt = new \DateTime('now');
 
         if ($this->createdAt == null) {
-            $this->token = Keygen::alphanum(10)->generate();
+            $this->token = substr(bin2hex(random_bytes(12)),10);
             $this->createdAt = new \DateTime('now');
         }
     }
@@ -253,6 +261,13 @@ class Show
         return $this->id;
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getImages()
+    {
+        return $this->images;
+    }
 
     /**
      * @return PersistentCollection
@@ -442,6 +457,15 @@ class Show
         $this->slug = $result;
     }
 
+    public function getEvents()
+    {
+        return $this->events;
+    }
+
+    public function addEvent($event)
+    {
+        $this->events->add($event);
+    }
 
 
 }

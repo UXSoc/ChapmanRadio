@@ -5,7 +5,6 @@ namespace CoreBundle\Service;
 use CoreBundle\Entity\Image;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Intervention\Image\ImageManagerStatic as Intervention;
-use Keygen\Keygen;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -24,7 +23,7 @@ class ImageUploadService
     private $targetDir;
     private $imageRepository;
 
-    public function __construct($targetDir,$imageRepository)
+    public function __construct($targetDir, $imageRepository)
     {
         $this->targetDir = $targetDir;
         $this->imageRepository = $imageRepository;
@@ -33,29 +32,34 @@ class ImageUploadService
     /**
      * @param Image $image
      */
-    public  function saveImage(Image $image)
+    public function saveImage(Image $image)
     {
         /** @var FileSystem $fs */
         $fs = new FileSystem();
 
         /** @var \Intervention\Image\Image $intervention */
         $intervention = Intervention::make($image->getImage());
-        $source = Keygen::alphanum(12)->generate();
-        $fs->mkdir($this->targetDir. '/' .$this->generateDirectory($source));
+        $source = substr(bin2hex(random_bytes(12)), 12);
+        $fs->mkdir($this->targetDir . '/' . $this->generateDirectory($source));
 
         $image->setSource($source);
-        $intervention->save($this->targetDir. '/' . $this->generatePath($source,'png'));
+        $intervention->save($this->targetDir . '/' . $this->generatePath($source, 'png'));
+
+    }
+
+    public function deleteImage(Image $image)
+    {
 
     }
 
     private function generateDirectory($hash)
     {
-        return substr($hash,0,2).'/'. substr($hash,2,2) .'/';
+        return substr($hash, 0, 2) . '/' . substr($hash, 2, 2) . '/';
     }
 
-    private function generatePath($hash,$ext)
+    private function generatePath($hash, $ext)
     {
-       return $this->generateDirectory($hash) . substr($hash,4) . '.' . $ext;
+        return $this->generateDirectory($hash) . substr($hash, 4) . '.' . $ext;
 
     }
 
@@ -66,6 +70,6 @@ class ImageUploadService
 
     public function getImagePath(Image $image)
     {
-        return $this->generatePath($image->getSource(),'png');
+        return $this->generatePath($image->getSource(), 'png');
     }
 }

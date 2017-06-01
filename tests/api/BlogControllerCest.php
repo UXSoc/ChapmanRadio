@@ -71,7 +71,7 @@ class BlogControllerCest
                 'excerpt' => 'string',
                 'categories' => 'null|array',
                 'tags' => 'null|array',
-                'is_pinned' => 'integer'
+                'is_pinned' => 'boolean'
             ]
         ]);
     }

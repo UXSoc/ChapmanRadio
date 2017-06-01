@@ -141,7 +141,7 @@ class BlogController extends BaseController
      *     name="get_post", )
      * @Method({"GET"})
      */
-    public  function  gePostAction(Request $request, $token, $slug)
+    public  function  getPostAction(Request $request, $token, $slug)
     {
         /** @var PostRepository $blogRepository */
         $blogRepository = $this->get('core.post_repository');

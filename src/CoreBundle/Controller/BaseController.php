@@ -5,6 +5,7 @@ namespace CoreBundle\Controller;
 
 use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;
+use CoreBundle\Normalizer\WrapperNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\Config\Tests\Util\Validator;
@@ -55,12 +56,22 @@ class BaseController extends Controller
      * @param $data
      * @param null $format
      * @param array $context
-     * @return array|object|\Symfony\Component\Serializer\Normalizer\scalar
+     * @return JsonResponse
      */
     public function restful($normalizers,$data,$status = 200, $format = null, array $context = array())
     {
         $normalizer =  new Serializer($normalizers);
         return new JsonResponse($normalizer->normalize($data,$format,$context),$status);
+    }
+
+    /**
+     * @param $message
+     * @param int $status
+     * @return JsonResponse
+     */
+    public function messageError($message,$status = 400)
+    {
+        return $this->restful([new WrapperNormalizer()],new ErrorWrapper($message),$status);
     }
 
 

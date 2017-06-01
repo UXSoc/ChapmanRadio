@@ -12,6 +12,7 @@ use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\BlogNormalizer;
 use CoreBundle\Normalizer\CategoryNormalizer;
+use CoreBundle\Normalizer\ImageNormalizer;
 use CoreBundle\Normalizer\PaginatorNormalizer;
 use CoreBundle\Normalizer\TagNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
@@ -37,7 +38,9 @@ class BlogController extends BaseController
 
     /**
      * @Security("has_role('ROLE_STAFF')")
-     * @Route("/post", options = { "expose" = true }, name="put_post")
+     * @Route("/post",
+     *     options = { "expose" = true },
+     *     name="put_post")
      * @Method({"PUT"})
      */
     public function putPostAction(Request $request)
@@ -47,13 +50,13 @@ class BlogController extends BaseController
         $post = new Post();
         $post->setIsPinned($request->get('pinned'));
         $post->setContent($request->get('content'));
-        $post->setSlug($request->get('slug',$request->get('name')));
+        $post->setSlug($request->get('slug', $request->get('name')));
         $post->setExcerpt($request->get('excerpt'));
         $post->setAuthor($this->getUser());
         $post->setName($request->get('name'));
 
         $errors = $this->validateEntity($post);
-        if($errors->count() > 0) {
+        if ($errors->count() > 0) {
             $error = new ErrorWrapper();
             $error->addErrors($errors);
             return $this->restful([new WrapperNormalizer()], $error, 400);
@@ -65,13 +68,15 @@ class BlogController extends BaseController
             new WrapperNormalizer(),
             new BlogNormalizer(),
             new UserNormalizer()
-        ],new SuccessWrapper($post,"Post Created"));
+        ], new SuccessWrapper($post, "Post Created"));
 
     }
 
 
     /**
-     * @Route("/post/{token}/{slug}", options = { "expose" = true }, name="patch_post")
+     * @Route("/post/{token}/{slug}",
+     *     options = { "expose" = true },
+     *     name="patch_post")
      * @Method({"PATCH"})
      */
     public function patchPostAction(Request $request, $token, $slug)
@@ -80,7 +85,7 @@ class BlogController extends BaseController
         /** @var PostRepository $postRepository */
         $postRepository = $this->get('core.post_repository');
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token,$slug);
+        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
 
         if ($post == null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
@@ -115,7 +120,9 @@ class BlogController extends BaseController
 
     /**
      * @Security("has_role('ROLE_STAFF')")
-     * @Route("/post/{token}/{slug}", options = { "expose" = true }, name="delete_post")
+     * @Route("/post/{token}/{slug}",
+     *     options = { "expose" = true },
+     *     name="delete_post")
      * @Method({"DELETE"})
      */
     public function deletePostAction(Request $request, $token, $slug)
@@ -144,7 +151,9 @@ class BlogController extends BaseController
     //----------------------------------------------------------------------------------------
 
     /**
-     * @Route("/post/{token}/{slug}/tag/{tag}", options = { "expose" = true }, name="put_tag_post")
+     * @Route("/post/{token}/{slug}/tag/{tag}",
+     *     options = { "expose" = true },
+     *     name="put_tag_post")
      * @Method({"PUT"})
      */
     public function putTagForPostAction(Request $request, $token, $slug, $tag)
@@ -154,7 +163,7 @@ class BlogController extends BaseController
         /** @var PostRepository $postRepository */
         $postRepository = $this->get('core.post_repository');
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token,$slug);
+        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
 
         if ($post == null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
@@ -171,7 +180,6 @@ class BlogController extends BaseController
         $tagRepository = $this->get("core.tag_repository");
         $tag = $tagRepository->getOrCreateTag($tag);
         $em->persist($tag);
-        $em->flush();
         $post->addTag($tag);
 
         $em->persist($post);
@@ -183,10 +191,12 @@ class BlogController extends BaseController
 
 
     /**
-     * @Route("/post/{token}/{slug}/image", options = { "expose" = true }, name="put_image_post")
+     * @Route("/post/{token}/{slug}/image",
+     *     options = { "expose" = true },
+     *     name="put_image_post")
      * @Method({"PUT"})
      */
-    public function putImageForPostAction(Request $request,$token,$slug)
+    public function putImageForPostAction(Request $request, $token, $slug)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -197,7 +207,8 @@ class BlogController extends BaseController
         $imageService = $this->get('core.image_upload_service');
 
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token,$slug);
+        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
+
         if ($post == null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
 
@@ -207,9 +218,10 @@ class BlogController extends BaseController
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
         }
 
-        $src = $request->files->get('image',null);
+        $src = $request->files->get('image', null);
         $image = new Image();
         $image->setImage($src);
+        $image->setAuthor($this->getUser());
 
         $errors = $this->validateEntity($image);
         if ($errors->count() > 0) {
@@ -219,7 +231,6 @@ class BlogController extends BaseController
         }
         $imageService->saveImage($image);
         $em->persist($image);
-        $em->flush();
 
         $post->addImage($image);
         $em->persist($post);
@@ -228,6 +239,35 @@ class BlogController extends BaseController
         return $this->restful([new WrapperNormalizer()], new SuccessWrapper(null, "Image Uploaded"));
     }
 
+    /**
+     * @Route("/post/{token}/{slug}/image",
+     *     options = { "expose" = true },
+     *     name="get_image_post")
+     * @Method({"GET"})
+     */
+    public function getImageForPostAction(Request $request, $token, $slug)
+    {
+        /** @var PostRepository $postRepository */
+        $postRepository = $this->get('core.post_repository');
+
+        /** @var Post $post */
+        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
+
+        if ($post == null)
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
+
+        try {
+            $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
+        } catch (\Exception $exception) {
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
+        }
+
+        return $this->restful([
+            new WrapperNormalizer(),
+            new TagNormalizer(),
+            new ImageNormalizer()], new SuccessWrapper($post->getImages()->toArray(), "Images"));
+
+    }
 
 
     /**
@@ -241,7 +281,7 @@ class BlogController extends BaseController
         /** @var PostRepository $postRepository */
         $postRepository = $this->get('core.post_repository');
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token,$slug);
+        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
 
         if ($post == null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
@@ -253,7 +293,7 @@ class BlogController extends BaseController
         }
 
         $result = $post->removeTag($tag);
-        if($result == null)
+        if ($result == null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Does Not Have Tag"), 410);
 
         $em->persist($post);
@@ -261,7 +301,7 @@ class BlogController extends BaseController
 
         return $this->restful([
             new WrapperNormalizer(),
-            new TagNormalizer()],new SuccessWrapper($result,"Tag Deleted"));
+            new TagNormalizer()], new SuccessWrapper($result, "Tag Deleted"));
 
     }
 
@@ -276,7 +316,7 @@ class BlogController extends BaseController
         /** @var PostRepository $postRepository */
         $postRepository = $this->get('core.post_repository');
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token,$slug);
+        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
 
         /** @var CategoryRepository $categoryRepository */
         $categoryRepository = $this->get('core.category_repository');
@@ -291,14 +331,12 @@ class BlogController extends BaseController
 
         $category = $categoryRepository->getOrCreateCategory($category);
         $errors = $this->validateEntity($category);
-        if($errors->count() > 0)
-        {
+        if ($errors->count() > 0) {
             $error = new ErrorWrapper("Invalid Tag");
             $error->addErrors($errors);
             return $this->restful([new WrapperNormalizer()], $error, 410);
         }
         $em->persist($category);
-        $em->flush();
 
         $post->addCategory($category);
         $em->persist($post);
@@ -306,11 +344,13 @@ class BlogController extends BaseController
 
         return $this->restful([
             new WrapperNormalizer(),
-            new CategoryNormalizer()],new SuccessWrapper($category,"Tag Deleted"));
+            new CategoryNormalizer()], new SuccessWrapper($category, "Tag Deleted"));
     }
 
     /**
-     * @Route("/post/{token}/{slug}/category/{category}", options = { "expose" = true }, name="delete_category_post")
+     * @Route("/post/{token}/{slug}/category/{category}",
+     *     options = { "expose" = true },
+     *     name="delete_category_post")
      * @Method({"DELETE"})
      */
     public function deleteCategoryForPostAction(Request $request, $token, $slug, $category)
@@ -320,7 +360,7 @@ class BlogController extends BaseController
         /** @var PostRepository $postRepository */
         $postRepository = $this->get('core.post_repository');
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token,$slug);
+        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
 
         if ($post == null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
@@ -332,7 +372,7 @@ class BlogController extends BaseController
         }
 
         $result = $post->removeCategory($category);
-        if($result == null)
+        if ($result == null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Does Not Have Tag"), 410);
 
         $em->persist($post);
@@ -340,7 +380,7 @@ class BlogController extends BaseController
 
         return $this->restful([
             new WrapperNormalizer(),
-            new TagNormalizer()],new SuccessWrapper($result,"Tag Deleted"));
+            new TagNormalizer()], new SuccessWrapper($result, "Tag Deleted"));
 
     }
 
