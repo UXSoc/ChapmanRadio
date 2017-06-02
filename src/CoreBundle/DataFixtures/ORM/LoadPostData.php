@@ -11,7 +11,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class LoadBlogData extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
+class LoadPostData extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
 
 
@@ -75,8 +75,13 @@ class LoadBlogData extends AbstractFixture implements OrderedFixtureInterface, C
 
             for($b = 0; $b < 15; $b++)
             {
-                $post->addTag($tags[array_rand($tags,1)]);
-                $post->addCategory($categories[array_rand($categories,1)]);
+                $tag = $tags[array_rand($tags,1)];
+                $category = $categories[array_rand($categories,1)];
+
+                if(in_array($tag,$post->getTags()->getKeys()))
+                    $post->addTag($tag);
+                if(in_array($category,$post->getTags()->getKeys()))
+                    $post->addCategory($category);
             }
             $manager->persist($post);
         }

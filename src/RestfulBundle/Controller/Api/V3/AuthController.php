@@ -44,6 +44,7 @@ class AuthController extends BaseController
                 'text/html'
             );
         $this->get('mailer')->send($message);
+
     }
 
 

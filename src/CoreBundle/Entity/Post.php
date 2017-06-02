@@ -106,8 +106,8 @@ class Post
     /**
      * Many Shows have Many Images.
      * @ORM\ManyToMany(targetEntity="Image")
-     * @ORM\JoinTable(name="blog_image",
-     *      joinColumns={@ORM\JoinColumn(name="blog_id", referencedColumnName="id")},
+     * @ORM\JoinTable(name="post_image",
+     *      joinColumns={@ORM\JoinColumn(name="post_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="image_id", referencedColumnName="id", unique=true)}
      *      )
      * @return ArrayCollection
@@ -118,32 +118,32 @@ class Post
      * @var ArrayCollection
      * Many Shows have Many Images.
      * @ORM\ManyToMany(targetEntity="Comment",inversedBy="post")
-     * @ORM\JoinTable(name="blog_comment",
-     *      joinColumns={@ORM\JoinColumn(name="blog_id", referencedColumnName="id")},
+     * @ORM\JoinTable(name="post_comment",
+     *      joinColumns={@ORM\JoinColumn(name="post_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="comment_id", referencedColumnName="id", unique=true)}
      *      )
      */
     private $comments;
 
     /**
-     * @var PersistentCollection
+     * @var ArrayCollection
      *
      * Many Shows have Many Images.
      * @ORM\ManyToMany(targetEntity="Category", indexBy="category")
-     * @ORM\JoinTable(name="blog_category",
-     *      joinColumns={@ORM\JoinColumn(name="blog_id", referencedColumnName="id")},
+     * @ORM\JoinTable(name="post_category",
+     *      joinColumns={@ORM\JoinColumn(name="post_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="category_id", referencedColumnName="id")}
      *      )
      */
     private $categories;
 
     /**
-     * @var PersistentCollection
+     * @var ArrayCollection
      *
      * Many Shows have Many Images.
      * @ORM\ManyToMany(targetEntity="Tag", indexBy="tag")
-     * @ORM\JoinTable(name="blog_tag",
-     *      joinColumns={@ORM\JoinColumn(name="blog_id", referencedColumnName="id")},
+     * @ORM\JoinTable(name="post_tag",
+     *      joinColumns={@ORM\JoinColumn(name="post_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
      *      )
      */
@@ -169,6 +169,10 @@ class Post
     {
         $this->images = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->tags = new ArrayCollection();
+        $this->categories = new ArrayCollection();
+
+
     }
 
     public function getId()
@@ -298,7 +302,7 @@ class Post
 
 
     /**
-     * @return PersistentCollection
+     * @return ArrayCollection
      */
     public  function getTags()
     {

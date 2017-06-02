@@ -63,7 +63,10 @@ class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, C
 
             for($b =0; $b < 3; $b++)
             {
-                $show->addGenre($genres[array_rand($genres,1)]);
+                $genre = $genres[array_rand($genres,1)];
+                if(in_array($genre,$show->getGenres()))
+                    $show->addGenre($genre);
+
             }
             $manager->persist($show);
 

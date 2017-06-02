@@ -23,4 +23,13 @@ class DefaultController extends BaseController
             'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
         ]);
     }
+
+    /**
+     * @Route("/stream", name="get_stream")
+     */
+    public function testStreamAction(Request $request)
+    {
+        var_dump("tst");
+
+    }
 }

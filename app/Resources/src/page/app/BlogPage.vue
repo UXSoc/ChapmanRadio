@@ -1,15 +1,15 @@
 <template>
-    <div class="schedule-bkgrnd">
+    <div>
         <div class="container">
             <h1 class="cr_header">Blog</h1>
             <div class="row">
                 <div class="col-md-8 nopadding">
-                    <div>
-                        Hello this is an entry
-                    </div>
-                    <div>
-                        Hello this is an entry
-                    </div>
+                    <post-entry></post-entry>
+                    <post-entry></post-entry>
+                    <post-entry></post-entry>
+                    <post-entry></post-entry>
+                    <post-entry></post-entry>
+                    <post-entry></post-entry>
                 </div>
                 <div class="col-md-4 nopadding">
 
@@ -23,17 +23,19 @@
 </template>
 
 <script>
+    import PostEntry from './../../components/PostEntry.vue'
+
     export default{
-        data () {
-            return {}
-        },
-        methods: {
+      data () {
+        return {}
+      },
+      methods: {
 
-        },
-        watch: {
-        },
-        components: {
-
-        }
+      },
+      watch: {
+      },
+      components: {
+        PostEntry
+      }
     }
 </script>

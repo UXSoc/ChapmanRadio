@@ -166,7 +166,7 @@ class Show
 
 
     /**
-     * @var PersistentCollection
+     * @var ArrayCollection
      *
      * Many Shows have Many Images.
      * @ORM\ManyToMany(targetEntity="Tag", indexBy="tag")
@@ -203,6 +203,8 @@ class Show
         $this->comments = new ArrayCollection();
         $this->showSchedule = new ArrayCollection();
         $this->djs = new ArrayCollection();
+        $this->genres = new ArrayCollection();
+        $this->tags = new ArrayCollection();
 
     }
 
@@ -270,11 +272,16 @@ class Show
     }
 
     /**
-     * @return PersistentCollection
+     * @return ArrayCollection
      */
     public function getGenres()
     {
         return $this->genres;
+    }
+
+    public function getTags()
+    {
+        return $this->tags;
     }
 
     /**
@@ -310,14 +317,6 @@ class Show
         return $this->tags->remove($tag);
     }
 
-
-    /**
-     * @return PersistentCollection
-     */
-    public  function getTags()
-    {
-        return $this->tags;
-    }
 
     public function getHeaderImage()
     {
