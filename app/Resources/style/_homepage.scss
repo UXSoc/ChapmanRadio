@@ -48,7 +48,7 @@ h6.cr_header {
 
 .oa-picture {
   height: 132px;
-  background-image: url('./../img/grimshaw.jpg');
+  background-image: url('../public/img/grimshaw.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
@@ -325,23 +325,6 @@ input[type=submit] {
 .schedule-bkgrnd {
   height: 1024px;
   background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url(img/schedule-back.jpeg);
-}
-
-.schedulephoto img {
-  padding-bottom: 20px;
-  padding-top: 20px;
-}
-
-.schedulephoto:last-child {
-  padding-bottom: 0;
-}
-
-.schedulephoto:after {
-  display: block;
-  height: 2px;
-  background-color: #c4c4c4;
-  content: " ";
-  width: 100%;
 }
 
 .bold-date {

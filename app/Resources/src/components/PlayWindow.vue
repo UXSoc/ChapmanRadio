@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-3 radiohead-logo">
-                    <img src="./../../img/radiohead-logo.svg">
+                    <img src="../../public/img/radiohead-logo.svg">
                 </div>
                 <div class="col-md-8">
                     <div class="row">

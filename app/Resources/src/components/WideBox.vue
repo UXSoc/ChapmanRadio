@@ -1,6 +1,6 @@
 <template>
     <div class="col-md-6 wn-widebox">
-        <img src="./../../img/dj-wide.jpeg">
+        <img src="../../public/img/dj-wide.jpeg">
         <div class="wn-widebox-text">
             <p class="wn-box-title wn-wb-title">{{ title }}</p>
             <p class="wn-box-desc wn-wb-desc">{{ description }}</p>

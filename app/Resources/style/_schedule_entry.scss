@@ -1,0 +1,21 @@
+.schedule-entry{
+  img{
+    padding-bottom: 20px;
+    padding-top: 20px;
+    width: 100%;
+  }
+  &:last-child{
+    padding-bottom: 0;
+  }
+  &:after{
+    display: block;
+    height: 2px;
+    background-color: #c4c4c4;
+    content: " ";
+    width: 100%;
+  }
+}
+
+.schedule-shows{
+  padding:0 40px;
+}

@@ -2,7 +2,7 @@
     <div class="showoftheweek">
         <div class="row row-eq-height marginfix">
             <div class="col-md-7 nopadding">
-                <img src="./../../img/showoftheweek.jpg">
+                <img src="../../public/img/showoftheweek.jpg">
             </div>
             <div class="col-md-5 sotw-text nopadding">
                 <p class="sotw-showname">{{ show_name }}</p>

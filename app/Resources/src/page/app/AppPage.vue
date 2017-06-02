@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <nav class="navbar navbar-default">
+        <nav class="navbar cr-navbar">
             <div class="container">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
@@ -11,10 +11,12 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Brand</a>
+                    <a class="navbar-brand" href="#">
+                        <img alt="Brand" src="./../../../public/img/title.svg"/>
+                    </a>
                 </div>
 
-                <ul class="nav navbar-nav navbar-left">
+                <ul class="nav navbar-nav navbar-left login">
                     <router-link active-class="active" :to="{name: 'login'}" :exact="true" tag="li">
                         <a class="nav-link"><i class="fa fa-user" aria-hidden="true"></i> Login</a>
                     </router-link>

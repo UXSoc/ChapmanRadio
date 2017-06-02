@@ -59,6 +59,7 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
       name: ['vendor']
     }),
-    new CopyWebpackPlugin([ {from : 'bower_components/tinymce/skins', to: 'skins'}])
+    new CopyWebpackPlugin([ {from : 'bower_components/tinymce/skins', to: 'skins'}]),
+    new CopyWebpackPlugin([ {from : 'app/Resources/public', to: 'public'}])
   ]
 }
