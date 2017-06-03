@@ -5,6 +5,11 @@ use CoreBundle\Controller\BaseController;
 use CoreBundle\Repository\StreamRepository;
 use Symfony\Component\HttpFoundation\Request;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+
+
 /**
  * @Route("/api/v3/")
  */
