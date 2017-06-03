@@ -1,11 +1,9 @@
 <template>
-    <div class="col-md-6">
-        <a class="wn-widebox" @mouseover="active = true" @mouseout="active = false" :href="post_url">
+    <div class="col-md-6 wnb">
+        <a class="wn-box" :href="post_url">
             <img :src="image_url">
-            <div class="wn-widebox-text" :class="backgroundChange">
-                <p class="wn-box-title wn-wb-title">{{ title }}</p>
-                <p class="wn-box-desc wn-wb-desc">{{ description }}</p>
-            </div>
+            <p class="wn-box-title wn-wb-title">{{ title }}</p>
+            <p class="wn-box-desc wn-wb-desc">{{ description }}</p>
         </a>
     </div>
 </template>
@@ -13,17 +11,7 @@
 <script>
   export default{
     data () {
-      return {
-          active: false
-      }
-    },
-    computed: {
-        backgroundChange: function() {
-            return {
-                'wn-widebox-text': !this.active,
-                'wn-widebox-text-hover': this.active
-            };
-        }
+      return {}
     },
     props: {
         title: {
