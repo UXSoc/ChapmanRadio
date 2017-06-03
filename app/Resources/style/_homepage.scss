@@ -134,43 +134,18 @@ input[type=submit] {
 /*--------------------------
     Boxes (What's New)
 ----------------------------*/
-.wn-widebox,
-.wn-smallbox {
+.wn-box:link,
+.wn-box:visited {
   img {
     width: 100%;
   }
-}
-
-.wn-widebox:link,
-.wn-widebox:visited,
-.wn-smallbox:link,
-.wn-smallbox:visited {
   text-decoration: none;
-}
-
-.wn-widebox-text,
-.wn-widebox-text:link,
-.wn-widebox-text:visited {
-  height: 100px;
+  height: 100%;
   background-color: $box-color;
   transition: background-color 0.2s;
 }
 
-.wn-widebox-text-hover {
-  height: 100px;
-  background-color: $box-color-hover;
-}
-
-.wn-smallbox-text,
-.wn-smallbox-text:link,
-.wn-smallbox-text:visited {
-  height: 270.45px;
-  background-color: $box-color;
-  transition: background-color 0.2s;
-}
-
-.wn-smallbox-text-hover {
-  height: 270.45px;
+.wn-box:hover {
   background-color: $box-color-hover;
 }
 
@@ -181,7 +156,7 @@ input[type=submit] {
 }
 
 .wn-box-desc {
-  padding: 5px 20px 5px 20px;
+  padding: 5px 20px 10px 20px;
   color: $box-desc-color;
 }
 
@@ -195,8 +170,7 @@ input[type=submit] {
   font-size: 14px;
 }
 
-.wn-widebox:after,
-.wn-smallbox:after,
+.wnb:after,
 .lt-trackbox:after,
 .showoftheweek:after {
   display: block;
@@ -430,4 +404,18 @@ input[type=submit] {
 .nextday {
   padding: 20px;
   margin: 0;
+}
+
+// responsive same height columns
+.row {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display:         flex;
+  flex-wrap: wrap;
+}
+
+.row > [class*='col-'] {
+  display: flex;
+  flex-direction: column;
 }
