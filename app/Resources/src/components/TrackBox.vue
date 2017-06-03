@@ -1,6 +1,6 @@
 <template>
     <div class="lt-trackbox">
-        <img v-bind:src="img_url">
+        <img :src="img_url">
         <div class="lt-text">
             <p class="lt-title">{{ track_name }}</p>
             <p class="lt-artist">{{ artist }}</p>
