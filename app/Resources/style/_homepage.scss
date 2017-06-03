@@ -1,7 +1,8 @@
 $accent-color: #79C043;
 $white: #fff;
 $black: #000;
-$box-color: rgba(58, 75, 58, .9);
+$box-color: rgba(58, 75, 58, .85);
+$box-color-hover: rgba(58, 74, 58, 1);
 $box-desc-color: #bdbdbd;
 $schedule-text-color: #007b0a;
 
@@ -140,15 +141,37 @@ input[type=submit] {
   }
 }
 
-.wn-widebox-text {
-  height: 100px;
-  background-color: $box-color;
-
+.wn-widebox:link,
+.wn-widebox:visited,
+.wn-smallbox:link,
+.wn-smallbox:visited {
+  text-decoration: none;
 }
 
-.wn-smallbox-text {
+.wn-widebox-text,
+.wn-widebox-text:link,
+.wn-widebox-text:visited {
+  height: 100px;
+  background-color: $box-color;
+  transition: background-color 0.2s;
+}
+
+.wn-widebox-text-hover {
+  height: 100px;
+  background-color: $box-color-hover;
+}
+
+.wn-smallbox-text,
+.wn-smallbox-text:link,
+.wn-smallbox-text:visited {
   height: 270.45px;
   background-color: $box-color;
+  transition: background-color 0.2s;
+}
+
+.wn-smallbox-text-hover {
+  height: 270.45px;
+  background-color: $box-color-hover;
 }
 
 .wn-box-title {
