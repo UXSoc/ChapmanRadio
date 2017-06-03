@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Event
  *
  * @ORM\Table(name="stream")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="CoreBundle\Repository\StreamRepository")
  *
  * @ORM\HasLifecycleCallbacks
  */
@@ -23,6 +23,20 @@ class Stream
      */
     private $id;
 
+
+    /**
+     * @var string
+     * @ORM\Column(name="username", type="string",length=20, nullable=false,unique=true)
+     *
+     */
+    private $username;
+
+    /**
+     * @var string
+     * @ORM\Column(name="token", type="string",length=20, nullable=false,unique=true)
+     *
+     */
+    private $password;
 
     /**
      * @var string
@@ -58,6 +72,8 @@ class Stream
     public function updatedTimestamps()
     {
         if ($this->createdAt == null) {
+            $this->recording = substr(bin2hex(random_bytes(12)),5);
+            $this->token = substr(bin2hex(random_bytes(12)),10);
             $this->createdAt = new \DateTime('now');
         }
     }
@@ -77,11 +93,6 @@ class Stream
         return $this->event;
     }
 
-    public function setRecording($recording)
-    {
-        $this->recording = $recording;
-    }
-
     public function getRecording()
     {
         return $this->recording;
@@ -97,5 +108,23 @@ class Stream
         $this->mount = $mount;
     }
 
+    public function setUsername($name)
+    {
+        $this->username = $name;
+    }
 
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    public function setPassword($password)
+    {
+        $this->password= $password;
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
+    }
 }

@@ -18,4 +18,13 @@ parameters:
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
 
-    icecast_password:asjdfaiwnefkanweninn84
+    icecast_relay_username:relay
+    icecast_relay_password:ba44sbdfubawjeba78b4h9h
+    icecast_admin_username:admin
+    icecast_admin_password:83h8483nkjn8fan8nn
+    icecast_port:8000
+    icecast_admin_email:admin@email.com
+    icecast_host: 0.0.0.0
+    icecast_location: ch_radio
+
+    icecast_public: localhost:8000

@@ -1,27 +1,25 @@
 <?php
-namespace BroadcastBundle\Command;
-
-use BroadcastBundle\Service\IcecastService;
-use CoreBundle\Entity\Stream;
-use DOMDocument;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpKernel\Kernel;
-
 /**
  * Created by PhpStorm.
  * User: michaelpollind
- * Date: 6/1/17
- * Time: 10:20 PM
+ * Date: 6/2/17
+ * Time: 8:03 PM
  */
-class StartIceServerCommand extends ContainerAwareCommand
+
+namespace BroadcastBundle\Command;
+
+
+use BroadcastBundle\Service\IcecastService;
+use CoreBundle\Entity\Stream;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class StartTestServerCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
-        $this->setName("icecast:start")
+        $this->setName("icecast:test:start")
             ->setDescription("Start Icecast server");
     }
 
@@ -29,8 +27,16 @@ class StartIceServerCommand extends ContainerAwareCommand
     {
         /** @var IcecastService $service */
         $service =  $this->getContainer()->get('brodcast.icecast');
-        $service->updateConfig([new Stream()]);
-        $service->startIcecast($service->getConfigPath(),true);
 
+        $stream = new Stream();
+        $stream->setMount('main.mp3');
+        $stream->setPassword('password');
+        $stream->setUsername('username');
+        $stream->updatedTimestamps();
+        $service->updateConfig([$stream]);
+        if($service->isIcecastRunning())
+            $service->refreshIcecast();
+        else
+            $service->startIcecast($service->getConfigPath(),true);
     }
 }
