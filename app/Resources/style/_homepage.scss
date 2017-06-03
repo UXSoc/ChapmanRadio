@@ -135,7 +135,9 @@ input[type=submit] {
     Boxes (What's New)
 ----------------------------*/
 .wn-box:link,
-.wn-box:visited {
+.wn-box:visited,
+.scb-box:link,
+.scb-box:visited {
   img {
     width: 100%;
   }
@@ -145,7 +147,8 @@ input[type=submit] {
   transition: background-color 0.2s;
 }
 
-.wn-box:hover {
+.wn-box:hover,
+.scb-box:hover {
   background-color: $box-color-hover;
 }
 
@@ -331,4 +334,14 @@ input[type=submit] {
 .row > [class*='col-'] {
   display: flex;
   flex-direction: column;
+}
+
+.scb-text {
+  color: $white;
+  padding: 0 10px 15px 10px;
+}
+
+.scb-text-title {
+  font-size: 16px;
+  padding: 15px 10px 0 10px;
 }
