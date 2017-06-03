@@ -36,7 +36,7 @@ class ShowNormalizer implements NormalizerInterface, NormalizerAwareInterface
             'slug' => $object->getSlug(),
             'name' => $object->getName(),
             'description' => $object->getDescription(),
-            'created_at' => $object->createdAt(),
+            'created_at' => $object->getCreatedAt(),
             'profanity' => $object->getProfanity(),
             'updated_at' => $object->updatedAt(),
             'enable_comments' => $object->getEnableComments(),

@@ -392,7 +392,7 @@ class Show
      * get the Datetime of the show createdat
      * @return \DateTime
      */
-    public function createdAt()
+    public function getCreatedAt()
     {
         return $this->createdAt;
     }

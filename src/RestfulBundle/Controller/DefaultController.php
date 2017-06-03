@@ -4,6 +4,7 @@ namespace RestfulBundle\Controller;
 
 use CoreBundle\Controller\BaseController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -29,7 +30,6 @@ class DefaultController extends BaseController
      */
     public function testStreamAction(Request $request)
     {
-        var_dump("tst");
-
+        return new JsonResponse([]);
     }
 }

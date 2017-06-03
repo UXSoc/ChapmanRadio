@@ -18,7 +18,8 @@ class AppKernel extends Kernel
             new CoreBundle\CoreBundle(),
             new RestfulBundle\RestfulBundle(),
             new Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle(),
-            new FOS\JsRoutingBundle\FOSJsRoutingBundle()
+            new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
+            new \BroadcastBundle\BroadcastBundle()
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test','hot'], true)) {

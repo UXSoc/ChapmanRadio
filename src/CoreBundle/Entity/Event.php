@@ -55,6 +55,13 @@ class Event
      */
     private $showSchedule;
 
+    /**
+     * @var Stream
+     * @ORM\OneToOne(targetEntity="Stream",  mappedBy="event")
+     */
+    private $stream;
+
+
     public function getId()
     {
         return $this->id;
