@@ -28,6 +28,8 @@
                 <h2 class="cr_header">Show of the Week</h2>
                 <show-box show_name="pantherBuck$" dj_names="Courtney Bankhead & Taylor Cox" show_desc="Not strictly pop. You will hear everything that has good acoustics, a beat, and vocals. Plus, we're pretty funny so please listen to us!"></show-box>
             </div>
+
+            <cr-player image="https://images.genius.com/4a57715a1b4a43437178b781f9d9457d.1000x1000x1.jpg"></cr-player>
         </div>
     </div>
 </template>
@@ -38,6 +40,7 @@
     import SmallBox from '../../components/SmallBox.vue'
     import TrackBox from '../../components/TrackBox.vue'
     import ShowBox from '../../components/ShowBox.vue'
+    import CrPlayer from '../../components/CrPlayer.vue'
     export default{
         data () {
             return {}
@@ -52,7 +55,8 @@
             WideBox,
             SmallBox,
             TrackBox,
-            ShowBox
+            ShowBox,
+            CrPlayer
         }
     }
 </script>
