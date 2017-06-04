@@ -29,6 +29,11 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         return $users;
     }
 
+    public function getByToken($token)
+    {
+        return $this->findOneBy(['token' => $token]);
+    }
+
     public function loadUserByUsername($username)
     {
         $user = $this->findOneByUsernameOrEmail($username);

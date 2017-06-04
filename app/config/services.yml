@@ -13,7 +13,6 @@ services:
     core.twitter_auth:
         class: CoreBundle\Security\HybridAuthenticator
         arguments: ["@cr.hybrid_auth.twitter"]
-
     core.authentication_handler:
         class: CoreBundle\Handler\AuthenticationHandler
         arguments:
@@ -25,7 +24,13 @@ services:
     core.image_upload_service:
         class: CoreBundle\Service\ImageUploadService
         arguments: ['%image_directory%','core.image_repository']
-
+    core.restful:
+        class: CoreBundle\Service\RestfulService
+        arguments: ['@validator']
+    core.user_token_service:
+        class: CoreBundle\Service\UserTokenService
+        arguments:
+            - '@cache.app'
     brodcast.icecast:
         class: BroadcastBundle\Service\IcecastService
         arguments:
@@ -100,6 +105,3 @@ services:
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - CoreBundle\Entity\Stream
-    #service_name:
-    #    class: CoreBundle\Directory\ClassName
-    #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']

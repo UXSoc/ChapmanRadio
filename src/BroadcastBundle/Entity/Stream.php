@@ -1,5 +1,5 @@
 <?php
-namespace CoreBundle\Entity;
+namespace BroadcastBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -50,13 +50,7 @@ class Stream
      */
     private $recording;
 
-    /**
-     * @var Event
-     *
-     * @ORM\OneToOne(targetEntity="Event", inversedBy="stream")
-     * @ORM\JoinColumn(name="event_id", referencedColumnName="id")
-     */
-    private $event;
+
 
     /**
      * @var \DateTime
@@ -85,11 +79,6 @@ class Stream
     public  function getCreatedAt()
     {
         return $this->createdAt;
-    }
-
-    public function getEvent()
-    {
-        return $this->event;
     }
 
     public function getRecording()

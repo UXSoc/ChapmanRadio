@@ -8,9 +8,9 @@
 
 namespace BroadcastBundle\Service;
 
+use BroadcastBundle\Entity\Stream;
 use CoreBundle\Entity\Event;
 use CoreBundle\Entity\Show;
-use CoreBundle\Entity\Stream;
 
 class StreamService
 {

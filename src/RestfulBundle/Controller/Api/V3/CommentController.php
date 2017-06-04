@@ -12,6 +12,7 @@ use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\CommentRepository;
 use CoreBundle\Repository\PostRepository;
+use CoreBundle\Service\RestfulService;
 use Doctrine\ORM\NoResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -34,6 +35,9 @@ class CommentController extends BaseController
     {
         /** @var CommentRepository $commentRepository */
         $commentRepository = $this->get('core.comment_repository');
+
+        /** @var RestfulService $restfulService */
+        $restfulService = $this->get('core.restful');
 
         /** @var Comment $comment */
         $comment = null;
@@ -63,7 +67,7 @@ class CommentController extends BaseController
         $em->persist($comment);
         $em->flush();
 
-        return $this->restful([
+        return $restfulService->response([
             new CommentNormalizer(),
             new UserNormalizer(),
             new WrapperNormalizer()],

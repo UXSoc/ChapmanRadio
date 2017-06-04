@@ -2,6 +2,7 @@
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace CoreBundle\Entity;
 
+use BroadcastBundle\Entity\Stream;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -57,7 +58,8 @@ class Event
 
     /**
      * @var Stream
-     * @ORM\OneToOne(targetEntity="Stream",  mappedBy="event")
+     * @ORM\OneToOne(targetEntity="BroadcastBundle\Entity\Stream")
+     * @ORM\JoinColumn(name="stream_id", referencedColumnName="id", onDelete="SET NULL")
      */
     private $stream;
 

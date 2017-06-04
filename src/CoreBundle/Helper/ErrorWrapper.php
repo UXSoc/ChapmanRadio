@@ -12,6 +12,7 @@ namespace CoreBundle\Helper;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class ErrorWrapper
 {
@@ -48,7 +49,7 @@ class ErrorWrapper
     /**
      * @param ConstraintViolationInterface  $error
      */
-    public function addError($error)
+    public function addError(ConstraintViolationInterface $error)
     {
         $this->addKeyError($error->getPropertyPath(), $error->getMessage());
     }
@@ -59,9 +60,9 @@ class ErrorWrapper
     }
 
     /**
-     * @param array | ConstraintViolationList $errors
+     * @param array | ConstraintViolationListInterface $errors
      */
-    public  function addErrors($errors)
+    public   function addErrors($errors)
     {
         if($errors instanceof ConstraintViolationList) {
             foreach ($errors as $error) {
