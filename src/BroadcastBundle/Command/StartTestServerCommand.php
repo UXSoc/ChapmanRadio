@@ -9,8 +9,8 @@
 namespace BroadcastBundle\Command;
 
 
+use BroadcastBundle\Entity\Stream;
 use BroadcastBundle\Service\IcecastService;
-use CoreBundle\Entity\Stream;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

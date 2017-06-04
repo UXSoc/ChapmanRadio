@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\Role\RoleInterface;
 
 /**
  *
- * @ORM\Table(name="role")
+ * @ORM\Table(name="user_role")
  *  @ORM\Entity
  */
 class Role implements RoleInterface

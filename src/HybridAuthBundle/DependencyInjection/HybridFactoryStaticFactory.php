@@ -20,7 +20,7 @@ class HybridFactoryStaticFactory
      */
     public static function createHybridFactory($type,$config)
     {
-        $reflection = new ReflectionClass(HybridAuthExtension::keys[$type]);
+        $reflection = new ReflectionClass(HybridAuthExtension::KEYS[$type]);
         /** @var AdapterInterface $hybridAuth */
         $hybridAuth = $reflection->newInstance($config,null,new HybridAuthStorage());
 

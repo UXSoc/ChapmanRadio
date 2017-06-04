@@ -13,6 +13,7 @@ use CoreBundle\Controller\BaseController;
 
 use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Comment;
+use CoreBundle\Entity\User;
 use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\BlogNormalizer;
@@ -26,6 +27,7 @@ use CoreBundle\Repository\CategoryRepository;
 use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\CommentRepository;
 use CoreBundle\Repository\TagRepository;
+use CoreBundle\Service\RestfulService;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\Request;
@@ -168,6 +170,10 @@ class BlogController extends BaseController
      */
     public function postPostCommentAction(Request $request, $token, $slug, $comment_token = null)
     {
+        /** @var RestfulService $restfulService */
+        $restfulService = $this->get('core.restful');
+
+
         /** @var PostRepository $postRepository */
         $postRepository = $this->get('core.post_repository');
 
@@ -184,28 +190,18 @@ class BlogController extends BaseController
         $comment->setContent($request->get("content"));
         $comment->setUser($this->getUser());
 
-        if ($comment_token != null) {
+        if ($comment_token !== null) {
             try {
                 $comment->setParentComment($commentRepository->getCommentByPostAndToken($post, $comment_token));
             } catch (NoResultException $e) {
-                return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Unknown Comment"), 410);
+                return $restfulService->errorResponse("Unknown Comment",410);
             }
         }
 
-        $errors = $this->validateEntity($comment);
-        if ($errors->count() > 0) {
-            $error = new ErrorWrapper("invalid token");
-            $error->addErrors($this->validateEntity($comment));
-            $error->setMessage("Invalid Comment");
-            return $this->restful([new WrapperNormalizer()], $error, 400);
-        }
+        if($resp = $restfulService->errorResponseValidate($comment,"Invalid Comment",400))
+            return $resp;
 
-        return $this->restful([
-            new WrapperNormalizer(),
-            new CommentNormalizer(),
-            new UserNormalizer()
-        ], new SuccessWrapper($comment, "Comment Added"));
-
+        return $restfulService->successResponse([new CommentNormalizer(),new UserNormalizer()],$comment,"Comment Added");
     }
 
 
@@ -249,6 +245,5 @@ class BlogController extends BaseController
         }
 
     }
-
 
 }

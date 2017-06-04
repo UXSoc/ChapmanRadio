@@ -24,9 +24,7 @@ class HybridAuthConfig implements  ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('hybrid_auth');
-        foreach (HybridAuthExtension::keys as $key => $value) {
-
-
+        foreach (HybridAuthExtension::KEYS as $key => $value) {
             $rootNode->children()->arrayNode($key)
                 ->children()
                         ->scalarNode('callback')->isRequired()->cannotBeEmpty()->end()
@@ -40,7 +38,6 @@ class HybridAuthConfig implements  ConfigurationInterface
                     ->end()
                 ->end();
         }
-
 
 
         return $treeBuilder;

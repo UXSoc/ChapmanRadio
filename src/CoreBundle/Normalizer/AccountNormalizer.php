@@ -9,6 +9,7 @@
 namespace CoreBundle\Normalizer;
 
 
+use CoreBundle\Entity\Role;
 use CoreBundle\Entity\User;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -41,9 +42,8 @@ class AccountNormalizer implements NormalizerInterface, NormalizerAwareInterface
     public function normalize($object, $format = null, array $context = array())
     {
         $result =  [
-            /** @var User $user */
-            "roles" => array_map(function ($user) use ($format,$context){
-                return $user->getRole();
+            "roles" => array_map(function ($role) use ($format,$context){
+                return $role->getRole();
             }, $object->getRoles()),
             "username" => $object->getUsername(),
             "created_at" => $object->getCreatedAt(),

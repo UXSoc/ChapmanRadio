@@ -1,4 +1,5 @@
 <?php
+
 namespace RestfulBundle\Controller\Api\V3\Secure;
 
 use CoreBundle\Controller\BaseController;
@@ -36,13 +37,13 @@ class ShowController extends BaseController
 
         $show = new Show();
         $show->setName($request->get('name'));
-        $show->setSlug($request->get('slug',$request->get('name')));
+        $show->setSlug($request->get('slug', $request->get('name')));
         $show->setDescription($request->get('description'));
         $show->setEnableComments($request->get('enable_comments'));
 
 
         $errors = $this->validateEntity($show);
-        if($errors->count() > 0) {
+        if ($errors->count() > 0) {
             $error = new ErrorWrapper();
             $error->addErrors($errors);
             return $this->restful([new WrapperNormalizer()], $error, 400);
@@ -54,9 +55,8 @@ class ShowController extends BaseController
         return $this->restful([
             new WrapperNormalizer(),
             new ShowNormalizer()
-        ],new SuccessWrapper($show,"Show Created"));
+        ], new SuccessWrapper($show, "Show Created"));
     }
-
 
 
     /**
@@ -66,7 +66,8 @@ class ShowController extends BaseController
      *     name="patch_show")
      * @Method({"PATCH"})
      */
-    public function patchShowAction(Request $request,$token,$slug){
+    public function patchShowAction(Request $request, $token, $slug)
+    {
 
         $em = $this->getDoctrine()->getManager();
 
@@ -74,7 +75,7 @@ class ShowController extends BaseController
         $showRepository = $this->get('core.show_repository');
 
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token,$slug);
+        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
         if ($show == null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Show Not Found"), 410);
 
@@ -84,13 +85,13 @@ class ShowController extends BaseController
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Show Permission Error"), 400);
         }
 
-        $show->setName($request->get('name',$show->getName()));
-        $show->setSlug($request->get('slug',$show->getSlug()));
-        $show->setDescription($request->get('description',$show->getDescription()));
-        $show->setEnableComments($request->get('enable_comments',$show->getEnableComments()));
+        $show->setName($request->get('name', $show->getName()));
+        $show->setSlug($request->get('slug', $show->getSlug()));
+        $show->setDescription($request->get('description', $show->getDescription()));
+        $show->setEnableComments($request->get('enable_comments', $show->getEnableComments()));
 
         $errors = $this->validateEntity($show);
-        if($errors->count() > 0) {
+        if ($errors->count() > 0) {
             $error = new ErrorWrapper();
             $error->addErrors($errors);
             return $this->restful([new WrapperNormalizer()], $error, 400);
@@ -102,7 +103,7 @@ class ShowController extends BaseController
         return $this->restful([
             new WrapperNormalizer(),
             new ShowNormalizer()
-        ],new SuccessWrapper($show,"Show Updated"));
+        ], new SuccessWrapper($show, "Show Updated"));
 
 
     }
@@ -115,14 +116,15 @@ class ShowController extends BaseController
      *     name="delete_show")
      * @Method({"DELETE"})
      */
-    public function deleteShowAction(Request $request,$token,$slug){
+    public function deleteShowAction(Request $request, $token, $slug)
+    {
         $em = $this->getDoctrine()->getManager();
 
         /** @var ShowRepository $showRepository */
         $showRepository = $this->get('core.show_repository');
 
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token,$slug);
+        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
         if ($show == null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Show Not Found"), 410);
 
@@ -139,7 +141,6 @@ class ShowController extends BaseController
     }
 
 
-
     /**
      * @Route("/show/{token}/{slug}/tag/{tag}",
      *      options = { "expose" = true },
@@ -153,9 +154,9 @@ class ShowController extends BaseController
         /** @var ShowRepository $showRepository */
         $showRepository = $this->get('core.show_repository');
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token,$slug);
+        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
 
-        if ($show == null)
+        if ($show === null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Show Not Found"), 410);
 
         try {
@@ -190,9 +191,9 @@ class ShowController extends BaseController
         /** @var ShowRepository $showRepository */
         $showRepository = $this->get('core.show_repository');
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token,$slug);
+        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
 
-        if ($show == null)
+        if ($show === null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
 
         try {
@@ -201,8 +202,7 @@ class ShowController extends BaseController
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
         }
 
-        $result = $show->removeTag($tag);
-        if($result == null)
+        if ($result = $show->removeTag($tag))
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Does Not Have Tag"), 410);
 
         $em->persist($show);
@@ -210,7 +210,7 @@ class ShowController extends BaseController
 
         return $this->restful([
             new WrapperNormalizer(),
-            new TagNormalizer()],new SuccessWrapper($result,"Tag Deleted"));
+            new TagNormalizer()], new SuccessWrapper($result, "Tag Deleted"));
 
     }
 
@@ -230,11 +230,10 @@ class ShowController extends BaseController
         /** @var ShowRepository $showRepository */
         $showRepository = $this->get('core.show_repository');
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token,$slug);
+        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
 
-        if ($show == null)
+        if ($show === null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-
         try {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
         } catch (\Exception $exception) {
@@ -275,7 +274,7 @@ class ShowController extends BaseController
         $showRepository = $this->get('core.show_repository');
 
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token,$slug);
+        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
 
         if ($show == null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
@@ -299,7 +298,7 @@ class ShowController extends BaseController
      *     name="post_header_image_show")
      * @Method({"POST"})
      */
-    public function postImageShowHeader(Request $request,$token, $slug)
+    public function postImageShowHeader(Request $request, $token, $slug)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -310,7 +309,7 @@ class ShowController extends BaseController
         $showRepository = $this->get('core.show_repository');
 
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token,$slug);
+        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
 
         if ($show == null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
@@ -322,7 +321,7 @@ class ShowController extends BaseController
         }
 
         $src = $request->files->get('image', null);
-        if($src == null)
+        if ($src == null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Image Not Found"), 410);
         $image = new Image();
         $image->setImage($src);
@@ -344,13 +343,14 @@ class ShowController extends BaseController
 
         return $this->restful([new WrapperNormalizer()], new SuccessWrapper(null, "Image Header Set"));
     }
+
     /**
      * @Route("/show/{token}/{slug}/header",
      *     options = { "expose" = true },
      *     name="delete_show_image_header")
      * @Method({"DELETE"})
      */
-    public function deleteImageShowHeader(Request $request,$token, $slug)
+    public function deleteImageShowHeader(Request $request, $token, $slug)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -361,7 +361,7 @@ class ShowController extends BaseController
         $showRepository = $this->get('core.show_repository');
 
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token,$slug);
+        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
 
         if ($show == null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
@@ -375,8 +375,6 @@ class ShowController extends BaseController
         return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Header Image Deleted"), 400);
 
     }
-
-
 
 
 }

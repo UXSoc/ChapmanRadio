@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
  */
 class HybridAuthExtension extends Extension
 {
-    const keys = [
+    const KEYS = [
         'facebook' => \Hybridauth\Provider\Facebook::class,
         'github' => \Hybridauth\Provider\GitHub::class,
         'twitter' => \Hybridauth\Provider\Twitter::class,
@@ -59,7 +59,7 @@ class HybridAuthExtension extends Extension
         foreach ($config as $key => $value)
         {
             $provider = $container->register('cr.hybrid_auth.'. $key);
-            $provider->setClass(HybridAuthExtension::keys[$key]);
+            $provider->setClass(HybridAuthExtension::KEYS[$key]);
 
             $factory = $provider->setFactory(HybridFactoryStaticFactory::class . '::createHybridFactory');
             $factory->setArguments([$key,$value]);

@@ -1,8 +1,8 @@
 <?php
 namespace BroadcastBundle\Command;
 
+use BroadcastBundle\Entity\Stream;
 use BroadcastBundle\Service\IcecastService;
-use CoreBundle\Entity\Stream;
 use DOMDocument;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Command\Command;

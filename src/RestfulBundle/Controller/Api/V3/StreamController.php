@@ -56,5 +56,4 @@ class StreamController  extends BaseController
             new SuccessWrapper($streams),200);
     }
 
-
 }

@@ -17,8 +17,9 @@ before_script:
     - bin/console cache:warmup --env=test
 
 script:
-    - ./vendor/bin/codecept run
+    - bin/console server:run --env=test
+    - ./vendor/bin/codecept run --coverage-xml
 
-matrix:
-    allow_failures:
-          - php: hhvm
+after_success:
+    - if [[ ! -z $coverage ]]; then coveralls; fi
+    - php vendor/bin/coveralls -v'

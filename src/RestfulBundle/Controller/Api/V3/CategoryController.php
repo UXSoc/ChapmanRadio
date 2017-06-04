@@ -17,6 +17,7 @@ use CoreBundle\Normalizer\TagNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\CategoryRepository;
 use CoreBundle\Repository\TagRepository;
+use CoreBundle\Service\RestfulService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -49,15 +50,18 @@ class CategoryController extends BaseController
      */
     public function getCategoryAction(Request $request, $name)
     {
+        /** @var RestfulService $restfulService */
+        $restfulService = $this->get('core.restful');
+
+
         /** @var CategoryRepository $categoryRepository */
         $categoryRepository = $this->get('core.category_repository');
 
         $category = $categoryRepository->findOneBy(["tag" => $name]);
         if ($category === null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Can't find tag"), 400);
-        return $this->restful([
-            new WrapperNormalizer(),
-            new CategoryNormalizer()], new SuccessWrapper($category, "Found tag"));
+
+        return $restfulService->successResponse([new CategoryNormalizer()],$category,"Found Tag");
     }
 
 }

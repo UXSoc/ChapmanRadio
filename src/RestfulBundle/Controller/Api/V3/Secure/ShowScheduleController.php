@@ -1,4 +1,5 @@
 <?php
+
 namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Controller\BaseController;
@@ -21,9 +22,9 @@ class ShowScheduleController extends BaseController
      * @Route("/show/{token}/{slug}/schedule/event/recurring", options = { "expose" = true }, name="post_schedule_recurring_show")
      * @Method({"POST"})
      */
-    public function postScheduleRecurringShow(Request $request,$token,$slug)
+    public function postScheduleRecurringShow(Request $request, $token, $slug)
     {
-        $request->get('weekly',null);
+        $request->get('weekly', null);
         $request->get('month', null);
 
     }
@@ -35,7 +36,7 @@ class ShowScheduleController extends BaseController
      *     name="post_show_schedule_event")
      * @Method({"PUT"})
      */
-    public function postScheduleEvent(Request $request,$token,$slug)
+    public function postScheduleEvent(Request $request, $token, $slug)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -43,12 +44,12 @@ class ShowScheduleController extends BaseController
         $showRepository = $this->get('core.show_repository');
 
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token,$slug);
+        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
         if ($show == null)
             return $this->messageError("Show not found");
 
-        $startTime = $request->get("start",null);
-        $endTime = $request->get("end",null);
+        $startTime = $request->get("start", null);
+        $endTime = $request->get("end", null);
 
         $event = new Event();
         $event->setStart(new \DateTime($startTime));
@@ -58,7 +59,5 @@ class ShowScheduleController extends BaseController
         $show->addEvent($event);
         $em->persist($show);
         $em->flush();
-
-
     }
 }

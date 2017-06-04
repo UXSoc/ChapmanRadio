@@ -26,5 +26,4 @@ class HybridAuthBundle extends Bundle
 
         return $this->extension;
     }
-
 }

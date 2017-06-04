@@ -12,3 +12,14 @@ settings:
     bootstrap: _bootstrap.php
     colors: true
     memory_limit: 1024M
+coverage:
+    enabled: true
+    include:
+        - app/*
+        - src/*
+    exclude:
+        - node_modules/*
+        - app/data/*
+        - app/DoctrineMigrations/*
+        - bower_components/*
+        - vendor/*

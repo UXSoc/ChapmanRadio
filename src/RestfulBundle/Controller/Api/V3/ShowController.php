@@ -158,7 +158,7 @@ class ShowController extends BaseController
         $comment->setContent($request->get("content"));
         $comment->setUser($this->getUser());
 
-        if($comment_token != null) {
+        if($comment_token !== null) {
             try {
                 $comment->setParentComment($commentRepository->getCommentByShowAndToken($show, $comment_token));
             } catch (NoResultException $e) {
@@ -181,5 +181,4 @@ class ShowController extends BaseController
             new UserNormalizer()
         ],new SuccessWrapper($comment,"Comment Added"));
     }
-
 }

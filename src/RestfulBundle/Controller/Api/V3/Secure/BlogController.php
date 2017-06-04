@@ -380,6 +380,4 @@ class BlogController extends BaseController
             new TagNormalizer()], new SuccessWrapper($result, "Tag Deleted"));
 
     }
-
-
 }

@@ -74,5 +74,4 @@ class UserTokenService
         return false;
     }
 
-
 }

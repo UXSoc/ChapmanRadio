@@ -20,4 +20,5 @@ class CoreBundle extends Bundle
 
         return $this->extension;
     }
+
 }

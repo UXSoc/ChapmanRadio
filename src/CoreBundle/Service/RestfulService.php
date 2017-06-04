@@ -78,5 +78,4 @@ class RestfulService
         return $this->validate->validate($object);
     }
 
-
 }

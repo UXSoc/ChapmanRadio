@@ -53,5 +53,4 @@ class PostRepository extends EntityRepository
     public  function getPostsByCategory( $post, $category)
     {
     }
-
 }
