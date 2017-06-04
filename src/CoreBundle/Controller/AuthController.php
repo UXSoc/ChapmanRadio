@@ -106,7 +106,11 @@ class AuthController extends BaseController
 
         //create a confirmation token
         $token = substr(bin2hex(random_bytes(20)),20);
-        $cacheService->save($token,$user,1000);
+        $userToken = $cacheService->getItem($token);
+        $userToken->expiresAfter(1000);
+        $userToken->set($user);
+        $cacheService->save($userToken);
+
         $this->confirmationEmail($user,$token);
 
         $em = $this->getDoctrine()->getManager();
@@ -135,7 +139,10 @@ class AuthController extends BaseController
             return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown User"),410);
 
         $token = substr(bin2hex(random_bytes(20)),20);
-        $cacheService->save($token,$user,1000);
+        $userToken = $cacheService->getItem($token);
+        $userToken->expiresAfter(1000);
+        $userToken->set($user);
+        $cacheService->save($userToken);
 
         $this->confirmPasswordResetEmail($user,$token);
         return $this->restful([new WrapperNormalizer()],new SuccessWrapper("New password reset token sent"));
@@ -209,7 +216,11 @@ class AuthController extends BaseController
 
         //create a confirmation token
         $token = substr(bin2hex(random_bytes(20)),20);
-        $cacheService->save($token,$user,1000);
+        $userToken = $cacheService->getItem($token);
+        $userToken->expiresAfter(1000);
+        $userToken->set($user);
+        $cacheService->save($userToken);
+
 
         $this->confirmationEmail($user,$token);
         return $this->restful([new WrapperNormalizer()],new SuccessWrapper("New confirmation token sent"));

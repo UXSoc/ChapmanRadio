@@ -27,8 +27,7 @@ class HybridAuthStorage implements StorageInterface
     {
         $this->session = new Session();
 
-        $this->session->setName($this->storeNamespace);
-        $this->session->start();
+//        $this->session->start();
     }
 
     /**

@@ -51,7 +51,7 @@ class BlogNormalizer implements NormalizerInterface, NormalizerAwareInterface
             'excerpt' => $object->getExcerpt(),
             'categories' => $object->getCategories() != null ? $object->getCategories()->getKeys() : null,
             'tags' => $object->getTags() != null ? $object->getTags()->getKeys() : null,
-            'is_pinned' => (boolean)$object->getIsPinned(),
+            'is_pinned' => (boolean)$object->isPinned(),
             'author' => $this->normalizer->normalize($object->getAuthor(), $format, $context),
             'content' => $object->getContent()
         ];

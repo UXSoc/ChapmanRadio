@@ -85,7 +85,7 @@ class SecureBlogControllerCest
         /** @var Post $post */
         $post = $I->grabEntityFromRepository(Post::class,['slug'=> $temp['slug']]);
 
-        $I->assertEquals($temp['pinned'],$post->getIsPinned());
+        $I->assertEquals($temp['pinned'],$post->isPinned());
         $I->assertEquals($temp['content'],$post->getContent());
         $I->assertEquals($temp['slug'],$post->getSlug());
         $I->assertEquals($temp['excerpt'],$post->getExcerpt());

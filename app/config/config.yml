@@ -87,14 +87,14 @@ hybrid_auth:
         keys:
             key: '%facebook_key%'
             secret: '%facebook_secret%'
-        callback: '%database_host%/login/facebook'
+        callback: 'http://%database_host%/login/facebook'
     twitter:
         keys:
             key: '%twitter_key%'
             secret: '%twitter_secret%'
-        callback: '%database_host%/login/twitter'
+        callback: 'http://%database_host%/login/twitter'
     google:
         keys:
             key: '%google_key%'
             secret: '%google_secret%'
-        callback: '%database_host%/login/google'
+        callback: 'http://%database_host%/login/google'

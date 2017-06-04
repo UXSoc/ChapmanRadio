@@ -29,8 +29,9 @@ class BaseController extends Controller
         return new ParameterBag($this->getJsonPayloadAsMapping());
     }
 
-    public function getJsonPayloadAsMapping(){
-        $result =  json_decode($this->getJsonPayload(),true);
+    public function getJsonPayloadAsMapping()
+    {
+        $result = json_decode($this->getJsonPayload(), true);
         if (JSON_ERROR_NONE !== json_last_error()) {
             throw new BadRequestHttpException("Content is not valid json");
         }
@@ -40,16 +41,16 @@ class BaseController extends Controller
     public function getJsonPayload()
     {
         $content = $this->get('request_stack')->getCurrentRequest()->getContent();
-        if(empty($content))
-        {
+        if (empty($content)) {
             throw new BadRequestHttpException("Content is empty");
         }
         return $content;
     }
 
-    public  function denromalizeMapping($mapping,$class){
+    public function denromalizeMapping($mapping, $class)
+    {
         $serializer = new Serializer(array(new GetSetMethodNormalizer()), array('json' => new JsonEncoder()));
-        return $serializer->denormalize($mapping,$class);
+        return $serializer->denormalize($mapping, $class);
     }
 
 
@@ -60,10 +61,10 @@ class BaseController extends Controller
      * @param array $context
      * @return JsonResponse
      */
-    public function restful($normalizers,$data,$status = 200, $format = null, array $context = array())
+    public function restful($normalizers, $data, $status = 200, $format = null, array $context = array())
     {
-        $normalizer =  new Serializer($normalizers);
-        return new JsonResponse($normalizer->normalize($data,$format,$context),$status);
+        $normalizer = new Serializer($normalizers);
+        return new JsonResponse($normalizer->normalize($data, $format, $context), $status);
     }
 
     /**
@@ -71,11 +72,10 @@ class BaseController extends Controller
      * @param int $status
      * @return JsonResponse
      */
-    public function messageError($message,$status = 400)
+    public function messageError($message, $status = 400)
     {
-        return $this->restful([new WrapperNormalizer()],new ErrorWrapper($message),$status);
+        return $this->restful([new WrapperNormalizer()], new ErrorWrapper($message), $status);
     }
-
 
 
     /**
@@ -86,7 +86,6 @@ class BaseController extends Controller
     {
         return $this->get('validator')->validate($entity);
     }
-
 
 
 }

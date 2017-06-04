@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 6/3/17
- * Time: 9:42 PM
- */
-
 namespace CoreBundle\Security;
 
 
@@ -26,7 +19,6 @@ class HybridAuthenticator extends AbstractGuardAuthenticator
     function __construct(AbstractAdapter $adapter)
     {
         $this->adapter = $adapter;
-
     }
 
     /**

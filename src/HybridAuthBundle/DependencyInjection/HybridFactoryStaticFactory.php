@@ -1,5 +1,5 @@
 <?php
-namespace AuthBundle\DependencyInjection;
+namespace HybridAuthBundle\DependencyInjection;
 
 use HybridAuthBundle\DependencyInjection\HybridAuthExtension;
 use HybridAuthBundle\HybridAuthStorage;

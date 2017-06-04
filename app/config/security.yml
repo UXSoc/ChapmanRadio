@@ -37,21 +37,53 @@ security:
                 success_handler: core.authentication_handler
                 failure_handler: core.authentication_handler
                 require_previous_session: false
-#        facebook:
-#            anonymous: ~
-#            entry_point: core.authentication_handler
-#            access_denied_handler: core.access_handler
-#            guard:
-#                authenticators:
-#                    - 'cr.hybrid_auth.facebook'
-#            remember_me:
-#                secret:   '%secret%'
-#                lifetime: 604800 # 1 week in seconds
-#                path:     /
-#            form_login:
-#                check_path: /login/facebook
-#                success_handler: core.authentication_handler
-#                failure_handler: core.authentication_handler
-#                require_previous_session: false
-
-
+        facebook:
+            anonymous: ~
+            entry_point: core.authentication_handler
+            access_denied_handler: core.access_handler
+            guard:
+                authenticators:
+                    - 'core.facebook_auth'
+            remember_me:
+                secret:   '%secret%'
+                lifetime: 604800 # 1 week in seconds
+                path:     /
+            form_login:
+                check_path: /login/facebook
+                success_handler: core.authentication_handler
+                failure_handler: core.authentication_handler
+                require_previous_session: false
+        google:
+            anonymous: ~
+            entry_point: core.authentication_handler
+            access_denied_handler: core.access_handler
+            guard:
+                authenticators:
+                    - 'core.google_auth'
+            remember_me:
+                secret:   '%secret%'
+                lifetime: 604800 # 1 week in seconds
+                path:     /
+            form_login:
+                check_path: /login/facebook
+                success_handler: core.authentication_handler
+                failure_handler: core.authentication_handler
+                require_previous_session: false
+                require_previous_session: false
+        twitter:
+            anonymous: ~
+            entry_point: core.authentication_handler
+            access_denied_handler: core.access_handler
+            guard:
+                authenticators:
+                    - 'core.twitter_auth'
+            remember_me:
+                secret:   '%secret%'
+                lifetime: 604800 # 1 week in seconds
+                path:     /
+            form_login:
+                check_path: /login/facebook
+                success_handler: core.authentication_handler
+                failure_handler: core.authentication_handler
+                require_previous_session: false
+                require_previous_session: false

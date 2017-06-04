@@ -4,6 +4,16 @@ parameters:
     #parameter_name: value
 
 services:
+    core.facebook_auth:
+        class: CoreBundle\Security\HybridAuthenticator
+        arguments: ["@cr.hybrid_auth.facebook"]
+    core.google_auth:
+        class: CoreBundle\Security\HybridAuthenticator
+        arguments: ["@cr.hybrid_auth.google"]
+    core.twitter_auth:
+        class: CoreBundle\Security\HybridAuthenticator
+        arguments: ["@cr.hybrid_auth.twitter"]
+
     core.authentication_handler:
         class: CoreBundle\Handler\AuthenticationHandler
         arguments:

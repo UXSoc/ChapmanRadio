@@ -30,7 +30,7 @@ class StreamController extends BaseController
      *     name="post_publish_stream")
      * @Method({"POST"})
      */
-    public function PublishStreamAction(Request $request,$token,$slug)
+    public function publishStreamAction(Request $request, $token, $slug)
     {
         /** @var ShowRepository $showRepository */
         $showRepository = $this->get('core.show_repository');
@@ -39,18 +39,16 @@ class StreamController extends BaseController
         $eventRepository = $this->get('core.event_repository');
 
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token,$slug);
+        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
         if ($show == null)
-            return $this->messageError("Show Not Found",410);
+            return $this->messageError("Show Not Found", 410);
         /** @var Event $event */
-        $event =  $eventRepository->getEventByTime(new \DateTime('now'));
-        if($event == null)
-            return $this->messageError("No Shows Scheduled",410);
+        $event = $eventRepository->getEventByTime(new \DateTime('now'));
+        if ($event == null)
+            return $this->messageError("No Shows Scheduled", 410);
 
-        if($event->getShow() != $show)
-            return $this->messageError("Show Not Bound to Event",410);
-
-
+        if ($event->getShow() != $show)
+            return $this->messageError("Show Not Bound to Event", 410);
 
     }
 }

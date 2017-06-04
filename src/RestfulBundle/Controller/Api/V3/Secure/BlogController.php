@@ -45,7 +45,7 @@ class BlogController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         $post = new Post();
-        $post->setIsPinned($request->get('pinned'));
+        $post->setPinned($request->get('pinned'));
         $post->setContent($request->get('content'));
         $post->setSlug($request->get('slug', $request->get('name')));
         $post->setExcerpt($request->get('excerpt'));
@@ -97,7 +97,7 @@ class BlogController extends BaseController
         $post->setName($request->get("name", $post->getName()));
         $post->setSlug($request->get("slug", $post->getSlug()));
         $post->setExcerpt($request->get("excerpt", $post->getExcerpt()));
-        $post->setIsPinned($request->get("pinned", $post->getIsPinned()));
+        $post->setPinned($request->get("pinned", $post->isPinned()));
 
         $errors = $this->validateEntity($post);
         if ($errors->count() > 0) {

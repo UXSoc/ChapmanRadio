@@ -1,7 +1,6 @@
 <?php
 namespace HybridAuthBundle\DependencyInjection;
 
-use AuthBundle\DependencyInjection\HybridFactoryStaticFactory;
 use HybridAuthBundle\Configuration\HybridAuthConfig;
 use Hybridauth\Adapter\AdapterInterface;
 use Symfony\Component\Config\Definition\Processor;
@@ -60,7 +59,8 @@ class HybridAuthExtension extends Extension
         foreach ($config as $key => $value)
         {
             $provider = $container->register('cr.hybrid_auth.'. $key);
-            $provider->setClass(AdapterInterface::class);
+            $provider->setClass(HybridAuthExtension::keys[$key]);
+
             $factory = $provider->setFactory(HybridFactoryStaticFactory::class . '::createHybridFactory');
             $factory->setArguments([$key,$value]);
 

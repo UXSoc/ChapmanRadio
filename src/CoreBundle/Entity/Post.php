@@ -231,12 +231,12 @@ class Post
         return $this->content;
     }
 
-    public function getIsPinned()
+    public function isPinned()
     {
         return $this->isPinned;
     }
 
-    public function setIsPinned($pinned)
+    public function setPinned($pinned)
     {
         $this->isPinned = $pinned;
     }

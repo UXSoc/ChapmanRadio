@@ -52,7 +52,7 @@ class LoadPostData extends AbstractFixture implements OrderedFixtureInterface, C
             $post->setName($faker->name);
             $post->setContent($faker->paragraph(10));
             $post->setAuthor($users[array_rand($users,1)]);
-            $post->setIsPinned($faker->boolean());
+            $post->setPinned($faker->boolean());
             $post->setExcerpt($faker->paragraph(1));
             $post->setSlug($post->getName());
 
