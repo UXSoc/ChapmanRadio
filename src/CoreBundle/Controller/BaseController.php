@@ -22,6 +22,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class BaseController extends Controller
 {
+
+
     public function getJsonPayloadAsParameterBag()
     {
         return new ParameterBag($this->getJsonPayloadAsMapping());

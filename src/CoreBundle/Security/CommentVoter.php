@@ -15,7 +15,11 @@ class CommentVoter extends  Voter
 
     private $decisionManager;
 
-    function __construct(AccessDecisionManagerInterface $decisionManager)
+    /**
+     * CommentVoter constructor.
+     * @param AccessDecisionManagerInterface $decisionManager
+     */
+    public function __construct(AccessDecisionManagerInterface $decisionManager)
     {
         $this->decisionManager = $decisionManager;
     }

@@ -15,7 +15,11 @@ class PostVoter extends  Voter
 
     private $decisionManager;
 
-    function __construct(AccessDecisionManagerInterface $decisionManager)
+    /**
+     * PostVoter constructor.
+     * @param AccessDecisionManagerInterface $decisionManager
+     */
+    public function __construct(AccessDecisionManagerInterface $decisionManager)
     {
         $this->decisionManager = $decisionManager;
     }

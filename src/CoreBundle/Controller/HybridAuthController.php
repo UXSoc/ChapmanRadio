@@ -6,7 +6,7 @@
  * Time: 9:17 PM
  */
 
-namespace RestfulBundle\Controller\Api\V3;
+namespace CoreBundle\Controller;
 
 
 class HybridAuthController

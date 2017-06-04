@@ -23,7 +23,9 @@ class AccountController extends BaseController
 {
     /**
      * @Security("has_role('ROLE_USER')")
-     * @Route("/account/new-password", options = { "expose" = true }, name="post_account_password")
+     * @Route("/account/new-password",
+     *     options = { "expose" = true },
+     *     name="post_account_password")
      * @Method({"POST"})
      */
     public  function  patchChangePasswordAction(Request $request)

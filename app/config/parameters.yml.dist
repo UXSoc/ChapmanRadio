@@ -26,5 +26,13 @@ parameters:
     icecast_admin_email: admin@email.com
     icecast_host: 0.0.0.0
     icecast_location: ch_radio
-
     icecast_public: localhost:8000
+
+    facebook_key: YouNeedAKey
+    facebook_secret: YouNeedASecrete
+
+    twitter_key: YouNeedAKey
+    twitter_secret: YouNeedASecrete
+
+    google_key: YouNeedAKey
+    google_secret: YouNeedASecrete

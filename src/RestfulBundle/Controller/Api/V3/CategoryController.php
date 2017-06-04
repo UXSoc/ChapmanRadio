@@ -53,7 +53,7 @@ class CategoryController extends BaseController
         $categoryRepository = $this->get('core.category_repository');
 
         $category = $categoryRepository->findOneBy(["tag" => $name]);
-        if ($category == null)
+        if ($category === null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Can't find tag"), 400);
         return $this->restful([
             new WrapperNormalizer(),

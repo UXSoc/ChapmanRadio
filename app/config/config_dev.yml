@@ -11,13 +11,6 @@ web_profiler:
     toolbar: true
     intercept_redirects: false
 
-doctrine_cache:
-    providers:
-        core.cache:
-            file_system:
-                extension: '.cache'
-                directory: '%kernel.cache_dir%/core/'
-
 monolog:
     handlers:
         main:

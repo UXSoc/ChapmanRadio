@@ -71,7 +71,7 @@ class Stream
      */
     public function updatedTimestamps()
     {
-        if ($this->createdAt == null) {
+        if ($this->createdAt === null) {
             $this->token = substr(bin2hex(random_bytes(12)),10);
             $this->createdAt = new \DateTime('now');
         }

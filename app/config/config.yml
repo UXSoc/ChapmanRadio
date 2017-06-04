@@ -81,10 +81,20 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
+
 hybrid_auth:
     facebook:
         keys:
-            key: 'your-twitter-consumer-key'
-            secret: 'test'
-        callback: 'https://example.com/path/to/script.php'
-
+            key: '%facebook_key%'
+            secret: '%facebook_secret%'
+        callback: '%database_host%/login/facebook'
+    twitter:
+        keys:
+            key: '%twitter_key%'
+            secret: '%twitter_secret%'
+        callback: '%database_host%/login/twitter'
+    google:
+        keys:
+            key: '%google_key%'
+            secret: '%google_secret%'
+        callback: '%database_host%/login/google'

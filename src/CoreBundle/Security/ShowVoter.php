@@ -16,7 +16,12 @@ class ShowVoter extends  Voter
 
     private $decisionManager;
 
-    function __construct(AccessDecisionManagerInterface $decisionManager)
+
+    /**
+     * ShowVoter constructor.
+     * @param AccessDecisionManagerInterface $decisionManager
+     */
+    public function __construct(AccessDecisionManagerInterface $decisionManager)
     {
         $this->decisionManager = $decisionManager;
     }

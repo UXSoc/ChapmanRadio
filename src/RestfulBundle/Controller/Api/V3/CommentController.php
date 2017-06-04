@@ -1,4 +1,5 @@
 <?php
+
 namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Controller\BaseController;
@@ -29,7 +30,8 @@ class CommentController extends BaseController
      * @Route("comment/{token}", options = { "expose" = true }, name="patch_comment")
      * @Method({"PATCH"})
      */
-    public function patchCommentAction(Request $request,$token ){
+    public function patchCommentAction(Request $request, $token)
+    {
         /** @var CommentRepository $commentRepository */
         $commentRepository = $this->get('core.comment_repository');
 
@@ -43,21 +45,18 @@ class CommentController extends BaseController
 
         try {
             $this->denyAccessUnlessGranted('edit', $comment);
-        }
-        catch (\Exception $exception)
-        {
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Comment Permission Error"),400);
+        } catch (\Exception $exception) {
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Comment Permission Error"), 400);
         }
 
         $comment->setContent($request->get("content"));
 
         $errors = $this->validateEntity($comment);
-        if($errors->count() > 0)
-        {
+        if ($errors->count() > 0) {
             $error = new ErrorWrapper("invalid token");
             $error->addErrors($this->validateEntity($comment));
             $error->setMessage("Invalid Comment");
-            return $this->restful([new WrapperNormalizer()],$error,400);
+            return $this->restful([new WrapperNormalizer()], $error, 400);
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -68,7 +67,7 @@ class CommentController extends BaseController
             new CommentNormalizer(),
             new UserNormalizer(),
             new WrapperNormalizer()],
-            new SuccessWrapper($comment,"Comment Saved"));
+            new SuccessWrapper($comment, "Comment Saved"));
 
     }
 }

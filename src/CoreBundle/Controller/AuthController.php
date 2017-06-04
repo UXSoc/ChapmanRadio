@@ -1,7 +1,8 @@
 <?php
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
-namespace RestfulBundle\Controller\Api\V3;
-use Hybridauth\Provider\Twitter;
+namespace CoreBundle\Controller;
+
+
 use RestfulBundle\Validation\PasswordType;
 use CoreBundle\Controller\BaseController;
 use CoreBundle\Entity\User;
@@ -11,8 +12,9 @@ use CoreBundle\Normalizer\AccountNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\UserRepository;
-use CoreBundle\Service\CacheService;
 use Swift_Message;
+use Symfony\Component\Cache\Adapter\AbstractAdapter;
+use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -71,13 +73,15 @@ class AuthController extends BaseController
     }
 
     /**
-     * @Route("/auth/register", options = { "expose" = true }, name="post_register")
+     * @Route("/auth/register",
+     *     options = { "expose" = true },
+     *     name="post_register")
      * @Method({"POST"})
      */
     public function postRegisterAction(Request $request)
     {
-        /** @var CacheService $cacheService */
-        $cacheService = $this->get('core.cache_service');
+        /** @var AbstractAdapter $cacheService */
+        $cacheService = $this->get('cache.app');
 
         $user = new User();
         $user->setName($request->get("name"));
@@ -102,7 +106,6 @@ class AuthController extends BaseController
 
         //create a confirmation token
         $token = substr(bin2hex(random_bytes(20)),20);
-        $cacheService->setNamespace('user_keys_confirm');
         $cacheService->save($token,$user,1000);
         $this->confirmationEmail($user,$token);
 
@@ -123,8 +126,8 @@ class AuthController extends BaseController
         /** @var UserRepository $userRepository */
         $userRepository = $this->get('core.user_repository');
 
-        /** @var CacheService $cacheService */
-        $cacheService = $this->get('core.cache_service');
+        /** @var AbstractAdapter $cacheService */
+        $cacheService = $this->get('cache.app');
 
         /** @var User $user */
         $user = $userRepository->findOneBy(['token' => $token]);
@@ -132,7 +135,6 @@ class AuthController extends BaseController
             return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown User"),410);
 
         $token = substr(bin2hex(random_bytes(20)),20);
-        $cacheService->setNamespace("user_key_reset_password");
         $cacheService->save($token,$user,1000);
 
         $this->confirmPasswordResetEmail($user,$token);
@@ -149,18 +151,18 @@ class AuthController extends BaseController
         /** @var UserRepository $userRepository */
         $userRepository = $this->get('core.user_repository');
 
-        /** @var CacheService $cacheService */
-        $cacheService = $this->get('core.cache_service');
+        /** @var AbstractAdapter $cacheService */
+        $cacheService = $this->get('cache.app');
 
         /** @var User $user */
         $user = $userRepository->findOneBy(['token' => $token]);
         if($user == null)
             return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown User"),410);
 
-        $cacheService->setNamespace('user_key_reset_password');
-        /** @var User $cachedUser */
-        if($cachedUser = $cacheService->fetch($token))
+        /** @var CacheItem $cacheItem */
+        if($cacheItem = $cacheService->getItem($token))
         {
+            $cachedUser = $cacheItem->get();
            if($cachedUser->getId() == $user->getId())
            {
                $passwordType = new PasswordType($request->get("password"));
@@ -197,8 +199,8 @@ class AuthController extends BaseController
         /** @var UserRepository $userRepository */
         $userRepository = $this->get('core.user_repository');
 
-        /** @var CacheService $cacheService */
-        $cacheService = $this->get('core.cache_service');
+        /** @var AbstractAdapter $cacheService */
+        $cacheService = $this->get('cache.app');
 
         /** @var User $user */
         $user = $userRepository->findOneBy(['token' => $token]);
@@ -207,7 +209,6 @@ class AuthController extends BaseController
 
         //create a confirmation token
         $token = substr(bin2hex(random_bytes(20)),20);
-        $cacheService->setNamespace('user_keys_confirm');
         $cacheService->save($token,$user,1000);
 
         $this->confirmationEmail($user,$token);
@@ -223,28 +224,29 @@ class AuthController extends BaseController
         /** @var UserRepository $userRepository */
         $userRepository = $this->get('core.user_repository');
 
-        /** @var CacheService $cacheService */
-        $cacheService = $this->get('core.cache_service');
+        /** @var AbstractAdapter $cacheService */
+        $cacheService = $this->get('cache.app');
 
         /** @var User $user */
         $user = $userRepository->findOneBy(['token' => $token]);
         if($user == null)
             return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown User"),410);
 
-        $cacheService->setNamespace('user_keys_confirm');
-        $tokenUser = $cacheService->fetch($confirmToken);
-        if($tokenUser)
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown Token"),410);
-
-        if($tokenUser->getId() == $user->getId())
+        /** @var CacheItem $cacheItem */
+        if($cacheItem = $cacheService->getItem($confirmToken))
         {
-            $user->setConfirmed(true);
+            /** @var User $cacheUser */
+            $cacheUser =  $cacheItem->get();
+            if($cacheUser->getId() == $user->getId())
+            {
+                $user->setConfirmed(true);
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($user);
+                $em->flush();
 
-            return $this->restful([new WrapperNormalizer(),new AccountNormalizer()],new SuccessWrapper($user,"User Confirmed"));
+                return $this->restful([new WrapperNormalizer(),new AccountNormalizer()],new SuccessWrapper($user,"User Confirmed"));
+            }
         }
 
         return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown Token"),410);

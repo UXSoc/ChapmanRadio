@@ -57,7 +57,7 @@ class Recording
     private $description;
 
     /**
-     * @var \Event
+     * @var Event
      *
      * @ORM\ManyToOne(targetEntity="Event")
      * @ORM\JoinColumns({
@@ -67,7 +67,7 @@ class Recording
     private $event;
 
     /**
-     * @var \Show
+     * @var Show
      *
      * @ORM\ManyToOne(targetEntity="Show")
      * @ORM\JoinColumns({

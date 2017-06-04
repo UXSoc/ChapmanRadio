@@ -15,11 +15,6 @@ services:
     core.image_upload_service:
         class: CoreBundle\Service\ImageUploadService
         arguments: ['%image_directory%','core.image_repository']
-    core.cache_service:
-        class: CoreBundle\Service\CacheService
-        shared: false
-        arguments:
-            - "@doctrine_cache.providers.core.cache"
 
     brodcast.icecast:
         class: BroadcastBundle\Service\IcecastService

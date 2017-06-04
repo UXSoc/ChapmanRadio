@@ -55,7 +55,7 @@ class BlogController extends BaseController
 
         return $this->restful([
             new WrapperNormalizer(),
-            new CategoryNormalizer()],new SuccessWrapper($categoryRepository->findAll(),null));
+            new CategoryNormalizer()], new SuccessWrapper($categoryRepository->findAll(), null));
     }
 
     /**
@@ -64,22 +64,22 @@ class BlogController extends BaseController
      *     name="get_posts")
      * @Method({"GET"})
      */
-    public  function  getPostsAction(Request $request)
+    public function getPostsAction(Request $request)
     {
         /** @var PostRepository $postRepository */
         $postRepository = $this->get('core.post_repository');
 
         $q = $postRepository->createQueryBuilder('p');
 
-        $name = $request->get('name',null);
-        if($name)
-            $q->where($q->expr()->like('p.name',':name'))
-              ->setParameter('name','%'.$request->get('name').'%');
+        $name = $request->get('name', null);
+        if ($name)
+            $q->where($q->expr()->like('p.name', ':name'))
+                ->setParameter('name', '%' . $request->get('name') . '%');
 
         $pagination = new Paginator($q->getQuery());
-        $perPage = $request->get("entries",10) > 20 ? 20 :  $request->get("entries",20);
+        $perPage = $request->get("entries", 10) > 20 ? 20 : $request->get("entries", 20);
         $pagination->getQuery()->setMaxResults($perPage);
-        $pagination->getQuery()->setFirstResult($perPage * $request->get("page",0));
+        $pagination->getQuery()->setFirstResult($perPage * $request->get("page", 0));
 
 
         $s = new SuccessWrapper();
@@ -87,7 +87,7 @@ class BlogController extends BaseController
         return $this->restful([new BlogNormalizer(),
             new UserNormalizer(),
             new PaginatorNormalizer(),
-            new WrapperNormalizer()],$s,200);
+            new WrapperNormalizer()], $s, 200);
 
     }
 
@@ -103,14 +103,14 @@ class BlogController extends BaseController
         $postRepository = $this->get('core.post_repository');
 
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token,$slug);
+        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
 
-        if($post == null)
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Blog Post Not Found"),410);
+        if ($post === null)
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
 
         return $this->restful([
             new TagNormalizer(),
-            new WrapperNormalizer()],new SuccessWrapper($post->getTags()->getValues()));
+            new WrapperNormalizer()], new SuccessWrapper($post->getTags()->getValues()));
     }
 
     /**
@@ -125,14 +125,14 @@ class BlogController extends BaseController
         $postRepository = $this->get('core.post_repository');
 
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token,$slug);
+        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
 
-        if($post == null)
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Blog Post Not Found"),410);
+        if ($post === null)
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
 
         return $this->restful([
             new CategoryNormalizer(),
-            new WrapperNormalizer()],new SuccessWrapper($post->getCategories()->getValues()));
+            new WrapperNormalizer()], new SuccessWrapper($post->getCategories()->getValues()));
     }
 
     /**
@@ -141,21 +141,21 @@ class BlogController extends BaseController
      *     name="get_post", )
      * @Method({"GET"})
      */
-    public  function  getPostAction(Request $request, $token, $slug)
+    public function getPostAction(Request $request, $token, $slug)
     {
         /** @var PostRepository $blogRepository */
         $blogRepository = $this->get('core.post_repository');
         /** @var Post $post */
-        $post = $blogRepository->findOneBy(['token' => $token,'slug' => $slug]);
+        $post = $blogRepository->findOneBy(['token' => $token, 'slug' => $slug]);
 
-        if($post == null)
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Blog Post Not Found"),410);
+        if ($post === null)
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
 
         return $this->restful([
             new BlogNormalizer(),
             new UserNormalizer(),
             new PaginatorNormalizer(),
-            new WrapperNormalizer()],new SuccessWrapper($post));
+            new WrapperNormalizer()], new SuccessWrapper($post));
 
     }
 
@@ -166,7 +166,8 @@ class BlogController extends BaseController
      *     name="post_post_comment")
      * @Method({"POST"})
      */
-    public function postPostCommentAction(Request $request,$token,$slug,$comment_token = null){
+    public function postPostCommentAction(Request $request, $token, $slug, $comment_token = null)
+    {
         /** @var PostRepository $postRepository */
         $postRepository = $this->get('core.post_repository');
 
@@ -174,16 +175,16 @@ class BlogController extends BaseController
         $commentRepository = $this->get('core.comment_repository');
 
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token,$slug);
+        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
 
-        if($post == null)
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Blog Post Not Found"),410);
+        if ($post === null)
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
 
         $comment = new Comment();
         $comment->setContent($request->get("content"));
         $comment->setUser($this->getUser());
 
-        if($comment_token != null) {
+        if ($comment_token != null) {
             try {
                 $comment->setParentComment($commentRepository->getCommentByPostAndToken($post, $comment_token));
             } catch (NoResultException $e) {
@@ -192,19 +193,18 @@ class BlogController extends BaseController
         }
 
         $errors = $this->validateEntity($comment);
-        if($errors->count() > 0)
-        {
+        if ($errors->count() > 0) {
             $error = new ErrorWrapper("invalid token");
             $error->addErrors($this->validateEntity($comment));
             $error->setMessage("Invalid Comment");
-            return $this->restful([new WrapperNormalizer()],$error,400);
+            return $this->restful([new WrapperNormalizer()], $error, 400);
         }
 
         return $this->restful([
             new WrapperNormalizer(),
             new CommentNormalizer(),
             new UserNormalizer()
-        ],new SuccessWrapper($comment,"Comment Added"));
+        ], new SuccessWrapper($comment, "Comment Added"));
 
     }
 
@@ -215,7 +215,8 @@ class BlogController extends BaseController
      *     name="get_blog_comment")
      * @Method({"GET"})
      */
-    public function getPostCommentAction(Request $request,$token,$slug,$comment_token = null){
+    public function getPostCommentAction(Request $request, $token, $slug, $comment_token = null)
+    {
         /** @var PostRepository $postRepository */
         $postRepository = $this->get('core.post_repository');
 
@@ -223,19 +224,17 @@ class BlogController extends BaseController
         $commentRepository = $this->get('core.comment_repository');
 
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token,$slug);
+        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
 
-        if($post == null)
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Blog Post Not Found"),410);
+        if ($post === null)
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
 
-        if($comment_token == null) {
+        if ($comment_token === null) {
             return $this->restful([new CommentNormalizer(),
                 new UserNormalizer(),
                 new WrapperNormalizer()],
                 new SuccessWrapper($commentRepository->getAllRootCommentsForPost($post)));
-        }
-        else
-        {
+        } else {
             try {
                 $comment = $commentRepository->getCommentByPostAndToken($post, $comment_token);
                 return $this->restful([new CommentNormalizer(),

@@ -69,7 +69,7 @@ class ShowController extends BaseController
 
         $show = $showRepository->findOneBy(['token' => $token,'slug' => $slug]);
 
-        if($show == null)
+        if($show === null)
             return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Show Not Found"),410);
 
         return $this->restful([
@@ -94,10 +94,10 @@ class ShowController extends BaseController
         /** @var Show $show */
         $show = $showRepository->findOneBy(['token' => $token,'slug' => $slug]);
 
-        if($show == null)
+        if($show === null)
             return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Blog Post Not Found"),410);
 
-        if($comment_token == null) {
+        if($comment_token === null) {
             return $this->restful([new CommentNormalizer(),
                 new UserNormalizer(),
                 new WrapperNormalizer()],
@@ -151,7 +151,7 @@ class ShowController extends BaseController
         /** @var Show $show */
         $show = $showRepository->findOneBy(['token' => $token,'slug' => $slug]);
 
-        if($show == null)
+        if($show === null)
             return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Show Not Found"),410);
 
         $comment = new Comment();
