@@ -1,6 +1,7 @@
 Chapman Radio
 ========
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/aa728348-96b5-4d13-b08a-b382a845c0e8/big.png)](https://insight.sensiolabs.com/projects/aa728348-96b5-4d13-b08a-b382a845c0e8)
+[![Build Status](https://travis-ci.org/pollend/ChapmanRadio.svg?branch=master)](https://travis-ci.org/pollend/ChapmanRadio)
 
 A Symfony project created on April 16, 2017, 6:07 pm.
 
