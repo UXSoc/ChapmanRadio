@@ -1,5 +1,6 @@
 <template>
     <div class="content-container">
+        <div style="background-color:#313D31;;height:100px;width:100%;z-index:1001"></div>
         <div class="img-container" :style="{ backgroundImage: 'url(' + image + ')' }"></div>
         <div class="blur"></div>
         <div>
