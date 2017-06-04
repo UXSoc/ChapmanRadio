@@ -72,7 +72,6 @@ class Stream
     public function updatedTimestamps()
     {
         if ($this->createdAt == null) {
-            $this->recording = substr(bin2hex(random_bytes(12)),5);
             $this->token = substr(bin2hex(random_bytes(12)),10);
             $this->createdAt = new \DateTime('now');
         }
@@ -98,6 +97,11 @@ class Stream
         return $this->recording;
     }
 
+    public function setRecording($recording)
+    {
+        $this->recording = $recording;
+    }
+
     public function getMount()
     {
         return $this->mount;
@@ -118,13 +122,14 @@ class Stream
         return $this->username;
     }
 
-    public function setPassword($password)
-    {
-        $this->password= $password;
-    }
 
     public function getPassword()
     {
         return $this->password;
+    }
+
+    public function setPassword($password)
+    {
+        $this->password = $password;
     }
 }

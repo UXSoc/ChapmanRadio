@@ -35,10 +35,12 @@ class ImageNormalizer implements NormalizerInterface, NormalizerAwareInterface
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        return [
+        $result = [
             'token' => $object->getToken(),
-            'created_at' => $object->getCreatedAt()
+            'created_at' => $object->getCreatedAt(),
         ];
+
+        return $result;
     }
 
     /**

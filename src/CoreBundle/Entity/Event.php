@@ -61,6 +61,16 @@ class Event
      */
     private $stream;
 
+    public function setStream($stream)
+    {
+        $this->stream = $stream;
+    }
+
+    public function getStream()
+    {
+        return $this->stream;
+    }
+
 
     public function getId()
     {

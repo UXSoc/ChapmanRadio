@@ -2,7 +2,6 @@
 namespace RestfulBundle\Controller\Api\V3\Secure;
 
 use CoreBundle\Controller\BaseController;
-
 use CoreBundle\Entity\Image;
 use CoreBundle\Entity\Show;
 use CoreBundle\Helper\ErrorWrapper;
@@ -11,17 +10,15 @@ use CoreBundle\Normalizer\ImageNormalizer;
 use CoreBundle\Normalizer\ShowNormalizer;
 use CoreBundle\Normalizer\TagNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
-use CoreBundle\Repository\GenreRepository;
-use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\ShowRepository;
 use CoreBundle\Repository\TagRepository;
 use CoreBundle\Security\ShowVoter;
 use CoreBundle\Service\ImageUploadService;
+use Symfony\Component\HttpFoundation\Request;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\HttpFoundation\Request;
-
 
 /**
  * @Route("/api/v3/private")

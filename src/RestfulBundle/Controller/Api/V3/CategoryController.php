@@ -7,6 +7,7 @@
  */
 
 namespace RestfulBundle\Controller\Api\V3;
+
 use CoreBundle\Controller\BaseController;
 
 use CoreBundle\Helper\ErrorWrapper;
@@ -32,28 +33,31 @@ class CategoryController extends BaseController
      *     name="get_tags")
      * @Method({"GET"})
      */
-    public function getCategories(Request $request)
+    public function getCategoriesAction(Request $request)
     {
         /** @var CategoryRepository $categoryRepository */
         $categoryRepository = $this->get('core.category_repository');
         return $this->restful([new WrapperNormalizer(),
-            new CategoryNormalizer()],new SuccessWrapper($categoryRepository->findAll(),null));
+            new CategoryNormalizer()], new SuccessWrapper($categoryRepository->findAll(), null));
     }
+
     /**
      * @Route("tag/{name}",
      *     options = { "expose" = true },
      *     name="get_tag")
      * @Method({"GET"})
      */
-    public function getCategory(Request $request,$name)
+    public function getCategoryAction(Request $request, $name)
     {
         /** @var CategoryRepository $categoryRepository */
         $categoryRepository = $this->get('core.category_repository');
 
         $category = $categoryRepository->findOneBy(["tag" => $name]);
-        if($category == null)
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Can't find tag"),400);
-        return $this->restful([new WrapperNormalizer(),new CategoryNormalizer()],new SuccessWrapper($category,"Found tag"));
+        if ($category == null)
+            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Can't find tag"), 400);
+        return $this->restful([
+            new WrapperNormalizer(),
+            new CategoryNormalizer()], new SuccessWrapper($category, "Found tag"));
     }
 
 }

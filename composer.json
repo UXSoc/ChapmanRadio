@@ -29,6 +29,7 @@
         "flow/jsonpath": "^0.3.4",
         "friendsofsymfony/jsrouting-bundle": "^1.6",
         "google/recaptcha": "^1.1",
+        "hybridauth/hybridauth": "^3.0.0-beta.1",
         "incenteev/composer-parameter-handler": "^2.0",
         "intervention/image": "^2.3",
         "league/factory-muffin": "^3.0",

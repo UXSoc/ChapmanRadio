@@ -1,6 +1,7 @@
 <?php
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace RestfulBundle\Controller\Api\V3;
+use Hybridauth\Provider\Twitter;
 use RestfulBundle\Validation\PasswordType;
 use CoreBundle\Controller\BaseController;
 use CoreBundle\Entity\User;
@@ -265,8 +266,5 @@ class AuthController extends BaseController
             new AccountNormalizer()
         ],new SuccessWrapper($user,"Account status"));
     }
-
-
-
 
 }

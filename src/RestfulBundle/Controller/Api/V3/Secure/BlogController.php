@@ -2,12 +2,10 @@
 
 namespace RestfulBundle\Controller\Api\V3\Secure;
 
-use Codeception\Util\HttpCode;
 use CoreBundle\Controller\BaseController;
 
 use CoreBundle\Entity\Image;
 use CoreBundle\Entity\Post;
-use CoreBundle\Entity\Tag;
 use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\BlogNormalizer;
@@ -18,7 +16,6 @@ use CoreBundle\Normalizer\TagNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\CategoryRepository;
-use CoreBundle\Repository\ImageRepository;
 use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\TagRepository;
 use CoreBundle\Security\PostVoter;

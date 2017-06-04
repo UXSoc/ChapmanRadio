@@ -1,0 +1,25 @@
+language: php
+
+php:
+  - 5.4
+  - 5.5
+  - hhvm
+
+services:
+    - redis
+    - mysql
+
+before_script:
+    - cp app/config/parameters.yml.dist app/config/parameters.yml
+    - composer self-update
+    - composer install --dev --no-interaction --prefer-source
+    - app/console doctrine:database:create --env=test --no-interaction --quiet
+#    - app/console doctrine:migrations:migrate --env=test --no-interaction --quiet
+    - app/console cache:warmup --env=test --quiet
+
+script:
+    - ./vendor/bin/codecept run
+
+matrix:
+    allow_failures:
+          - php: hhvm

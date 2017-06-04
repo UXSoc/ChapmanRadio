@@ -2,6 +2,10 @@
 namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Controller\BaseController;
+use CoreBundle\Helper\SuccessWrapper;
+use CoreBundle\Normalizer\EventNormalizer;
+use CoreBundle\Normalizer\StreamNormalizer;
+use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\StreamRepository;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -16,16 +20,40 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 class StreamController  extends BaseController
 {
     /**
-     * @Route("streams",
+     * @Route("stream",
      *     options = { "expose" = true },
      *     name="get_active_streams")
      * @Method({"GET"})
      */
-    public function getActiveRecordingsAction(Request $request)
+    public function getAllActiveStreamsAction(Request $request)
     {
         /** @var StreamRepository $streamRepository */
         $streamRepository =  $this->get('core.stream_repository');
         $streams =  $streamRepository->findAll();
+        return $this->restful([
+            new StreamNormalizer(),
+            new EventNormalizer(),
+            new WrapperNormalizer()],
+            new SuccessWrapper($streams),200);
+    }
+
+    /**
+     * @param Request $request
+     * @Route("stream/main",
+     *     options = { "expose" = true },
+     *     name="get_main_streams")
+     * @Method({"GET"})
+     */
+    public function getMainStream(Request $request)
+    {
+        /** @var StreamRepository $streamRepository */
+        $streamRepository =  $this->get('core.stream_repository');
+        $streams = $streamRepository->getStreamsTiedToEvent();
+        return $this->restful([
+            new StreamNormalizer(),
+            new EventNormalizer(),
+            new WrapperNormalizer()],
+            new SuccessWrapper($streams),200);
     }
 
 

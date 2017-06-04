@@ -1,19 +1,11 @@
-
 <?php
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 6/2/17
- * Time: 11:36 PM
- */
-
 namespace CoreBundle\Normalizer;
 
 
 use CoreBundle\Entity\Stream;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\scalar;
+
 
 class StreamNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
@@ -38,10 +30,20 @@ class StreamNormalizer implements NormalizerInterface, NormalizerAwareInterface
      * @param string $format format the normalization result will be encoded as
      * @param array $context Context options for the normalizer
      *
-     * @return array|scalar
+     * @return array
      */
     public function normalize($object, $format = null, array $context = array())
     {
+        $result = array();
+        $result = [
+            'mount' => $object->getMount(),
+        ];
+
+        if($this->normalizer->supportsNormalization($object->getEvent()))
+            $result['event'] = $this->normalizer->normalize($object->getEvent());
+
+        return $result;
+
     }
 
     /**

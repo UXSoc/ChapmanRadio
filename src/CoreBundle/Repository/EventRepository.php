@@ -9,15 +9,21 @@
 namespace CoreBundle\Repository;
 
 
+use CoreBundle\Entity\Event;
 use Doctrine\ORM\EntityRepository;
 
 class EventRepository extends EntityRepository
 {
-    public function getCurrentActiveEvent()
+    /**
+     * @param \DateTime $time
+     * @return Event[]
+     */
+    public function getEventByTime(\DateTime $time)
     {
         $qb = $this->createQueryBuilder('e');
-            $qb->where($qb ->expr()->gt('e.start',':start'))
-                ->where($qb->expr()->lt('e.end',':end'));
+            $qb->where($qb ->expr()->lt('e.start',':time'))
+                ->where($qb->expr()->gt('e.end',':time'))
+                ->setParameter('time',$time);
         return $qb->getQuery()->getResult();
     }
 

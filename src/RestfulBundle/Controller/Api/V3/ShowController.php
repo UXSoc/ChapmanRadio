@@ -130,7 +130,7 @@ class ShowController extends BaseController
     {
         /** @var EventRepository $eventRepository */
         $eventRepository = $this->get('core.event_repository');
-        $activeEvent = $eventRepository->getCurrentActiveEvent();
+        $activeEvent = $eventRepository->getEventByTime(new \DateTime('now'));
         return $this->restful([new WrapperNormalizer(), new EventNormalizer()],new SuccessWrapper($activeEvent,'active event'));
     }
 
