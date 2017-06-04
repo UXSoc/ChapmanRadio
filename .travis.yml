@@ -12,9 +12,9 @@ before_script:
     - cp app/config/parameters.yml.dist app/config/parameters.yml
     - composer self-update
     - composer install --dev --no-interaction --prefer-source
-    - ./bin/console doctrine:database:create --env=test --no-interaction --quiet
+    - bin/console doctrine:schema:create --env=test
 #    - app/console doctrine:migrations:migrate --env=test --no-interaction --quiet
-    - ./bin/console cache:warmup --env=test --quiet
+    - bin/console cache:warmup --env=test
 
 script:
     - ./vendor/bin/codecept run
