@@ -1,19 +1,22 @@
 <template>
-    <div class="content-container">
-        <div style="background-color:#313D31;;height:100px;width:100%;z-index:1001"></div>
-        <div class="img-container" :style="{ backgroundImage: 'url(' + image + ')' }"></div>
-        <div class="blur"></div>
-        <div>
-            <img :src="image">
-            <p>Planet Moon<br>Passionfruit<br>Drake</p>
-            <a class="btn btn-full" href="#">VIEW SHOW PAGE</a>
-            <span>
-                play button goes here
-            </span>
-            <span>
-                volume control goes here
-            </span>
-            <i class="fa fa-chevron-up" aria-hidden="true"></i>
+    <div class="bottom-fixed">
+        <div class="content-container">
+            <div class="color-container"></div>
+            <div class="img-container" :style="{ backgroundImage: 'url(' + image + ')' }"></div>
+            <div class="blur"></div>
+        </div>
+        <div class="container-fluid inner nopadding">
+            <div class="row marginfix">
+                <div class="col-md-4 reddd">
+
+                </div>
+                <div class="col-md-4 grennn">
+
+                </div>
+                <div class="col-md-4 blueee">
+
+                </div>
+            </div>
         </div>
     </div>
 </template>
