@@ -3,6 +3,7 @@
 use CoreBundle\Entity\Comment;
 use CoreBundle\Entity\Genre;
 use CoreBundle\Entity\Show;
+use CoreBundle\Entity\User;
 use CoreBundle\Repository\UserRepository;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -30,7 +31,7 @@ class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, C
         $genres = $manager->getRepository(Genre::class)->findAll();
 
         /** @var UserRepository $userRepository */
-        $userRepository = $this->container->get("core.user_repository");
+        $userRepository = $this->container->get(User::class);
         $users = $userRepository->findAll();
 
         for ($i = 0; $i < 20; $i++)

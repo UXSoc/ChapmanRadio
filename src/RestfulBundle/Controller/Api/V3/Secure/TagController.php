@@ -35,7 +35,7 @@ class TagController  extends BaseController
     {
         $em = $this->getDoctrine()->getManager();
         /** @var TagRepository $tagRepository */
-        $tagRepository = $this->get('core.tag_repository');
+        $tagRepository = $em->getRepository(Tag::class);
         $result = $tagRepository->getTag($tag);
         if($result  != null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Tag Already Exist"), 410);
@@ -58,7 +58,7 @@ class TagController  extends BaseController
     {
         $em = $this->getDoctrine()->getManager();
         /** @var TagRepository $tagRepository */
-        $tagRepository = $this->get('core.tag_repository');
+        $tagRepository = $em->getRepository(Tag::class);
         $result = $tagRepository->getTag($tag);
         if($result  == null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Tag does not exist"), 410);

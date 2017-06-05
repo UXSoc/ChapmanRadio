@@ -1,5 +1,4 @@
 <?php
-// Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace CoreBundle\Service;
 
 use CoreBundle\Entity\Image;
@@ -21,12 +20,14 @@ use Symfony\Component\Validator\Constraints\FileValidator;
 class ImageUploadService
 {
     private $targetDir;
-    private $imageRepository;
 
-    public function __construct($targetDir, $imageRepository)
+    /**
+     * ImageUploadService constructor.
+     * @param string $targetDir
+     */
+    public function __construct($targetDir)
     {
         $this->targetDir = $targetDir;
-        $this->imageRepository = $imageRepository;
     }
 
     /**

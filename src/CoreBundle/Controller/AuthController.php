@@ -81,11 +81,12 @@ class AuthController extends BaseController
      */
     public function postRequestRestPasswordAction(Request $request,$token)
     {
+        $em = $this->getDoctrine();
         /** @var UserRepository $userRepository */
-        $userRepository = $this->get('core.user_repository');
+        $userRepository = $em->getRepository(User::class);
 
         /** @var RestfulService $restfulService */
-        $restfulService = $this->get('core.restful');
+        $restfulService = $this->get(RestfulService::class);
 
         /** @var User $user */
         if($user = $userRepository->getByToken($token))
@@ -106,13 +107,13 @@ class AuthController extends BaseController
     public function postNewPasswordAction(Request $request,$token,$confirmationToken)
     {
         /** @var UserTokenService $userTokenService */
-        $userTokenService = $this->get('core.user_token_service');
+        $userTokenService = $this->get(UserTokenService::class);
 
         /** @var RestfulService $restfulService */
-        $restfulService = $this->get('core.restful');
+        $restfulService = $this->get(RestfulService::class);
 
         /** @var UserRepository $userRepository */
-        $userRepository = $this->get('core.user_repository');
+        $userRepository = $this->get(User::class);
 
         /** @var User $user */
         if($user = $userRepository->getByToken($token))
@@ -148,7 +149,7 @@ class AuthController extends BaseController
     public function postRequestConfirmationAction(Request $request, $token)
     {
         /** @var UserRepository $userRepository */
-        $userRepository = $this->get('core.user_repository');
+        $userRepository = $this->get(User::class);
 
         /** @var User $user */
         if($user = $userRepository->getByToken($token))
@@ -168,13 +169,13 @@ class AuthController extends BaseController
     public function postConfirmationAction(Request $request, $token,$confirmToken)
     {
         /** @var RestfulService $restfulService */
-        $restfulService = $this->get('core.restful');
+        $restfulService = $this->get(RestfulService::class);
 
         /** @var UserRepository $userRepository */
-        $userRepository = $this->get('core.user_repository');
+        $userRepository = $this->get(User::class);
 
         /** @var UserTokenService $userTokenService */
-        $userTokenService = $this->get('core.user_token_service');
+        $userTokenService = $this->get(UserTokenService::class);
 
         /** @var User $user */
         if($user = $userRepository->getByToken($token))

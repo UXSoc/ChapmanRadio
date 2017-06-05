@@ -3,7 +3,9 @@ namespace CoreBundle\Service;
 
 
 use CoreBundle\Entity\User;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class UserTokenService
 {
@@ -11,7 +13,7 @@ class UserTokenService
     const CONFIRMATION_TOKEN = "CONFIRMATION_TOKEN_";
 
     /**
-     * @var AbstractAdapter
+     * @var AdapterInterface
      */
     private $cacheService;
 
@@ -19,7 +21,7 @@ class UserTokenService
      * UserTokenService constructor.
      * @param $cacheService
      */
-    public function __construct(AbstractAdapter  $cacheService)
+    public function __construct(CacheItemPoolInterface  $cacheService)
     {
         $this->cacheService = $cacheService;
     }

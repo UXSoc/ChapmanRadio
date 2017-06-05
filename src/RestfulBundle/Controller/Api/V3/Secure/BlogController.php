@@ -4,8 +4,10 @@ namespace RestfulBundle\Controller\Api\V3\Secure;
 
 use CoreBundle\Controller\BaseController;
 
+use CoreBundle\Entity\Category;
 use CoreBundle\Entity\Image;
 use CoreBundle\Entity\Post;
+use CoreBundle\Entity\Tag;
 use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\BlogNormalizer;
@@ -78,9 +80,9 @@ class BlogController extends BaseController
      */
     public function patchPostAction(Request $request, $token, $slug)
     {
-
+        $em = $this->getDoctrine()->getManager();
         /** @var PostRepository $postRepository */
-        $postRepository = $this->get('core.post_repository');
+        $postRepository = $em->getRepository(Post::class);
         /** @var Post $post */
         $post = $postRepository->getPostByTokenAndSlug($token, $slug);
 
@@ -126,9 +128,8 @@ class BlogController extends BaseController
     {
         $em = $this->getDoctrine()->getManager();
 
-
         /** @var PostRepository $postRepository */
-        $postRepository = $this->get('core.post_repository');
+        $postRepository = $em->getRepository(Post::class);
         /** @var Post $post */
         $post = $postRepository->getPostByTokenAndSlug($token, $slug);
 
@@ -158,7 +159,7 @@ class BlogController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         /** @var PostRepository $postRepository */
-        $postRepository = $this->get('core.post_repository');
+        $postRepository = $em->getRepository(Post::class);
         /** @var Post $post */
         $post = $postRepository->getPostByTokenAndSlug($token, $slug);
 
@@ -174,7 +175,7 @@ class BlogController extends BaseController
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Duplicate Tag Found"), 400);
 
         /** @var TagRepository $tagRepository */
-        $tagRepository = $this->get("core.tag_repository");
+        $tagRepository = $this->get(Tag::class);
         $tag = $tagRepository->getOrCreateTag($tag);
         $em->persist($tag);
         $post->addTag($tag);
@@ -198,10 +199,10 @@ class BlogController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         /** @var PostRepository $postRepository */
-        $postRepository = $this->get('core.post_repository');
+        $postRepository = $em->getRepository(Post::class);
 
         /** @var ImageUploadService $imageService */
-        $imageService = $this->get('core.image_upload_service');
+        $imageService = $this->get(ImageUploadService::class);
 
         /** @var Post $post */
         $post = $postRepository->getPostByTokenAndSlug($token, $slug);
@@ -244,8 +245,9 @@ class BlogController extends BaseController
      */
     public function getImageForPostAction(Request $request, $token, $slug)
     {
+        $em = $this->getDoctrine()->getManager();
         /** @var PostRepository $postRepository */
-        $postRepository = $this->get('core.post_repository');
+        $postRepository = $em->getRepository(Post::class);
 
         /** @var Post $post */
         $post = $postRepository->getPostByTokenAndSlug($token, $slug);
@@ -276,7 +278,7 @@ class BlogController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         /** @var PostRepository $postRepository */
-        $postRepository = $this->get('core.post_repository');
+        $postRepository = $em->getRepository(Post::class);
         /** @var Post $post */
         $post = $postRepository->getPostByTokenAndSlug($token, $slug);
 
@@ -311,12 +313,12 @@ class BlogController extends BaseController
     {
         $em = $this->getDoctrine()->getManager();
         /** @var PostRepository $postRepository */
-        $postRepository = $this->get('core.post_repository');
+        $postRepository = $em->getRepository(Post::class);
         /** @var Post $post */
         $post = $postRepository->getPostByTokenAndSlug($token, $slug);
 
         /** @var CategoryRepository $categoryRepository */
-        $categoryRepository = $this->get('core.category_repository');
+        $categoryRepository = $em->getRepository(Category::class);
         if ($post == null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
 
@@ -355,7 +357,7 @@ class BlogController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         /** @var PostRepository $postRepository */
-        $postRepository = $this->get('core.post_repository');
+        $postRepository = $em->getRepository(Post::class);
         /** @var Post $post */
         $post = $postRepository->getPostByTokenAndSlug($token, $slug);
 

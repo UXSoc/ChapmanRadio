@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\Role\RoleInterface;
  * @ORM\Table(name="user_role")
  *  @ORM\Entity
  */
-class Role implements RoleInterface
+class Role extends \Symfony\Component\Security\Core\Role\Role
 {
 
     const ROLE_STAFF = "ROLE_STAFF";
@@ -32,7 +32,7 @@ class Role implements RoleInterface
 
     /**
      * @var User
-     * @ORM\ManyToOne(targetEntity="User",inversedBy="roles")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="roles")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * })
@@ -50,6 +50,12 @@ class Role implements RoleInterface
     function __construct($role)
     {
         $this->name = $role;
+        parent::__construct($role);
+    }
+
+    public function setUser($user)
+    {
+        $this->user = $user;
     }
 
 

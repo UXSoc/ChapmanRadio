@@ -1,5 +1,7 @@
 <?php
 namespace CoreBundle\DependencyInjection;
+use CoreBundle\Event\AuthSubscriber;
+use CoreBundle\Service\UserTokenService;
 use Monolog\Logger;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -29,8 +31,8 @@ class CoreExtension  extends Extension
 
         $container->addCompilerPass(new RegisterListenersPass());
 
-        $container->register('event_dispatcher_auth_subscriber',\CoreBundle\Event\AuthSubscriber::class)
-            ->setArguments([new Reference('mailer'),new Reference('twig'),new Reference('logger'),new Reference('core.user_token_service')])
+        $container->register(AuthSubscriber::class,\CoreBundle\Event\AuthSubscriber::class)
+            ->setArguments([new Reference('mailer'),new Reference('twig'),new Reference('logger'),new Reference(UserTokenService::class)])
             ->addTag('kernel.event_subscriber');
     }
 }

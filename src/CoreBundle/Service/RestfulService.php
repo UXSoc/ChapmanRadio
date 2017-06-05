@@ -1,15 +1,11 @@
 <?php
 namespace CoreBundle\Service;
 
-
 use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\WrapperNormalizer;
-use PHPUnit\Framework\Error\Error;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RestfulService
@@ -21,7 +17,7 @@ class RestfulService
      * RestfulService constructor.
      * @param ValidatorInterface $validate
      */
-    function __construct($validate)
+    function __construct(ValidatorInterface $validate)
     {
         $this->validate = $validate;
     }

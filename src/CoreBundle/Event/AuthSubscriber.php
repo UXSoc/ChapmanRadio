@@ -3,9 +3,11 @@ namespace CoreBundle\Event;
 
 use CoreBundle\Service\UserTokenService;
 use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Swift_Mailer;
 use Swift_Message;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
 use Twig_Environment;
 
 /**
@@ -35,7 +37,7 @@ class AuthSubscriber implements EventSubscriberInterface
      */
     private $tokenService;
 
-    function __construct(Swift_Mailer $mailer, Twig_Environment $twig, Logger $logger,UserTokenService $tokenService)
+    function __construct(Swift_Mailer $mailer, Twig_Environment $twig, LoggerInterface $logger,UserTokenService $tokenService)
     {
         $this->twig = $twig;
         $this->logger = $logger;

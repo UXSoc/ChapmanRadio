@@ -3,10 +3,12 @@
 namespace CoreBundle\Service;
 
 
-class CalenderService
+class CalendarService
 {
     function __construct()
     {
 
     }
+
+
 }

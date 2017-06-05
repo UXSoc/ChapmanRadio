@@ -1,6 +1,7 @@
 <?php
 namespace RestfulBundle\Controller\Api\V3;
 
+use BroadcastBundle\Entity\Stream;
 use CoreBundle\Controller\BaseController;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\EventNormalizer;
@@ -27,8 +28,9 @@ class StreamController  extends BaseController
      */
     public function getAllActiveStreamsAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         /** @var StreamRepository $streamRepository */
-        $streamRepository =  $this->get('core.stream_repository');
+        $streamRepository =  $em->getRepository(Stream::class);
         $streams =  $streamRepository->findAll();
         return $this->restful([
             new StreamNormalizer(),
@@ -46,8 +48,9 @@ class StreamController  extends BaseController
      */
     public function getMainStream(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         /** @var StreamRepository $streamRepository */
-        $streamRepository =  $this->get('core.stream_repository');
+        $streamRepository =  $em->getRepository(Stream::class);
         $streams = $streamRepository->getStreamsTiedToEvent();
         return $this->restful([
             new StreamNormalizer(),

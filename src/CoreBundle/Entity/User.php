@@ -87,7 +87,7 @@ class User implements AdvancedUserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="password", type="string", length=200, nullable=false)
+     * @ORM\Column(name="password", type="string", length=500, nullable=false)
      */
     private $password;
 
@@ -329,6 +329,7 @@ class User implements AdvancedUserInterface
             $roles[] = new \Symfony\Component\Security\Core\Role\Role("ROLE_DJ");
         $roles = array_merge($roles, $this->roles->toArray());
 
+
         return $roles;
     }
 
@@ -337,7 +338,7 @@ class User implements AdvancedUserInterface
      */
     public function addRole($role)
     {
-
+        $role->setUser($this);
         $this->roles->add($role);
     }
 

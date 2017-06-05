@@ -5,6 +5,7 @@ namespace RestfulBundle\Controller\Api\V3\Secure;
 use CoreBundle\Controller\BaseController;
 use CoreBundle\Entity\Image;
 use CoreBundle\Entity\Show;
+use CoreBundle\Entity\Tag;
 use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\ImageNormalizer;
@@ -72,7 +73,7 @@ class ShowController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         /** @var ShowRepository $showRepository */
-        $showRepository = $this->get('core.show_repository');
+        $showRepository = $this->get(Show::class);
 
         /** @var Show $show */
         $show = $showRepository->getPostByTokenAndSlug($token, $slug);
@@ -121,7 +122,7 @@ class ShowController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         /** @var ShowRepository $showRepository */
-        $showRepository = $this->get('core.show_repository');
+        $showRepository = $this->get(Show::class);
 
         /** @var Show $show */
         $show = $showRepository->getPostByTokenAndSlug($token, $slug);
@@ -152,7 +153,7 @@ class ShowController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         /** @var ShowRepository $showRepository */
-        $showRepository = $this->get('core.show_repository');
+        $showRepository = $em->getRepository(Show::class);
         /** @var Show $show */
         $show = $showRepository->getPostByTokenAndSlug($token, $slug);
 
@@ -168,7 +169,7 @@ class ShowController extends BaseController
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Duplicate Tag Found"), 400);
 
         /** @var TagRepository $tagRepository */
-        $tagRepository = $this->get("core.tag_repository");
+        $tagRepository = $this->get(Tag::class);
         $tag = $tagRepository->getOrCreateTag($tag);
         $em->persist($tag);
         $show->addTag($tag);
@@ -189,7 +190,7 @@ class ShowController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         /** @var ShowRepository $showRepository */
-        $showRepository = $this->get('core.show_repository');
+        $showRepository = $em->getRepository(Show::class);
         /** @var Show $show */
         $show = $showRepository->getPostByTokenAndSlug($token, $slug);
 
@@ -222,13 +223,14 @@ class ShowController extends BaseController
      */
     public function putImageForShowAction(Request $request, $token, $slug)
     {
+
         /** @var ImageUploadService $imageService */
-        $imageService = $this->get('core.image_upload_service');
+        $imageService = $this->get(ImageUploadService::class);
 
         $em = $this->getDoctrine()->getManager();
 
         /** @var ShowRepository $showRepository */
-        $showRepository = $this->get('core.show_repository');
+        $showRepository = $em->getRepository(Show::class);
         /** @var Show $show */
         $show = $showRepository->getPostByTokenAndSlug($token, $slug);
 
@@ -269,9 +271,10 @@ class ShowController extends BaseController
      */
     public function getImageForShowAction(Request $request, $token, $slug)
     {
+        $em = $this->getDoctrine()->getManager();
 
         /** @var ShowRepository $showRepository */
-        $showRepository = $this->get('core.show_repository');
+        $showRepository = $em->getRepository(Show::class);
 
         /** @var Show $show */
         $show = $showRepository->getPostByTokenAndSlug($token, $slug);
@@ -303,10 +306,10 @@ class ShowController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         /** @var ImageUploadService $imageService */
-        $imageService = $this->get('core.image_upload_service');
+        $imageService = $this->get(ImageUploadService::class);
 
         /** @var ShowRepository $showRepository */
-        $showRepository = $this->get('core.show_repository');
+        $showRepository = $em->getRepository(Show::class);
 
         /** @var Show $show */
         $show = $showRepository->getPostByTokenAndSlug($token, $slug);
@@ -355,10 +358,10 @@ class ShowController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         /** @var ImageUploadService $imageService */
-        $imageService = $this->get('core.image_upload_service');
+        $imageService = $this->get(ImageUploadService::class);
 
         /** @var ShowRepository $showRepository */
-        $showRepository = $this->get('core.show_repository');
+        $showRepository = $em->getRepository(Show::class);
 
         /** @var Show $show */
         $show = $showRepository->getPostByTokenAndSlug($token, $slug);

@@ -174,9 +174,9 @@ class SecureBlogControllerCest
         ]);
         $I->isRestfulSuccessResponse();
         /** @var Post $post */
-        $post = $I->grabEntityFromRepository(Post::class,['slug'=> $post->getSlug(),'token' => $post->getToken()]);
+        $p2= $I->grabEntityFromRepository(Post::class,['slug'=> $post->getSlug(),'token' => $post->getToken()]);
 
-        $I->assertEquals($post->getContent(),$content);
+        $I->assertEquals($content,$p2->getContent());
     }
 
 
@@ -188,6 +188,7 @@ class SecureBlogControllerCest
         $role = new Role(Role::ROLE_STAFF);
         $this->user->addRole($role);
         $I->persistEntity($this->user);
+
         $I->loginUser($this->user->getUsername(),'password');
 
         $I->sendPUT('/api/v3/private/post/'. $post->getToken(). '/' . $post->getSlug() . '/image',[],[

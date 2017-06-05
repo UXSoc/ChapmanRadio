@@ -8,7 +8,7 @@ security:
     # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
         webservice:
-            id: core.user_repository
+             entity: { class: CoreBundle:User}
         in_memory:
             memory: ~
 
@@ -29,7 +29,7 @@ security:
                 path:   /logout
                 target: /
             remember_me:
-                secret:   '%secret%'
+                secret:   '%env(SYMFONY_SECRET)%'
                 lifetime: 604800 # 1 week in seconds
                 path:     /
             form_login:
@@ -45,7 +45,7 @@ security:
                 authenticators:
                     - 'core.facebook_auth'
             remember_me:
-                secret:   '%secret%'
+                secret:   '%env(SYMFONY_SECRET)%'
                 lifetime: 604800 # 1 week in seconds
                 path:     /
             form_login:
@@ -61,7 +61,7 @@ security:
                 authenticators:
                     - 'core.google_auth'
             remember_me:
-                secret:   '%secret%'
+                secret:   '%env(SYMFONY_SECRET)%'
                 lifetime: 604800 # 1 week in seconds
                 path:     /
             form_login:
@@ -78,7 +78,7 @@ security:
                 authenticators:
                     - 'core.twitter_auth'
             remember_me:
-                secret:   '%secret%'
+                secret:  '%env(SYMFONY_SECRET)%'
                 lifetime: 604800 # 1 week in seconds
                 path:     /
             form_login:

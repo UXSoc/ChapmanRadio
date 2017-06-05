@@ -32,7 +32,7 @@ class CategoryController extends BaseController
     {
         $em = $this->getDoctrine()->getManager();
         /** @var CategoryRepository $categoryRepository */
-        $categoryRepository = $this->get('core.category_repository');
+        $categoryRepository = $em->getRepository(Category::class);
         $result = $categoryRepository->getCategory($category);
         if($result  != null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Category Already Exist"), 410);
@@ -54,7 +54,7 @@ class CategoryController extends BaseController
     {
         $em = $this->getDoctrine()->getManager();
         /** @var CategoryRepository $categoryRepository */
-        $categoryRepository = $this->get('core.category_repository');
+        $categoryRepository = $em->getRepository(Category::class);
         $result = $categoryRepository->getCategory($category);
         if($result  == null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Category does not exist"), 410);

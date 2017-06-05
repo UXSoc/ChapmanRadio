@@ -41,7 +41,7 @@ class ShowScheduleController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         /** @var ShowRepository $showRepository */
-        $showRepository = $this->get('core.show_repository');
+        $showRepository = $em->getRepository(Show::class);
 
         /** @var Show $show */
         $show = $showRepository->getPostByTokenAndSlug($token, $slug);

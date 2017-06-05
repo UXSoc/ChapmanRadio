@@ -11,6 +11,7 @@ namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Controller\BaseController;
 
+use CoreBundle\Entity\Category;
 use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Comment;
 use CoreBundle\Entity\User;
@@ -52,8 +53,10 @@ class BlogController extends BaseController
      */
     public function getCategories(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
+
         /** @var CategoryRepository $categoryRepository */
-        $categoryRepository = $this->get('core.category_repository');
+        $categoryRepository = $em->getRepository(Category::class);
 
         return $this->restful([
             new WrapperNormalizer(),
@@ -68,8 +71,9 @@ class BlogController extends BaseController
      */
     public function getPostsAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         /** @var PostRepository $postRepository */
-        $postRepository = $this->get('core.post_repository');
+        $postRepository =  $em->getRepository(Post::class);
 
         $q = $postRepository->createQueryBuilder('p');
 
@@ -101,8 +105,9 @@ class BlogController extends BaseController
      */
     public function getPostTags(Request $request, $token, $slug)
     {
+        $em = $this->getDoctrine()->getManager();
         /** @var PostRepository $postRepository */
-        $postRepository = $this->get('core.post_repository');
+        $postRepository = $em->getRepository(Post::class);
 
         /** @var Post $post */
         $post = $postRepository->getPostByTokenAndSlug($token, $slug);
@@ -123,8 +128,10 @@ class BlogController extends BaseController
      */
     public function getPostCategories(Request $request, $token, $slug)
     {
+
+        $em = $this->getDoctrine()->getManager();
         /** @var PostRepository $postRepository */
-        $postRepository = $this->get('core.post_repository');
+        $postRepository = $em->getRepository(Post::class);
 
         /** @var Post $post */
         $post = $postRepository->getPostByTokenAndSlug($token, $slug);
@@ -145,10 +152,12 @@ class BlogController extends BaseController
      */
     public function getPostAction(Request $request, $token, $slug)
     {
-        /** @var PostRepository $blogRepository */
-        $blogRepository = $this->get('core.post_repository');
+        $em = $this->getDoctrine()->getManager();
+        /** @var PostRepository $postRepository */
+        $postRepository = $em->getRepository(Post::class);
+
         /** @var Post $post */
-        $post = $blogRepository->findOneBy(['token' => $token, 'slug' => $slug]);
+        $post = $postRepository->findOneBy(['token' => $token, 'slug' => $slug]);
 
         if ($post === null)
             return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
@@ -170,15 +179,14 @@ class BlogController extends BaseController
      */
     public function postPostCommentAction(Request $request, $token, $slug, $comment_token = null)
     {
+        $em = $this->getDoctrine()->getManager();
+
         /** @var RestfulService $restfulService */
-        $restfulService = $this->get('core.restful');
-
-
+        $restfulService = $this->get(RestfulService::class);
         /** @var PostRepository $postRepository */
-        $postRepository = $this->get('core.post_repository');
-
+        $postRepository = $em->getRepository(Post::class);
         /** @var CommentRepository $commentRepository */
-        $commentRepository = $this->get('core.comment_repository');
+        $commentRepository = $em->getRepository(Comment::class);
 
         /** @var Post $post */
         $post = $postRepository->getPostByTokenAndSlug($token, $slug);
@@ -213,11 +221,12 @@ class BlogController extends BaseController
      */
     public function getPostCommentAction(Request $request, $token, $slug, $comment_token = null)
     {
-        /** @var PostRepository $postRepository */
-        $postRepository = $this->get('core.post_repository');
+        $em = $this->getDoctrine()->getManager();
 
+        /** @var PostRepository $postRepository */
+        $postRepository = $em->getRepository(Post::class);
         /** @var CommentRepository $commentRepository */
-        $commentRepository = $this->get('core.comment_repository');
+        $commentRepository = $em->getRepository(Comment::class);
 
         /** @var Post $post */
         $post = $postRepository->getPostByTokenAndSlug($token, $slug);

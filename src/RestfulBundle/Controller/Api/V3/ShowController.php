@@ -36,8 +36,10 @@ class ShowController extends BaseController
      * @Method({"GET"})
      */
     public function getShowsAction(Request $request){
+        $em = $this->getDoctrine()->getManager();
+
         /** @var ShowRepository $showRepository */
-        $showRepository = $this->get('core.show_repository');
+        $showRepository = $em->getRepository(Show::class);
         $qb = $showRepository->createQueryBuilder('s');
 
         $name = $request->get('name',null);
@@ -64,8 +66,9 @@ class ShowController extends BaseController
      * @Method({"GET"})
      */
     public function getShowAction(Request $request,$token,$slug){
+        $em = $this->getDoctrine()->getManager();
         /** @var ShowRepository $showRepository */
-        $showRepository = $this->get('core.show_repository');
+        $showRepository = $em->getRepository(Show::class);
 
         $show = $showRepository->findOneBy(['token' => $token,'slug' => $slug]);
 
@@ -85,11 +88,13 @@ class ShowController extends BaseController
      * @Method({"GET"})
      */
     public function getShowCommentAction(Request $request,$token,$slug,$comment_token = null){
+        $em = $this->getDoctrine()->getManager();
+
         /** @var CommentRepository $commentRepository */
-        $commentRepository = $this->get('core.comment_repository');
+        $commentRepository = $em->getRepository(Comment::class);
 
         /** @var ShowRepository $showRepository */
-        $showRepository = $this->get('core.show_repository');
+        $showRepository = $em->getRepository(Show::class);
 
         /** @var Show $show */
         $show = $showRepository->findOneBy(['token' => $token,'slug' => $slug]);
@@ -128,8 +133,9 @@ class ShowController extends BaseController
      */
     public function getActiveShowAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         /** @var EventRepository $eventRepository */
-        $eventRepository = $this->get('core.event_repository');
+        $eventRepository = $em->getRepository(Event::class);
         $activeEvent = $eventRepository->getEventByTime(new \DateTime('now'));
         return $this->restful([new WrapperNormalizer(), new EventNormalizer()],new SuccessWrapper($activeEvent,'active event'));
     }
@@ -142,11 +148,12 @@ class ShowController extends BaseController
      * @Method({"POST"})
      */
     public function postShowCommentAction(Request $request,$token,$slug,$comment_token = null){
-        /** @var ShowRepository $showRepository */
-        $showRepository = $this->get('core.show_repository');
+        $em = $this->getDoctrine()->getManager();
 
+        /** @var ShowRepository $showRepository */
+        $showRepository = $em->getRepository(Show::class);
         /** @var CommentRepository $commentRepository */
-        $commentRepository = $this->get('core.show_repository');
+        $commentRepository = $em->getRepository(Comment::class);
 
         /** @var Show $show */
         $show = $showRepository->findOneBy(['token' => $token,'slug' => $slug]);

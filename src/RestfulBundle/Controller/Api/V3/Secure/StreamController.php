@@ -32,11 +32,13 @@ class StreamController extends BaseController
      */
     public function publishStreamAction(Request $request, $token, $slug)
     {
+        $em = $this->getDoctrine()->getManager();
+
         /** @var ShowRepository $showRepository */
-        $showRepository = $this->get('core.show_repository');
+        $showRepository = $em->getRepository(Show::class);
 
         /** @var EventRepository $eventRepository */
-        $eventRepository = $this->get('core.event_repository');
+        $eventRepository = $em->getRepository(Event::class);
 
         /** @var Show $show */
         $show = $showRepository->getPostByTokenAndSlug($token, $slug);

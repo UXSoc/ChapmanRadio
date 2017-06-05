@@ -1,22 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 5/25/17
- * Time: 12:52 AM
- */
-
 namespace CoreBundle\Repository;
 
 
 use CoreBundle\Entity\Post;
-use CoreBundle\Entity\Comment;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\Criteria;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Mapping;
-use Doctrine\ORM\Query\Expr;
 use Symfony\Bundle\FrameworkBundle\Tests\Fixtures\Validation\Category;
 
 class PostRepository extends EntityRepository

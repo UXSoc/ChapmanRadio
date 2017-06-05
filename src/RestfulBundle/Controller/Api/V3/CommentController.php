@@ -11,14 +11,15 @@ use CoreBundle\Normalizer\CommentNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\CommentRepository;
-use CoreBundle\Repository\PostRepository;
 use CoreBundle\Service\RestfulService;
 use Doctrine\ORM\NoResultException;
+use Symfony\Component\HttpFoundation\Request;
+
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/api/v3/")
@@ -33,11 +34,13 @@ class CommentController extends BaseController
      */
     public function patchCommentAction(Request $request, $token)
     {
+        $em = $this->getDoctrine()->getManager();
+
         /** @var CommentRepository $commentRepository */
-        $commentRepository = $this->get('core.comment_repository');
+        $commentRepository = $em->getRepository(Comment::class);
 
         /** @var RestfulService $restfulService */
-        $restfulService = $this->get('core.restful');
+        $restfulService = $this->get(RestfulService::class);
 
         /** @var Comment $comment */
         $comment = null;
@@ -63,7 +66,6 @@ class CommentController extends BaseController
             return $this->restful([new WrapperNormalizer()], $error, 400);
         }
 
-        $em = $this->getDoctrine()->getManager();
         $em->persist($comment);
         $em->flush();
 

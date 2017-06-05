@@ -10,6 +10,7 @@ namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Controller\BaseController;
 
+use CoreBundle\Entity\Tag;
 use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\TagNormalizer;
@@ -34,8 +35,9 @@ class TagController extends BaseController
      */
     public function getTags(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         /** @var TagRepository $tagRepository */
-        $tagRepository = $this->get('core.tag_repository');
+        $tagRepository = $em->getRepository(Tag::class);
 
         $limit = $request->get('limit',100);
         if($limit > 100)
@@ -52,8 +54,9 @@ class TagController extends BaseController
      */
     public function getTag(Request $request,$name)
     {
+        $em = $this->getDoctrine()->getManager();
         /** @var TagRepository $tagRepository */
-        $tagRepository = $this->get('core.tag_repository');
+        $tagRepository = $em->getRepository(Tag::class);
 
         $tag = $tagRepository->findOneBy(["tag" => $name]);
         if($tag == null)

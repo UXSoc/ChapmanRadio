@@ -75,7 +75,7 @@
           email: this.email
         }).then(() => {
           let _this = this
-          axios.post(Routing.generate('register'), params).then(function (response) {
+          axios.post(Routing.generate('post_register'), params).then(function (response) {
             _this.showVerification = true
           }).catch(function (error) {
             let e = error.response.data.errors

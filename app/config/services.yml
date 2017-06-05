@@ -4,6 +4,25 @@ parameters:
     #parameter_name: value
 
 services:
+    _defaults:
+        # automatically injects dependencies in your services
+        autowire: true
+        # automatically registers your services as commands, event subscribers, etc.
+        autoconfigure: true
+        # this means you cannot fetch services directly from the container via $container->get()
+        # if you need to do this, you can override this setting on individual services
+        public: false
+    CoreBundle\:
+        resource: '../../src/CoreBundle/*'
+        # you can exclude directories or files
+        # but if a service is unused, it's removed anyway
+        exclude: '../../src/CoreBundle/{Controller,Entity,Repository,DataFixtures}'
+    CoreBundle\Service\:
+        resource: '../../src/CoreBundle/Service/*'
+        public: true
+    core.access_handler:
+         alias: CoreBundle\Handler\AccessDeniedHandler
+         public: true
     core.facebook_auth:
         class: CoreBundle\Security\HybridAuthenticator
         arguments: ["@cr.hybrid_auth.facebook"]
@@ -15,93 +34,7 @@ services:
         arguments: ["@cr.hybrid_auth.twitter"]
     core.authentication_handler:
         class: CoreBundle\Handler\AuthenticationHandler
-        arguments:
-            - "@router"
-            - "@session"
-            - "@doctrine"
-    core.access_handler:
-        class: CoreBundle\Handler\AccessDeniedHandler
-    core.image_upload_service:
-        class: CoreBundle\Service\ImageUploadService
-        arguments: ['%image_directory%','core.image_repository']
-    core.restful:
-        class: CoreBundle\Service\RestfulService
-        arguments: ['@validator']
-    core.user_token_service:
-        class: CoreBundle\Service\UserTokenService
-        arguments:
-            - '@cache.app'
-    brodcast.icecast:
-        class: BroadcastBundle\Service\IcecastService
-        arguments:
-            - '@kernel'
-#------------------------------------------------------------------------------------------------
-    core.comment_voter:
-        class: CoreBundle\Security\CommentVoter
-        arguments: ['@security.access.decision_manager']
-        tags:
-            - { name: security.voter }
-        public: false
-    core.post_voter:
-        class: CoreBundle\Security\PostVoter
-        arguments: ['@security.access.decision_manager']
-        tags:
-            - { name: security.voter }
-        public: false
-    core.show_voter:
-        class: CoreBundle\Security\ShowVoter
-        arguments: ['@security.access.decision_manager']
-        tags:
-            - { name: security.voter }
-        public: false
-#------------------------------------------------------------------------------------------------
-    core.user_repository:
-        class: CoreBundle\Repository\UserRepository
-        factory: ['@doctrine.orm.default_entity_manager', getRepository]
-        arguments:
-            - CoreBundle\Entity\User
-    core.show_repository:
-        class: CoreBundle\Repository\ShowRepository
-        factory: ['@doctrine.orm.default_entity_manager', getRepository]
-        arguments:
-            - CoreBundle\Entity\Show
-    core.post_repository:
-        class: CoreBundle\Repository\PostRepository
-        factory: ['@doctrine.orm.default_entity_manager', getRepository]
-        arguments:
-            - CoreBundle\Entity\Post
-    core.comment_repository:
-        class: CoreBundle\Repository\CommentRepository
-        factory: ['@doctrine.orm.default_entity_manager', getRepository]
-        arguments:
-            - CoreBundle\Entity\Comment
-    core.tag_repository:
-        class: CoreBundle\Repository\TagRepository
-        factory: ['@doctrine.orm.default_entity_manager', getRepository]
-        arguments:
-            - CoreBundle\Entity\Tag
-    core.category_repository:
-        class: CoreBundle\Repository\CategoryRepository
-        factory: ['@doctrine.orm.default_entity_manager', getRepository]
-        arguments:
-            - CoreBundle\Entity\Category
-    core.genre_repository:
-        class: CoreBundle\Repository\GenreRepository
-        factory: ['@doctrine.orm.default_entity_manager', getRepository]
-        arguments:
-            - CoreBundle\Entity\Genre
-    core.image_repository:
-        class: CoreBundle\Repository\ImageRepository
-        factory: ['@doctrine.orm.default_entity_manager', getRepository]
-        arguments:
-            - CoreBundle\Entity\Image
-    core.event_repository:
-        class: CoreBundle\Repository\EventRepository
-        factory: ['@doctrine.orm.default_entity_manager', getRepository]
-        arguments:
-            - CoreBundle\Entity\Event
-    core.stream_repository:
-        class: CoreBundle\Repository\StreamRepository
-        factory: ['@doctrine.orm.default_entity_manager', getRepository]
-        arguments:
-            - CoreBundle\Entity\Stream
+        autowire: true
+    CoreBundle\Service\ImageUploadService:
+        arguments: ['%image_directory%']
+        public: true

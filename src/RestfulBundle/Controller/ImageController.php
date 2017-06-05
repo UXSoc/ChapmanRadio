@@ -33,10 +33,10 @@ class ImageController  extends BaseController
     public function imageAction(Request $request,$token)
     {
         /** @var ImageUploadService $imageUploadService */
-        $imageUploadService = $this->get('core.image_upload_service');
+        $imageUploadService = $this->get(ImageUploadService::class);
 
         /** @var ImageRepository $imageRepository */
-        $imageRepository = $this->get('core.image_repository');
+        $imageRepository = $this->get(Image::class);
 
 
         /** @var Image $image */

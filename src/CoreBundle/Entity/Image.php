@@ -56,6 +56,7 @@ class Image
      *     mimeTypes = {"image/png", "image/jpeg"},
      *     mimeTypesMessage = "Please upload a valid image file"
      * )
+     * @Assert\NotBlank()
      */
     private $image;
 

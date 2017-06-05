@@ -24,6 +24,8 @@ class AccountControllerCest
 
     public function tryChangePassword(ApiTester $I)
     {
+
+
         $I->loginUser($this->user->getEmail(),"password");
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->sendPOST('/api/v3/account/new-password',[

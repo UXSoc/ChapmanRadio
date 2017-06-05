@@ -8,10 +8,13 @@ use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -28,7 +31,13 @@ class AuthenticationHandler implements AuthenticationEntryPointInterface,Authent
     private $session;
     private $registry;
 
-    public function __construct(RouterInterface $router, Session $session, Registry $registry)
+    /**
+     * AuthenticationHandler constructor.
+     * @param RouterInterface $router
+     * @param SessionInterface $session
+     * @param RegistryInterface $registry
+     */
+    public function __construct(RouterInterface $router, SessionInterface $session, RegistryInterface $registry)
     {
         $this->router = $router;
         $this->session = $session;

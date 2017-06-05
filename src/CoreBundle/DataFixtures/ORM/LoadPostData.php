@@ -40,7 +40,7 @@ class LoadPostData extends AbstractFixture implements OrderedFixtureInterface, C
         $faker = Faker\Factory::create();
 
         /** @var UserRepository $userRepository */
-        $userRepository = $this->container->get("core.user_repository");
+        $userRepository = $this->container->get(User::class);
         $users = $userRepository->findAll();
 
         $categories = $manager->getRepository(Category::class)->findAll();

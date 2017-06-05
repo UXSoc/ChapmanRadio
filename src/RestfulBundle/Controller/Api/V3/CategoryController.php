@@ -10,6 +10,7 @@ namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Controller\BaseController;
 
+use CoreBundle\Entity\Category;
 use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\CategoryNormalizer;
@@ -36,8 +37,10 @@ class CategoryController extends BaseController
      */
     public function getCategoriesAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         /** @var CategoryRepository $categoryRepository */
-        $categoryRepository = $this->get('core.category_repository');
+        $categoryRepository =$em->getRepository(Category::class);
+
         return $this->restful([new WrapperNormalizer(),
             new CategoryNormalizer()], new SuccessWrapper($categoryRepository->findAll(), null));
     }
@@ -50,16 +53,16 @@ class CategoryController extends BaseController
      */
     public function getCategoryAction(Request $request, $name)
     {
-        /** @var RestfulService $restfulService */
-        $restfulService = $this->get('core.restful');
+        $em = $this->getDoctrine()->getManager();
 
+        /** @var RestfulService $restfulService */
+        $restfulService = $this->get(RestfulService::class);
 
         /** @var CategoryRepository $categoryRepository */
-        $categoryRepository = $this->get('core.category_repository');
+        $categoryRepository =$em->getRepository(Category::class);
 
-        $category = $categoryRepository->findOneBy(["tag" => $name]);
-        if ($category === null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Can't find tag"), 400);
+        if ($category = $categoryRepository->findOneBy(["tag" => $name]))
+            return $restfulService->errorResponse("Can't find tag",400);
 
         return $restfulService->successResponse([new CategoryNormalizer()],$category,"Found Tag");
     }
