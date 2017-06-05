@@ -23,12 +23,13 @@ use CoreBundle\Service\RestfulService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/api/v3/")
  */
-class CategoryController extends BaseController
+class CategoryController extends Controller
 {
     /**
      * @Route("category",
@@ -55,9 +56,6 @@ class CategoryController extends BaseController
     public function getCategoryAction(Request $request, $name)
     {
         $em = $this->getDoctrine()->getManager();
-
-        /** @var RestfulService $restfulService */
-        $restfulService = $this->get(RestfulService::class);
 
         /** @var CategoryRepository $categoryRepository */
         $categoryRepository = $em->getRepository(Category::class);

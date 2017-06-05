@@ -21,11 +21,12 @@ use CoreBundle\Repository\TagRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * @Route("/api/v3/private")
  */
-class TagController  extends BaseController
+class TagController  extends Controller
 {
 
     /**

@@ -10,6 +10,7 @@ use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -21,7 +22,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 /**
  * @Route("/api/v3")
  */
-class AccountController extends BaseController
+class AccountController extends Controller
 {
     /**
      * @Security("has_role('ROLE_USER')")

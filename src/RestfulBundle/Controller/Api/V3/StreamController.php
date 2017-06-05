@@ -9,6 +9,7 @@ use CoreBundle\Normalizer\EventNormalizer;
 use CoreBundle\Normalizer\StreamNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\StreamRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -19,7 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 /**
  * @Route("/api/v3/")
  */
-class StreamController  extends BaseController
+class StreamController  extends Controller
 {
     /**
      * @Route("stream",

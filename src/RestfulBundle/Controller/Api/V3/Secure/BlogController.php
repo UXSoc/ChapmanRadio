@@ -23,6 +23,7 @@ use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\TagRepository;
 use CoreBundle\Security\PostVoter;
 use CoreBundle\Service\ImageUploadService;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -33,7 +34,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 /**
  * @Route("/api/v3/private")
  */
-class BlogController extends BaseController
+class BlogController extends Controller
 {
 
 

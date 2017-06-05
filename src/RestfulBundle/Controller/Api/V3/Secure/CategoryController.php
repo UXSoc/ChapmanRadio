@@ -18,11 +18,12 @@ use CoreBundle\Repository\CategoryRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * @Route("/api/v3/private")
  */
-class CategoryController extends BaseController
+class CategoryController extends Controller
 {
     /**
      * @Security("has_role('ROLE_STAFF')")

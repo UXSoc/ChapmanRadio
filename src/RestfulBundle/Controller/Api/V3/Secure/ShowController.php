@@ -17,6 +17,7 @@ use CoreBundle\Repository\ShowRepository;
 use CoreBundle\Repository\TagRepository;
 use CoreBundle\Security\ShowVoter;
 use CoreBundle\Service\ImageUploadService;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -27,7 +28,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 /**
  * @Route("/api/v3/private")
  */
-class ShowController extends BaseController
+class ShowController extends Controller
 {
     /**
      * @Security("has_role('ROLE_STAFF')")
@@ -199,6 +200,8 @@ class ShowController extends BaseController
      */
     public function putImageForShowAction(Request $request, $token, $slug)
     {
+        /** @var ValidatorInterface $validator */
+        $validator = $this->get('validator');
 
         /** @var ImageUploadService $imageService */
         $imageService = $this->get(ImageUploadService::class);
@@ -208,35 +211,28 @@ class ShowController extends BaseController
         /** @var ShowRepository $showRepository */
         $showRepository = $em->getRepository(Show::class);
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
+       if($show = $showRepository->getPostByTokenAndSlug($token, $slug))
+       {
+           $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
 
-        if ($show === null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-        try {
-            $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
-        } catch (\Exception $exception) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
-        }
+           $src = $request->files->get('image', null);
+           $image = new Image();
+           $image->setImage($src);
+           $image->setAuthor($this->getUser());
 
-        $src = $request->files->get('image', null);
-        $image = new Image();
-        $image->setImage($src);
-        $image->setAuthor($this->getUser());
+           $errors = $validator->validate($image);
+           if($errors->count() > 0)
+               return RestfulEnvelope::errorResponseTemplate('invalid Image')->addErrors($errors)->response();
 
-        $errors = $this->validateEntity($image);
-        if ($errors->count() > 0) {
-            $error = new ErrorWrapper(null);
-            $error->addErrors($errors);
-            return $this->restful([new WrapperNormalizer()], $error, 400);
-        }
-        $imageService->saveImage($image);
-        $em->persist($image);
+           $imageService->saveImage($image);
+           $em->persist($image);
 
-        $show->addImage($image);
-        $em->persist($show);
-        $em->flush();
-
-        return $this->restful([new WrapperNormalizer()], new SuccessWrapper(null, "Image Uploaded"));
+           $show->addImage($image);
+           $em->persist($show);
+           $em->flush();
+           return RestfulEnvelope::successResponseTemplate('Image Uploaded',$image,[new ImageNormalizer()])->response();
+       }
+        return RestfulEnvelope::errorResponseTemplate('Image error')->response();
     }
 
     /**
@@ -253,21 +249,13 @@ class ShowController extends BaseController
         $showRepository = $em->getRepository(Show::class);
 
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
 
-        if ($show == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-
-        try {
+        if ($show = $showRepository->getPostByTokenAndSlug($token, $slug))
+        {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
-        } catch (\Exception $exception) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
+            return RestfulEnvelope::successResponseTemplate('Image Header Uploaded',$show->getImages()->toArray(),[new ImageNormalizer()])->response();
         }
-
-        return $this->restful([
-            new WrapperNormalizer(),
-            new TagNormalizer(),
-            new ImageNormalizer()], new SuccessWrapper($show->getImages()->toArray(), "Images"));
+        return RestfulEnvelope::errorResponseTemplate('Show not found')->setStatus(410)->response();
 
     }
 
@@ -279,6 +267,9 @@ class ShowController extends BaseController
      */
     public function postImageShowHeader(Request $request, $token, $slug)
     {
+        /** @var ValidatorInterface $validator */
+        $validator = $this->get('validator');
+
         $em = $this->getDoctrine()->getManager();
 
         /** @var ImageUploadService $imageService */
@@ -288,39 +279,28 @@ class ShowController extends BaseController
         $showRepository = $em->getRepository(Show::class);
 
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
-
-        if ($show == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-
-        try {
+        if ( $show = $showRepository->getPostByTokenAndSlug($token, $slug))
+        {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
-        } catch (\Exception $exception) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
+
+            $src = $request->files->get('image', null);
+            $image = new Image();
+            $image->setImage($src);
+            $image->setAuthor($this->getUser());
+
+            $errors = $validator->validate($image);
+            if($errors->count() > 0)
+                return RestfulEnvelope::errorResponseTemplate('invalid Image')->addErrors($errors)->response();
+
+            $imageService->saveImage($image);
+            $em->persist($image);
+
+            $show->setHeaderImage($image);
+            $em->persist($show);
+            $em->flush();
+            return RestfulEnvelope::successResponseTemplate('Image Header Uploaded',$image,[new ImageNormalizer()])->response();
         }
-
-        $src = $request->files->get('image', null);
-        if ($src == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Image Not Found"), 410);
-        $image = new Image();
-        $image->setImage($src);
-        $image->setAuthor($this->getUser());
-
-        $errors = $this->validateEntity($image);
-        if ($errors->count() > 0) {
-            $error = new ErrorWrapper(null);
-            $error->addErrors($errors);
-            return $this->restful([new WrapperNormalizer()], $error, 400);
-        }
-
-        $imageService->saveImage($image);
-        $em->persist($image);
-
-        $show->setHeaderImage($image);
-        $em->persist($show);
-        $em->flush();
-
-        return $this->restful([new WrapperNormalizer()], new SuccessWrapper(null, "Image Header Set"));
+        return RestfulEnvelope::errorResponseTemplate('Image error')->response();
     }
 
     /**
@@ -340,18 +320,13 @@ class ShowController extends BaseController
         $showRepository = $em->getRepository(Show::class);
 
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
-
-        if ($show == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-
-        try {
+        if ($show = $showRepository->getPostByTokenAndSlug($token, $slug)) {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
-        } catch (\Exception $exception) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Show Permission Error"), 400);
+            $em->remove($show->getHeaderImage());
+
+            return RestfulEnvelope::successResponseTemplate('Image Header deleted')->response();
         }
-        $em->remove($show->getHeaderImage());
-        return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Header Image Deleted"), 400);
+        return RestfulEnvelope::errorResponseTemplate('Image error')->response();
 
     }
 

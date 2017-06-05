@@ -19,10 +19,11 @@ use CoreBundle\Service\ImageUploadService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class ImageController  extends BaseController
+class ImageController  extends Controller
 {
     /**
      * @Route("/image/{token}",

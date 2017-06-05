@@ -5,6 +5,7 @@ namespace CoreBundle\Controller;
 
 use CoreBundle\Event\AuthSubscriber;
 use CoreBundle\Event\UserEvent;
+use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Service\RestfulService;
 use CoreBundle\Service\UserTokenService;
 use Monolog\Logger;
@@ -18,6 +19,7 @@ use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\UserRepository;
 use Swift_Message;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -28,11 +30,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/api/v3")
  */
-class AuthController extends BaseController
+class AuthController extends Controller
 {
 
     /**
@@ -43,6 +46,9 @@ class AuthController extends BaseController
      */
     public function postRegisterAction(Request $request)
     {
+        /** @var ValidatorInterface $validator */
+        $validator = $this->get('validator');
+
         /** @var EventDispatcher $dispatcher */
         $dispatcher = $this->get('event_dispatcher');
 
@@ -53,14 +59,12 @@ class AuthController extends BaseController
         $passwordType = new PasswordType($request->get("password"));
         $user->setStudentId($request->get("studentId"));
 
-        $errors = $this->validateEntity($user);
-        $passwordErrors = $this->validateEntity($passwordType);
-        if ($errors->count() > 0 | $passwordErrors->count()) {
-            $errorWrapper = new ErrorWrapper("Couldn't Register User");
-            $errorWrapper->addErrors($errors);
-            $errorWrapper->addErrors($passwordErrors);
-            return $this->restful([new WrapperNormalizer()],$errorWrapper, 400);
-        }
+        $errors = $validator->validate($user);
+        if($errors->count() > 0)
+            return RestfulEnvelope::errorResponseTemplate("Couldn't Register User")
+                ->addErrors($errors)
+                ->response();
+
 
         $password = $this->get('security.password_encoder')
             ->encodePassword($user, $passwordType->getPassword());
@@ -71,7 +75,7 @@ class AuthController extends BaseController
         $em->flush();
 
         $dispatcher->dispatch('user.confirmation',new UserEvent($user));
-        return $this->restful([new WrapperNormalizer(),new UserNormalizer()],new SuccessWrapper($user,"User Registed"));
+        return RestfulEnvelope::successResponseTemplate('User registered',$user,[new UserNormalizer()]);
     }
 
 
@@ -85,18 +89,18 @@ class AuthController extends BaseController
         /** @var UserRepository $userRepository */
         $userRepository = $em->getRepository(User::class);
 
-        /** @var RestfulService $restfulService */
-        $restfulService = $this->get(RestfulService::class);
-
         /** @var User $user */
         if($user = $userRepository->getByToken($token))
-            return $restfulService->errorResponse('Unknown User',410);
+        {        /** @var EventDispatcher $dispatcher */
+            $dispatcher = $this->get('event_dispatcher');
+            $dispatcher->dispatch('user.password_reset',new UserEvent($user));
 
-        /** @var EventDispatcher $dispatcher */
-        $dispatcher = $this->get('event_dispatcher');
-        $dispatcher->dispatch('user.password_reset',new UserEvent($user));
+            return RestfulEnvelope::successResponseTemplate('New password reset token sent');
+        }
 
-        return $restfulService->successResponse([],null,"New password reset token sent");
+        return RestfulEnvelope::errorResponseTemplate("Unknown User")
+            ->setStatus(410)
+            ->response();
 
     }
 
@@ -106,39 +110,48 @@ class AuthController extends BaseController
      */
     public function postNewPasswordAction(Request $request,$token,$confirmationToken)
     {
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var ValidatorInterface $validator */
+        $validator = $this->get('validator');
+
         /** @var UserTokenService $userTokenService */
         $userTokenService = $this->get(UserTokenService::class);
-
-        /** @var RestfulService $restfulService */
-        $restfulService = $this->get(RestfulService::class);
 
         /** @var UserRepository $userRepository */
         $userRepository = $this->get(User::class);
 
         /** @var User $user */
         if($user = $userRepository->getByToken($token))
-            return $restfulService->errorResponse('Unknown User',410);
-
-        /** @var User $userToken */
-        if($userToken = $userTokenService->verifyPasswordResetToken($confirmationToken))
         {
-            if($userToken->getId() == $user->getId())
-                return $restfulService->errorResponse('Unknown User',410);
+            /** @var User $userToken */
+            if($userToken = $userTokenService->verifyPasswordResetToken($confirmationToken))
+            {
+                if($userToken->getId() == $user->getId())
+                    return RestfulEnvelope::errorResponseTemplate("Unknown User")
+                        ->setStatus(410)
+                        ->response();
 
-            $passwordType = new PasswordType($request->get("password"));
+                $passwordType = new PasswordType($request->get("password"));
+                $errors = $validator->validate($passwordType);
+                if($errors->count() > 0)
+                    return RestfulEnvelope::errorResponseTemplate("Couldn't reset password")
+                        ->addErrors($errors)
+                        ->response();
 
-            if($resp = $restfulService->errorResponseValidate($passwordType,"Couldn't Change Password User"))
-                return $resp;
+                $password = $this->get('security.password_encoder')
+                    ->encodePassword($user, $passwordType->getPassword());
+                $user->setPassword($password);
 
-            $password = $this->get('security.password_encoder')
-                ->encodePassword($user, $passwordType->getPassword());
-            $user->setPassword($password);
+                $em->persist($user);
+                $em->flush();
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
-            return $restfulService->successResponse([],null,"Password Changed");
+                return RestfulEnvelope::successResponseTemplate('Password Changed');
+            }
         }
+        return RestfulEnvelope::errorResponseTemplate("Unknown User")
+            ->setStatus(410)
+            ->response();
     }
 
 
@@ -148,18 +161,19 @@ class AuthController extends BaseController
      */
     public function postRequestConfirmationAction(Request $request, $token)
     {
+        /** @var EventDispatcher $dispatcher */
+        $dispatcher = $this->get('event_dispatcher');
+
         /** @var UserRepository $userRepository */
         $userRepository = $this->get(User::class);
 
         /** @var User $user */
         if($user = $userRepository->getByToken($token))
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown User"),410);
-
-        /** @var EventDispatcher $dispatcher */
-        $dispatcher = $this->get('event_dispatcher');
-        $dispatcher->dispatch('user.confirmation',new UserEvent($user));
-
-        return $this->restful([new WrapperNormalizer()],new SuccessWrapper("New confirmation token sent"));
+        {
+            $dispatcher->dispatch('user.confirmation',new UserEvent($user));
+            return RestfulEnvelope::successResponseTemplate('New confirmation token sent')->response();
+        }
+        return RestfulEnvelope::errorResponseTemplate("Unknown User")->response();
     }
 
     /**
@@ -168,9 +182,6 @@ class AuthController extends BaseController
      */
     public function postConfirmationAction(Request $request, $token,$confirmToken)
     {
-        /** @var RestfulService $restfulService */
-        $restfulService = $this->get(RestfulService::class);
-
         /** @var UserRepository $userRepository */
         $userRepository = $this->get(User::class);
 
@@ -179,22 +190,21 @@ class AuthController extends BaseController
 
         /** @var User $user */
         if($user = $userRepository->getByToken($token))
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown User"),410);
-
-
-        /** @var User $cacheItem */
-        if($user2 = $userTokenService->verifyConfirmationToken($confirmToken))
         {
-            if($user->getId() == $user2->getId())
+            /** @var User $cacheItem */
+            if($user2 = $userTokenService->verifyConfirmationToken($confirmToken))
             {
-                $user->setConfirmed(true);
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($user);
-                $em->flush();
-                return $restfulService->successResponse([new AccountNormalizer()],$user,"User Confirmed");
+                if($user->getId() == $user2->getId())
+                {
+                    $user->setConfirmed(true);
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($user);
+                    $em->flush();
+                    return RestfulEnvelope::successResponseTemplate('User Confirmed')->response();
+                }
             }
         }
-        return $restfulService->errorResponse("Unknown Token",410);
+        return RestfulEnvelope::errorResponseTemplate("Unknown User")->response();
     }
 
 
@@ -207,11 +217,7 @@ class AuthController extends BaseController
     {
         /** @var User $user */
         $user = $this->getUser();
-
-        return $this->restful([
-            new WrapperNormalizer(),
-            new AccountNormalizer()
-        ],new SuccessWrapper($user,"Account status"));
+        return RestfulEnvelope::successResponseTemplate('Account status',$user,[new UserNormalizer()]);
     }
 
 }

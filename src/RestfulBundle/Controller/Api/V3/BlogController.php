@@ -32,6 +32,7 @@ use CoreBundle\Repository\TagRepository;
 use CoreBundle\Service\RestfulService;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -43,7 +44,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 /**
  * @Route("/api/v3/")
  */
-class BlogController extends BaseController
+class BlogController extends Controller
 {
 
     /**

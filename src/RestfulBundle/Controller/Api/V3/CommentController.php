@@ -15,6 +15,7 @@ use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\CommentRepository;
 use CoreBundle\Service\RestfulService;
 use Doctrine\ORM\NoResultException;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 
@@ -27,7 +28,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 /**
  * @Route("/api/v3/")
  */
-class CommentController extends BaseController
+class CommentController extends Controller
 {
 
     /**

@@ -8,7 +8,7 @@ modules:
         - PhpBrowser:
             url: 'http://localhost:8000'
         - REST:
-            depends: Symfony2
+            depends: PhpBrowser
             url: 'http://localhost:8000'
         - Doctrine2:
             depends: Symfony2

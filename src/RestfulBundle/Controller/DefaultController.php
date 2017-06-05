@@ -4,6 +4,7 @@ namespace RestfulBundle\Controller;
 
 use CoreBundle\Controller\BaseController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -13,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Date: 5/23/17
  * Time: 10:53 AM
  */
-class DefaultController extends BaseController
+class DefaultController extends Controller
 {
     /**
      * @Route("/", name="index")

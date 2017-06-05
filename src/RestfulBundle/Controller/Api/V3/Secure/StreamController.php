@@ -17,12 +17,13 @@ use CoreBundle\Repository\ShowRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/api/v3/private")
  */
-class StreamController extends BaseController
+class StreamController extends Controller
 {
     /**
      * @Route("stream/publish/{token}/{slug}",
