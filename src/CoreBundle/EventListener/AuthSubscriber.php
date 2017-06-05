@@ -1,13 +1,13 @@
 <?php
-namespace CoreBundle\Event;
+namespace CoreBundle\EventListener;
 
+use CoreBundle\Event\UserEvent;
 use CoreBundle\Service\UserTokenService;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Swift_Mailer;
 use Swift_Message;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
 use Twig_Environment;
 
 /**

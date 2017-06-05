@@ -35,6 +35,7 @@ class PostVoter extends  Voter
      */
     protected function supports($attribute, $subject)
     {
+
         // if the attribute isn't one we support, return false
         if (!in_array($attribute, array(self::VIEW, self::EDIT,self::DELETE))) {
             return false;
@@ -68,6 +69,7 @@ class PostVoter extends  Voter
         if ($this->decisionManager->decide($token, array('ROLE_STAFF'))) {
             return true;
         }
+
 
         /** @var Post $post */
         $post = $subject;

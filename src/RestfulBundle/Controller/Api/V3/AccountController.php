@@ -2,6 +2,7 @@
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace RestfulBundle\Controller\Api\V3;
 
+use CoreBundle\Helper\RestfulEnvelope;
 use RestfulBundle\Validation\ChangePasswordType;
 use RestfulBundle\Validation\PasswordType;
 use CoreBundle\Controller\BaseController;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/api/v3")
@@ -30,28 +32,25 @@ class AccountController extends BaseController
      */
     public  function  patchChangePasswordAction(Request $request)
     {
+        /** @var ValidatorInterface $validator */
+        $validator = $this->get('validator');
 
         $oldPasswordType = new PasswordType($request->get("oldPassword"));
         $newPasswordType = new PasswordType($request->get("newPassword"));
 
-        $e1 = $this->validateEntity($oldPasswordType);
-        $e2 = $this->validateEntity($newPasswordType);
-        if($e1->count() > 0 | $e2->count() > 0) {
-            $e = new ErrorWrapper("Unknown User");
-            $e->addErrors($e1);
-            $e->addErrors($e2);
-            return $this->restful([new WrapperNormalizer()],$e,400);
+        $e1 = $validator->validate($oldPasswordType);
+        $e2 = $validator->validate($newPasswordType);
+        if($e1->count() > 0 || $e2->count() > 0) {
+            return RestfulEnvelope::errorResponseTemplate('invalid passwords')
+                ->addErrors($e1)
+                ->addErrors($e2)
+                ->response();
         }
-
 
         $user =  $this->getUser();
         $encoder_service = $this->get('security.password_encoder');
 
-        if(!$encoder_service->isPasswordValid($user,$oldPasswordType->getPassword()))
-        {
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Invalid Password"),400);
-        }
-        else
+        if($encoder_service->isPasswordValid($user,$oldPasswordType->getPassword()))
         {
             $new_password = $encoder_service->encodePassword($user,$newPasswordType->getPassword());
             $user->setPassword($new_password);
@@ -59,8 +58,8 @@ class AccountController extends BaseController
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
-
-            return $this->restful([new WrapperNormalizer(),new UserNormalizer()],new SuccessWrapper($user,"Password Changed"),200);
+            return RestfulEnvelope::successResponseTemplate('Password Changed')->response();
         }
+        return RestfulEnvelope::errorResponseTemplate('invalid passwords')->response();
     }
 }

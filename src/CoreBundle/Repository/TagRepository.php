@@ -11,6 +11,9 @@ namespace CoreBundle\Repository;
 use CoreBundle\Entity\Tag;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Component\HttpFoundation\Request;
 
 class TagRepository  extends EntityRepository
 {
@@ -37,20 +40,41 @@ class TagRepository  extends EntityRepository
         return $result;
     }
 
-    public function findTag($tag,$limit = -1)
-    {
-        $qb = $this->createQueryBuilder("t");
-        $tags = $qb->where($qb->expr()->like('t.tag',':tag'))
-            ->setParameter("tag",'%'. $tag.'%')
-            ->getQuery();
-        if($limit > 0)
-            $tags->setMaxResults($limit);
-        return $tags->getResult();
-    }
-
-
+    /**
+     * @param string $tag
+     * @return Tag
+     */
     public function getTag($tag)
     {
         return $this->findOneBy(["tag" => $tag]);
     }
+
+    public function filter(Request $request)
+    {
+        $qb = $this->createQueryBuilder("t");
+
+        if($name = $request->get('name',null)) {
+            $qb->where($qb->expr()->like('t.tag',':tag'))
+                ->setParameter("tag",'%' . $name . '%');
+        }
+        return $qb->getQuery();
+    }
+
+    /**
+     * @param Query $query
+     * @param $page
+     * @param $perPage
+     * @param int $limit
+     * @return Paginator
+     */
+    public function  paginator(Query $query,$page,$perPage,$limit = 10)
+    {
+
+        $pagination = new Paginator($query);
+        $num = $perPage > $limit ? $perPage :  $limit;
+        $pagination->getQuery()->setMaxResults($num);
+        $pagination->getQuery()->setFirstResult($num * $page);
+        return $pagination;
+    }
+
 }

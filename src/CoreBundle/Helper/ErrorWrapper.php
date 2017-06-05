@@ -46,33 +46,11 @@ class ErrorWrapper
         return count($this->errors) > 0;
     }
 
-    /**
-     * @param ConstraintViolationInterface  $error
-     */
-    public function addError(ConstraintViolationInterface $error)
-    {
-        $this->addKeyError($error->getPropertyPath(), $error->getMessage());
-    }
 
-    public function addKeyError($key,$error)
+    public function addError($key, $error)
     {
         $this->errors[] = ["field" => $key, "message" => $error];
     }
 
-    /**
-     * @param array | ConstraintViolationListInterface $errors
-     */
-    public   function addErrors($errors)
-    {
-        if($errors instanceof ConstraintViolationList) {
-            foreach ($errors as $error) {
-                $this->addKeyError($error->getPropertyPath(), $error->getMessage());
-            }
-            return;
-        }
-        foreach ($errors as $key => $value ) {
-            $this->addKeyError($key,$value);
-        }
-    }
 
 }

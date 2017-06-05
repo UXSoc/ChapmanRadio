@@ -16,6 +16,7 @@ use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Comment;
 use CoreBundle\Entity\User;
 use CoreBundle\Helper\ErrorWrapper;
+use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\BlogNormalizer;
 use CoreBundle\Normalizer\CategoryNormalizer;
@@ -36,6 +37,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
 /**
@@ -43,25 +45,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
  */
 class BlogController extends BaseController
 {
-
-
-    /**
-     * @Route("categories",
-     *     options = { "expose" = true },
-     *     name="get_categories")
-     * @Method({"GET"})
-     */
-    public function getCategories(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var CategoryRepository $categoryRepository */
-        $categoryRepository = $em->getRepository(Category::class);
-
-        return $this->restful([
-            new WrapperNormalizer(),
-            new CategoryNormalizer()], new SuccessWrapper($categoryRepository->findAll(), null));
-    }
 
     /**
      * @Route("post",
@@ -75,26 +58,11 @@ class BlogController extends BaseController
         /** @var PostRepository $postRepository */
         $postRepository =  $em->getRepository(Post::class);
 
-        $q = $postRepository->createQueryBuilder('p');
+        $pagination = $postRepository->paginator($postRepository->filter($request),
+            $request->get('page',0),
+            $request->get('entries',10),20);
 
-        $name = $request->get('name', null);
-        if ($name)
-            $q->where($q->expr()->like('p.name', ':name'))
-                ->setParameter('name', '%' . $request->get('name') . '%');
-
-        $pagination = new Paginator($q->getQuery());
-        $perPage = $request->get("entries", 10) > 20 ? 20 : $request->get("entries", 20);
-        $pagination->getQuery()->setMaxResults($perPage);
-        $pagination->getQuery()->setFirstResult($perPage * $request->get("page", 0));
-
-
-        $s = new SuccessWrapper();
-        $s->setPayload($pagination);
-        return $this->restful([new BlogNormalizer(),
-            new UserNormalizer(),
-            new PaginatorNormalizer(),
-            new WrapperNormalizer()], $s, 200);
-
+        return RestfulEnvelope::successResponseTemplate(null,$pagination,[new BlogNormalizer(),new PaginatorNormalizer()])->response();
     }
 
     /**
@@ -110,14 +78,9 @@ class BlogController extends BaseController
         $postRepository = $em->getRepository(Post::class);
 
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
-
-        if ($post === null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-
-        return $this->restful([
-            new TagNormalizer(),
-            new WrapperNormalizer()], new SuccessWrapper($post->getTags()->getValues()));
+        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
+            return RestfulEnvelope::successResponseTemplate("Tags",$post->getTags(),[new TagNormalizer()])->response();
+        return RestfulEnvelope::errorResponseTemplate("Post not found")->setStatus(410)->response();
     }
 
     /**
@@ -128,20 +91,14 @@ class BlogController extends BaseController
      */
     public function getPostCategories(Request $request, $token, $slug)
     {
-
         $em = $this->getDoctrine()->getManager();
         /** @var PostRepository $postRepository */
         $postRepository = $em->getRepository(Post::class);
 
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
-
-        if ($post === null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-
-        return $this->restful([
-            new CategoryNormalizer(),
-            new WrapperNormalizer()], new SuccessWrapper($post->getCategories()->getValues()));
+        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
+            return RestfulEnvelope::successResponseTemplate("Categories",$post->getCategories(),[new CategoryNormalizer()])->response();
+        return RestfulEnvelope::errorResponseTemplate("Post not found")->setStatus(410)->response();
     }
 
     /**
@@ -157,17 +114,9 @@ class BlogController extends BaseController
         $postRepository = $em->getRepository(Post::class);
 
         /** @var Post $post */
-        $post = $postRepository->findOneBy(['token' => $token, 'slug' => $slug]);
-
-        if ($post === null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-
-        return $this->restful([
-            new BlogNormalizer(),
-            new UserNormalizer(),
-            new PaginatorNormalizer(),
-            new WrapperNormalizer()], new SuccessWrapper($post));
-
+        if ( $post = $postRepository->getPostByTokenAndSlug($token,$slug))
+            return RestfulEnvelope::successResponseTemplate("Post found",$post,[new BlogNormalizer(),new UserNormalizer()])->response();
+        return RestfulEnvelope::errorResponseTemplate("Post not found")->setStatus(410)->response();
     }
 
     /**
@@ -179,37 +128,39 @@ class BlogController extends BaseController
      */
     public function postPostCommentAction(Request $request, $token, $slug, $comment_token = null)
     {
+        /** @var ValidatorInterface $validator */
+        $validator = $this->get('validator');
+
         $em = $this->getDoctrine()->getManager();
 
-        /** @var RestfulService $restfulService */
-        $restfulService = $this->get(RestfulService::class);
         /** @var PostRepository $postRepository */
         $postRepository = $em->getRepository(Post::class);
         /** @var CommentRepository $commentRepository */
         $commentRepository = $em->getRepository(Comment::class);
 
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
+        if ($post = $postRepository->getPostByTokenAndSlug($token,$slug))
+        {
+            $comment = new Comment();
+            $comment->setContent($request->get("content"));
+            $comment->setUser($this->getUser());
 
-        if ($post === null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-
-        $comment = new Comment();
-        $comment->setContent($request->get("content"));
-        $comment->setUser($this->getUser());
-
-        if ($comment_token !== null) {
-            try {
-                $comment->setParentComment($commentRepository->getCommentByPostAndToken($post, $comment_token));
-            } catch (NoResultException $e) {
-                return $restfulService->errorResponse("Unknown Comment",410);
+            if ($comment_token !== null) {
+                if($c = $commentRepository->getCommentByPostAndToken($post, $comment_token))
+                    $comment->setParentComment($c);
+                else
+                    return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->response();
             }
+
+            $errors = $validator->validate($comment);
+            if($errors->count() > 0)
+                return RestfulEnvelope::errorResponseTemplate("invalid Comment")->addErrors($errors)->response();
+
+            $em->persist($comment);
+            $em->flush();
+            return RestfulEnvelope::successResponseTemplate('Comment Added',$comment,[new UserNormalizer(),new CommentNormalizer()])->response();
         }
-
-        if($resp = $restfulService->errorResponseValidate($comment,"Invalid Comment",400))
-            return $resp;
-
-        return $restfulService->successResponse([new CommentNormalizer(),new UserNormalizer()],$comment,"Comment Added");
+        return RestfulEnvelope::errorResponseTemplate("comment not found")->setStatus(410)->response();
     }
 
 
@@ -229,30 +180,21 @@ class BlogController extends BaseController
         $commentRepository = $em->getRepository(Comment::class);
 
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
-
-        if ($post === null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-
-        if ($comment_token === null) {
-            return $this->restful([new CommentNormalizer(),
-                new UserNormalizer(),
-                new WrapperNormalizer()],
-                new SuccessWrapper($commentRepository->getAllRootCommentsForPost($post)));
-        } else {
-            try {
-                $comment = $commentRepository->getCommentByPostAndToken($post, $comment_token);
-                return $this->restful([new CommentNormalizer(),
-                    new UserNormalizer(),
-                    new WrapperNormalizer()],
-                    new SuccessWrapper($comment));
-
-            } catch (NoResultException $e) {
-                return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Unknown Comment"), 410);
+        if($post = $postRepository->getPostByTokenAndSlug($token, $slug)) {
+            if ($comment_token) {
+                return RestfulEnvelope::successResponseTemplate('Comments',
+                    $commentRepository->getCommentByPostAndToken($post,$comment_token),
+                    [new UserNormalizer(), new CommentNormalizer()])->response();
+            }
+            else
+            {
+                return RestfulEnvelope::successResponseTemplate('Comments',
+                    $commentRepository->getAllRootCommentsForPost($post),
+                    [new UserNormalizer(), new CommentNormalizer()])->response();
             }
 
         }
-
+        return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->response();
     }
 
 }

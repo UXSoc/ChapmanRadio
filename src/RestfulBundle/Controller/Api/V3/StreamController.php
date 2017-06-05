@@ -3,6 +3,7 @@ namespace RestfulBundle\Controller\Api\V3;
 
 use BroadcastBundle\Entity\Stream;
 use CoreBundle\Controller\BaseController;
+use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\EventNormalizer;
 use CoreBundle\Normalizer\StreamNormalizer;
@@ -32,11 +33,9 @@ class StreamController  extends BaseController
         /** @var StreamRepository $streamRepository */
         $streamRepository =  $em->getRepository(Stream::class);
         $streams =  $streamRepository->findAll();
-        return $this->restful([
-            new StreamNormalizer(),
-            new EventNormalizer(),
-            new WrapperNormalizer()],
-            new SuccessWrapper($streams),200);
+
+        return RestfulEnvelope::successResponseTemplate("",$streams,
+            [new StreamNormalizer(),new EventNormalizer()])->response();
     }
 
     /**
@@ -52,11 +51,9 @@ class StreamController  extends BaseController
         /** @var StreamRepository $streamRepository */
         $streamRepository =  $em->getRepository(Stream::class);
         $streams = $streamRepository->getStreamsTiedToEvent();
-        return $this->restful([
-            new StreamNormalizer(),
-            new EventNormalizer(),
-            new WrapperNormalizer()],
-            new SuccessWrapper($streams),200);
+
+        return RestfulEnvelope::successResponseTemplate(null,$streams,
+            [new EventNormalizer(),new StreamNormalizer()])->response();
     }
 
 }

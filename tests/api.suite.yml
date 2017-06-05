@@ -4,11 +4,11 @@ modules:
         - Asserts
         - Symfony2:
             app_path: 'app'
-            var_path: 'app'
+            var_path: 'var'
         - PhpBrowser:
             url: 'http://localhost:8000'
         - REST:
-            depends: PhpBrowser
+            depends: Symfony2
             url: 'http://localhost:8000'
         - Doctrine2:
             depends: Symfony2

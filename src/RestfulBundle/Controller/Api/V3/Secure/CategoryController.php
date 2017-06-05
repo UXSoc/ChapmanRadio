@@ -10,6 +10,7 @@ namespace RestfulBundle\Controller\Api\V3\Secure;
 use CoreBundle\Controller\BaseController;
 use CoreBundle\Entity\Category;
 use CoreBundle\Helper\ErrorWrapper;
+use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\CategoryNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
@@ -33,16 +34,16 @@ class CategoryController extends BaseController
         $em = $this->getDoctrine()->getManager();
         /** @var CategoryRepository $categoryRepository */
         $categoryRepository = $em->getRepository(Category::class);
-        $result = $categoryRepository->getCategory($category);
-        if($result  != null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Category Already Exist"), 410);
 
-        $result = new Category();
-        $result->setCategory($category);
+        if($result = $categoryRepository->getCategory($category))
+            return RestfulEnvelope::errorResponseTemplate('Category found')->setStatus(400)->response();
 
-        $em->persist($result);
+        $c = new Category();
+        $c->setCategory($category);
+        $em->persist($c);
         $em->flush();
-        return $this->restful([new WrapperNormalizer(),new CategoryNormalizer()],new SuccessWrapper($result,"Tag added"));
+        return RestfulEnvelope::successResponseTemplate('Category added', $c,
+            [new CategoryNormalizer()])->response();
     }
 
     /**
@@ -55,13 +56,14 @@ class CategoryController extends BaseController
         $em = $this->getDoctrine()->getManager();
         /** @var CategoryRepository $categoryRepository */
         $categoryRepository = $em->getRepository(Category::class);
-        $result = $categoryRepository->getCategory($category);
-        if($result  == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Category does not exist"), 410);
-
-        $em->remove($result);
-        $em->flush();
-        return $this->restful([new WrapperNormalizer(),new CategoryNormalizer()],new SuccessWrapper($result,"Tag was Removed"));
+        if( $result = $categoryRepository->getCategory($category))
+        {
+            $em->remove($result);
+            $em->flush();
+            return RestfulEnvelope::successResponseTemplate('Category deleted', $result,
+                [new CategoryNormalizer()])->response();
+        }
+        return RestfulEnvelope::errorResponseTemplate('Category not found')->response();
     }
 
 }

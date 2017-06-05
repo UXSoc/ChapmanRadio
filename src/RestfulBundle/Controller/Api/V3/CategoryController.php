@@ -12,6 +12,7 @@ use CoreBundle\Controller\BaseController;
 
 use CoreBundle\Entity\Category;
 use CoreBundle\Helper\ErrorWrapper;
+use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\CategoryNormalizer;
 use CoreBundle\Normalizer\TagNormalizer;
@@ -30,25 +31,25 @@ use Symfony\Component\HttpFoundation\Request;
 class CategoryController extends BaseController
 {
     /**
-     * @Route("tag",
+     * @Route("category",
      *     options = { "expose" = true },
-     *     name="get_tags")
+     *     name="get_categories")
      * @Method({"GET"})
      */
     public function getCategoriesAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         /** @var CategoryRepository $categoryRepository */
-        $categoryRepository =$em->getRepository(Category::class);
+        $categoryRepository = $em->getRepository(Category::class);
 
-        return $this->restful([new WrapperNormalizer(),
-            new CategoryNormalizer()], new SuccessWrapper($categoryRepository->findAll(), null));
+        return RestfulEnvelope::successResponseTemplate(
+            null,$categoryRepository->findAll(),[new CategoryNormalizer()])->response();
     }
 
     /**
-     * @Route("tag/{name}",
+     * @Route("category/{name}",
      *     options = { "expose" = true },
-     *     name="get_tag")
+     *     name="get_category")
      * @Method({"GET"})
      */
     public function getCategoryAction(Request $request, $name)
@@ -59,12 +60,13 @@ class CategoryController extends BaseController
         $restfulService = $this->get(RestfulService::class);
 
         /** @var CategoryRepository $categoryRepository */
-        $categoryRepository =$em->getRepository(Category::class);
+        $categoryRepository = $em->getRepository(Category::class);
 
-        if ($category = $categoryRepository->findOneBy(["tag" => $name]))
-            return $restfulService->errorResponse("Can't find tag",400);
+        if ($category = $categoryRepository->getCategory($name))
+            return RestfulEnvelope::successResponseTemplate(
+                null,$category,[new CategoryNormalizer()])->response();
+        return RestfulEnvelope::errorResponseTemplate("Can't find Category")->setStatus(410)->response();
 
-        return $restfulService->successResponse([new CategoryNormalizer()],$category,"Found Tag");
     }
 
 }

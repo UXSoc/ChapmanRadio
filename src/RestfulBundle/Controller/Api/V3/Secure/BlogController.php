@@ -9,6 +9,7 @@ use CoreBundle\Entity\Image;
 use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Tag;
 use CoreBundle\Helper\ErrorWrapper;
+use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\BlogNormalizer;
 use CoreBundle\Normalizer\CategoryNormalizer;
@@ -27,6 +28,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/api/v3/private")
@@ -44,6 +46,9 @@ class BlogController extends BaseController
      */
     public function putPostAction(Request $request)
     {
+        /** @var ValidatorInterface $validator */
+        $validator = $this->get('validator');
+
         $em = $this->getDoctrine()->getManager();
 
         $post = new Post();
@@ -54,21 +59,15 @@ class BlogController extends BaseController
         $post->setAuthor($this->getUser());
         $post->setName($request->get('name'));
 
-        $errors = $this->validateEntity($post);
-        if ($errors->count() > 0) {
-            $error = new ErrorWrapper();
-            $error->addErrors($errors);
-            return $this->restful([new WrapperNormalizer()], $error, 400);
-        }
+
+        $errors = $validator->validate($post);
+        if ($errors->count() > 0)
+            return RestfulEnvelope::errorResponseTemplate('Invalid post')->addErrors($errors)->response();
 
         $em->persist($post);
         $em->flush();
-        return $this->restful([
-            new WrapperNormalizer(),
-            new BlogNormalizer(),
-            new UserNormalizer()
-        ], new SuccessWrapper($post, "Post Created"));
 
+        return RestfulEnvelope::successResponseTemplate("Post created",$post,[new BlogNormalizer(),new UserNormalizer()])->response();
     }
 
 
@@ -80,39 +79,31 @@ class BlogController extends BaseController
      */
     public function patchPostAction(Request $request, $token, $slug)
     {
+        /** @var ValidatorInterface $validator */
+        $validator = $this->get('validator');
+
         $em = $this->getDoctrine()->getManager();
         /** @var PostRepository $postRepository */
         $postRepository = $em->getRepository(Post::class);
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
-
-        if ($post == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-
-        try {
+        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
+        {
             $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
-        } catch (\Exception $exception) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 403);
+
+            $post->setContent($request->get("content", $post->getContent()));
+            $post->setName($request->get("name", $post->getName()));
+            $post->setSlug($request->get("slug", $post->getSlug()));
+            $post->setExcerpt($request->get("excerpt", $post->getExcerpt()));
+            $post->setPinned($request->get("pinned", $post->isPinned()));
+            $errors = $validator->validate($post);
+            if ($errors->count() > 0)
+                return RestfulEnvelope::errorResponseTemplate('Invalid post')->addErrors($errors)->response();
+
+            $em->persist($post);
+            $em->flush();
+            return RestfulEnvelope::successResponseTemplate("Post updated",$post,[new BlogNormalizer(),new UserNormalizer()])->response();
         }
-
-        $post->setContent($request->get("content", $post->getContent()));
-        $post->setName($request->get("name", $post->getName()));
-        $post->setSlug($request->get("slug", $post->getSlug()));
-        $post->setExcerpt($request->get("excerpt", $post->getExcerpt()));
-        $post->setPinned($request->get("pinned", $post->isPinned()));
-
-        $errors = $this->validateEntity($post);
-        if ($errors->count() > 0) {
-            $error = new ErrorWrapper(null);
-            $error->addErrors($errors);
-            return $this->restful([new WrapperNormalizer()], $error, 400);
-        }
-
-        return $this->restful([
-            new BlogNormalizer(),
-            new UserNormalizer(),
-            new PaginatorNormalizer(),
-            new WrapperNormalizer()], new SuccessWrapper($post));
+        return RestfulEnvelope::errorResponseTemplate('Invalid post')->response();
 
     }
 
@@ -131,19 +122,15 @@ class BlogController extends BaseController
         /** @var PostRepository $postRepository */
         $postRepository = $em->getRepository(Post::class);
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
-
-        if ($post == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-        try {
+        if($post = $postRepository->getPostByTokenAndSlug($token, $slug))
+        {
             $this->denyAccessUnlessGranted(PostVoter::DELETE, $post);
-        } catch (\Exception $exception) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
-        }
-        $em->remove($post);
-        $em->flush();
+            $em->remove($post);
+            $em->flush();
 
-        return $this->restful([new WrapperNormalizer()], new SuccessWrapper(null, "Blog Post Deleted"));
+            return RestfulEnvelope::successResponseTemplate('Bost post deleted',$post,[new BlogNormalizer(),new UserNormalizer()])->response();
+        }
+        return RestfulEnvelope::errorResponseTemplate('Post not found')->response();
 
     }
     //----------------------------------------------------------------------------------------
@@ -161,30 +148,24 @@ class BlogController extends BaseController
         /** @var PostRepository $postRepository */
         $postRepository = $em->getRepository(Post::class);
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
-
-        if ($post == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-
-        try {
+        if($post = $postRepository->getPostByTokenAndSlug($token, $slug))
+        {
             $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
-        } catch (\Exception $exception) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
+            if($post->getTags()->containsKey($tag))
+                return RestfulEnvelope::errorResponseTemplate('duplicate Tag')->response();
+
+            /** @var TagRepository $tagRepository */
+            $tagRepository = $this->get(Tag::class);
+
+            $tag = $tagRepository->getOrCreateTag($tag);
+            $em->persist($tag);
+            $post->addTag($tag);
+            $em->persist($post);
+            $em->flush();
+
+            return RestfulEnvelope::successResponseTemplate('Tag added',$tag,[new TagNormalizer()])->response();
         }
-        if ($post->getTags()->containsKey($tag))
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Duplicate Tag Found"), 400);
-
-        /** @var TagRepository $tagRepository */
-        $tagRepository = $this->get(Tag::class);
-        $tag = $tagRepository->getOrCreateTag($tag);
-        $em->persist($tag);
-        $post->addTag($tag);
-
-        $em->persist($post);
-        $em->flush();
-
-        return $this->restful([new WrapperNormalizer()], new SuccessWrapper(null, "Tag added"));
-
+        return RestfulEnvelope::errorResponseTemplate('Post not found')->response();
     }
 
 
@@ -196,6 +177,9 @@ class BlogController extends BaseController
      */
     public function putImageForPostAction(Request $request, $token, $slug)
     {
+        /** @var ValidatorInterface $validator */
+        $validator = $this->get('validator');
+
         $em = $this->getDoctrine()->getManager();
 
         /** @var PostRepository $postRepository */
@@ -205,36 +189,28 @@ class BlogController extends BaseController
         $imageService = $this->get(ImageUploadService::class);
 
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
-
-        if ($post == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-
-        try {
+        if ( $post = $postRepository->getPostByTokenAndSlug($token, $slug))
+        {
             $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
-        } catch (\Exception $exception) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
+
+            $src = $request->files->get('image', null);
+            $image = new Image();
+            $image->setImage($src);
+            $image->setAuthor($this->getUser());
+
+            $errors = $validator->validate($image);
+            if($errors->count() > 0)
+                return RestfulEnvelope::errorResponseTemplate('invalid Image')->addErrors($errors)->response();
+
+            $imageService->saveImage($image);
+            $em->persist($image);
+
+            $post->addImage($image);
+            $em->persist($post);
+            $em->flush();
+            return RestfulEnvelope::successResponseTemplate('Image Uploaded',$image,[new ImageNormalizer()])->response();
         }
-
-        $src = $request->files->get('image', null);
-        $image = new Image();
-        $image->setImage($src);
-        $image->setAuthor($this->getUser());
-
-        $errors = $this->validateEntity($image);
-        if ($errors->count() > 0) {
-            $error = new ErrorWrapper(null);
-            $error->addErrors($errors);
-            return $this->restful([new WrapperNormalizer()], $error, 400);
-        }
-        $imageService->saveImage($image);
-        $em->persist($image);
-
-        $post->addImage($image);
-        $em->persist($post);
-        $em->flush();
-
-        return $this->restful([new WrapperNormalizer()], new SuccessWrapper(null, "Image Uploaded"));
+        return RestfulEnvelope::errorResponseTemplate('Image error')->response();
     }
 
     /**
@@ -250,22 +226,13 @@ class BlogController extends BaseController
         $postRepository = $em->getRepository(Post::class);
 
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
-
-        if ($post == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-
-        try {
+        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
+        {
             $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
-        } catch (\Exception $exception) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
+            return RestfulEnvelope::successResponseTemplate('Image Uploaded',$post->getImages()->toArray(),
+                [new ImageNormalizer(),new TagNormalizer()])->response();
         }
-
-        return $this->restful([
-            new WrapperNormalizer(),
-            new TagNormalizer(),
-            new ImageNormalizer()], new SuccessWrapper($post->getImages()->toArray(), "Images"));
-
+        return RestfulEnvelope::errorResponseTemplate('Post not found')->response();
     }
 
 
@@ -280,27 +247,19 @@ class BlogController extends BaseController
         /** @var PostRepository $postRepository */
         $postRepository = $em->getRepository(Post::class);
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
 
-        if ($post == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-
-        try {
+        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
+        {
             $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
-        } catch (\Exception $exception) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
+            if($t = $post->removeTag($tag)) {
+                $em->persist($post);
+                $em->flush();
+                return RestfulEnvelope::successResponseTemplate('Tag deleted', $t,
+                    [new TagNormalizer()])->response();
+            }
+            return RestfulEnvelope::errorResponseTemplate('Tag not found')->response();
         }
-
-        $result = $post->removeTag($tag);
-        if ($result == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Does Not Have Tag"), 410);
-
-        $em->persist($post);
-        $em->flush();
-
-        return $this->restful([
-            new WrapperNormalizer(),
-            new TagNormalizer()], new SuccessWrapper($result, "Tag Deleted"));
+        return RestfulEnvelope::errorResponseTemplate('Post not found')->response();
 
     }
 
@@ -311,39 +270,31 @@ class BlogController extends BaseController
      */
     public function putCategoryForPostAction(Request $request, $token, $slug, $category)
     {
+
         $em = $this->getDoctrine()->getManager();
+
         /** @var PostRepository $postRepository */
         $postRepository = $em->getRepository(Post::class);
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
-
-        /** @var CategoryRepository $categoryRepository */
-        $categoryRepository = $em->getRepository(Category::class);
-        if ($post == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-
-        try {
+        if($post = $postRepository->getPostByTokenAndSlug($token, $slug))
+        {
             $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
-        } catch (\Exception $exception) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
+            if($post->getCategories()->containsKey($category))
+                return RestfulEnvelope::errorResponseTemplate('duplicate Tag')->response();
+
+            /** @var CategoryRepository $categoryRepository */
+            $categoryRepository = $em->getRepository(Category::class);
+
+            $category = $categoryRepository->getOrCreateCategory($category);
+            $em->persist($category);
+            $post->addCategory($category);
+            $em->persist($post);
+            $em->flush();
+
+            return RestfulEnvelope::successResponseTemplate('Category added',$category,[new CategoryNormalizer()])->response();
         }
+        return RestfulEnvelope::errorResponseTemplate('Post not found')->response();
 
-        $category = $categoryRepository->getOrCreateCategory($category);
-        $errors = $this->validateEntity($category);
-        if ($errors->count() > 0) {
-            $error = new ErrorWrapper("Invalid Tag");
-            $error->addErrors($errors);
-            return $this->restful([new WrapperNormalizer()], $error, 410);
-        }
-        $em->persist($category);
-
-        $post->addCategory($category);
-        $em->persist($post);
-        $em->flush();
-
-        return $this->restful([
-            new WrapperNormalizer(),
-            new CategoryNormalizer()], new SuccessWrapper($category, "Tag Deleted"));
     }
 
     /**
@@ -358,28 +309,21 @@ class BlogController extends BaseController
 
         /** @var PostRepository $postRepository */
         $postRepository = $em->getRepository(Post::class);
+
         /** @var Post $post */
-        $post = $postRepository->getPostByTokenAndSlug($token, $slug);
-
-        if ($post == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-
-        try {
+        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
+        {
             $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
-        } catch (\Exception $exception) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
+            if($c = $post->removeCategory($category)) {
+                $em->persist($post);
+                $em->flush();
+                return RestfulEnvelope::successResponseTemplate('Category deleted', $c,
+                    [new CategoryNormalizer()])->response();
+            }
+            return RestfulEnvelope::errorResponseTemplate('Category not found')->response();
         }
-
-        $result = $post->removeCategory($category);
-        if ($result == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Does Not Have Tag"), 410);
-
-        $em->persist($post);
-        $em->flush();
-
-        return $this->restful([
-            new WrapperNormalizer(),
-            new TagNormalizer()], new SuccessWrapper($result, "Tag Deleted"));
+        return RestfulEnvelope::errorResponseTemplate('Post not found')->response();
 
     }
 }
+

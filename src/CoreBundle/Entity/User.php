@@ -204,6 +204,7 @@ class User implements AdvancedUserInterface
 
     public function setDj($dj)
     {
+        $dj->setUser($this);
         $this->dj = $dj;
     }
 

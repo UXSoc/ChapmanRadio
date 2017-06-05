@@ -10,8 +10,10 @@ namespace RestfulBundle\Controller\Api\V3\Secure;
 
 use CoreBundle\Controller\BaseController;
 
+use CoreBundle\Entity\Category;
 use CoreBundle\Entity\Tag;
 use CoreBundle\Helper\ErrorWrapper;
+use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\TagNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
@@ -33,20 +35,20 @@ class TagController  extends BaseController
      */
     public function putTagAction($tag)
     {
+
         $em = $this->getDoctrine()->getManager();
         /** @var TagRepository $tagRepository */
         $tagRepository = $em->getRepository(Tag::class);
-        $result = $tagRepository->getTag($tag);
-        if($result  != null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Tag Already Exist"), 410);
 
-        $result = new Tag();
-        $result->setTag($tag);
+        if($result = $tagRepository->getTag($tag))
+            return RestfulEnvelope::errorResponseTemplate('Tag duplicate')->response();
 
-        $em->persist($result);
+        $c = new Tag();
+        $c->setTag($tag);
+        $em->persist($c);
         $em->flush();
-        return $this->restful([new WrapperNormalizer(),new TagNormalizer()],new SuccessWrapper($result,"Tag added"));
-
+        return RestfulEnvelope::successResponseTemplate('Tag added', $c,
+            [new TagNormalizer()])->response();
     }
 
     /**
@@ -59,13 +61,14 @@ class TagController  extends BaseController
         $em = $this->getDoctrine()->getManager();
         /** @var TagRepository $tagRepository */
         $tagRepository = $em->getRepository(Tag::class);
-        $result = $tagRepository->getTag($tag);
-        if($result  == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Tag does not exist"), 410);
-
-        $em->remove($result);
-        $em->flush();
-        return $this->restful([new WrapperNormalizer(),new TagNormalizer()],new SuccessWrapper($result,"Tag was Removed"));
+        if( $result = $tagRepository->getTag($tag))
+        {
+            $em->remove($result);
+            $em->flush();
+            return RestfulEnvelope::successResponseTemplate('Tag deleted', $result,
+                [new TagNormalizer()])->response();
+        }
+        return RestfulEnvelope::errorResponseTemplate('Tag not found')->setStatus(410)->response();
     }
 
 }

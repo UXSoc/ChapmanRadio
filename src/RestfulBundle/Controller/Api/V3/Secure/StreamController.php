@@ -41,16 +41,23 @@ class StreamController extends BaseController
         $eventRepository = $em->getRepository(Event::class);
 
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
-        if ($show == null)
-            return $this->messageError("Show Not Found", 410);
-        /** @var Event $event */
-        $event = $eventRepository->getEventByTime(new \DateTime('now'));
-        if ($event == null)
-            return $this->messageError("No Shows Scheduled", 410);
+        if ($show = $showRepository->getPostByTokenAndSlug($token, $slug))
+        {
+            /** @var Event $event */
+            $event = $eventRepository->getEventByTime(new \DateTime('now'));
 
-        if ($event->getShow() != $show)
-            return $this->messageError("Show Not Bound to Event", 410);
+            if ($event->getShow()->getId() == $show->getId())
+            {
+
+            }
+                //return $this->messageError("Show Not Bound to Event", 410);
+
+        }
+           // return $this->messageError("Show Not Found", 410);
+
+       // if ($event == null)
+       //     return $this->messageError("No Shows Scheduled", 410);
+
 
     }
 }

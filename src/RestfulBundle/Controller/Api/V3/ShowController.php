@@ -5,8 +5,10 @@ namespace RestfulBundle\Controller\Api\V3;
 use CoreBundle\Controller\BaseController;
 
 use CoreBundle\Entity\Comment;
+use CoreBundle\Entity\Event;
 use CoreBundle\Entity\Show;
 use CoreBundle\Helper\ErrorWrapper;
+use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\CommentNormalizer;
 use CoreBundle\Normalizer\EventNormalizer;
@@ -23,6 +25,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/api/v3/")
@@ -40,23 +43,11 @@ class ShowController extends BaseController
 
         /** @var ShowRepository $showRepository */
         $showRepository = $em->getRepository(Show::class);
-        $qb = $showRepository->createQueryBuilder('s');
+        $pagination = $showRepository->paginator($showRepository->filter($request),
+            $request->get('page',0),
+            $request->get('entries',10),20);
 
-        $name = $request->get('name',null);
-        if($name)
-            $qb->where($qb->expr()->like('name',':name'))
-                ->setParameter('name','%' .$name.'%');
-
-        $pagination = new Paginator($qb->getQuery());
-        $perPage = $request->get("entries",10) > 20 ? 20 :  $request->get("entries",20);
-        $pagination->getQuery()->setMaxResults($perPage);
-        $pagination->getQuery()->setFirstResult($perPage * $request->get("page",0));
-
-        return $this->restful([
-            new ShowNormalizer(),
-            new PaginatorNormalizer(),
-            new WrapperNormalizer()
-        ],new SuccessWrapper($pagination));
+        return RestfulEnvelope::successResponseTemplate(null,$pagination,[new ShowNormalizer(),new PaginatorNormalizer()])->response();
     }
 
 
@@ -97,31 +88,20 @@ class ShowController extends BaseController
         $showRepository = $em->getRepository(Show::class);
 
         /** @var Show $show */
-        $show = $showRepository->findOneBy(['token' => $token,'slug' => $slug]);
-
-        if($show === null)
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Blog Post Not Found"),410);
-
-        if($comment_token === null) {
-            return $this->restful([new CommentNormalizer(),
-                new UserNormalizer(),
-                new WrapperNormalizer()],
-                new SuccessWrapper($commentRepository->getAllRootCommentsForShow($show)));
-        }
-        else
-        {
-            try {
-                $comment = $commentRepository->getCommentByShowAndToken($show, $comment_token);
-                return $this->restful([new CommentNormalizer(),
-                    new UserNormalizer(),
-                    new WrapperNormalizer()],
-                    new SuccessWrapper($comment));
-
-            } catch (NoResultException $e) {
-                return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Unknown Comment"), 410);
+        if( $show = $showRepository->getPostByTokenAndSlug($token,$slug)) {
+            if ($comment_token) {
+                return RestfulEnvelope::successResponseTemplate('Comments',
+                    $commentRepository->getCommentByShowAndToken($show,$comment_token),
+                    [new UserNormalizer(), new CommentNormalizer()])->response();
             }
-
+            else
+            {
+                return RestfulEnvelope::successResponseTemplate('Comments',
+                    $commentRepository->getAllRootCommentsForShow($show),
+                    [new UserNormalizer(), new CommentNormalizer()])->response();
+            }
         }
+        return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->response();
 
     }
 
@@ -147,7 +127,11 @@ class ShowController extends BaseController
      *     name="post_show_comment")
      * @Method({"POST"})
      */
-    public function postShowCommentAction(Request $request,$token,$slug,$comment_token = null){
+    public function postPostCommentAction(Request $request, $token, $slug, $comment_token = null)
+    {
+        /** @var ValidatorInterface $validator */
+        $validator = $this->get('validator');
+
         $em = $this->getDoctrine()->getManager();
 
         /** @var ShowRepository $showRepository */
@@ -156,36 +140,30 @@ class ShowController extends BaseController
         $commentRepository = $em->getRepository(Comment::class);
 
         /** @var Show $show */
-        $show = $showRepository->findOneBy(['token' => $token,'slug' => $slug]);
-
-        if($show === null)
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Show Not Found"),410);
-
-        $comment = new Comment();
-        $comment->setContent($request->get("content"));
-        $comment->setUser($this->getUser());
-
-        if($comment_token !== null) {
-            try {
-                $comment->setParentComment($commentRepository->getCommentByShowAndToken($show, $comment_token));
-            } catch (NoResultException $e) {
-                return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Unknown Comment"), 410);
-            }
-        }
-
-        $errors = $this->validateEntity($comment);
-        if($errors->count() > 0)
+        if ($show = $showRepository->getPostByTokenAndSlug($token,$slug))
         {
-            $error = new ErrorWrapper("invalid token");
-            $error->addErrors($this->validateEntity($comment));
-            $error->setMessage("Invalid Comment");
-            return $this->restful([new WrapperNormalizer()],$error,400);
-        }
+            $comment = new Comment();
+            $comment->setContent($request->get("content"));
+            $comment->setUser($this->getUser());
 
-        return $this->restful([
-            new WrapperNormalizer(),
-            new CommentNormalizer(),
-            new UserNormalizer()
-        ],new SuccessWrapper($comment,"Comment Added"));
+            if ($comment_token !== null) {
+                if($c = $commentRepository->getCommentByShowAndToken($show, $comment_token))
+                    $comment->setParentComment($c);
+                else
+                    return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->response();
+            }
+
+            $errors = $validator->validate($comment);
+            if($errors->count() > 0)
+                return RestfulEnvelope::errorResponseTemplate("invalid Comment")->addErrors($errors)->response();
+
+            $em->persist($comment);
+            $em->flush();
+            return RestfulEnvelope::successResponseTemplate('Comment Added',
+                $comment,[new UserNormalizer(),new CommentNormalizer()])->response();
+        }
+        return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->response();
     }
+
+
 }

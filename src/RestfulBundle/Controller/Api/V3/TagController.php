@@ -12,7 +12,9 @@ use CoreBundle\Controller\BaseController;
 
 use CoreBundle\Entity\Tag;
 use CoreBundle\Helper\ErrorWrapper;
+use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Helper\SuccessWrapper;
+use CoreBundle\Normalizer\PaginatorNormalizer;
 use CoreBundle\Normalizer\TagNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\TagRepository;
@@ -35,16 +37,14 @@ class TagController extends BaseController
      */
     public function getTags(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
         /** @var TagRepository $tagRepository */
-        $tagRepository = $em->getRepository(Tag::class);
+        $tagRepository = $this->getDoctrine()->getManager()->getRepository(Tag::class);
+        $pagination = $tagRepository->paginator($tagRepository->filter($request),
+            $request->get('page',0),
+            $request->get('entries',10),20);
 
-        $limit = $request->get('limit',100);
-        if($limit > 100)
-            $limit = 100;
-        $tags = $tagRepository->findTag($request->get('name',''),$limit);
-        return $this->restful([new WrapperNormalizer(),
-            new TagNormalizer()],new SuccessWrapper($tags,null));
+        return RestfulEnvelope::successResponseTemplate(
+            null,$pagination,[new TagNormalizer(),new PaginatorNormalizer()])->response();
     }
     /**
      * @Route("tag/{name}",
@@ -54,14 +54,12 @@ class TagController extends BaseController
      */
     public function getTag(Request $request,$name)
     {
-        $em = $this->getDoctrine()->getManager();
         /** @var TagRepository $tagRepository */
-        $tagRepository = $em->getRepository(Tag::class);
+        $tagRepository = $this->getDoctrine()->getManager()->getRepository(Tag::class);
 
-        $tag = $tagRepository->findOneBy(["tag" => $name]);
-        if($tag == null)
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Can't find tag"),400);
-        return $this->restful([new WrapperNormalizer(),new TagNormalizer()],new SuccessWrapper($tag,"Found tag"));
+        if($tag = $tagRepository->getTag($name))
+            return RestfulEnvelope::successResponseTemplate("Found Tag",$tag,[new TagNormalizer()])->response();
+        return RestfulEnvelope::errorResponseTemplate("Can't find tag")->setStatus(410)->response();
     }
 
 }

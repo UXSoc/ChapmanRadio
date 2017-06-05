@@ -2,10 +2,12 @@
 
 namespace RestfulBundle\Controller\Api\V3;
 
+use Codeception\Module\REST;
 use CoreBundle\Controller\BaseController;
 
 use CoreBundle\Entity\Comment;
 use CoreBundle\Helper\ErrorWrapper;
+use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\CommentNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
@@ -20,6 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/api/v3/")
@@ -34,46 +37,30 @@ class CommentController extends BaseController
      */
     public function patchCommentAction(Request $request, $token)
     {
+        /** @var ValidatorInterface $validator */
+        $validator = $this->get('validator');
+
+
         $em = $this->getDoctrine()->getManager();
 
         /** @var CommentRepository $commentRepository */
         $commentRepository = $em->getRepository(Comment::class);
 
-        /** @var RestfulService $restfulService */
-        $restfulService = $this->get(RestfulService::class);
-
         /** @var Comment $comment */
-        $comment = null;
-        try {
-            $comment = $commentRepository->getCommentByToken($token);
-        } catch (NoResultException $e) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Unknown Comment"), 410);
-        }
-
-        try {
+        if ($comment = $commentRepository->getCommentByToken($token)) {
             $this->denyAccessUnlessGranted('edit', $comment);
-        } catch (\Exception $exception) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Comment Permission Error"), 400);
+
+            $comment->setContent($request->get("content"));
+
+            $errors = $validator->validate($comment);
+            if ($errors->count() == 0) {
+                $em->persist($comment);
+                $em->flush();
+
+                return RestfulEnvelope::successResponseTemplate('Comment Saved', $comment,
+                    [new UserNormalizer(), new CommentNormalizer()])->response();
+            }
         }
-
-        $comment->setContent($request->get("content"));
-
-        $errors = $this->validateEntity($comment);
-        if ($errors->count() > 0) {
-            $error = new ErrorWrapper("invalid token");
-            $error->addErrors($this->validateEntity($comment));
-            $error->setMessage("Invalid Comment");
-            return $this->restful([new WrapperNormalizer()], $error, 400);
-        }
-
-        $em->persist($comment);
-        $em->flush();
-
-        return $restfulService->response([
-            new CommentNormalizer(),
-            new UserNormalizer(),
-            new WrapperNormalizer()],
-            new SuccessWrapper($comment, "Comment Saved"));
-
+        return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->response();
     }
 }

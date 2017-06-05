@@ -9,7 +9,6 @@ use CoreBundle\Entity\Show;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\Query\Expr;
 
 class CommentRepository  extends EntityRepository
 {
@@ -77,54 +76,33 @@ class CommentRepository  extends EntityRepository
     /**
      * @param Show $show
      * @param string $token
-     * @return Comment
+     * @return Comment | null
      *
-     * @throws NonUniqueResultException If the query result is not unique.
-     * @throws NoResultException        If the query returned no result.
      */
     public function getCommentByShowAndToken(Show $show,  $token)
     {
-        return $this->createQueryBuilder('c')
-            ->join('c.show','g',"ON")
-            ->where('g.id = :sid AND c.token = :token')
-            ->setParameter('sid',$show->getId())
-            ->setParameter('token',$token)
-            ->getQuery()
-            ->getSingleResult();
+        return $this->findOneBy(['id' => $show->getId(), 'token' => $token]);
     }
 
 
     /**
      * @param Post $post
      * @param string $token
-     * @return Comment
-     *
-     * @throws NonUniqueResultException If the query result is not unique.
-     * @throws NoResultException        If the query returned no result.
+     * @return Comment | null
      */
     public function getCommentByPostAndToken($post, $token)
     {
-        return $this->createQueryBuilder('c')
-            ->join('c.post','g',"ON")
-            ->where('g.id = :pid AND c.token = :token')
-            ->setParameter('pid',$post->getId())
-            ->setParameter('token',$token)
-            ->getQuery()
-            ->getSingleResult();
-
+        return $this->findOneBy(['id' => $post->getId(), 'token' => $token]);
     }
 
 
     /**
      * @param string $token
-     * @return array
+     * @return Comment | null
      */
     public function getCommentByToken($token)
     {
-        return $this->createQueryBuilder('c')
-            ->where('c.token = :token')
-            ->setParameter('token',$token)
-            ->getQuery()
-            ->getSingleResult();
+        return $this->findOneBy(['token' => $token]);
+
     }
 }

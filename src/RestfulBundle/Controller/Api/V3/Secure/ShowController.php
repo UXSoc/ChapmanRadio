@@ -7,6 +7,7 @@ use CoreBundle\Entity\Image;
 use CoreBundle\Entity\Show;
 use CoreBundle\Entity\Tag;
 use CoreBundle\Helper\ErrorWrapper;
+use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\ImageNormalizer;
 use CoreBundle\Normalizer\ShowNormalizer;
@@ -21,6 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/api/v3/private")
@@ -34,6 +36,9 @@ class ShowController extends BaseController
      */
     public function putShowAction(Request $request)
     {
+        /** @var ValidatorInterface $validator */
+        $validator = $this->get('validator');
+
         $em = $this->getDoctrine()->getManager();
 
         $show = new Show();
@@ -42,21 +47,14 @@ class ShowController extends BaseController
         $show->setDescription($request->get('description'));
         $show->setEnableComments($request->get('enable_comments'));
 
-
-        $errors = $this->validateEntity($show);
-        if ($errors->count() > 0) {
-            $error = new ErrorWrapper();
-            $error->addErrors($errors);
-            return $this->restful([new WrapperNormalizer()], $error, 400);
-        }
+        $errors = $validator->validate($show);
+        if($errors->count() > 0)
+            return RestfulEnvelope::errorResponseTemplate('Invalid show')->addErrors($errors)->response();
 
         $em->persist($show);
         $em->flush();
 
-        return $this->restful([
-            new WrapperNormalizer(),
-            new ShowNormalizer()
-        ], new SuccessWrapper($show, "Show Created"));
+        return RestfulEnvelope::successResponseTemplate('Show created',$show,[new ShowNormalizer()]);
     }
 
 
@@ -69,6 +67,8 @@ class ShowController extends BaseController
      */
     public function patchShowAction(Request $request, $token, $slug)
     {
+        /** @var ValidatorInterface $validator */
+        $validator = $this->get('validator');
 
         $em = $this->getDoctrine()->getManager();
 
@@ -76,37 +76,26 @@ class ShowController extends BaseController
         $showRepository = $this->get(Show::class);
 
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
-        if ($show == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Show Not Found"), 410);
 
-        try {
+        if ($show = $showRepository->getPostByTokenAndSlug($token, $slug))
+        {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
-        } catch (\Exception $exception) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Show Permission Error"), 400);
+
+            $show->setName($request->get('name', $show->getName()));
+            $show->setSlug($request->get('slug', $show->getSlug()));
+            $show->setDescription($request->get('description', $show->getDescription()));
+            $show->setEnableComments($request->get('enable_comments', $show->getEnableComments()));
+
+            $errors = $validator->validate($show);
+            if($errors->count() > 0)
+                return RestfulEnvelope::errorResponseTemplate('Invalid show')->addErrors($errors)->response();
+
+            $em->persist($show);
+            $em->flush();
+
+            return RestfulEnvelope::successResponseTemplate('Show updated',$show,[new ShowNormalizer()]);
         }
-
-        $show->setName($request->get('name', $show->getName()));
-        $show->setSlug($request->get('slug', $show->getSlug()));
-        $show->setDescription($request->get('description', $show->getDescription()));
-        $show->setEnableComments($request->get('enable_comments', $show->getEnableComments()));
-
-        $errors = $this->validateEntity($show);
-        if ($errors->count() > 0) {
-            $error = new ErrorWrapper();
-            $error->addErrors($errors);
-            return $this->restful([new WrapperNormalizer()], $error, 400);
-        }
-
-        $em->persist($show);
-        $em->flush();
-
-        return $this->restful([
-            new WrapperNormalizer(),
-            new ShowNormalizer()
-        ], new SuccessWrapper($show, "Show Updated"));
-
-
+        return RestfulEnvelope::errorResponseTemplate('Invalid show')->response();
     }
 
 
@@ -125,20 +114,13 @@ class ShowController extends BaseController
         $showRepository = $this->get(Show::class);
 
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
-        if ($show == null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Show Not Found"), 410);
-
-        try {
+        if ( $show = $showRepository->getPostByTokenAndSlug($token, $slug))
+        {
             $this->denyAccessUnlessGranted(ShowVoter::DELETE, $show);
-        } catch (\Exception $exception) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
+            $em->remove($show);
+            $em->flush();
         }
-
-        $em->remove($show);
-        $em->flush();
-
-        return $this->restful([new WrapperNormalizer()], new SuccessWrapper(null, "Show Deleted"));
+        return RestfulEnvelope::errorResponseTemplate('Show not found')->setStatus(410)->response();
     }
 
 
@@ -192,26 +174,20 @@ class ShowController extends BaseController
         /** @var ShowRepository $showRepository */
         $showRepository = $em->getRepository(Show::class);
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
-
-        if ($show === null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Blog Post Not Found"), 410);
-
-        try {
+        if($show = $showRepository->getPostByTokenAndSlug($token, $slug))
+        {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
-        } catch (\Exception $exception) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
+
+            if($s = $show->removeTag($tag)) {
+                $em->persist($show);
+                $em->flush();
+                return RestfulEnvelope::successResponseTemplate('Tag deleted', $s,
+                    [new TagNormalizer()])->response();
+            }
+            return RestfulEnvelope::errorResponseTemplate('Tag not found')->setStatus(410)->response();
+
         }
-
-        if ($result = $show->removeTag($tag))
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Does Not Have Tag"), 410);
-
-        $em->persist($show);
-        $em->flush();
-
-        return $this->restful([
-            new WrapperNormalizer(),
-            new TagNormalizer()], new SuccessWrapper($result, "Tag Deleted"));
+        return RestfulEnvelope::errorResponseTemplate('Show not found')->response();
 
     }
 
