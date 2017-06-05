@@ -1,13 +1,10 @@
 <?php
 namespace RestfulBundle\Controller\Api\V3;
 
-// Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
-use CoreBundle\Controller\BaseController;
 
 use CoreBundle\Entity\Comment;
 use CoreBundle\Entity\Event;
 use CoreBundle\Entity\Show;
-use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\CommentNormalizer;
@@ -19,8 +16,6 @@ use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\CommentRepository;
 use CoreBundle\Repository\EventRepository;
 use CoreBundle\Repository\ShowRepository;
-use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -62,15 +57,9 @@ class ShowController extends Controller
         /** @var ShowRepository $showRepository */
         $showRepository = $em->getRepository(Show::class);
 
-        $show = $showRepository->findOneBy(['token' => $token,'slug' => $slug]);
-
-        if($show === null)
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Show Not Found"),410);
-
-        return $this->restful([
-            new ShowNormalizer(),
-            new WrapperNormalizer()
-        ],new SuccessWrapper($show));
+        if($show = $showRepository->getShowByTokenAndSlug($token,$slug))
+            return RestfulEnvelope::successResponseTemplate(null,$show,[new ShowNormalizer(),new PaginatorNormalizer()])->response();
+        return RestfulEnvelope::errorResponseTemplate('Show not found')->setStatus(410)->response();
     }
 
     /**
@@ -89,7 +78,7 @@ class ShowController extends Controller
         $showRepository = $em->getRepository(Show::class);
 
         /** @var Show $show */
-        if( $show = $showRepository->getPostByTokenAndSlug($token,$slug)) {
+        if( $show = $showRepository->getShowByTokenAndSlug($token,$slug)) {
             if ($comment_token) {
                 return RestfulEnvelope::successResponseTemplate('Comments',
                     $commentRepository->getCommentByShowAndToken($show,$comment_token),
@@ -141,7 +130,7 @@ class ShowController extends Controller
         $commentRepository = $em->getRepository(Comment::class);
 
         /** @var Show $show */
-        if ($show = $showRepository->getPostByTokenAndSlug($token,$slug))
+        if ($show = $showRepository->getShowByTokenAndSlug($token,$slug))
         {
             $comment = new Comment();
             $comment->setContent($request->get("content"));

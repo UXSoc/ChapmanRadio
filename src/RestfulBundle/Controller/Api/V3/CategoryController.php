@@ -8,21 +8,10 @@
 
 namespace RestfulBundle\Controller\Api\V3;
 
-use CoreBundle\Controller\BaseController;
-
 use CoreBundle\Entity\Category;
-use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\CategoryNormalizer;
-use CoreBundle\Normalizer\TagNormalizer;
-use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\CategoryRepository;
-use CoreBundle\Repository\TagRepository;
-use CoreBundle\Service\RestfulService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 

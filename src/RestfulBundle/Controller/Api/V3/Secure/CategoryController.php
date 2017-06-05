@@ -7,13 +7,9 @@
  */
 
 namespace RestfulBundle\Controller\Api\V3\Secure;
-use CoreBundle\Controller\BaseController;
 use CoreBundle\Entity\Category;
-use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\CategoryNormalizer;
-use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\CategoryRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;

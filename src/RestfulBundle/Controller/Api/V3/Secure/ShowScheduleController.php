@@ -2,8 +2,6 @@
 
 namespace RestfulBundle\Controller\Api\V3;
 
-use CoreBundle\Controller\BaseController;
-
 use CoreBundle\Entity\Event;
 use CoreBundle\Entity\Show;
 use CoreBundle\Repository\ShowRepository;
@@ -45,7 +43,7 @@ class ShowScheduleController extends Controller
         $showRepository = $em->getRepository(Show::class);
 
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
+        $show = $showRepository->getShowByTokenAndSlug($token, $slug);
         if ($show == null)
             return $this->messageError("Show not found");
 

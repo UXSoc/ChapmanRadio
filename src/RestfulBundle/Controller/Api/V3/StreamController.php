@@ -2,12 +2,9 @@
 namespace RestfulBundle\Controller\Api\V3;
 
 use BroadcastBundle\Entity\Stream;
-use CoreBundle\Controller\BaseController;
 use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\EventNormalizer;
 use CoreBundle\Normalizer\StreamNormalizer;
-use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\StreamRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,7 +43,7 @@ class StreamController  extends Controller
      *     name="get_main_streams")
      * @Method({"GET"})
      */
-    public function getMainStream(Request $request)
+    public function getMainStreamAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         /** @var StreamRepository $streamRepository */

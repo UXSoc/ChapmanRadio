@@ -2,19 +2,11 @@
 
 namespace RestfulBundle\Controller\Api\V3;
 
-use Codeception\Module\REST;
-use CoreBundle\Controller\BaseController;
-
 use CoreBundle\Entity\Comment;
-use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\CommentNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
-use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\CommentRepository;
-use CoreBundle\Service\RestfulService;
-use Doctrine\ORM\NoResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 

@@ -8,10 +8,8 @@
 
 namespace RestfulBundle\Controller\Api\V3\Secure;
 
-use CoreBundle\Controller\BaseController;
 use CoreBundle\Entity\Event;
 use CoreBundle\Entity\Show;
-use CoreBundle\Entity\Stream;
 use CoreBundle\Repository\EventRepository;
 use CoreBundle\Repository\ShowRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -42,7 +40,7 @@ class StreamController extends Controller
         $eventRepository = $em->getRepository(Event::class);
 
         /** @var Show $show */
-        if ($show = $showRepository->getPostByTokenAndSlug($token, $slug))
+        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug))
         {
             /** @var Event $event */
             $event = $eventRepository->getEventByTime(new \DateTime('now'));

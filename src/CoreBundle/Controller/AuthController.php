@@ -3,28 +3,16 @@
 namespace CoreBundle\Controller;
 
 
-use CoreBundle\Event\AuthSubscriber;
 use CoreBundle\Event\UserEvent;
 use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Service\RestfulService;
 use CoreBundle\Service\UserTokenService;
-use Monolog\Logger;
 use RestfulBundle\Validation\PasswordType;
-use CoreBundle\Controller\BaseController;
 use CoreBundle\Entity\User;
-use CoreBundle\Helper\ErrorWrapper;
-use CoreBundle\Helper\SuccessWrapper;
-use CoreBundle\Normalizer\AccountNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
-use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\UserRepository;
-use Swift_Message;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Cache\Adapter\AbstractAdapter;
-use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;

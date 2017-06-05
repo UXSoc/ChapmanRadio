@@ -8,14 +8,8 @@
 
 namespace RestfulBundle\Controller\Api\V3;
 
-
-use CoreBundle\Controller\BaseController;
-
-use CoreBundle\Entity\Category;
 use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Comment;
-use CoreBundle\Entity\User;
-use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\BlogNormalizer;
@@ -24,14 +18,8 @@ use CoreBundle\Normalizer\CommentNormalizer;
 use CoreBundle\Normalizer\PaginatorNormalizer;
 use CoreBundle\Normalizer\TagNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
-use CoreBundle\Normalizer\WrapperNormalizer;
-use CoreBundle\Repository\CategoryRepository;
 use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\CommentRepository;
-use CoreBundle\Repository\TagRepository;
-use CoreBundle\Service\RestfulService;
-use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -72,7 +60,7 @@ class BlogController extends Controller
      *     name="get_post_tags")
      * @Method({"GET"})
      */
-    public function getPostTags(Request $request, $token, $slug)
+    public function getPostTagsAction(Request $request, $token, $slug)
     {
         $em = $this->getDoctrine()->getManager();
         /** @var PostRepository $postRepository */
@@ -90,7 +78,7 @@ class BlogController extends Controller
      *     name="get_post_categories")
      * @Method({"GET"})
      */
-    public function getPostCategories(Request $request, $token, $slug)
+    public function getPostCategoriesAction(Request $request, $token, $slug)
     {
         $em = $this->getDoctrine()->getManager();
         /** @var PostRepository $postRepository */

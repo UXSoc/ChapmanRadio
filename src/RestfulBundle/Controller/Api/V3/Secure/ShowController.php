@@ -2,7 +2,6 @@
 
 namespace RestfulBundle\Controller\Api\V3\Secure;
 
-use CoreBundle\Controller\BaseController;
 use CoreBundle\Entity\Image;
 use CoreBundle\Entity\Show;
 use CoreBundle\Entity\Tag;
@@ -77,8 +76,7 @@ class ShowController extends Controller
         $showRepository = $this->get(Show::class);
 
         /** @var Show $show */
-
-        if ($show = $showRepository->getPostByTokenAndSlug($token, $slug))
+        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug))
         {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
 
@@ -115,7 +113,7 @@ class ShowController extends Controller
         $showRepository = $this->get(Show::class);
 
         /** @var Show $show */
-        if ( $show = $showRepository->getPostByTokenAndSlug($token, $slug))
+        if ( $show = $showRepository->getShowByTokenAndSlug($token, $slug))
         {
             $this->denyAccessUnlessGranted(ShowVoter::DELETE, $show);
             $em->remove($show);
@@ -138,30 +136,24 @@ class ShowController extends Controller
         /** @var ShowRepository $showRepository */
         $showRepository = $em->getRepository(Show::class);
         /** @var Show $show */
-        $show = $showRepository->getPostByTokenAndSlug($token, $slug);
-
-        if ($show === null)
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Show Not Found"), 410);
-
-        try {
+        if($show = $showRepository->getShowByTokenAndSlug($token, $slug))
+        {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
-        } catch (\Exception $exception) {
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Post Permission Error"), 400);
+            if($show->getTags()->containsKey($tag))
+                return RestfulEnvelope::errorResponseTemplate('duplicate Tag')->response();
+
+            /** @var TagRepository $tagRepository */
+            $tagRepository = $this->get(Tag::class);
+
+            $tag = $tagRepository->getOrCreateTag($tag);
+            $em->persist($tag);
+            $show->addTag($tag);
+            $em->persist($show);
+            $em->flush();
+
+            return RestfulEnvelope::successResponseTemplate('Tag added',$tag,[new TagNormalizer()])->response();
         }
-        if ($show->getTags()->containsKey($tag))
-            return $this->restful([new WrapperNormalizer()], new ErrorWrapper("Duplicate Tag Found"), 400);
-
-        /** @var TagRepository $tagRepository */
-        $tagRepository = $this->get(Tag::class);
-        $tag = $tagRepository->getOrCreateTag($tag);
-        $em->persist($tag);
-        $show->addTag($tag);
-
-        $em->persist($show);
-        $em->flush();
-
-        return $this->restful([new WrapperNormalizer()], new SuccessWrapper(null, "Tag added"));
-
+        return RestfulEnvelope::errorResponseTemplate('Post not found')->response();
     }
 
     /**
@@ -175,7 +167,7 @@ class ShowController extends Controller
         /** @var ShowRepository $showRepository */
         $showRepository = $em->getRepository(Show::class);
         /** @var Show $show */
-        if($show = $showRepository->getPostByTokenAndSlug($token, $slug))
+        if($show = $showRepository->getShowByTokenAndSlug($token, $slug))
         {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
 
@@ -211,7 +203,7 @@ class ShowController extends Controller
         /** @var ShowRepository $showRepository */
         $showRepository = $em->getRepository(Show::class);
         /** @var Show $show */
-       if($show = $showRepository->getPostByTokenAndSlug($token, $slug))
+       if($show = $showRepository->getShowByTokenAndSlug($token, $slug))
        {
            $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
 
@@ -250,7 +242,7 @@ class ShowController extends Controller
 
         /** @var Show $show */
 
-        if ($show = $showRepository->getPostByTokenAndSlug($token, $slug))
+        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug))
         {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
             return RestfulEnvelope::successResponseTemplate('Image Header Uploaded',$show->getImages()->toArray(),[new ImageNormalizer()])->response();
@@ -279,7 +271,7 @@ class ShowController extends Controller
         $showRepository = $em->getRepository(Show::class);
 
         /** @var Show $show */
-        if ( $show = $showRepository->getPostByTokenAndSlug($token, $slug))
+        if ( $show = $showRepository->getShowByTokenAndSlug($token, $slug))
         {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
 
@@ -313,14 +305,11 @@ class ShowController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        /** @var ImageUploadService $imageService */
-        $imageService = $this->get(ImageUploadService::class);
-
         /** @var ShowRepository $showRepository */
         $showRepository = $em->getRepository(Show::class);
 
         /** @var Show $show */
-        if ($show = $showRepository->getPostByTokenAndSlug($token, $slug)) {
+        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug)) {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
             $em->remove($show->getHeaderImage());
 

@@ -3,15 +3,8 @@
 namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Helper\RestfulEnvelope;
-use RestfulBundle\Validation\ChangePasswordType;
 use RestfulBundle\Validation\PasswordType;
-use CoreBundle\Controller\BaseController;
-use CoreBundle\Helper\ErrorWrapper;
-use CoreBundle\Helper\SuccessWrapper;
-use CoreBundle\Normalizer\UserNormalizer;
-use CoreBundle\Normalizer\WrapperNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;

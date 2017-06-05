@@ -8,15 +8,10 @@
 
 namespace RestfulBundle\Controller\Api\V3;
 
-use CoreBundle\Controller\BaseController;
-
 use CoreBundle\Entity\Tag;
-use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\PaginatorNormalizer;
 use CoreBundle\Normalizer\TagNormalizer;
-use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\TagRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -36,7 +31,7 @@ class TagController extends Controller
      *     name="get_tags")
      * @Method({"GET"})
      */
-    public function getTags(Request $request)
+    public function getTagsAction(Request $request)
     {
         /** @var TagRepository $tagRepository */
         $tagRepository = $this->getDoctrine()->getManager()->getRepository(Tag::class);
@@ -53,7 +48,7 @@ class TagController extends Controller
      *     name="get_tag")
      * @Method({"GET"})
      */
-    public function getTag(Request $request,$name)
+    public function getTagAction(Request $request,$name)
     {
         /** @var TagRepository $tagRepository */
         $tagRepository = $this->getDoctrine()->getManager()->getRepository(Tag::class);

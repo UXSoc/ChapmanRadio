@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ShowRepository extends EntityRepository
 {
-    public function getPostByTokenAndSlug($token,$slug)
+    public function getShowByTokenAndSlug($token, $slug)
     {
         return $this->findOneBy(["token" => $token,"slug" => $slug]);
     }
