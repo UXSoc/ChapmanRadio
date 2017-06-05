@@ -6,18 +6,15 @@
  * Time: 9:49 AM
  */
 
-namespace BroadcastBundle\Service;
+namespace CoreBundle\Service;
 
 use BroadcastBundle\Entity\Stream;
+use BroadcastBundle\Service\IcecastService;
 use CoreBundle\Entity\Event;
 use CoreBundle\Entity\Show;
 
 class StreamService
 {
-    /**
-     * @var StreamService
-     */
-    private $streamService;
     /**
      * @var IcecastService
      */
@@ -27,9 +24,8 @@ class StreamService
      * StreamService constructor.
      * @param StreamService $streamService
      */
-    public function __construct(StreamService $streamService,IcecastService $icecastService)
+    public function __construct(IcecastService $icecastService)
     {
-        $this->streamService = $streamService;
         $this->icecastService = $icecastService;
     }
 

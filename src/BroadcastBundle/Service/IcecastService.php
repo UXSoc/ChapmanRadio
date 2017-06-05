@@ -1,11 +1,11 @@
 <?php
 namespace BroadcastBundle\Service;
 
-use BroadcastBundle\Icecast\Mount;
-use CoreBundle\Entity\Stream;
+use BroadcastBundle\Entity\Stream;
 use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class IcecastService
 {
@@ -15,7 +15,7 @@ class IcecastService
      * IcecastService constructor.
      * @param Kernel $kernel
      */
-    function __construct($kernel)
+    function __construct(KernelInterface $kernel)
     {
         $this->kernel = $kernel;
     }
@@ -29,10 +29,10 @@ class IcecastService
     /**
      * @param Stream[] $streams
      */
-    public function updateConfig($streams)
+    public function updateConfig( $streams)
     {
         $combinedMounts = '';
-        /** @var Stream $mount */
+        /** @var Stream $stream*/
         foreach ($streams as $stream)
         {
 

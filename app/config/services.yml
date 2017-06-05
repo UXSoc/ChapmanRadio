@@ -20,6 +20,9 @@ services:
     CoreBundle\Service\:
         resource: '../../src/CoreBundle/Service/*'
         public: true
+    BroadcastBundle\Service\:
+        resource: '../../src/BroadcastBundle/Service/*'
+        public: true
     core.access_handler:
          alias: CoreBundle\Handler\AccessDeniedHandler
          public: true
