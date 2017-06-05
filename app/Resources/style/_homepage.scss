@@ -323,7 +323,7 @@ input[type=submit] {
 }
 
 // responsive same height columns
-.row {
+.row-resp {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -331,7 +331,7 @@ input[type=submit] {
   flex-wrap: wrap;
 }
 
-.row > [class*='col-'] {
+.row-resp > [class*='col-'] {
   display: flex;
   flex-direction: column;
 }

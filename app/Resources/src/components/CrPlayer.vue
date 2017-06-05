@@ -6,14 +6,19 @@
             <div class="blur"></div>
         </div>
         <div class="container-fluid inner nopadding">
-            <div class="row marginfix">
-                <div class="col-md-4 reddd">
+            <div class="row heightfix marginfix">
+                <div class="col-md-4 nopadding">
+                    <img class="player-art" :src="image">
+                    <div class="player-trackinfo">
+                        <p class="player-showname">Planet Moon</p>
+                        <p class="player-songname">Passionfruit</p>
+                        <p class="player-artistname">Drake</p>
+                    </div>
+                </div>
+                <div class="col-md-4 nopadding">
 
                 </div>
-                <div class="col-md-4 grennn">
-
-                </div>
-                <div class="col-md-4 blueee">
+                <div class="col-md-4 nopadding">
 
                 </div>
             </div>

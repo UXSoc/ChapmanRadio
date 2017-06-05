@@ -92,6 +92,40 @@ input[type=submit]:active {
   background-color: blue;
 }
 
+.heightfix {
+  height: 100%;
+}
+
+.player-art {
+  display: inline-block;
+  height: 100px;
+  width: 100px;
+  vertical-align: top
+}
+
+.player-trackinfo {
+  display: inline-block;
+  color: #fff;
+  width: 70%;
+  height: 100px;
+  padding-left: 20px;
+}
+
+.player-showname {
+  color: #bdbdbd;
+  padding: 5px 0;
+}
+
+.player-songname {
+  font-size: 18px;
+  padding: 5px 0;
+}
+
+.player-artistname {
+  color: #bdbdbd;
+  padding: 5px 0;
+}
+
 .blur {
   /* All the background image supports */
   background-image: -webkit-linear-gradient(bottom left, rgba(43, 40, 50, 0.8) 0%, rgba(83, 86, 99, 0.8) 45%, rgba(69, 77, 91, 0.6) 60%);

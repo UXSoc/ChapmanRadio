@@ -5,8 +5,8 @@
 
             <div class="container">
                 <h2 class="cr_header">What's New</h2>
-                <div class="row">
-                    <wide-box title="Greg James' Muscochella Highlights" description="Watch Greg's favorite performances from Chapman Radio's Muscochella at Musco Lawn." image_url="/bundles/public/img/dj-wide.jpeg"></wide-box>
+                <div class="row-resp">
+                    <wide-box style="padding-left:0px;" title="Greg James' Muscochella Highlights" description="Watch Greg's favorite performances from Chapman Radio's Muscochella at Musco Lawn." image_url="/bundles/public/img/dj-wide.jpeg"></wide-box>
                     <small-box title="The definitive A-Z of ChapRadio's Muscochella 2017" description="26 important things that happened last weekend at Muscochella." image_url="/bundles/public/img/dj-wide.jpeg"></small-box>
                     <small-box title="Muscochella Hype Playlist" description="Here's what went down when our favorite indie artists took to the stage." image_url="/bundles/public/img/dj-wide.jpeg"></small-box>
                 </div>
@@ -29,7 +29,8 @@
                 <show-box show_name="pantherBuck$" dj_names="Courtney Bankhead & Taylor Cox" show_desc="Not strictly pop. You will hear everything that has good acoustics, a beat, and vocals. Plus, we're pretty funny so please listen to us!"></show-box>
             </div>
 
-            <cr-player image="https://images.genius.com/4a57715a1b4a43437178b781f9d9457d.1000x1000x1.jpg"></cr-player>        </div>
+            <cr-player image="https://images.genius.com/4a57715a1b4a43437178b781f9d9457d.1000x1000x1.jpg"></cr-player>
+        </div>
     </div>
 </template>
 
