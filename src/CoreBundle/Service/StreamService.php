@@ -37,7 +37,7 @@ class StreamService
      * @param Show $show
      * @param Event $event
      */
-    public function createStream($show,$event = null)
+    public function createStream($show,Event $event = null)
     {
         $stream = new Stream();
         $stream->setUsername($show->getSlug());

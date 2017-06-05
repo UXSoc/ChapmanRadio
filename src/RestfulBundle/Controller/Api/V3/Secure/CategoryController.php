@@ -11,10 +11,11 @@ use CoreBundle\Entity\Category;
 use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Normalizer\CategoryNormalizer;
 use CoreBundle\Repository\CategoryRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * @Route("/api/v3/private")

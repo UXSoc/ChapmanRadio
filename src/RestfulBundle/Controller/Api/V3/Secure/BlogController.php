@@ -160,7 +160,7 @@ class BlogController extends Controller
 
             return RestfulEnvelope::successResponseTemplate('Tag added',$tag,[new TagNormalizer()])->response();
         }
-        return RestfulEnvelope::errorResponseTemplate('Post not found')->response();
+        return RestfulEnvelope::errorResponseTemplate('Post not found')->setStatus(410)->response();
     }
 
 

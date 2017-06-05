@@ -257,7 +257,7 @@ class ShowController extends Controller
      *     name="post_header_image_show")
      * @Method({"POST"})
      */
-    public function postImageShowHeader(Request $request, $token, $slug)
+    public function postImageShowHeaderAction(Request $request, $token, $slug)
     {
         /** @var ValidatorInterface $validator */
         $validator = $this->get('validator');
@@ -301,7 +301,7 @@ class ShowController extends Controller
      *     name="delete_show_image_header")
      * @Method({"DELETE"})
      */
-    public function deleteImageShowHeader(Request $request, $token, $slug)
+    public function deleteImageShowHeaderAction(Request $request, $token, $slug)
     {
         $em = $this->getDoctrine()->getManager();
 
