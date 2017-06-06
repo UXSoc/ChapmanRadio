@@ -30,14 +30,18 @@ import UserDashboard from './page/dashboard/user/UserDashboard.vue'
 import AppPage from './page/app/AppPage.vue'
 import LoginPage from './page/app/LoginPage.vue'
 import RegisterPage from './page/app/RegisterPage.vue'
-import PostPage from './page/app/PostPage.vue'
-import PostSinglePage from './page/app/PostSinglePage.vue'
+import PostPage from './page/app/Blog/PostPage.vue'
+import PostSingle from './page/app/Blog/PostSingle.vue'
+import PostList from './page/app/Blog/PostList.vue'
 import ShowSinglePage from './page/app/ShowSinglePage.vue'
 import ContactPage from './page/app/ContactPage.vue'
-import EventPage from './page/app/EventPage.vue'
-import SchedulePage from './page/app/SchedulePage.vue'
-import ShowPage from './page/app/ShowPage.vue'
+import EventPage from './page/app/Event/EventPage.vue'
+import SchedulePage from './page/app/Schedule/SchedulePage.vue'
+import ShowPage from './page/app/Show/ShowPage.vue'
 import HomePage from './page/app/HomePage.vue'
+import ScheduleList from './page/app/Schedule/ScheduleList.vue'
+import ScheduleSingle from './page/app/Schedule/ScheduleSingle.vue'
+import ShowList from './page/app/Show/ShowList.vue'
 
 import Vue from 'vue'
 import VueRouter from 'vue-router'
@@ -46,19 +50,27 @@ const router = new VueRouter({ routes: [
   {
     path: '/', component: AppPage,
     children: [
-        // Posts --------------------------------------------------------------------
-        {name: 'post', path: 'post', component: PostPage},
-        {name: 'post_single', path: 'post/:token/:slug', component: PostSinglePage},
-        // Shows --------------------------------------------------------------------
-        {name: 'show', path: 'show', component: ShowPage},
-        {name: 'show_single', path: 'show/:token/:slug', component: ShowSinglePage},
-        // --------------------------------------------------------------------------
-        {name: 'event', path: 'event', component: EventPage},
-        {name: 'contact', path: 'contact', component: ContactPage},
-        {name: 'schedule', path: 'schedule', component: SchedulePage},
-        {name: 'home', path: '', component: HomePage},
-        {name: 'login', path: 'login', component: LoginPage},
-        {name: 'register', path: 'register', component: RegisterPage}
+      {name: 'contact', path: 'contact', component: ContactPage},
+      {name: 'home', path: '', component: HomePage},
+      {name: 'login', path: 'login', component: LoginPage},
+      {name: 'register', path: 'register', component: RegisterPage},
+      {name: 'event', path: 'event', component: EventPage},
+      // Posts --------------------------------------------------------------------
+      {path: 'post', component: PostPage, children: [
+          {name: 'post', path: '/', component: PostList},
+          {name: 'post_single', path: 'post/:token/:slug', component: PostSingle}
+      ]},
+      // Shows --------------------------------------------------------------------
+      {path: 'show', component: ShowPage, children: [
+          {name: 'show', path: '/', component: ShowList},
+          {name: 'show_single', path: '/:token/:slug', component: ShowSinglePage}
+      ]},
+      // --------------------------------------------------------------------------
+      {path: 'schedule', component: SchedulePage, children: [
+        {name: 'schedule', path: '/', component: ScheduleList},
+        {name: 'schedule_list', path: '/:year/:month/:day', component: ScheduleList},
+        {name: 'schedule_single', path: '/:token', component: ScheduleSingle}
+      ]}
     ]
   },
   // -------------------------------DASHBOARD----------------------------------------------

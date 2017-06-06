@@ -1,34 +1,18 @@
 <template>
     <div>
-        <div class="container">
-            <h1 class="cr_header">Blog</h1>
-            <div class="row">
-                <div class="col-md-8 nopadding">
-                    <post-entry></post-entry>
-                    <post-entry></post-entry>
-                    <post-entry></post-entry>
-                    <post-entry></post-entry>
-                    <post-entry></post-entry>
-                    <post-entry></post-entry>
-                </div>
-                <div class="col-md-4 nopadding">
-
-                </div>
-            </div>
-            <div class="row">
-
-            </div>
+        <h2 class="cr_header">Shows</h2>
+        <div class="row-resp">
+            <template v-for="(item, index) in data">
+                <showcase-box :show_name="item.name" genre="test" :uri="{name: 'show_single', params: { token:item.token, slug:item.slug } }" :show_description="item.excerpt" image_url="https://images.genius.com/6d4830a2f394d01e91ef6f378fdb0c76.1000x1000x1.jpg"></showcase-box>
+            </template>
         </div>
     </div>
 </template>
 
 <script>
-    import PostEntry from './../../components/PostEntry.vue'
+    import ShowcaseBox from '../../../components/ShowcaseBox.vue'
     import axios from 'axios'
-
     export default{
-      props: {
-      },
       data () {
         return {
           data: [],
@@ -38,11 +22,11 @@
         }
       },
       methods: {
-        update: function () {
+        query: function () {
           let qs = require('qs')
           let _this = this
           _this.loading = true
-          axios.get(Routing.generate('get_posts') + '?' + qs.stringify({page: this.page})).then(function (response) {
+          axios.get(Routing.generate('get_shows') + '?' + qs.stringify({page: this.page})).then(function (response) {
             let pageinator = response.data.data
             _this.loading = false
             _this.maxPage = Math.ceil(pageinator.count / pageinator.perPage)
@@ -56,23 +40,23 @@
             if (!this.loading) {
               if (this.page <= this.maxPage) {
                 this.page += 1
-                this.update(this.page)
+                this.query()
               }
             }
           }
         }
+
       },
-      watch: {
+      watch: {},
+      components: {
+        ShowcaseBox
       },
       created () {
-        this.update(0)
+        this.query()
         window.addEventListener('scroll', this.handleScroll)
       },
       destroyed () {
         window.removeEventListener('scroll', this.handleScroll)
-      },
-      components: {
-        PostEntry
       }
     }
 </script>

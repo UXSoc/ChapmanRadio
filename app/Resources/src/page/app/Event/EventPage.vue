@@ -12,8 +12,8 @@
 </template>
 
 <script>
-    import WideBox from '../../components/WideBox.vue'
-    import SmallBox from '../../components/SmallBox.vue'
+    import WideBox from '../../../components/WideBox.vue'
+    import SmallBox from '../../../components/SmallBox.vue'
     import axios from 'axios'
     export default{
       data () {

@@ -43,7 +43,7 @@ class ShowRepository extends EntityRepository
             }
         }
 
-        if($tags = $request->get('tag',[]))
+        if($tags = $request->get('tag',null))
         {
             $qb->join('s.tags','t',"WITH");
             if(!is_array($tags))

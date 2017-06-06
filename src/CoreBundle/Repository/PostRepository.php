@@ -36,7 +36,7 @@ class PostRepository extends EntityRepository
                 ->setParameter('name','%' .$name.'%');
         }
 
-        if($tags = $request->get('tag',[]))
+        if($tags = $request->get('tag',null))
         {
             $qb->join('s.tags','t',"WITH");
             if(!is_array($tags))
@@ -49,7 +49,7 @@ class PostRepository extends EntityRepository
             }
         }
 
-        if($categories = $request->get('category'))
+        if($categories = $request->get('category',null))
         {
             $qb->join('s.categories','c','WITH');
             if(!is_array($categories))

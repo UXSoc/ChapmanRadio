@@ -1,6 +1,7 @@
 <?php
 namespace CoreBundle\Normalizer;
 
+use CoreBundle\Entity\Dj;
 use CoreBundle\Entity\Show;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -41,7 +42,16 @@ class ShowNormalizer implements NormalizerInterface, NormalizerAwareInterface
             'updated_at' => $object->updatedAt(),
             'enable_comments' => $object->getEnableComments(),
             'header_image' => $object->getHeaderImage(),
-            'excerpt' => $object->getExcerpt()
+            'excerpt' => $object->getExcerpt(),
+            'tags' => $object->getTags()->getKeys(),
+            'genres' => $object->getGenres()->getKeys(),
+            'djs' => array_map(function (Dj $dj) use ($format,$context) {
+                if($this->normalizer->supportsNormalization($dj,$format))
+                {
+                    return $this->normalizer->normalize($dj,$format,$context);
+                }
+                return [];
+            }, $object->getDjs()->toArray())
         ];
     }
 

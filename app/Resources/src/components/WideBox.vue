@@ -14,22 +14,22 @@
       return {}
     },
     props: {
-        title: {
-            type: String,
-            default: ''
-        },
-        description: {
-            type: String,
-            default: ''
-        },
-        uri: {
-            type: Object,
-            default: {}
-        },
-        image_url: {
-            type: String,
-            default: ''
-        }
+      title: {
+        type: String,
+        default: ''
+      },
+      description: {
+        type: String,
+        default: ''
+      },
+      uri: {
+        type: Object,
+        default: {}
+      },
+      image_url: {
+        type: String,
+        default: ''
+      }
     },
     methods: {
     }
