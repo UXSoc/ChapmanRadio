@@ -71,7 +71,7 @@ class Post
     /**
      * @var string
      *
-     * @ORM\Column(name="excerpt", type="text", length=65535, nullable=true)
+     * @ORM\Column(name="excerpt", type="text", length=6000, nullable=true)
      */
     private $excerpt;
 

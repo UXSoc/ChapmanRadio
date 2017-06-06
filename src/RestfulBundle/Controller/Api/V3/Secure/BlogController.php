@@ -7,7 +7,7 @@ use CoreBundle\Entity\Image;
 use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Tag;
 use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Normalizer\BlogNormalizer;
+use CoreBundle\Normalizer\PostNormalizer;
 use CoreBundle\Normalizer\CategoryNormalizer;
 use CoreBundle\Normalizer\ImageNormalizer;
 use CoreBundle\Normalizer\TagNormalizer;
@@ -63,7 +63,7 @@ class BlogController extends Controller
         $em->persist($post);
         $em->flush();
 
-        return RestfulEnvelope::successResponseTemplate("Post created",$post,[new BlogNormalizer(),new UserNormalizer()])->response();
+        return RestfulEnvelope::successResponseTemplate("Post created",$post,[new PostNormalizer(),new UserNormalizer()])->response();
     }
 
 
@@ -97,7 +97,7 @@ class BlogController extends Controller
 
             $em->persist($post);
             $em->flush();
-            return RestfulEnvelope::successResponseTemplate("Post updated",$post,[new BlogNormalizer(),new UserNormalizer()])->response();
+            return RestfulEnvelope::successResponseTemplate("Post updated",$post,[new PostNormalizer(),new UserNormalizer()])->response();
         }
         return RestfulEnvelope::errorResponseTemplate('Invalid post')->response();
 
@@ -124,7 +124,7 @@ class BlogController extends Controller
             $em->remove($post);
             $em->flush();
 
-            return RestfulEnvelope::successResponseTemplate('Bost post deleted',$post,[new BlogNormalizer(),new UserNormalizer()])->response();
+            return RestfulEnvelope::successResponseTemplate('Bost post deleted',$post,[new PostNormalizer(),new UserNormalizer()])->response();
         }
         return RestfulEnvelope::errorResponseTemplate('Post not found')->response();
 

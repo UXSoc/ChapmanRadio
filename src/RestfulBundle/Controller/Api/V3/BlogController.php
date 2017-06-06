@@ -12,7 +12,7 @@ use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Comment;
 use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Helper\SuccessWrapper;
-use CoreBundle\Normalizer\BlogNormalizer;
+use CoreBundle\Normalizer\PostNormalizer;
 use CoreBundle\Normalizer\CategoryNormalizer;
 use CoreBundle\Normalizer\CommentNormalizer;
 use CoreBundle\Normalizer\PaginatorNormalizer;
@@ -51,7 +51,7 @@ class BlogController extends Controller
             $request->get('page',0),
             $request->get('entries',10),20);
 
-        return RestfulEnvelope::successResponseTemplate(null,$pagination,[new BlogNormalizer(),new UserNormalizer(),new PaginatorNormalizer()])->response();
+        return RestfulEnvelope::successResponseTemplate(null,$pagination,[new PostNormalizer(),new UserNormalizer(),new PaginatorNormalizer()])->response();
     }
 
     /**
@@ -104,7 +104,7 @@ class BlogController extends Controller
 
         /** @var Post $post */
         if ( $post = $postRepository->getPostByTokenAndSlug($token,$slug))
-            return RestfulEnvelope::successResponseTemplate("Post found",$post,[new BlogNormalizer(),new UserNormalizer()])->response();
+            return RestfulEnvelope::successResponseTemplate("Post found",$post,[new PostNormalizer(),new UserNormalizer()])->response();
         return RestfulEnvelope::errorResponseTemplate("Post not found")->setStatus(410)->response();
     }
 

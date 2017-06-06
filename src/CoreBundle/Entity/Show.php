@@ -147,6 +147,12 @@ class Show
     private $headerImage;
 
     /**
+     * @var string
+     * @ORM\Column(name="excerpt", type="text", length=6000, nullable=true)
+     */
+    private $excerpt;
+
+    /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="ShowSchedule", mappedBy="show")
      *
@@ -221,6 +227,16 @@ class Show
             $this->token = substr(bin2hex(random_bytes(12)),10);
             $this->createdAt = new \DateTime('now');
         }
+    }
+
+    public function getExcerpt()
+    {
+        return $this->excerpt;
+    }
+
+    public  function setExcerpt($excerpt)
+    {
+        $this->excerpt = $excerpt;
     }
 
     public function addImage($image)

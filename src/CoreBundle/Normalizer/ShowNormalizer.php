@@ -40,7 +40,8 @@ class ShowNormalizer implements NormalizerInterface, NormalizerAwareInterface
             'profanity' => $object->getProfanity(),
             'updated_at' => $object->updatedAt(),
             'enable_comments' => $object->getEnableComments(),
-            'header_image' => $object->getHeaderImage()
+            'header_image' => $object->getHeaderImage(),
+            'excerpt' => $object->getExcerpt()
         ];
     }
 

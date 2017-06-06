@@ -3,8 +3,8 @@
         <h2 class="cr_header">Events</h2>
         <div class="row-resp">
             <template v-for="(item, index) in data">
-                <wide-box v-if="index == 0" :title="item.name" :description="item.excerpt" image_url="/bundles/public/img/dj-wide.jpeg"></wide-box>
-                <small-box v-else :title="item.name" :description="item.excerpt" image_url="/bundles/public/img/dj-wide.jpeg"></small-box>
+                <wide-box v-if="index == 0" :title="item.name" :uri="{name: 'post_single', params: { token:item.token, slug:item.slug } }" :description="item.excerpt" image_url="/bundles/public/img/dj-wide.jpeg"></wide-box>
+                <small-box v-else :title="item.name" :uri="{name: 'post_single', params: { token:item.token, slug:item.slug } }" :description="item.excerpt" image_url="/bundles/public/img/dj-wide.jpeg"></small-box>
             </template>
        </div>
        <div v-if="loading"> Loading </div>
@@ -25,11 +25,11 @@
         }
       },
       methods: {
-        update: function (page) {
+        query: function () {
           let qs = require('qs')
           let _this = this
           _this.loading = true
-          axios.get(Routing.generate('get_posts') + '?' + qs.stringify({page: page, tag: ['event']})).then(function (response) {
+          axios.get(Routing.generate('get_posts') + '?' + qs.stringify({page: this.page, tag: ['event']})).then(function (response) {
             let pageinator = response.data.data
             _this.loading = false
             _this.maxPage = Math.ceil(pageinator.count / pageinator.perPage)
@@ -43,7 +43,7 @@
             if (!this.loading) {
               if (this.page <= this.maxPage) {
                 this.page += 1
-                this.update(this.page)
+                this.query()
               }
             }
           }
@@ -52,7 +52,7 @@
       watch: {
       },
       created () {
-        this.update(0)
+        this.query()
         window.addEventListener('scroll', this.handleScroll)
       },
       destroyed () {

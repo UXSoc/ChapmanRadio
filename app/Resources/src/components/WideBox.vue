@@ -1,10 +1,10 @@
 <template>
     <div class="col-md-6 wnb">
-        <a class="wn-box" :href="post_url">
+        <router-link class="wn-box" :to="uri" :exact="true" tag="a">
             <img :src="image_url">
             <p class="wn-box-title wn-wb-title">{{ title }}</p>
             <p class="wn-box-desc wn-wb-desc">{{ description }}</p>
-        </a>
+        </router-link>
     </div>
 </template>
 
@@ -22,9 +22,9 @@
             type: String,
             default: ''
         },
-        post_url: {
-            type: String,
-            default: '#'
+        uri: {
+            type: Object,
+            default: {}
         },
         image_url: {
             type: String,

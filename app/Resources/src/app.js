@@ -53,8 +53,8 @@ const router = new VueRouter({ routes: [
         {name: 'show', path: 'show', component: ShowPage},
         {name: 'show_single', path: 'show/:token/:slug', component: ShowSinglePage},
         // --------------------------------------------------------------------------
-        {name: 'contact', path: 'contact', component: ContactPage},
         {name: 'event', path: 'event', component: EventPage},
+        {name: 'contact', path: 'contact', component: ContactPage},
         {name: 'schedule', path: 'schedule', component: SchedulePage},
         {name: 'home', path: '', component: HomePage},
         {name: 'login', path: 'login', component: LoginPage},

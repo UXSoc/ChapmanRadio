@@ -10,8 +10,6 @@
     export default{
       data () {
         return {
-          token: '',
-          slug: ''
         }
       },
       methods: {
@@ -26,6 +24,7 @@
         }
       },
       created () {
+          this.query()
 //        this.token = this.$route.params.token
 //        this.slug = this.$route.params.slug
       },

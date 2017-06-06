@@ -20,18 +20,18 @@
       return {}
     },
     props: {
-        show_name: {
-            type: String,
-            default: ''
-        },
-        dj_names: {
-            type: String,
-            default: ''
-        },
-        show_desc: {
-            type: String,
-            default: ''
-        }
+      show_name: {
+        type: String,
+        default: ''
+      },
+      dj_names: {
+        type: String,
+        default: ''
+      },
+      show_desc: {
+        type: String,
+        default: ''
+      }
     },
     methods: {
     }

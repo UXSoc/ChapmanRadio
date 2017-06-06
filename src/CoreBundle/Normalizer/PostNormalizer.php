@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\SerializerAwareTrait;
  * Date: 5/26/17
  * Time: 1:46 AM
  */
-class BlogNormalizer implements NormalizerInterface, NormalizerAwareInterface
+class PostNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     /** @var  NormalizerInterface */
     private $normalizer;
