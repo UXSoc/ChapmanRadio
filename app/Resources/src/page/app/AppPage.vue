@@ -37,7 +37,7 @@
                         <router-link active-class="active" :to="{name: 'event'}" :exact="true" tag="li">
                             <a class="nav-link">Events</a>
                         </router-link>
-                        <router-link active-class="active" :to="{name: 'blog'}" :exact="true" tag="li">
+                        <router-link active-class="active" :to="{name: 'post'}" :exact="true" tag="li">
                             <a class="nav-link">Blog</a>
                         </router-link>
                         <router-link active-class="active" :to="{name: 'contact'}" :exact="true" tag="li">

@@ -43,7 +43,7 @@ class ShowController extends Controller
             $request->get('page',0),
             $request->get('entries',10),20);
 
-        return RestfulEnvelope::successResponseTemplate(null,$pagination,[new ShowNormalizer(),new PaginatorNormalizer()])->response();
+        return RestfulEnvelope::successResponseTemplate(null, $pagination, [new ShowNormalizer(),new PaginatorNormalizer()])->response();
     }
 
 

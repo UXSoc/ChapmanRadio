@@ -30,6 +30,32 @@ class ShowRepository extends EntityRepository
                 ->setParameter('name','%' .$name.'%');
         }
 
+        if($genres = $request->get('genre',null))
+        {
+            $qb->join('s.genres','g',"WITH");
+            if(!is_array($genres))
+                $genres = array($genres);
+
+            foreach ($genres as $genre)
+            {
+                $qb->where($qb->expr()->eq('g.genre',':genre'))
+                    ->setParameter('genre',$genre);
+            }
+        }
+
+        if($tags = $request->get('tag',[]))
+        {
+            $qb->join('s.tags','t',"WITH");
+            if(!is_array($tags))
+                $tags = array($tags);
+
+            foreach ($tags as $tag)
+            {
+                $qb->where($qb->expr()->eq('t.tag',':tag'))
+                    ->setParameter('tag',$tag);
+            }
+        }
+
         return $qb->getQuery();
     }
 

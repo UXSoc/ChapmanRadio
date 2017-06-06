@@ -1,21 +1,34 @@
 <template>
-    <div class="container">
-        <h2 class="cr_header">Events</h2>
-        <div class="row-resp">
-            <template v-for="(item, index) in data">
-                <wide-box v-if="index == 0" :title="item.name" :description="item.excerpt" image_url="/bundles/public/img/dj-wide.jpeg"></wide-box>
-                <small-box v-else :title="item.name" :description="item.excerpt" image_url="/bundles/public/img/dj-wide.jpeg"></small-box>
-            </template>
-       </div>
-       <div v-if="loading"> Loading </div>
+    <div>
+        <div class="container">
+            <h1 class="cr_header">Blog</h1>
+            <div class="row">
+                <div class="col-md-8 nopadding">
+                    <post-entry></post-entry>
+                    <post-entry></post-entry>
+                    <post-entry></post-entry>
+                    <post-entry></post-entry>
+                    <post-entry></post-entry>
+                    <post-entry></post-entry>
+                </div>
+                <div class="col-md-4 nopadding">
+
+                </div>
+            </div>
+            <div class="row">
+
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
-    import WideBox from '../../components/WideBox.vue'
-    import SmallBox from '../../components/SmallBox.vue'
+    import PostEntry from './../../components/PostEntry.vue'
     import axios from 'axios'
+
     export default{
+      props: {
+      },
       data () {
         return {
           data: [],
@@ -25,11 +38,11 @@
         }
       },
       methods: {
-        update: function (page) {
+        update: function () {
           let qs = require('qs')
           let _this = this
           _this.loading = true
-          axios.get(Routing.generate('get_posts') + '?' + qs.stringify({page: page, tag: ['event']})).then(function (response) {
+          axios.get(Routing.generate('get_posts') + '?' + qs.stringify({page: this.page})).then(function (response) {
             let pageinator = response.data.data
             _this.loading = false
             _this.maxPage = Math.ceil(pageinator.count / pageinator.perPage)
@@ -59,8 +72,7 @@
         window.removeEventListener('scroll', this.handleScroll)
       },
       components: {
-        WideBox,
-        SmallBox
+        PostEntry
       }
     }
 </script>

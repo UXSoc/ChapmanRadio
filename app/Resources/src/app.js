@@ -30,7 +30,9 @@ import UserDashboard from './page/dashboard/user/UserDashboard.vue'
 import AppPage from './page/app/AppPage.vue'
 import LoginPage from './page/app/LoginPage.vue'
 import RegisterPage from './page/app/RegisterPage.vue'
-import BlogPage from './page/app/BlogPage.vue'
+import PostPage from './page/app/PostPage.vue'
+import PostSinglePage from './page/app/PostSinglePage.vue'
+import ShowSinglePage from './page/app/ShowSinglePage.vue'
 import ContactPage from './page/app/ContactPage.vue'
 import EventPage from './page/app/EventPage.vue'
 import SchedulePage from './page/app/SchedulePage.vue'
@@ -44,14 +46,19 @@ const router = new VueRouter({ routes: [
   {
     path: '/', component: AppPage,
     children: [
-        {name: 'home', path: '', component: HomePage},
-        {name: 'login', path: 'login', component: LoginPage},
-        {name: 'register', path: 'register', component: RegisterPage},
-        {name: 'blog', path: 'blog', component: BlogPage},
+        // Posts --------------------------------------------------------------------
+        {name: 'post', path: 'post', component: PostPage},
+        {name: 'post_single', path: 'post/:token/:slug', component: PostSinglePage},
+        // Shows --------------------------------------------------------------------
+        {name: 'show', path: 'show', component: ShowPage},
+        {name: 'show_single', path: 'show/:token/:slug', component: ShowSinglePage},
+        // --------------------------------------------------------------------------
         {name: 'contact', path: 'contact', component: ContactPage},
         {name: 'event', path: 'event', component: EventPage},
         {name: 'schedule', path: 'schedule', component: SchedulePage},
-        {name: 'show', path: 'show', component: ShowPage}
+        {name: 'home', path: '', component: HomePage},
+        {name: 'login', path: 'login', component: LoginPage},
+        {name: 'register', path: 'register', component: RegisterPage}
     ]
   },
   // -------------------------------DASHBOARD----------------------------------------------

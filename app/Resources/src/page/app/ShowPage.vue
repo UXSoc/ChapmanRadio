@@ -12,17 +12,54 @@
 
 <script>
     import ShowcaseBox from '../../components/ShowcaseBox.vue'
+    import axios from 'axios'
     export default{
-        data () {
-            return {}
-        },
-        methods: {
-
-        },
-        watch: {
-        },
-        components: {
-            ShowcaseBox
+      props: {
+      },
+      data () {
+        return {
+          data: [],
+          page: 0,
+          maxPage: 0,
+          loading: false
         }
+      },
+      methods: {
+        query: function () {
+          let qs = require('qs')
+          let _this = this
+          _this.loading = true
+          axios.get(Routing.generate('get_shows') + '?' + qs.stringify({page: this.page})).then(function (response) {
+            let pageinator = response.data.data
+            _this.loading = false
+            _this.maxPage = Math.ceil(pageinator.count / pageinator.perPage)
+            let result = _this.data.concat(pageinator.result)
+            _this.$set(_this, 'data', result)
+          }).catch(function (error) {
+          })
+        },
+        handleScroll () {
+          if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
+            if (!this.loading) {
+              if (this.page <= this.maxPage) {
+                this.page += 1
+                this.query()
+              }
+            }
+          }
+        }
+      },
+      watch: {
+      },
+      created () {
+        this.update(0)
+        window.addEventListener('scroll', this.handleScroll)
+      },
+      destroyed () {
+        window.removeEventListener('scroll', this.handleScroll)
+      },
+      components: {
+        ShowcaseBox
+      }
     }
 </script>
