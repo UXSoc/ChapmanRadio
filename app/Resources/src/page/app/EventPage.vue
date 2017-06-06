@@ -1,6 +1,6 @@
 <template>
-    <div class="container">
-        <h2 class="cr_header">Events</h2>
+    <div class="container-fluid">
+        <h2 style="margin-left:15px;margin-bottom:0;" class="cr_header">Events</h2>
         <div class="row-resp">
             <template v-for="(item, index) in data">
                 <wide-box v-if="index == 0" :title="item.name" :uri="{name: 'post_single', params: { token:item.token, slug:item.slug } }" :description="item.excerpt" image_url="/bundles/public/img/dj-wide.jpeg"></wide-box>
