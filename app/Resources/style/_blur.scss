@@ -80,16 +80,38 @@ input[type=submit]:active {
   z-index: 1003;
 }
 
-.reddd {
-  background-color: red;
+.heightfix {
+  height: 100%;
 }
 
-.grennn {
-  background-color: green;
+.player-art {
+  display: inline-block;
+  height: 100px;
+  width: 100px;
+  vertical-align: top
 }
 
-.blueee {
-  background-color: blue;
+.player-trackinfo {
+  display: inline-block;
+  color: #fff;
+  width: 70%;
+  height: 100px;
+  padding-left: 20px;
+}
+
+.player-showname {
+  color: #bdbdbd;
+  padding: 5px 0;
+}
+
+.player-songname {
+  font-size: 18px;
+  padding: 5px 0;
+}
+
+.player-artistname {
+  color: #bdbdbd;
+  padding: 5px 0;
 }
 
 .blur {

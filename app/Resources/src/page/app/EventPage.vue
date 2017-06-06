@@ -1,13 +1,13 @@
 <template>
     <div class="container">
         <h2 class="cr_header">Events</h2>
-        <div class="row">
+        <div class="row-resp">
             <template v-for="(item, index) in data">
                 <wide-box v-if="index == 0" :title="item.name" :description="item.excerpt" image_url="/bundles/public/img/dj-wide.jpeg"></wide-box>
                 <small-box v-else :title="item.name" :description="item.excerpt" image_url="/bundles/public/img/dj-wide.jpeg"></small-box>
             </template>
-            <small-box title="Muscochella Hype Playlist" description="Here's what went down when our favorite indie artists took to the stage." image_url="/bundles/public/img/dj-wide.jpeg"></small-box>
-        </div>
+       </div>
+       <div v-if="loading"> Loading </div>
     </div>
 </template>
 
@@ -19,24 +19,33 @@
       data () {
         return {
           data: [],
-          page: 0
+          page: 0,
+          maxPage: 0,
+          loading: false
         }
       },
       methods: {
         update: function (page) {
           let qs = require('qs')
           let _this = this
+          _this.loading = true
           axios.get(Routing.generate('get_posts') + '?' + qs.stringify({page: page, tag: ['event']})).then(function (response) {
             let pageinator = response.data.data
-            let result = _this.result.join(pageinator.result)
+            _this.loading = false
+            _this.maxPage = Math.ceil(pageinator.count/pageinator.perPage)
+            let result = _this.data.concat(pageinator.result)
             _this.$set(_this, 'data', result)
           }).catch(function (error) {
           })
         },
         handleScroll() {
           if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
-            this.page += 1
-            this.update(this.page)
+            if(!this.loading) {
+                if (this.page <= this.maxPage) {
+                    this.page += 1
+                    this.update(this.page)
+                }
+            }
           }
         }
       },
