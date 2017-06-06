@@ -288,7 +288,7 @@ class Post
      */
     public function addTag($tag)
     {
-        $this->tags->add($tag);
+        $this->tags->set($tag->getTag(),$tag);
     }
 
     /**
@@ -314,7 +314,7 @@ class Post
      */
     public  function addCategory($category)
     {
-        $this->categories->add($category);
+        $this->categories->set($category->getCategory(),$category);
     }
 
     /**

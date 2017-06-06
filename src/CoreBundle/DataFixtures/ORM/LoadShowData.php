@@ -3,6 +3,7 @@
 use CoreBundle\Entity\Comment;
 use CoreBundle\Entity\Genre;
 use CoreBundle\Entity\Show;
+use CoreBundle\Entity\Tag;
 use CoreBundle\Entity\User;
 use CoreBundle\Repository\UserRepository;
 use Doctrine\Common\DataFixtures\AbstractFixture;
@@ -30,11 +31,11 @@ class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, C
 
         $genres = $manager->getRepository(Genre::class)->findAll();
 
-        /** @var UserRepository $userRepository */
-        $userRepository = $this->container->get(User::class);
-        $users = $userRepository->findAll();
+        /** @var User[] $users */
+        $users = $manager->getRepository(User::class)->findAll();
+        $tags = $manager->getRepository(Tag::class)->findAll();
 
-        for ($i = 0; $i < 20; $i++)
+        for ($i = 0; $i < 100; $i++)
         {
             $show = new Show();
             $show->setName($faker->name);
@@ -64,10 +65,19 @@ class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, C
 
             for($b =0; $b < 3; $b++)
             {
+                /** @var Genre $genre */
                 $genre = $genres[array_rand($genres,1)];
-                if(in_array($genre,$show->getGenres()))
+                if(!in_array($genre->getGenre(),$show->getGenres()->getKeys()))
                     $show->addGenre($genre);
 
+            }
+
+            for ($c = 0; $c < 10; $c++)
+            {
+                /** @var Tag $tag */
+                $tag = $tags[array_rand($tags,1)];
+                if(!in_array($tag->getTag(),$show->getTags()->getKeys()))
+                    $show->addTag($tag);
             }
             $manager->persist($show);
 

@@ -42,21 +42,20 @@
     import ShowBox from '../../components/ShowBox.vue'
     import CrPlayer from '../../components/CrPlayer.vue'
     export default{
-        data () {
-            return {}
-        },
-        methods: {
-
-        },
-        watch: {
-        },
-        components: {
-            PlayWindow,
-            WideBox,
-            SmallBox,
-            TrackBox,
-            ShowBox,
-            CrPlayer
-        }
+      data () {
+        return {}
+      },
+      methods: {
+      },
+      watch: {
+      },
+      components: {
+        PlayWindow,
+        WideBox,
+        SmallBox,
+        TrackBox,
+        ShowBox,
+        CrPlayer
+      }
     }
 </script>

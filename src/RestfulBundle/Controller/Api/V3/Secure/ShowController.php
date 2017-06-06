@@ -31,8 +31,10 @@ class ShowController extends Controller
 {
     /**
      * @Security("has_role('ROLE_STAFF')")
-     * @Route("/show", options = { "expose" = true }, name="put_show")
-     * @Method({"PUT"})
+     * @Route("/show",
+     *     options = { "expose" = true },
+     *     name="post_show")
+     * @Method({"POST"})
      */
     public function putShowAction(Request $request)
     {
@@ -216,7 +218,7 @@ class ShowController extends Controller
            if($errors->count() > 0)
                return RestfulEnvelope::errorResponseTemplate('invalid Image')->addErrors($errors)->response();
 
-           $imageService->saveImage($image);
+           $imageService->saveImageToFilesystem($image);
            $em->persist($image);
 
            $show->addImage($image);
@@ -275,16 +277,12 @@ class ShowController extends Controller
         {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
 
-            $src = $request->files->get('image', null);
-            $image = new Image();
-            $image->setImage($src);
-            $image->setAuthor($this->getUser());
-
+            $image  = $imageService->createImage($request->files->get('image', null),$this->getUser());
             $errors = $validator->validate($image);
             if($errors->count() > 0)
                 return RestfulEnvelope::errorResponseTemplate('invalid Image')->addErrors($errors)->response();
 
-            $imageService->saveImage($image);
+            $imageService->saveImageToFilesystem($image);
             $em->persist($image);
 
             $show->setHeaderImage($image);
@@ -292,7 +290,7 @@ class ShowController extends Controller
             $em->flush();
             return RestfulEnvelope::successResponseTemplate('Image Header Uploaded',$image,[new ImageNormalizer()])->response();
         }
-        return RestfulEnvelope::errorResponseTemplate('Image error')->response();
+        return RestfulEnvelope::errorResponseTemplate('Show not found')->setStatus(410)->response();
     }
 
     /**
@@ -312,10 +310,9 @@ class ShowController extends Controller
         if ($show = $showRepository->getShowByTokenAndSlug($token, $slug)) {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
             $em->remove($show->getHeaderImage());
-
             return RestfulEnvelope::successResponseTemplate('Image Header deleted')->response();
         }
-        return RestfulEnvelope::errorResponseTemplate('Image error')->response();
+        return RestfulEnvelope::errorResponseTemplate('Show not found')->setStatus(410)->response();
 
     }
 

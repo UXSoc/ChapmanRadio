@@ -289,7 +289,7 @@ class Show
      */
     public function addGenre($genre)
     {
-        $this->genres->add($genre);
+        $this->genres->set($genre->getGenre(),$genre);
     }
 
     /**
@@ -305,7 +305,7 @@ class Show
      */
     public function addTag($tag)
     {
-        $this->tags->add($tag);
+        $this->tags->set($tag->getTag(),$tag);
     }
 
     /**

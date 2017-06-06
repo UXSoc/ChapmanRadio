@@ -30,6 +30,8 @@
   import {Validator} from 'vee-validate'
   import FormGroup from '../../components/FormGroup.vue'
   import Alert from '../../components/Alert.vue'
+  import axios from 'axios'
+
   export default{
     data () {
       return {

@@ -18,6 +18,7 @@ use CoreBundle\Repository\TagRepository;
 use CoreBundle\Security\PostVoter;
 use CoreBundle\Service\ImageUploadService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -36,10 +37,10 @@ class BlogController extends Controller
      * @Security("has_role('ROLE_STAFF')")
      * @Route("/post",
      *     options = { "expose" = true },
-     *     name="put_post")
-     * @Method({"PUT"})
+     *     name="post_post")
+     * @Method({"POST"})
      */
-    public function putPostAction(Request $request)
+    public function postPostAction(Request $request)
     {
         /** @var ValidatorInterface $validator */
         $validator = $this->get('validator');
@@ -167,8 +168,8 @@ class BlogController extends Controller
     /**
      * @Route("/post/{token}/{slug}/image",
      *     options = { "expose" = true },
-     *     name="put_image_post")
-     * @Method({"PUT"})
+     *     name="post_image_post")
+     * @Method({"POST"})
      */
     public function putImageForPostAction(Request $request, $token, $slug)
     {
@@ -197,7 +198,7 @@ class BlogController extends Controller
             if($errors->count() > 0)
                 return RestfulEnvelope::errorResponseTemplate('invalid Image')->addErrors($errors)->response();
 
-            $imageService->saveImage($image);
+            $imageService->saveImageToFilesystem($image);
             $em->persist($image);
 
             $post->addImage($image);

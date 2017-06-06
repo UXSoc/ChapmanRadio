@@ -8,11 +8,8 @@ import {tinymce} from 'tinymce/tinymce'
 import 'tinymce/themes/modern/theme'
 import 'tinymce/plugins/spellchecker/index'
 import 'tinymce/plugins/textpattern/index'
-
-import axios from 'axios/dist/axios'
 import VeeValidate from 'vee-validate'
 
-window.axios = axios
 window.Vue = Vue
 window.FConfig = Config
 window.tinymce = tinymce

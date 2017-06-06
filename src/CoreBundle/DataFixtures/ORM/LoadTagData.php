@@ -40,12 +40,18 @@ class LoadTagData extends AbstractFixture implements OrderedFixtureInterface, Co
     {
         $faker = Faker\Factory::create();
 
-        for($i = 0; $i < 20; $i++)
+        for($i = 0; $i < 50; $i++)
         {
             $tag = new Tag();
             $tag->setTag( $faker->unique()->word);
             $manager->persist($tag);
         }
+        {
+            $tag = new Tag();
+            $tag->setTag('event');
+            $manager->persist($tag);
+        }
+
         $manager->flush();
     }
 

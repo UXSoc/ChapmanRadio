@@ -26,6 +26,7 @@
     "bootstrap-sass": "^3.3.7",
     "metisMenu": "metismenu#^2.7.0",
     "axios": "^0.16.1",
-    "vee-validate": "2.0.0-rc.3"
+    "vee-validate": "2.0.0-rc.3",
+    "qs": "^0.4.8"
   }
 }

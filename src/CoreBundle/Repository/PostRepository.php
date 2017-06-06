@@ -36,6 +36,30 @@ class PostRepository extends EntityRepository
                 ->setParameter('name','%' .$name.'%');
         }
 
+        if($tags = $request->get('tag',[]))
+        {
+            $qb->join('s.tags','t',"WITH");
+            if(!is_array($tags))
+                $tags = array($tags);
+
+            foreach ($tags as $tag)
+            {
+                $qb->where($qb->expr()->eq('t.tag',':tag'))
+                    ->setParameter('tag',$tag);
+            }
+        }
+
+        if($categories = $request->get('category'))
+        {
+            $qb->join('s.categories','c','WITH');
+            if(!is_array($categories))
+                $categories = array($categories);
+            foreach ($categories as $category) {
+                $qb->where($qb->expr()->eq('c.category',':category'))
+                    ->setParameter('category',$category);
+            }
+        }
+
         return $qb->getQuery();
     }
 

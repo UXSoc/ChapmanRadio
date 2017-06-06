@@ -8,6 +8,7 @@ use CoreBundle\Repository\UserRepository;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -40,13 +41,12 @@ class LoadPostData extends AbstractFixture implements OrderedFixtureInterface, C
         $faker = Faker\Factory::create();
 
         /** @var UserRepository $userRepository */
-        $userRepository = $this->container->get(User::class);
-        $users = $userRepository->findAll();
+        $users =  $manager->getRepository(User::class)->findAll();
 
         $categories = $manager->getRepository(Category::class)->findAll();
         $tags = $manager->getRepository(Tag::class)->findAll();
 
-        for ($i = 0; $i < 20; $i++)
+        for ($i = 0; $i < 100; $i++)
         {
             $post = new Post();
             $post->setName($faker->name);
@@ -73,14 +73,16 @@ class LoadPostData extends AbstractFixture implements OrderedFixtureInterface, C
                 $manager->persist($comments[$j]);
             }
 
-            for($b = 0; $b < 15; $b++)
+            for($b = 0; $b < 10; $b++)
             {
+                /** @var Tag $tag */
                 $tag = $tags[array_rand($tags,1)];
+                /** @var Category $category */
                 $category = $categories[array_rand($categories,1)];
 
-                if(in_array($tag,$post->getTags()->getKeys()))
+                if(!in_array($tag->getTag(),$post->getTags()->getKeys()))
                     $post->addTag($tag);
-                if(in_array($category,$post->getTags()->getKeys()))
+                if(!in_array($category->getCategory(),$post->getCategories()->getKeys()))
                     $post->addCategory($category);
             }
             $manager->persist($post);

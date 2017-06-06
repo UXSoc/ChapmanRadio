@@ -2,6 +2,7 @@
 namespace CoreBundle\Service;
 
 use CoreBundle\Entity\Image;
+use CoreBundle\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Intervention\Image\ImageManagerStatic as Intervention;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -30,10 +31,18 @@ class ImageUploadService
         $this->targetDir = $targetDir;
     }
 
+    public function createImage(UploadedFile $image,User $user)
+    {
+        $image = new Image();
+        $image->setAuthor($user);
+        $image->setImage($image);
+        return $image;
+    }
+
     /**
      * @param Image $image
      */
-    public function saveImage(Image $image)
+    public function saveImageToFilesystem(Image $image)
     {
         /** @var FileSystem $fs */
         $fs = new FileSystem();

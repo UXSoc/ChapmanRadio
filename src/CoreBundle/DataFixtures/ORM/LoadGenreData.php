@@ -39,7 +39,7 @@ class LoadGenreData extends AbstractFixture implements OrderedFixtureInterface, 
     {
         $faker = Faker\Factory::create();
 
-        for($i = 0; $i < 20; $i++)
+        for($i = 0; $i < 50; $i++)
         {
             $genre = new Genre();
             $genre->setGenre($faker->unique()->word);
