@@ -7,7 +7,7 @@ A Symfony project created on April 16, 2017, 6:07 pm.
 
 ### Libraries
 
-- Bootstarp: http://getbootstrap.com/
+- Bootstrap: http://getbootstrap.com/
 - Vue: https://vuejs.org/
 - Webpack: https://webpack.js.org/
 - Symfony: https://symfony.com/
@@ -18,7 +18,7 @@ A Symfony project created on April 16, 2017, 6:07 pm.
 - PHP
 - Mysql or MariaDB
 
-You don't need apache to run this for development since php itself has it's own internal server
+You don't need apache to run this for development since php itself has its own internal server
 
 ### Installing
 
@@ -69,10 +69,10 @@ Runs a linter on the code for consistency
 
 Symfony has a file under /bin/console used for running commands for the application( Migrating the Database, verifying database model, clearing cache, etc.. ). You can run ./bin/console to see all the possible commands but the three below are the bare minimum to getting the application started.
 
-The first step after cloning is to run the migration and setup the database.
+The first step after cloning is to setup the database.
 
 ```
-./bin/console doctrine:migrations:migrate
+./bin/console doctrine:schema:update
 ```
 
 As a developer you probably want something in the database to test on.
