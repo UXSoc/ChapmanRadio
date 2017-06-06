@@ -7,18 +7,19 @@
         </div>
         <div class="container-fluid inner nopadding">
             <div class="row heightfix marginfix">
-                <div class="col-md-4 nopadding">
+                <div class="col-md-5 nopadding">
                     <img class="player-art" :src="image">
                     <div class="player-trackinfo">
                         <p class="player-showname">Planet Moon</p>
                         <p class="player-songname">Passionfruit</p>
                         <p class="player-artistname">Drake</p>
+                        <a class="btn-player btn-ghost" href="#">VIEW SHOW PAGE</a>
                     </div>
                 </div>
-                <div class="col-md-4 nopadding">
-
+                <div class="col-md-2 nopadding heightfix centerinparent">
+                    <i class="fa fa-play-circle play-button"></i>
                 </div>
-                <div class="col-md-4 nopadding">
+                <div class="col-md-5 nopadding heightfix">
 
                 </div>
             </div>

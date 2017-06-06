@@ -47,6 +47,12 @@
   height: 100px;
 }
 
+.centerinparent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .btn-player:link,
 .btn-player:visited,
 input[type=submit] {
@@ -55,25 +61,30 @@ input[type=submit] {
   text-decoration: none;
   border-radius: 200px;
   transition: background-color 0.2s, border 0.2s, color 0.2s;
+  position: absolute;
+  top: 50%;
+  left: 60%;
+  transform: translate(0,-50%);
+  font-size: 14px;
 }
 
 .btn-ghost:link,
 .btn-ghost:visited {
-  border: 1px solid $accent-color;
-  color: $accent-color;
+  border: 2px solid $white;
+  color: $white;
 }
 
 .btn-player:hover,
 .btn-player:active,
 input[type=submit]:hover,
 input[type=submit]:active {
-  background-color: #5e9434;
+  //background-color: #5e9434;
 }
 
 .btn-ghost:hover,
 .btn-ghost:active {
-  border: 1px solid #5e9434;
-  color: #fff;
+  border: 2px solid #bdbdbd;
+  color: #bdbdbd;
 }
 
 .player-content {
@@ -97,6 +108,11 @@ input[type=submit]:active {
   width: 70%;
   height: 100px;
   padding-left: 20px;
+}
+
+.play-button {
+  color: #fff;
+  font-size: 48px;
 }
 
 .player-showname {
