@@ -1,5 +1,5 @@
 <template>
-    <div class="bottom-fixed">
+    <div :class="fullscreen">
         <div class="content-container">
             <div class="color-container"></div>
             <div class="img-container" :style="{ backgroundImage: 'url(' + image + ')' }"></div>
@@ -20,7 +20,7 @@
                     <i class="fa fa-play-circle player-btn"></i>
                 </div>
                 <div style="text-align:right;" class="col-md-5 nopadding heightfix">
-                    <i class="fa fa-chevron-up player-btn vertalign"></i>
+                    <i class="fa fa-chevron-up player-btn vertalign" @click="expanded = !expanded"></i>
                 </div>
             </div>
         </div>
@@ -29,8 +29,18 @@
 
 <script>
     export default{
-        data () {
-            return {}
+        data: function () {
+            return {
+                expanded: false
+            }
+        },
+        computed: {
+            fullscreen: function () {
+                return {
+                    'bottom-fixed': !this.expanded,
+                    expand: this.expanded
+                }
+            }
         },
         props: {
             image: {
