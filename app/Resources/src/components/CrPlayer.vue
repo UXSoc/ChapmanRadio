@@ -17,10 +17,10 @@
                     </div>
                 </div>
                 <div class="col-md-2 nopadding heightfix centerinparent">
-                    <i class="fa fa-play-circle play-button"></i>
+                    <i class="fa fa-play-circle player-btn"></i>
                 </div>
-                <div class="col-md-5 nopadding heightfix">
-
+                <div style="text-align:right;" class="col-md-5 nopadding heightfix">
+                    <i class="fa fa-chevron-up player-btn vertalign"></i>
                 </div>
             </div>
         </div>

@@ -1,4 +1,11 @@
 // https://paper-leaf.com/blog/2016/01/creating-blurred-background-using-only-css/
+.bottom-fixed {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 75px;
+}
+
 .img-container {
   position: absolute;
   height: 100%;
@@ -10,13 +17,13 @@
 
 .color-container {
   background-color: #313D31;
-  height: 100px;
+  height: 100%;
   width: 100%;
 }
 
 .content-container {
   width: 100%;
-  height: 100px;//used to be 1000px
+  height: 100%;//used to be 1000px
   position: absolute;
   overflow: hidden;
   -webkit-transform: translateZ(0);
@@ -24,8 +31,8 @@
   -o-transform: translateZ(0);
   transform: translateZ(0);
   img {
-    width: 100px;
-    height: 100px;
+    width: 75px;
+    height: 75px;
   }
   div {
     display: inline-block;
@@ -37,20 +44,20 @@
 .inner {
   position: absolute;
   width: 100%;
-  height: 100px;
-}
-
-.bottom-fixed {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 100px;
+  height: 100%;
 }
 
 .centerinparent {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.vertalign {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: 30px;
 }
 
 .btn-player:link,
@@ -97,8 +104,8 @@ input[type=submit]:active {
 
 .player-art {
   display: inline-block;
-  height: 100px;
-  width: 100px;
+  height: 75px;
+  width: 75px;
   vertical-align: top
 }
 
@@ -106,28 +113,31 @@ input[type=submit]:active {
   display: inline-block;
   color: #fff;
   width: 70%;
-  height: 100px;
-  padding-left: 20px;
+  height: 75%;
+  padding-left: 10px;
 }
 
-.play-button {
+.player-btn {
   color: #fff;
   font-size: 48px;
 }
 
 .player-showname {
   color: #bdbdbd;
-  padding: 5px 0;
+  padding-top: 5px;
+  padding-bottom: 3px;
+  font-size: 13px;
 }
 
 .player-songname {
-  font-size: 18px;
-  padding: 5px 0;
+  font-size: 16px;
 }
 
 .player-artistname {
   color: #bdbdbd;
-  padding: 5px 0;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  font-size: 13px;
 }
 
 .blur {

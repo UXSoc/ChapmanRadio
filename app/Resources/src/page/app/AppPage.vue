@@ -48,7 +48,7 @@
             </div><!-- /.container-fluid -->
         </nav>
         <router-view></router-view>
-        <cr-player image="https://images.genius.com/4a57715a1b4a43437178b781f9d9457d.1000x1000x1.jpg"></cr-player>
+        <cr-player image="https://images.genius.com/df91da4c0c20709e276c25f1bb6ff87f.640x640x1.jpg"></cr-player>
 
     </div>
 </template>
