@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="schedule")
  * @ORM\Entity(repositoryClass="CoreBundle\Repository\ScheduleRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Schedule
 {
@@ -22,6 +23,13 @@ class Schedule
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+
+    /**
+     * @var string
+     * @ORM\Column(name="token", type="string",length=20, nullable=false,unique=true)
+     *
+     */
+    private $token;
 
     /**
      * @var \DateTime
@@ -69,6 +77,23 @@ class Schedule
 
     public function __construct()
     {
+    }
+
+    /**
+     *
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function updatedTimestamps()
+    {
+        if ( $this->token === null) {
+            $this->token = substr(bin2hex(random_bytes(12)),10);
+        }
+    }
+
+    public function getToken()
+    {
+        return $this->token;
     }
 
     public function setShow(Show $show)

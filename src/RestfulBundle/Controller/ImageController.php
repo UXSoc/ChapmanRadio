@@ -13,6 +13,7 @@ use CoreBundle\Controller\BaseController;
 
 use CoreBundle\Entity\Image;
 use CoreBundle\Helper\ErrorWrapper;
+use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\ImageRepository;
 use CoreBundle\Service\ImageUploadService;
@@ -39,11 +40,10 @@ class ImageController  extends Controller
         /** @var ImageRepository $imageRepository */
         $imageRepository = $this->get(Image::class);
 
-
         /** @var Image $image */
         $image = $imageRepository->getImageByToken($token);
         if($image == null)
-            return $this->restful([new WrapperNormalizer()],new ErrorWrapper("Unknown image"),410);
+            return RestfulEnvelope::errorResponseTemplate("Unknown image")->setStatus(410)->response();
 
         return new BinaryFileResponse( $imageUploadService->getTargetDir().'/'. $imageUploadService->getImagePath($image));
     }

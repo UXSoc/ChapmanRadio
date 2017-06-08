@@ -47,9 +47,7 @@ class ShowNormalizer implements NormalizerInterface, NormalizerAwareInterface
             'genres' => $object->getGenres()->getKeys(),
             'djs' => array_map(function (Dj $dj) use ($format,$context) {
                 if($this->normalizer->supportsNormalization($dj,$format))
-                {
                     return $this->normalizer->normalize($dj,$format,$context);
-                }
                 return [];
             }, $object->getDjs()->toArray())
         ];

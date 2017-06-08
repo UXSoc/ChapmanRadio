@@ -52,10 +52,6 @@ class StreamController extends Controller
                 //return $this->messageError("Show Not Bound to Event", 410);
 
         }
-           // return $this->messageError("Show Not Found", 410);
-
-       // if ($event == null)
-       //     return $this->messageError("No Shows Scheduled", 410);
 
 
     }

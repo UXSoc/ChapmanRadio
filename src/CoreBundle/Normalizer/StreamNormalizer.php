@@ -2,7 +2,7 @@
 namespace CoreBundle\Normalizer;
 
 
-use CoreBundle\Entity\Stream;
+use BroadcastBundle\Entity\Stream;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 

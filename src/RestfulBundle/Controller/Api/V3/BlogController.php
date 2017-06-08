@@ -12,6 +12,7 @@ use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Comment;
 use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Helper\SuccessWrapper;
+use CoreBundle\Normalizer\DateTimeNormalizer;
 use CoreBundle\Normalizer\PostNormalizer;
 use CoreBundle\Normalizer\CategoryNormalizer;
 use CoreBundle\Normalizer\CommentNormalizer;
@@ -51,7 +52,8 @@ class BlogController extends Controller
             $request->get('page',0),
             $request->get('entries',10),20);
 
-        return RestfulEnvelope::successResponseTemplate(null,$pagination,[new PostNormalizer(),new UserNormalizer(),new PaginatorNormalizer()])->response();
+        return RestfulEnvelope::successResponseTemplate(null,$pagination,
+            [new PostNormalizer(),new UserNormalizer(),new PaginatorNormalizer(),new DateTimeNormalizer()])->response();
     }
 
     /**

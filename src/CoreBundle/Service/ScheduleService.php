@@ -5,13 +5,16 @@ namespace CoreBundle\Service;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use CoreBundle\Caches;
 use CoreBundle\Entity\Event;
 use CoreBundle\Entity\Schedule;
 use CoreBundle\Entity\Show;
 use CoreBundle\Helper\ScheduleEntry;
 use CoreBundle\Repository\ScheduleRepository;
+use CoreBundle\Repository\ShowRepository;
 use DateTime;
 use Psr\Cache\CacheItemPoolInterface;
+use Recurr\Exception;
 use Recurr\Rule;
 use Recurr\Transformer\ArrayTransformer;
 use Recurr\Transformer\Constraint\BeforeConstraint;
@@ -21,7 +24,7 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class ScheduleService
 {
-    const SCHEDULE_EVENTS = "scheduler.events.";
+
 
     private  $registry;
     private $cacheService;
@@ -34,6 +37,11 @@ class ScheduleService
 
     public function createSchedule(Rule $rule,DateTime $startDate, DateTime $endDate,DateTime $startTime,DateTime $endTime)
     {
+        if($startDate > $endDate)
+            throw new \Exception("start date has to less then end date");
+        if($startTime > $endTime)
+            throw new \Exception("start time has to be less then end time");
+
         $schedule = new Schedule();
         $schedule->setStartDate($startDate);
         $schedule->setEndDate($endDate);
@@ -59,7 +67,7 @@ class ScheduleService
     private function getScheduleResult(DateTime $day, $schedule_entries)
     {
 
-        $key = ScheduleService::SCHEDULE_EVENTS. substr(hash('sha256',json_encode($schedule_entries)),0,10) .'.'. Carbon::instance($day)->toDateString() ;
+        $key = Caches::SCHEDULE_EVENTS. substr(hash('sha256',json_encode($schedule_entries)),0,10) .'.'. Carbon::instance($day)->toDateString() ;
         $entries =[];
         $cacheItem =  $this->cacheService->getItem($key);
         if(!$cacheItem->isHit()) {
@@ -90,7 +98,7 @@ class ScheduleService
             }
 
             $cacheItem->set($entries);
-            $cacheItem->expiresAfter(new CarbonInterval(0, 0, 0, 1, 0, 0, 0));
+            $cacheItem->expiresAfter(new CarbonInterval(0, 0, 1, 0, 0, 0, 0));
             $this->cacheService->save( $cacheItem);
         }
         else
@@ -98,6 +106,7 @@ class ScheduleService
             /** @var  $items */
             $items = $cacheItem->get();
 
+            /** @var ShowRepository $showRepository */
             $showRepository = $this->registry->getRepository(Show::class);
             /** @var ScheduleEntry $item */
             foreach ($items as $item)

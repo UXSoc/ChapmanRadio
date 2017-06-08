@@ -2,62 +2,183 @@
 
 namespace RestfulBundle\Controller\Api\V3\Secure;
 
-use CoreBundle\Entity\Event;
+use Carbon\Carbon;
+use CoreBundle\Entity\Schedule;
 use CoreBundle\Entity\Show;
 use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Normalizer\EventNormalizer;
+use CoreBundle\Normalizer\DateTimeNormalizer;
+use CoreBundle\Normalizer\DjNormalizer;
+use CoreBundle\Normalizer\ShowNormalizer;
+use CoreBundle\Repository\ScheduleRepository;
 use CoreBundle\Repository\ShowRepository;
+use CoreBundle\Service\ScheduleService;
+use Recurr\Rule;
+use RestfulBundle\Validation\RRuleType;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
+ * @Security("has_role('ROLE_STAFF')")
  * @Route("/api/v3/private")
  */
 class ScheduleController extends Controller
 {
-    /**
-     * @Security("has_role('ROLE_STAFF')")
-     * @Route("/show/{token}/{slug}/schedule/event/recurring", options = { "expose" = true }, name="post_schedule_recurring_show")
-     * @Method({"POST"})
-     */
-    public function postScheduleRecurringShowAction(Request $request, $token, $slug)
-    {
-        $request->get('weekly', null);
-        $request->get('month', null);
 
+
+    /**
+     * @Route("/schedule/{token}",
+     *     options = { "expose" = true },
+     *     name="patch_show_schedule")
+     * @Method({"PATCH"})
+     */
+    public function patchScheduleAction(Request $request, $token)
+    {
+        /** @var ValidatorInterface $validator */
+        $validator = $this->get('validator');
+
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var ScheduleRepository $scheduleRepository */
+        $scheduleRepository = $this->get(Schedule::class);
+
+        /** @var Schedule $schedule */
+        if($schedule = $scheduleRepository->getByToken($token)) {
+            $rule = new Rule($schedule->getMeta());
+
+            $ruleType = new RRuleType();
+
+            $ruleType->setByYearDay($request->get('byYearDay',$rule->getByYearDay()));
+            $ruleType->setByDay($request->get('days', $rule->getByDay()));
+            $ruleType->setByMonthDay($request->get('byMonthDay', $rule->getByMonthDay()));
+            $ruleType->setByWeekNumber($request->get('byWeekNumber', $rule->getByWeekNumber()));
+            $ruleType->setExceptionDate($request->get('exceptionDates', $rule->getExDates()));
+
+            $ruleType->setStartTime($request->get('startTime', $ruleType->getStartTime()));
+            $ruleType->setEndTime($request->get('endTime', $ruleType->getEndTime()));
+            $ruleType->setStartDate($request->get('startDate', $ruleType->getStartDate()));
+            $ruleType->setEndDate($request->get('endDate', $ruleType->getEndDate()));
+
+            $errors = $validator->validate($ruleType);
+            if ($errors->count() > 0)
+                return RestfulEnvelope::errorResponseTemplate("Invalid Schedule")->addErrors($errors)->response();
+
+            $em->persist($schedule);
+            return RestfulEnvelope::successResponseTemplate('Schedule Entry',
+                $schedule, [new DateTimeNormalizer(), new ShowNormalizer(), new DjNormalizer()])->response();
+        }
+
+        return RestfulEnvelope::errorResponseTemplate("Unknown Show")->setStatus(410)->response();
     }
 
+
+
+
     /**
-     * @Security("has_role('ROLE_STAFF')")
-     * @Route("/show/{token}/{slug}/schedule/event",
+     * @Route("/show/{token}/{slug}/schedule",
      *     options = { "expose" = true },
-     *     name="post_show_schedule_event")
-     * @Method({"PUT"})
+     *     name="post_show_schedule")
+     * @Method({"POST"})
      */
-    public function postScheduleEventAction(Request $request, $token, $slug)
+    public function postScheduleAction(Request $request, $token, $slug)
     {
+        /** @var ScheduleService $scheduleService */
+        $scheduleService = $this->get(ScheduleService::class);
+
+        /** @var ValidatorInterface $validator */
+        $validator = $this->get('validator');
+
         $em = $this->getDoctrine()->getManager();
 
         /** @var ShowRepository $showRepository */
-        $showRepository = $em->getRepository(Show::class);
+        $showRepository = $this->get(Show::class);
 
         /** @var Show $show */
-        if($show = $showRepository->getShowByTokenAndSlug($token, $slug))
+        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug))
         {
-            $event = new Event();
-            $event->setStart(new \DateTime($request->get("start", null)));
-            $event->setEnd(new \DateTime( $request->get("end", null)));
-            $em->persist($event);
+            $ruleType  = new RRuleType();
 
-            $show->addEvent($event);
+            $ruleType->setByYearDay($request->get('byYearDay',[]));
+            $ruleType->setByMonthDay($request->get('byMonthDay',[]));
+            $ruleType->setByWeekNumber($request->get('byWeekNumber',[]));
+            $ruleType->setByDay($request->get('byDays',[]));
+            $ruleType->setExceptionDate($request->get('exceptionDates',[]));
+
+            $ruleType->setStartTime($request->get('startTime',null));
+            $ruleType->setEndTime($request->get('endTime',null));
+            $ruleType->setStartDate($request->get('startDate',null));
+            $ruleType->setEndDate($request->get('endDate',null));
+
+            $errors = $validator->validate($ruleType);
+            if($errors->count() > 0)
+                return RestfulEnvelope::errorResponseTemplate("Invalid Schedule")->addErrors($errors)->response();
+
+            $schedule = $scheduleService->createSchedule( $ruleType->getRule(),
+                Carbon::createFromFormat("YYYY-MM-DD",$ruleType->getStartDate()),
+                Carbon::createFromFormat("YYYY-MM-DD",$ruleType->getEndDate()),
+                Carbon::createFromFormat("HH:MM:SS",$ruleType->getStartTime()),
+                Carbon::createFromFormat("HH:MM:SS",$ruleType->getEndTime()));
+            $em->persist($schedule);
+            $show->addSchedule($schedule);
             $em->persist($show);
-            $em->flush();
-            return RestfulEnvelope::successResponseTemplate('Event added',$event,[new EventNormalizer()])->response();
+            return RestfulEnvelope::successResponseTemplate('Schedule Entry',
+                $schedule,[new DateTimeNormalizer(),new ShowNormalizer(), new DjNormalizer()])->response();
         }
-        return RestfulEnvelope::errorResponseTemplate('Show not found')->response();
-
+        return RestfulEnvelope::errorResponseTemplate("Unknown Show")->setStatus(410)->response();
     }
+
+
+
+
+    /**
+     * @Route("/show/{token}/{slug}/schedule/{year}/{month}",
+     *     options = { "expose" = true },
+     *     name="get_show_schedule_month")
+     * @Method({"GET"})
+     */
+    public function getScheduleByMonthAction(Request $request, $token, $slug, $year, $month)
+    {
+        /** @var ScheduleService $scheduleService */
+        $scheduleService = $this->get(ScheduleService::class);
+
+        $date = Carbon::create($year,$month);
+
+        /** @var ShowRepository $showRepository */
+        $showRepository = $this->get(Show::class);
+
+        /** @var ScheduleRepository $scheduleRepository */
+        $scheduleRepository = $this->get(Schedule::class);
+
+        /** @var Show $show */
+        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug))
+        {
+            $schedules = $scheduleRepository->getByShowDatetimeRange($date->copy()->startOfMonth(),$date->copy()->endOfMonth(),$show,false);
+            return RestfulEnvelope::successResponseTemplate('Schedule',
+                $schedules,[new DateTimeNormalizer(),new ShowNormalizer(), new DjNormalizer()])->response();
+
+        }
+        return RestfulEnvelope::errorResponseTemplate("Unknown Show")->setStatus(410)->response();
+    }
+
+    /**
+     * @Route("/schedule/{year}/{month}",
+     *     options = { "expose" = true },
+     *     name="get_schedule_month")
+     * @Method({"GET"})
+     */
+    public function getSchedule(Request $request, $year, $month)
+    {
+        /** @var ScheduleRepository $scheduleRepository */
+        $scheduleRepository = $this->get(Schedule::class);
+
+        $date = Carbon::create($year,$month);
+        $schedules = $scheduleRepository->getByDatetimeRange($date->copy()->startOfMonth(),$date->copy()->endOfMonth(),false);
+        return RestfulEnvelope::successResponseTemplate('Schedule',
+            $schedules,[new DateTimeNormalizer(),new ShowNormalizer(), new DjNormalizer()])->response();
+    }
+
 }
