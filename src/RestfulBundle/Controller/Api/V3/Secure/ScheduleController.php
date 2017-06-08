@@ -7,9 +7,9 @@ use CoreBundle\Entity\Show;
 use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Normalizer\EventNormalizer;
 use CoreBundle\Repository\ShowRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -27,7 +27,6 @@ class ScheduleController extends Controller
     {
         $request->get('weekly', null);
         $request->get('month', null);
-
     }
 
     /**
@@ -45,19 +44,19 @@ class ScheduleController extends Controller
         $showRepository = $em->getRepository(Show::class);
 
         /** @var Show $show */
-        if($show = $showRepository->getShowByTokenAndSlug($token, $slug))
-        {
+        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug)) {
             $event = new Event();
-            $event->setStart(new \DateTime($request->get("start", null)));
-            $event->setEnd(new \DateTime( $request->get("end", null)));
+            $event->setStart(new \DateTime($request->get('start', null)));
+            $event->setEnd(new \DateTime($request->get('end', null)));
             $em->persist($event);
 
             $show->addEvent($event);
             $em->persist($show);
             $em->flush();
-            return RestfulEnvelope::successResponseTemplate('Event added',$event,[new EventNormalizer()])->response();
-        }
-        return RestfulEnvelope::errorResponseTemplate('Show not found')->response();
 
+            return RestfulEnvelope::successResponseTemplate('Event added', $event, [new EventNormalizer()])->response();
+        }
+
+        return RestfulEnvelope::errorResponseTemplate('Show not found')->response();
     }
 }

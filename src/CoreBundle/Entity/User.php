@@ -1,19 +1,18 @@
 <?php
+
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
+
 namespace CoreBundle\Entity;
 
-
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\PersistentCollection;
-use phpDocumentor\Reflection\Types\String_;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
-
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * User
+ * User.
  *
  * @ORM\Entity(repositoryClass="CoreBundle\Repository\UserRepository")
  * @UniqueEntity(fields="email", message="Email already taken")
@@ -26,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class User implements AdvancedUserInterface
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
@@ -35,7 +34,7 @@ class User implements AdvancedUserInterface
     private $id;
 
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="facebook_id", type="bigint", nullable=true)
      */
@@ -45,7 +44,6 @@ class User implements AdvancedUserInterface
      * @var string
      *
      * @ORM\Column(name="token", type="string",length=20, nullable=false,unique=true)
-     *
      */
     private $token;
 
@@ -92,7 +90,7 @@ class User implements AdvancedUserInterface
     private $password;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="suspended", type="boolean", nullable=false)
      */
@@ -120,12 +118,11 @@ class User implements AdvancedUserInterface
     private $username;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="confirmed", type="boolean", nullable=false)
      */
     private $confirmed = 0;
-
 
     /**
      * @var Dj
@@ -133,11 +130,9 @@ class User implements AdvancedUserInterface
      */
     private $dj;
 
-
     /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="Role", mappedBy="user", cascade={"persist"})
-     *
      */
     private $roles;
 
@@ -148,7 +143,6 @@ class User implements AdvancedUserInterface
      */
     private $userMeta;
 
-
     public function __construct()
     {
         $this->userMeta = new ArrayCollection();
@@ -156,7 +150,6 @@ class User implements AdvancedUserInterface
     }
 
     /**
-     *
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
@@ -165,13 +158,14 @@ class User implements AdvancedUserInterface
         $this->updatedAt = new \DateTime('now');
 
         if ($this->createdAt == null) {
-            $this->token = substr(bin2hex(random_bytes(12)),10);
+            $this->token = substr(bin2hex(random_bytes(12)), 10);
             $this->createdAt = new \DateTime('now');
         }
     }
 
     /**
      * @param UserMeta $meta
+     *
      * @return bool
      */
     public function addUserMeta($meta)
@@ -181,6 +175,7 @@ class User implements AdvancedUserInterface
 
     /**
      * @param string $key
+     *
      * @return mixed|null
      */
     public function getUserMeta($key)
@@ -190,6 +185,7 @@ class User implements AdvancedUserInterface
 
     /**
      * @param string $key
+     *
      * @return bool
      */
     public function hasUserMeta($key)
@@ -279,7 +275,8 @@ class User implements AdvancedUserInterface
     }
 
     /**
-     * Retrieves Chapman Student Id
+     * Retrieves Chapman Student Id.
+     *
      * @return string
      */
     public function getStudentId()
@@ -288,7 +285,8 @@ class User implements AdvancedUserInterface
     }
 
     /**
-     * Sets the student Id
+     * Sets the student Id.
+     *
      * @param $id
      */
     public function setStudentId($id)
@@ -296,9 +294,9 @@ class User implements AdvancedUserInterface
         $this->studentId = $id;
     }
 
-
     /**
-     * Marks the user as confirmed
+     * Marks the user as confirmed.
+     *
      * @param $confirmed
      */
     public function setConfirmed($confirmed)
@@ -325,11 +323,11 @@ class User implements AdvancedUserInterface
     public function getRoles()
     {
         $roles = [];
-        $roles[] = new \Symfony\Component\Security\Core\Role\Role("ROLE_USER");
-        if ($this->isDj())
-            $roles[] = new \Symfony\Component\Security\Core\Role\Role("ROLE_DJ");
+        $roles[] = new \Symfony\Component\Security\Core\Role\Role('ROLE_USER');
+        if ($this->isDj()) {
+            $roles[] = new \Symfony\Component\Security\Core\Role\Role('ROLE_DJ');
+        }
         $roles = array_merge($roles, $this->roles->toArray());
-
 
         return $roles;
     }
@@ -342,7 +340,6 @@ class User implements AdvancedUserInterface
         $role->setUser($this);
         $this->roles->add($role);
     }
-
 
     /**
      * Returns the password used to authenticate the user.
@@ -358,7 +355,8 @@ class User implements AdvancedUserInterface
     }
 
     /**
-     * set the user password
+     * set the user password.
+     *
      * @param $password
      */
     public function setPassword($password)
@@ -375,7 +373,6 @@ class User implements AdvancedUserInterface
      */
     public function getSalt()
     {
-        return null;
     }
 
     /**
@@ -387,7 +384,6 @@ class User implements AdvancedUserInterface
     {
         return $this->username;
     }
-
 
     /**
      * Checks whether the user's account has expired.
@@ -416,7 +412,7 @@ class User implements AdvancedUserInterface
      */
     public function isAccountNonLocked()
     {
-        return (!$this->suspended);
+        return !$this->suspended;
     }
 
     /**
@@ -450,7 +446,8 @@ class User implements AdvancedUserInterface
     }
 
     /**
-     * User token to hide user ids
+     * User token to hide user ids.
+     *
      * @return string
      */
     public function getToken()
@@ -459,7 +456,8 @@ class User implements AdvancedUserInterface
     }
 
     /**
-     * tells if the user is suspended
+     * tells if the user is suspended.
+     *
      * @return bool
      */
     public function isSuspended()
@@ -477,4 +475,3 @@ class User implements AdvancedUserInterface
     {
     }
 }
-

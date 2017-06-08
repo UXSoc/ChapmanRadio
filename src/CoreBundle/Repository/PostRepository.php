@@ -1,6 +1,6 @@
 <?php
-namespace CoreBundle\Repository;
 
+namespace CoreBundle\Repository;
 
 use CoreBundle\Entity\Post;
 use Doctrine\ORM\EntityRepository;
@@ -11,52 +11,48 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PostRepository extends EntityRepository
 {
-
-
     public function findPostByName($name)
     {
         return $this->createQueryBuilder('p')
             ->where('p.name = :name')
-            ->setParameter('name',$name)
+            ->setParameter('name', $name)
             ->getQuery()
             ->getSingleResult();
     }
 
-    public function getPostByTokenAndSlug($token,$slug)
+    public function getPostByTokenAndSlug($token, $slug)
     {
-        return $this->findOneBy(["token" => $token,"slug" => $slug]);
+        return $this->findOneBy(['token' => $token, 'slug' => $slug]);
     }
 
     public function filter(Request $request)
     {
         $qb = $this->createQueryBuilder('s');
-        if($name = $request->get('name',null))
-        {
-            $qb->where($qb->expr()->like('name',':name'))
-                ->setParameter('name','%' .$name.'%');
+        if ($name = $request->get('name', null)) {
+            $qb->where($qb->expr()->like('name', ':name'))
+                ->setParameter('name', '%'.$name.'%');
         }
 
-        if($tags = $request->get('tag',null))
-        {
-            $qb->join('s.tags','t',"WITH");
-            if(!is_array($tags))
-                $tags = array($tags);
+        if ($tags = $request->get('tag', null)) {
+            $qb->join('s.tags', 't', 'WITH');
+            if (!is_array($tags)) {
+                $tags = [$tags];
+            }
 
-            foreach ($tags as $tag)
-            {
-                $qb->where($qb->expr()->eq('t.tag',':tag'))
-                    ->setParameter('tag',$tag);
+            foreach ($tags as $tag) {
+                $qb->where($qb->expr()->eq('t.tag', ':tag'))
+                    ->setParameter('tag', $tag);
             }
         }
 
-        if($categories = $request->get('category',null))
-        {
-            $qb->join('s.categories','c','WITH');
-            if(!is_array($categories))
-                $categories = array($categories);
+        if ($categories = $request->get('category', null)) {
+            $qb->join('s.categories', 'c', 'WITH');
+            if (!is_array($categories)) {
+                $categories = [$categories];
+            }
             foreach ($categories as $category) {
-                $qb->where($qb->expr()->eq('c.category',':category'))
-                    ->setParameter('category',$category);
+                $qb->where($qb->expr()->eq('c.category', ':category'))
+                    ->setParameter('category', $category);
             }
         }
 
@@ -68,14 +64,16 @@ class PostRepository extends EntityRepository
      * @param $page
      * @param $perPage
      * @param int $limit
+     *
      * @return Paginator
      */
-    public function  paginator(Query $query,$page,$perPage,$limit = 10)
+    public function paginator(Query $query, $page, $perPage, $limit = 10)
     {
         $pagination = new Paginator($query);
-        $num = $perPage > $limit ? $perPage :  $limit;
+        $num = $perPage > $limit ? $perPage : $limit;
         $pagination->getQuery()->setMaxResults($num);
         $pagination->getQuery()->setFirstResult($num * $page);
+
         return $pagination;
     }
 
@@ -83,16 +81,15 @@ class PostRepository extends EntityRepository
      * @param Post $post
      * @param  $tag
      */
-    public function getPostsByTag($post,$tag)
+    public function getPostsByTag($post, $tag)
     {
-
     }
 
     /**
-     * @param Post $post
+     * @param Post     $post
      * @param Category $category
      */
-    public  function getPostsByCategory( $post, $category)
+    public function getPostsByCategory($post, $category)
     {
     }
 }

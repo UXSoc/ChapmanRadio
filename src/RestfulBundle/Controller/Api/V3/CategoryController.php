@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 5/30/17
- * Time: 2:43 PM
+ * Time: 2:43 PM.
  */
 
 namespace RestfulBundle\Controller\Api\V3;
@@ -12,12 +12,10 @@ use CoreBundle\Entity\Category;
 use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Normalizer\CategoryNormalizer;
 use CoreBundle\Repository\CategoryRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 /**
  * @Route("/api/v3/")
@@ -37,7 +35,7 @@ class CategoryController extends Controller
         $categoryRepository = $em->getRepository(Category::class);
 
         return RestfulEnvelope::successResponseTemplate(
-            null,$categoryRepository->findAll(),[new CategoryNormalizer()])->response();
+            null, $categoryRepository->findAll(), [new CategoryNormalizer()])->response();
     }
 
     /**
@@ -53,11 +51,11 @@ class CategoryController extends Controller
         /** @var CategoryRepository $categoryRepository */
         $categoryRepository = $em->getRepository(Category::class);
 
-        if ($category = $categoryRepository->getCategory($name))
+        if ($category = $categoryRepository->getCategory($name)) {
             return RestfulEnvelope::successResponseTemplate(
-                null,$category,[new CategoryNormalizer()])->response();
+                null, $category, [new CategoryNormalizer()])->response();
+        }
+
         return RestfulEnvelope::errorResponseTemplate("Can't find Category")->setStatus(410)->response();
-
     }
-
 }

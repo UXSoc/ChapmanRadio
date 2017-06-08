@@ -1,21 +1,22 @@
 <?php
+
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
+
 namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ShowSchedule
+ * ShowSchedule.
  *
  * @ORM\Table(name="schedule")
  * @ORM\Entity(repositoryClass="CoreBundle\Repository\ScheduleRepository")
  */
 class Schedule
 {
-
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
@@ -59,13 +60,11 @@ class Schedule
      */
     private $show;
 
-
     /**
      * @var ArrayCollection
      * @ORM\Column(name="meta",type="string")
      */
     private $meta;
-
 
     public function __construct()
     {
@@ -135,6 +134,4 @@ class Schedule
     {
         return $this->endDate;
     }
-
 }
-

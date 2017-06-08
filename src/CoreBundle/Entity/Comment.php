@@ -1,5 +1,7 @@
 <?php
+
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
+
 namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -8,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Comment
+ * Comment.
  *
  * @ORM\Table(name="comment", indexes={@ORM\Index(name="comment_comment_id_id_fk", columns={"comment_id"}), @ORM\Index(name="comment_user_id_fk", columns={"user_id"})})
  * @ORM\Entity(repositoryClass="CoreBundle\Repository\CommentRepository")
@@ -18,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Comment
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
@@ -51,7 +53,6 @@ class Comment
      * @var string
      *
      * @ORM\Column(name="token", type="string",length=100, nullable=false,unique=true)
-     *
      */
     private $token;
 
@@ -64,7 +65,6 @@ class Comment
      * })
      */
     private $parentComment = null;
-
 
     /**
      * @var ArrayCollection
@@ -89,24 +89,21 @@ class Comment
     /**
      * @var Collection
      * @ORM\ManyToMany(targetEntity="Post",mappedBy="comments")
-     *
      */
     private $post;
 
     /**
      * @var Collection
      * @ORM\ManyToMany(targetEntity="Show",mappedBy="comments")
-     *
      */
     private $show;
 
-    function __construct()
+    public function __construct()
     {
         $this->childrenComment = new ArrayCollection();
     }
 
     /**
-     *
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
@@ -114,7 +111,7 @@ class Comment
     {
         $this->updatedAt = new \DateTime('now');
         if ($this->createdAt == null) {
-            $this->token = substr(bin2hex(random_bytes(12)),10);
+            $this->token = substr(bin2hex(random_bytes(12)), 10);
             $this->createdAt = new \DateTime('now');
         }
     }
@@ -124,12 +121,12 @@ class Comment
         return $this->id;
     }
 
-    public  function getContent()
+    public function getContent()
     {
         return $this->content;
     }
 
-    public  function setContent($content)
+    public function setContent($content)
     {
         $this->content = $content;
     }
@@ -139,7 +136,7 @@ class Comment
         return $this->parentComment;
     }
 
-    public  function setParentComment($parentComment)
+    public function setParentComment($parentComment)
     {
         $this->parentComment = $parentComment;
     }
@@ -149,12 +146,12 @@ class Comment
         return $this->childrenComment;
     }
 
-    public  function getUser()
+    public function getUser()
     {
         return $this->user;
     }
 
-    public  function setUser($user)
+    public function setUser($user)
     {
         $this->user = $user;
     }
@@ -164,7 +161,7 @@ class Comment
         return $this->updateAt;
     }
 
-    public  function getCreateAt()
+    public function getCreateAt()
     {
         return $this->createdAt;
     }
@@ -184,4 +181,3 @@ class Comment
         return $this->show->first();
     }
 }
-

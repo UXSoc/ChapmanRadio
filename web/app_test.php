@@ -1,7 +1,8 @@
 <?php
-require_once(__DIR__ . '/../c3.php');
-use Symfony\Component\HttpFoundation\Request;
+
+require_once __DIR__.'/../c3.php';
 use Symfony\Component\Debug\Debug;
+use Symfony\Component\HttpFoundation\Request;
 
 // If you don't want to setup permissions the proper way, just uncomment the following PHP line
 // read http://symfony.com/doc/current/setup.html#checking-symfony-application-configuration-and-setup
@@ -20,7 +21,6 @@ if (isset($_SERVER['HTTP_CLIENT_IP'])
 
 define('C3_CODECOVERAGE_ERROR_LOG_FILE', '/path/to/c3_error.log'); //Optional (if not set the default c3 output dir will be used)
 include '../c3.php';
-
 
 /** @var \Composer\Autoload\ClassLoader $loader */
 $loader = require __DIR__.'/../app/autoload.php';

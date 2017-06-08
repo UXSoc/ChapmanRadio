@@ -1,6 +1,6 @@
 <?php
-namespace HybridAuthBundle;
 
+namespace HybridAuthBundle;
 
 use HybridAuthBundle\DependencyInjection\HybridAuthExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 6/3/17
- * Time: 6:37 PM
+ * Time: 6:37 PM.
  */
 class HybridAuthBundle extends Bundle
 {

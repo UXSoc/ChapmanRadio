@@ -1,4 +1,5 @@
 <?php
+
 use CoreBundle\Entity\Tag;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -10,16 +11,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 5/25/17
- * Time: 6:07 PM
+ * Time: 6:07 PM.
  */
 class LoadTagData extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
-
     /**
      * @var ContainerInterface
      */
     private $container;
-
 
     /**
      * Sets the container.
@@ -32,7 +31,7 @@ class LoadTagData extends AbstractFixture implements OrderedFixtureInterface, Co
     }
 
     /**
-     * Load data fixtures with the passed EntityManager
+     * Load data fixtures with the passed EntityManager.
      *
      * @param ObjectManager $manager
      */
@@ -40,10 +39,9 @@ class LoadTagData extends AbstractFixture implements OrderedFixtureInterface, Co
     {
         $faker = Faker\Factory::create();
 
-        for($i = 0; $i < 50; $i++)
-        {
+        for ($i = 0; $i < 50; $i++) {
             $tag = new Tag();
-            $tag->setTag( $faker->unique()->word);
+            $tag->setTag($faker->unique()->word);
             $manager->persist($tag);
         }
         {
@@ -56,9 +54,9 @@ class LoadTagData extends AbstractFixture implements OrderedFixtureInterface, Co
     }
 
     /**
-     * Get the order of this fixture
+     * Get the order of this fixture.
      *
-     * @return integer
+     * @return int
      */
     public function getOrder()
     {

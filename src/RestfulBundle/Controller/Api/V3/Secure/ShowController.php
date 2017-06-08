@@ -5,23 +5,19 @@ namespace RestfulBundle\Controller\Api\V3\Secure;
 use CoreBundle\Entity\Image;
 use CoreBundle\Entity\Show;
 use CoreBundle\Entity\Tag;
-use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\ImageNormalizer;
 use CoreBundle\Normalizer\ShowNormalizer;
 use CoreBundle\Normalizer\TagNormalizer;
-use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\ShowRepository;
 use CoreBundle\Repository\TagRepository;
 use CoreBundle\Security\ShowVoter;
 use CoreBundle\Service\ImageUploadService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -50,15 +46,15 @@ class ShowController extends Controller
         $show->setEnableComments($request->get('enable_comments'));
 
         $errors = $validator->validate($show);
-        if($errors->count() > 0)
+        if ($errors->count() > 0) {
             return RestfulEnvelope::errorResponseTemplate('Invalid show')->addErrors($errors)->response();
+        }
 
         $em->persist($show);
         $em->flush();
 
-        return RestfulEnvelope::successResponseTemplate('Show created',$show,[new ShowNormalizer()]);
+        return RestfulEnvelope::successResponseTemplate('Show created', $show, [new ShowNormalizer()]);
     }
-
 
     /**
      * @Security("has_role('ROLE_DJ')")
@@ -78,8 +74,7 @@ class ShowController extends Controller
         $showRepository = $this->get(Show::class);
 
         /** @var Show $show */
-        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug))
-        {
+        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug)) {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
 
             $show->setName($request->get('name', $show->getName()));
@@ -88,17 +83,18 @@ class ShowController extends Controller
             $show->setEnableComments($request->get('enable_comments', $show->getEnableComments()));
 
             $errors = $validator->validate($show);
-            if($errors->count() > 0)
+            if ($errors->count() > 0) {
                 return RestfulEnvelope::errorResponseTemplate('Invalid show')->addErrors($errors)->response();
+            }
 
             $em->persist($show);
             $em->flush();
 
-            return RestfulEnvelope::successResponseTemplate('Show updated',$show,[new ShowNormalizer()]);
+            return RestfulEnvelope::successResponseTemplate('Show updated', $show, [new ShowNormalizer()]);
         }
+
         return RestfulEnvelope::errorResponseTemplate('Invalid show')->response();
     }
-
 
     /**
      * @Security("has_role('ROLE_DJ') | has_role('ROLE_STAFF')")
@@ -115,15 +111,14 @@ class ShowController extends Controller
         $showRepository = $this->get(Show::class);
 
         /** @var Show $show */
-        if ( $show = $showRepository->getShowByTokenAndSlug($token, $slug))
-        {
+        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug)) {
             $this->denyAccessUnlessGranted(ShowVoter::DELETE, $show);
             $em->remove($show);
             $em->flush();
         }
+
         return RestfulEnvelope::errorResponseTemplate('Show not found')->setStatus(410)->response();
     }
-
 
     /**
      * @Route("/show/{token}/{slug}/tag/{tag}",
@@ -138,11 +133,11 @@ class ShowController extends Controller
         /** @var ShowRepository $showRepository */
         $showRepository = $em->getRepository(Show::class);
         /** @var Show $show */
-        if($show = $showRepository->getShowByTokenAndSlug($token, $slug))
-        {
+        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug)) {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
-            if($show->getTags()->containsKey($tag))
+            if ($show->getTags()->containsKey($tag)) {
                 return RestfulEnvelope::errorResponseTemplate('duplicate Tag')->response();
+            }
 
             /** @var TagRepository $tagRepository */
             $tagRepository = $this->get(Tag::class);
@@ -153,8 +148,9 @@ class ShowController extends Controller
             $em->persist($show);
             $em->flush();
 
-            return RestfulEnvelope::successResponseTemplate('Tag added',$tag,[new TagNormalizer()])->response();
+            return RestfulEnvelope::successResponseTemplate('Tag added', $tag, [new TagNormalizer()])->response();
         }
+
         return RestfulEnvelope::errorResponseTemplate('Post not found')->response();
     }
 
@@ -169,21 +165,21 @@ class ShowController extends Controller
         /** @var ShowRepository $showRepository */
         $showRepository = $em->getRepository(Show::class);
         /** @var Show $show */
-        if($show = $showRepository->getShowByTokenAndSlug($token, $slug))
-        {
+        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug)) {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
 
-            if($s = $show->removeTag($tag)) {
+            if ($s = $show->removeTag($tag)) {
                 $em->persist($show);
                 $em->flush();
+
                 return RestfulEnvelope::successResponseTemplate('Tag deleted', $s,
                     [new TagNormalizer()])->response();
             }
+
             return RestfulEnvelope::errorResponseTemplate('Tag not found')->setStatus(410)->response();
-
         }
-        return RestfulEnvelope::errorResponseTemplate('Show not found')->response();
 
+        return RestfulEnvelope::errorResponseTemplate('Show not found')->response();
     }
 
     /**
@@ -204,9 +200,8 @@ class ShowController extends Controller
 
         /** @var ShowRepository $showRepository */
         $showRepository = $em->getRepository(Show::class);
-        /** @var Show $show */
-       if($show = $showRepository->getShowByTokenAndSlug($token, $slug))
-       {
+       /** @var Show $show */
+       if ($show = $showRepository->getShowByTokenAndSlug($token, $slug)) {
            $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
 
            $src = $request->files->get('image', null);
@@ -215,8 +210,9 @@ class ShowController extends Controller
            $image->setAuthor($this->getUser());
 
            $errors = $validator->validate($image);
-           if($errors->count() > 0)
+           if ($errors->count() > 0) {
                return RestfulEnvelope::errorResponseTemplate('invalid Image')->addErrors($errors)->response();
+           }
 
            $imageService->saveImageToFilesystem($image);
            $em->persist($image);
@@ -224,8 +220,10 @@ class ShowController extends Controller
            $show->addImage($image);
            $em->persist($show);
            $em->flush();
-           return RestfulEnvelope::successResponseTemplate('Image Uploaded',$image,[new ImageNormalizer()])->response();
+
+           return RestfulEnvelope::successResponseTemplate('Image Uploaded', $image, [new ImageNormalizer()])->response();
        }
+
         return RestfulEnvelope::errorResponseTemplate('Image error')->response();
     }
 
@@ -243,14 +241,13 @@ class ShowController extends Controller
         $showRepository = $em->getRepository(Show::class);
 
         /** @var Show $show */
-
-        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug))
-        {
+        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug)) {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
-            return RestfulEnvelope::successResponseTemplate('Image Header Uploaded',$show->getImages()->toArray(),[new ImageNormalizer()])->response();
-        }
-        return RestfulEnvelope::errorResponseTemplate('Show not found')->setStatus(410)->response();
 
+            return RestfulEnvelope::successResponseTemplate('Image Header Uploaded', $show->getImages()->toArray(), [new ImageNormalizer()])->response();
+        }
+
+        return RestfulEnvelope::errorResponseTemplate('Show not found')->setStatus(410)->response();
     }
 
     /**
@@ -273,14 +270,14 @@ class ShowController extends Controller
         $showRepository = $em->getRepository(Show::class);
 
         /** @var Show $show */
-        if ( $show = $showRepository->getShowByTokenAndSlug($token, $slug))
-        {
+        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug)) {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
 
-            $image  = $imageService->createImage($request->files->get('image', null),$this->getUser());
+            $image = $imageService->createImage($request->files->get('image', null), $this->getUser());
             $errors = $validator->validate($image);
-            if($errors->count() > 0)
+            if ($errors->count() > 0) {
                 return RestfulEnvelope::errorResponseTemplate('invalid Image')->addErrors($errors)->response();
+            }
 
             $imageService->saveImageToFilesystem($image);
             $em->persist($image);
@@ -288,8 +285,10 @@ class ShowController extends Controller
             $show->setHeaderImage($image);
             $em->persist($show);
             $em->flush();
-            return RestfulEnvelope::successResponseTemplate('Image Header Uploaded',$image,[new ImageNormalizer()])->response();
+
+            return RestfulEnvelope::successResponseTemplate('Image Header Uploaded', $image, [new ImageNormalizer()])->response();
         }
+
         return RestfulEnvelope::errorResponseTemplate('Show not found')->setStatus(410)->response();
     }
 
@@ -310,11 +309,10 @@ class ShowController extends Controller
         if ($show = $showRepository->getShowByTokenAndSlug($token, $slug)) {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
             $em->remove($show->getHeaderImage());
+
             return RestfulEnvelope::successResponseTemplate('Image Header deleted')->response();
         }
+
         return RestfulEnvelope::errorResponseTemplate('Show not found')->setStatus(410)->response();
-
     }
-
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 use Codeception\Util\HttpCode;
 use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Show;
@@ -8,22 +9,20 @@ use CoreBundle\Entity\User;
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 5/29/17
- * Time: 2:23 PM
+ * Time: 2:23 PM.
  */
 class ShowControllerCest
 {
-    private $shows = array();
+    private $shows = [];
 
     public function _before(ApiTester $I)
     {
-        /** @var Show $show */
-        $this->shows = $I->factory()->seed(20,Show::class);
-
-
+        /* @var Show $show */
+        $this->shows = $I->factory()->seed(20, Show::class);
     }
+
     public function _after(ApiTester $I)
     {
-
     }
 
     /**
@@ -36,66 +35,64 @@ class ShowControllerCest
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->isRestfulSuccessResponse();
         $I->seeResponseMatchesJsonType([
-            'count' => 'integer',
+            'count'   => 'integer',
             'perPage' => 'integer',
-            'pages' => 'integer',
-            "result" => [
+            'pages'   => 'integer',
+            'result'  => [
                 [
-                    'token' => 'string',
-                    'slug' => 'string',
-                    'name' => 'string',
-                    'description' => 'string',
-                    'created_at'=> 'array',
-                    'updated_at' => 'array',
+                    'token'           => 'string',
+                    'slug'            => 'string',
+                    'name'            => 'string',
+                    'description'     => 'string',
+                    'created_at'      => 'array',
+                    'updated_at'      => 'array',
                     'enable_comments' => 'boolean',
-                ]
-            ]
-        ],'$.data');
+                ],
+            ],
+        ], '$.data');
     }
 
     public function tryGetShow(ApiTester $I)
     {
         /** @var Show $show */
-        $show = $this->shows[array_rand($this->shows,1)];
+        $show = $this->shows[array_rand($this->shows, 1)];
 
         $I->sendGET('/api/v3/show/'.$show->getToken().'/'.$show->getSlug());
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->isRestfulSuccessResponse();
         $I->seeResponseMatchesJsonType([
-            "data" => [
-                'token' => 'string',
-                'slug' => 'string',
-                'name' => 'string',
-                'description' => 'string',
-                'created_at'=> 'array',
-                'updated_at' => 'array',
-                'enable_comments' => 'boolean'
-            ]
+            'data' => [
+                'token'           => 'string',
+                'slug'            => 'string',
+                'name'            => 'string',
+                'description'     => 'string',
+                'created_at'      => 'array',
+                'updated_at'      => 'array',
+                'enable_comments' => 'boolean',
+            ],
         ]);
     }
 
     public function tryToGetShowWithInvalidSlug(ApiTester $I)
     {
         /** @var Show $show */
-        $show = $this->shows[array_rand($this->shows,1)];
+        $show = $this->shows[array_rand($this->shows, 1)];
 
-        $I->sendGET('/api/v3/show/'.$show->getToken().'/'."wrongslug");
+        $I->sendGET('/api/v3/show/'.$show->getToken().'/'.'wrongslug');
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(HttpCode::GONE);
         $I->isRestfulFailedResponse();
-
     }
 
     public function tryToGetShowWithInvalidToken(ApiTester $I)
     {
         /** @var Show $show */
-        $post = $this->shows[array_rand($this->shows,1)];
+        $post = $this->shows[array_rand($this->shows, 1)];
 
         $I->sendGET('/api/v3/post/show/'.$post->getSlug());
         $I->seeResponseIsJson();
         $I->seeResponseCodeIs(HttpCode::GONE);
         $I->isRestfulFailedResponse();
-
     }
 }

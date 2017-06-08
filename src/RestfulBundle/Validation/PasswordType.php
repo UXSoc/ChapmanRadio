@@ -1,4 +1,5 @@
 <?php
+
 namespace RestfulBundle\Validation;
 
 use Symfony\Component\Validator\Constraints as Assert;
@@ -11,7 +12,7 @@ class PasswordType
      */
     private $password;
 
-    function __construct($password)
+    public function __construct($password)
     {
         $this->password = $password;
     }
@@ -21,7 +22,7 @@ class PasswordType
         $this->password = $password;
     }
 
-    public  function getPassword()
+    public function getPassword()
     {
         return $this->password;
     }

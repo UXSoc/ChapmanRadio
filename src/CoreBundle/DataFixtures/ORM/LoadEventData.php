@@ -1,4 +1,5 @@
 <?php
+
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -9,7 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 6/6/17
- * Time: 12:44 PM
+ * Time: 12:44 PM.
  */
 class LoadEventData extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
@@ -29,19 +30,18 @@ class LoadEventData extends AbstractFixture implements OrderedFixtureInterface, 
     }
 
     /**
-     * Load data fixtures with the passed EntityManager
+     * Load data fixtures with the passed EntityManager.
      *
      * @param ObjectManager $manager
      */
     public function load(ObjectManager $manager)
     {
-
     }
 
     /**
-     * Get the order of this fixture
+     * Get the order of this fixture.
      *
-     * @return integer
+     * @return int
      */
     public function getOrder()
     {

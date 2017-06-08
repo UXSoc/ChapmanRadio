@@ -3,22 +3,15 @@
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 6/6/17
- * Time: 1:32 PM
+ * Time: 1:32 PM.
  */
 
 namespace CoreBundle\EventListener;
 
-
-use CoreBundle\Event\ScheduleEvent;
-use CoreBundle\Events;
-use Recurr\RecurrenceCollection;
-use Recurr\Transformer\ArrayTransformer;
-use Recurr\Transformer\Constraint\BeforeConstraint;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SchedulerSubscriber implements EventSubscriberInterface
 {
-
     /**
      * Returns an array of event names this subscriber wants to listen to.
      *
@@ -42,8 +35,4 @@ class SchedulerSubscriber implements EventSubscriberInterface
         return [
         ];
     }
-
-
-
-
 }

@@ -3,23 +3,23 @@
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 5/25/17
- * Time: 2:43 PM
+ * Time: 2:43 PM.
  */
 
 namespace CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+
 /**
- * Genre
+ * Genre.
  *
  * @ORM\Table(name="genre")
  * @ORM\Entity(repositoryClass="CoreBundle\Repository\GenreRepository")
- *
  */
 class Genre
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
@@ -38,7 +38,7 @@ class Genre
         return $this->id;
     }
 
-    public  function getGenre()
+    public function getGenre()
     {
         return $this->genre;
     }

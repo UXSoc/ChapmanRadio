@@ -1,11 +1,13 @@
 <?php
+
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
+
 namespace CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Attendance
+ * Attendance.
  *
  * @ORM\Table(name="attendance", indexes={@ORM\Index(name="attendance_event_id_fk", columns={"event_id"}), @ORM\Index(name="attendance_strike_id_fk", columns={"strike_id"})})
  * @ORM\Entity
@@ -13,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Attendance
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
@@ -61,7 +63,4 @@ class Attendance
      * })
      */
     private $strike;
-
-
 }
-

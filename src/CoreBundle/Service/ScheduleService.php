@@ -1,7 +1,8 @@
 <?php
-// Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
-namespace CoreBundle\Service;
 
+// Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
+
+namespace CoreBundle\Service;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
@@ -14,25 +15,23 @@ use DateTime;
 use Psr\Cache\CacheItemPoolInterface;
 use Recurr\Rule;
 use Recurr\Transformer\ArrayTransformer;
-use Recurr\Transformer\Constraint\BeforeConstraint;
 use Recurr\Transformer\Constraint\BetweenConstraint;
 use Symfony\Bridge\Doctrine\RegistryInterface;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class ScheduleService
 {
-    const SCHEDULE_EVENTS = "scheduler.events.";
+    const SCHEDULE_EVENTS = 'scheduler.events.';
 
-    private  $registry;
+    private $registry;
     private $cacheService;
 
-    function __construct(RegistryInterface $register,CacheItemPoolInterface  $cacheService)
+    public function __construct(RegistryInterface $register, CacheItemPoolInterface  $cacheService)
     {
         $this->registry = $register;
-        $this->cacheService= $cacheService;
+        $this->cacheService = $cacheService;
     }
 
-    public function createSchedule(Rule $rule,DateTime $startDate, DateTime $endDate,DateTime $startTime,DateTime $endTime)
+    public function createSchedule(Rule $rule, DateTime $startDate, DateTime $endDate, DateTime $startTime, DateTime $endTime)
     {
         $schedule = new Schedule();
         $schedule->setStartDate($startDate);
@@ -41,30 +40,26 @@ class ScheduleService
         $schedule->setStartTime($startTime);
         $schedule->setEndTime($endTime);
         $schedule->setMeta($rule->getString());
+
         return $schedule;
     }
 
-    public function getEventsForDay(DateTime $day,$archive = null,$profanity = null)
+    public function getEventsForDay(DateTime $day, $archive = null, $profanity = null)
     {
         $start = Carbon::instance($day)->copy()->startOfDay();
         /** @var ScheduleRepository $scheduleRepository */
         $scheduleRepository = $this->registry->getRepository(Schedule::class);
-        $schedules = $scheduleRepository->getByDatetime($start,$archive,$profanity);
+        $schedules = $scheduleRepository->getByDatetime($start, $archive, $profanity);
 
-        return $this->getScheduleResult($day,$schedules);
-
-
+        return $this->getScheduleResult($day, $schedules);
     }
 
     private function getScheduleResult(DateTime $day, $schedule_entries)
     {
-
-        $key = ScheduleService::SCHEDULE_EVENTS. substr(hash('sha256',json_encode($schedule_entries)),0,10) .'.'. Carbon::instance($day)->toDateString() ;
-        $entries =[];
-        $cacheItem =  $this->cacheService->getItem($key);
-        if(!$cacheItem->isHit()) {
-
-
+        $key = self::SCHEDULE_EVENTS.substr(hash('sha256', json_encode($schedule_entries)), 0, 10).'.'.Carbon::instance($day)->toDateString();
+        $entries = [];
+        $cacheItem = $this->cacheService->getItem($key);
+        if (!$cacheItem->isHit()) {
             $start = Carbon::instance($day)->copy()->startOfDay();
 
             $end = Carbon::instance($day)->copy()->endOfDay();
@@ -74,7 +69,6 @@ class ScheduleService
 
             /** @var Schedule $schedule */
             foreach ($schedule_entries as $schedule) {
-
                 $rule = new Rule($schedule->getMeta(), $schedule->getStartDate(), $schedule->getEndDate());
                 $result = $transformer->transform($rule, $c);
                 if ($result->count() > 0) {
@@ -85,36 +79,30 @@ class ScheduleService
                     $entry->setStartTime($schedule->getStartTime());
                     $entry->setEndTime($schedule->getEndTime());
                     $entries[] = $entry;
-
                 }
             }
 
             $cacheItem->set($entries);
             $cacheItem->expiresAfter(new CarbonInterval(0, 0, 0, 1, 0, 0, 0));
-            $this->cacheService->save( $cacheItem);
-        }
-        else
-        {
-            /** @var  $items */
+            $this->cacheService->save($cacheItem);
+        } else {
+            /** @var $items */
             $items = $cacheItem->get();
 
             $showRepository = $this->registry->getRepository(Show::class);
             /** @var ScheduleEntry $item */
-            foreach ($items as $item)
-            {
+            foreach ($items as $item) {
                 //refreshes show items from cache
-                $item->setShow( $showRepository->find($item->getShow()->getId()));
+                $item->setShow($showRepository->find($item->getShow()->getId()));
             }
-            return $items ;
-        }
 
+            return $items;
+        }
 
         return $entries;
     }
 
-
-    public function deleteEvent(Event $event,$future= false)
+    public function deleteEvent(Event $event, $future = false)
     {
-
     }
 }

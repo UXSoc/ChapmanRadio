@@ -3,19 +3,19 @@
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 5/30/17
- * Time: 2:48 PM
+ * Time: 2:48 PM.
  */
 
 namespace RestfulBundle\Controller\Api\V3\Secure;
+
 use CoreBundle\Entity\Category;
 use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Normalizer\CategoryNormalizer;
 use CoreBundle\Repository\CategoryRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * @Route("/api/v3/private")
@@ -33,13 +33,15 @@ class CategoryController extends Controller
         /** @var CategoryRepository $categoryRepository */
         $categoryRepository = $em->getRepository(Category::class);
 
-        if($result = $categoryRepository->getCategory($category))
+        if ($result = $categoryRepository->getCategory($category)) {
             return RestfulEnvelope::errorResponseTemplate('Category found')->setStatus(400)->response();
+        }
 
         $c = new Category();
         $c->setCategory($category);
         $em->persist($c);
         $em->flush();
+
         return RestfulEnvelope::successResponseTemplate('Category added', $c,
             [new CategoryNormalizer()])->response();
     }
@@ -54,14 +56,14 @@ class CategoryController extends Controller
         $em = $this->getDoctrine()->getManager();
         /** @var CategoryRepository $categoryRepository */
         $categoryRepository = $em->getRepository(Category::class);
-        if( $result = $categoryRepository->getCategory($category))
-        {
+        if ($result = $categoryRepository->getCategory($category)) {
             $em->remove($result);
             $em->flush();
+
             return RestfulEnvelope::successResponseTemplate('Category deleted', $result,
                 [new CategoryNormalizer()])->response();
         }
+
         return RestfulEnvelope::errorResponseTemplate('Category not found')->response();
     }
-
 }

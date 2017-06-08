@@ -1,5 +1,7 @@
 <?php
+
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
+
 namespace CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -7,7 +9,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Image
+ * Image.
  *
  * @ORM\Table(name="image")
  * @ORM\Entity(repositoryClass="CoreBundle\Repository\ImageRepository")
@@ -17,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Image
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
@@ -32,7 +34,6 @@ class Image
      */
     private $source;
 
-
     /**
      * @var string
      *
@@ -40,14 +41,12 @@ class Image
      */
     private $token;
 
-
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
     private $createdAt;
-
 
     /**
      * @var UploadedFile
@@ -60,7 +59,6 @@ class Image
      */
     private $image;
 
-
     /**
      * @var User
      *
@@ -69,17 +67,14 @@ class Image
      */
     private $author;
 
-
-
     /**
-     *
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
     public function updatedTimestamps()
     {
         if ($this->createdAt === null) {
-            $this->token = substr(bin2hex(random_bytes(12)),10);
+            $this->token = substr(bin2hex(random_bytes(12)), 10);
             $this->createdAt = new \DateTime('now');
         }
     }
@@ -134,7 +129,4 @@ class Image
     {
         return $this->author;
     }
-
-
 }
-
