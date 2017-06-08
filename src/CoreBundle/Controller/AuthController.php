@@ -4,6 +4,7 @@ namespace CoreBundle\Controller;
 
 
 use CoreBundle\Event\UserEvent;
+use CoreBundle\Events;
 use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Service\UserTokenService;
 use RestfulBundle\Validation\PasswordType;
@@ -62,7 +63,7 @@ class AuthController extends Controller
         $em->persist($user);
         $em->flush();
 
-        $dispatcher->dispatch('user.confirmation',new UserEvent($user));
+        $dispatcher->dispatch(Events::USER_CONFIRMATION,new UserEvent($user));
         return RestfulEnvelope::successResponseTemplate('User registered',$user,[new UserNormalizer()]);
     }
 
@@ -81,7 +82,7 @@ class AuthController extends Controller
         if($user = $userRepository->getByToken($token))
         {        /** @var EventDispatcher $dispatcher */
             $dispatcher = $this->get('event_dispatcher');
-            $dispatcher->dispatch('user.password_reset',new UserEvent($user));
+            $dispatcher->dispatch(Events::USER_PASSWORD_RESET,new UserEvent($user));
 
             return RestfulEnvelope::successResponseTemplate('New password reset token sent');
         }
@@ -158,7 +159,7 @@ class AuthController extends Controller
         /** @var User $user */
         if($user = $userRepository->getByToken($token))
         {
-            $dispatcher->dispatch('user.confirmation',new UserEvent($user));
+            $dispatcher->dispatch(Events::USER_CONFIRMATION,new UserEvent($user));
             return RestfulEnvelope::successResponseTemplate('New confirmation token sent')->response();
         }
         return RestfulEnvelope::errorResponseTemplate("Unknown User")->response();

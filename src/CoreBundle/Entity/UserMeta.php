@@ -46,7 +46,7 @@ class UserMeta
     private $metaValue;
 
     /**
-     * @var ShowSchedule
+     * @var Schedule
      *
      * @ORM\ManyToOne(targetEntity="User",inversedBy="userMeta")
      * @ORM\JoinColumns({

@@ -4,16 +4,14 @@
 
 <script>
     export default{
-        data () {
-            return {}
-        },
-        methods: {
-
-        },
-        watch: {
-        },
-        components: {
-
-        }
+      data () {
+        return {}
+      },
+      methods: {
+      },
+      watch: {
+      },
+      components: {
+      }
     }
 </script>

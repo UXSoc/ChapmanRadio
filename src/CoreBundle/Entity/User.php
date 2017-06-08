@@ -142,7 +142,7 @@ class User implements AdvancedUserInterface
     private $roles;
 
     /**
-     * @var ShowSchedule
+     * @var Schedule
      * @var PersistentCollection
      * @ORM\OneToMany(targetEntity="UserMeta",mappedBy="user", indexBy="metaKey")
      */

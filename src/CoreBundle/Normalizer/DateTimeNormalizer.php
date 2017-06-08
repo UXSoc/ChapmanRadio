@@ -1,11 +1,12 @@
 <?php
 namespace CoreBundle\Normalizer;
 
-use CoreBundle\Entity\Image;
+
+use Carbon\Carbon;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class ImageNormalizer implements NormalizerInterface, NormalizerAwareInterface
+class DateTimeNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     /** @var  NormalizerInterface */
     private  $normalizer;
@@ -21,10 +22,11 @@ class ImageNormalizer implements NormalizerInterface, NormalizerAwareInterface
         $this->normalizer = $normalizer;
     }
 
+
     /**
      * Normalizes an object into a set of arrays/scalars.
      *
-     * @param Image $object object to normalize
+     * @param \DateTime $object object to normalize
      * @param string $format format the normalization result will be encoded as
      * @param array $context Context options for the normalizer
      *
@@ -32,12 +34,8 @@ class ImageNormalizer implements NormalizerInterface, NormalizerAwareInterface
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        $result = [
-            'token' => $object->getToken(),
-            'created_at' => $object->getCreatedAt(),
-        ];
-
-        return $result;
+        $format = array_key_exists("datetime-format",$context) ? $context["datetime-format"] : Carbon::COOKIE;
+        return Carbon::instance($object)->format($format);
     }
 
     /**
@@ -50,7 +48,7 @@ class ImageNormalizer implements NormalizerInterface, NormalizerAwareInterface
      */
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof Image;
-    }
+        return $data instanceof \DateTime;
 
+    }
 }

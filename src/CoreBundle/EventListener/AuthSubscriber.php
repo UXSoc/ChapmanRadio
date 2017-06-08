@@ -2,6 +2,7 @@
 namespace CoreBundle\EventListener;
 
 use CoreBundle\Event\UserEvent;
+use CoreBundle\Events;
 use CoreBundle\Service\UserTokenService;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -49,8 +50,8 @@ class AuthSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            'user.confirmation' => 'userConfirmation',
-            'user.password_reset' => 'userReset'
+            Events::USER_CONFIRMATION => 'userConfirmation',
+            Events::USER_PASSWORD_RESET => 'userReset'
         );
     }
 

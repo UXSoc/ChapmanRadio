@@ -107,7 +107,7 @@ class ShowController extends Controller
         /** @var EventRepository $eventRepository */
         $eventRepository = $em->getRepository(Event::class);
         $activeEvent = $eventRepository->getEventByTime(new \DateTime('now'));
-        return $this->restful([new WrapperNormalizer(), new EventNormalizer()],new SuccessWrapper($activeEvent,'active event'));
+        return RestfulEnvelope::successResponseTemplate('active event',$activeEvent,[new EventNormalizer()]);
     }
 
     /**

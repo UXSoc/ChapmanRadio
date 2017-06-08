@@ -26,7 +26,9 @@ class TagController  extends Controller
 
     /**
      * @Security("has_role('ROLE_STAFF')")
-     * @Route("/tag/{tag}", options = { "expose" = true }, name="put_tag")
+     * @Route("/tag/{tag}",
+     *     options = { "expose" = true },
+     *     name="put_tag")
      * @Method({"PUT"})
      */
     public function putTagAction($tag)
@@ -49,7 +51,9 @@ class TagController  extends Controller
 
     /**
      * @Security("has_role('ROLE_STAFF')")
-     * @Route("/tag/{tag}", options = { "expose" = true }, name="delete_tag")
+     * @Route("/tag/{tag}",
+     *     options = { "expose" = true },
+     *     name="delete_tag")
      * @Method({"DELETE"})
      */
     public function deleteTagAction($tag)

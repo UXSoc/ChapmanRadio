@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Recording
  *
- * @ORM\Table(name="recording", indexes={@ORM\Index(name="recording_event_id_fk", columns={"event_id"}), @ORM\Index(name="recording_show_id_fk", columns={"show_id"})})
+ * @ORM\Table(name="recording")
  * @ORM\Entity
  */
 class Recording
@@ -66,15 +66,6 @@ class Recording
      */
     private $event;
 
-    /**
-     * @var Show
-     *
-     * @ORM\ManyToOne(targetEntity="Show")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="show_id", referencedColumnName="id")
-     * })
-     */
-    private $show;
 
 
 }

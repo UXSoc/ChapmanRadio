@@ -101,10 +101,15 @@ class Show
 
     /**
      * @var boolean
-     *
      * @ORM\Column(name="suspended", type="boolean", nullable=true)
      */
     private $suspended = false;
+
+    /**
+     * @var boolean
+     * @ORM\Column(name="archive", type="boolean", nullable=true)
+     */
+    private $archive = false;
 
     /**
      * @var boolean
@@ -154,10 +159,10 @@ class Show
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="ShowSchedule", mappedBy="show")
+     * @ORM\OneToMany(targetEntity="Schedule", mappedBy="show")
      *
      */
-    private $showSchedule;
+    private $schedule;
 
     /**
      * Many Shows have Many Images.
@@ -207,7 +212,7 @@ class Show
     {
         $this->images = new ArrayCollection();
         $this->comments = new ArrayCollection();
-        $this->showSchedule = new ArrayCollection();
+        $this->schedule = new ArrayCollection();
         $this->djs = new ArrayCollection();
         $this->genres = new ArrayCollection();
         $this->tags = new ArrayCollection();
@@ -249,9 +254,10 @@ class Show
         $this->images->remove($image);
     }
 
-    public function addShowSchedule($showSchedule)
+    public function addSchedule(Schedule $schedule)
     {
-        $this->showSchedule = $showSchedule;
+        $schedule->setShow($this);
+        $this->schedule->add($schedule);
     }
 
     public function addDj($dj)

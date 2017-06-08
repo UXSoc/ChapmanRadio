@@ -4,16 +4,16 @@ namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints\Time;
 
 /**
  * ShowSchedule
  *
- * @ORM\Table(name="show_schedule")
- * @ORM\Entity
+ * @ORM\Table(name="schedule")
+ * @ORM\Entity(repositoryClass="CoreBundle\Repository\ScheduleRepository")
  */
-class ShowSchedule
+class Schedule
 {
+
     /**
      * @var integer
      *
@@ -24,14 +24,26 @@ class ShowSchedule
     private $id;
 
     /**
-     * @var Time
+     * @var \DateTime
+     * @ORM\Column(name="start_date", type="date", nullable=true)
+     */
+    private $startDate;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="end_date", type="date", nullable=true)
+     */
+    private $endDate;
+
+    /**
+     * @var \DateTime
      *
      * @ORM\Column(name="start_time", type="time", nullable=true)
      */
     private $startTime;
 
     /**
-     * @var Time
+     * @var \DateTime
      *
      * @ORM\Column(name="end_time", type="time", nullable=true)
      */
@@ -40,9 +52,9 @@ class ShowSchedule
     /**
      * @var Show
      *
-     * @ORM\ManyToOne(targetEntity="Show", inversedBy="showSchedule")
+     * @ORM\ManyToOne(targetEntity="Show", inversedBy="schedule")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="show_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="show_id", referencedColumnName="id", nullable=false)
      * })
      */
     private $show;
@@ -50,24 +62,23 @@ class ShowSchedule
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="ShowScheduleMeta", mappedBy="showSchedule")
+     * @ORM\Column(name="meta",type="string")
      */
-    private $scheduleMeta;
+    private $meta;
 
 
     public function __construct()
     {
-        $this->scheduleMeta = new ArrayCollection();
+    }
+
+    public function setShow(Show $show)
+    {
+        $this->show = $show;
     }
 
     public function getId()
     {
         return $this->id;
-    }
-
-    public function setShow($show)
-    {
-        $this->show = $show;
     }
 
     public function getShow()
@@ -95,9 +106,34 @@ class ShowSchedule
         return $this->endTime;
     }
 
-    public function getScheduleMeta()
+    public function getMeta()
     {
-        return $this->scheduleMeta;
+        return $this->meta;
+    }
+
+    public function setMeta($meta)
+    {
+        $this->meta = $meta;
+    }
+
+    public function setStartDate($date)
+    {
+        $this->startDate = $date;
+    }
+
+    public function getStartDate()
+    {
+        return $this->startDate;
+    }
+
+    public function setEndDate($date)
+    {
+        $this->endDate = $date;
+    }
+
+    public function getEndDate()
+    {
+        return $this->endDate;
     }
 
 }

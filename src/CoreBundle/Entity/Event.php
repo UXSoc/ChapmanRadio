@@ -3,12 +3,13 @@
 namespace CoreBundle\Entity;
 
 use BroadcastBundle\Entity\Stream;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Event
  *
- * @ORM\Table(name="event", uniqueConstraints={@ORM\UniqueConstraint(name="event_id_uindex", columns={"id"})}, indexes={@ORM\Index(name="_event_show_id_fk", columns={"show_id"}), @ORM\Index(name="_event_show_schedule_id_fk", columns={"show_schedule_id"})})
+ * @ORM\Table(name="event")
  * @ORM\Entity(repositoryClass="CoreBundle\Repository\EventRepository")
  */
 class Event
@@ -25,16 +26,23 @@ class Event
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="start", type="datetime", nullable=false)
+     * @ORM\Column(name="day", type="date", nullable=false)
      */
-    private $start;
+    private $current;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="end", type="datetime", nullable=false)
+     * @ORM\Column(name="start", type="time", nullable=false)
      */
-    private $end;
+    private $startTime;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="end", type="time", nullable=false)
+     */
+    private $endTime;
 
     /**
      * @var Show
@@ -47,67 +55,80 @@ class Event
     private $show;
 
     /**
-     * @var ShowSchedule
-     *
-     * @ORM\ManyToOne(targetEntity="ShowSchedule")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="show_schedule_id", referencedColumnName="id")
-     * })
-     */
-    private $showSchedule;
-
-    /**
      * @var Stream
      * @ORM\OneToOne(targetEntity="BroadcastBundle\Entity\Stream")
      * @ORM\JoinColumn(name="stream_id", referencedColumnName="id", onDelete="SET NULL")
      */
     private $stream;
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param Stream $stream
+     */
     public function setStream($stream)
     {
         $this->stream = $stream;
     }
 
+    /**
+     * @return Stream
+     */
     public function getStream()
     {
         return $this->stream;
     }
 
 
-    public function getId()
+    public function setStartTime($start)
     {
-        return $this->id;
+        $this->startTime = $start;
     }
 
-    public function setStart($start)
+    /**
+     * @return DateTime
+     */
+    public function getStartTime()
     {
-        $this->start = $start;
+        return $this->startTime;
     }
 
-    public function getStart()
+    public function setEndTime(DateTime $endTime)
     {
-        return $this->start;
+        $this->endTime = $endTime;
     }
 
-    public function setEnd($end)
+    /**
+     * @return DateTime
+     */
+    public  function  getEndTime()
     {
-        $this->end = $end;
+        return $this->endTime;
     }
 
-    public function getEnd()
+    /**
+     * @param DateTime $current
+     */
+    public function setCurrent(DateTime $current)
     {
-        return $this->end;
+        $this->current = $current;
     }
 
+    /**
+     * @return Show
+     */
     public function getShow()
     {
         return $this->show;
     }
 
-    public function getShowSchedule()
-    {
-        return $this->showSchedule;
-    }
+
 
 }
 

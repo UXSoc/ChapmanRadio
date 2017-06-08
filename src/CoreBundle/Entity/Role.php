@@ -9,6 +9,7 @@
 namespace CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\Role\Role as SRole;
 use Symfony\Component\Security\Core\Role\RoleInterface;
 
 /**
@@ -16,7 +17,7 @@ use Symfony\Component\Security\Core\Role\RoleInterface;
  * @ORM\Table(name="user_role")
  *  @ORM\Entity
  */
-class Role extends \Symfony\Component\Security\Core\Role\Role
+class Role extends SRole
 {
 
     const ROLE_STAFF = "ROLE_STAFF";

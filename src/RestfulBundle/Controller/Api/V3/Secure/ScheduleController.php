@@ -1,6 +1,6 @@
 <?php
 
-namespace RestfulBundle\Controller\Api\V3;
+namespace RestfulBundle\Controller\Api\V3\Secure;
 
 use CoreBundle\Entity\Event;
 use CoreBundle\Entity\Show;
@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @Route("/api/v3/private")
  */
-class ShowScheduleController extends Controller
+class ScheduleController extends Controller
 {
     /**
      * @Security("has_role('ROLE_STAFF')")
