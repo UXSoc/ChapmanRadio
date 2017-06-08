@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 6/4/17
- * Time: 10:00 PM
+ * Time: 10:00 PM.
  */
 
 namespace CoreBundle\Helper;
-
 
 use CoreBundle\Normalizer\WrapperNormalizer;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,11 +19,11 @@ class RestfulEnvelope
 {
     private $errorWrapper;
     private $normalizers;
-    private  $message;
-    private  $payload;
-    private  $status;
+    private $message;
+    private $payload;
+    private $status;
 
-    function __construct()
+    public function __construct()
     {
         $this->normalizers = [];
         $this->errorWrapper = new ErrorWrapper();
@@ -34,41 +33,45 @@ class RestfulEnvelope
 
     public static function restfulBuilder()
     {
-        return new RestfulEnvelope();
+        return new self();
     }
 
     public static function successResponseTemplate($message = null, $payload = null, $normalizers = [])
     {
-        return RestfulEnvelope::restfulBuilder()->setMessage($message)->setStatus(200)->setNormalizers($normalizers)->setPayload($payload);
+        return self::restfulBuilder()->setMessage($message)->setStatus(200)->setNormalizers($normalizers)->setPayload($payload);
     }
 
     public static function errorResponseTemplate($message = null, $errors = [])
     {
-        return RestfulEnvelope::restfulBuilder()->setMessage($message)->setStatus(400)->addErrors($errors);
+        return self::restfulBuilder()->setMessage($message)->setStatus(400)->addErrors($errors);
     }
 
     public function setStatus($status)
     {
         $this->status = $status;
+
         return $this;
     }
 
     public function setNormalizers($normalizers)
     {
         $this->normalizers = $normalizers;
+
         return $this;
     }
 
     public function addNormalizer($normalizer)
     {
-        array_merge($this->normalizers,$normalizer);
+        array_merge($this->normalizers, $normalizer);
+
         return $this;
     }
 
     public function setPayload($payload)
     {
-         $this->payload = $payload;
-         return $this;
+        $this->payload = $payload;
+
+        return $this;
     }
 
     /**
@@ -76,44 +79,41 @@ class RestfulEnvelope
      */
     public function addErrors($errors)
     {
-        if($errors instanceof ConstraintViolationList) {
+        if ($errors instanceof ConstraintViolationList) {
             foreach ($errors as $error) {
                 $this->errorWrapper->addError($error->getPropertyPath(), $error->getMessage());
             }
-        }
-        else {
+        } else {
             foreach ($errors as $key => $value) {
                 $this->errorWrapper->addError($key, $value);
             }
         }
+
         return $this;
     }
 
     public function setMessage($message)
     {
-        $this->message= $message;
+        $this->message = $message;
+
         return $this;
     }
 
-    public function response($format = [],$context = [])
+    public function response($format = [], $context = [])
     {
-        if($this->status >= 400)
-        {
+        if ($this->status >= 400) {
             $this->normalizers[] = new WrapperNormalizer();
 
             $normalizer = new Serializer($this->normalizers);
             $this->errorWrapper->setMessage($this->message);
+
             return new JsonResponse($normalizer->normalize($this->errorWrapper, $format, $context), $this->status);
-        }
-        else
-        {
+        } else {
             $this->normalizers[] = new WrapperNormalizer();
 
-            $normalizer = new Serializer( $this->normalizers);
-            return new JsonResponse($normalizer->normalize(new SuccessWrapper($this->payload,$this->message), $format, $context), $this->status);
+            $normalizer = new Serializer($this->normalizers);
 
+            return new JsonResponse($normalizer->normalize(new SuccessWrapper($this->payload, $this->message), $format, $context), $this->status);
         }
     }
-
-
 }

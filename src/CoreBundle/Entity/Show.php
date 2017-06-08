@@ -1,14 +1,15 @@
 <?php
+
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
+
 namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
 
-
 /**
- * Show
+ * Show.
  *
  * @ORM\Table(name="shows")
  * @ORM\Entity(repositoryClass="CoreBundle\Repository\ShowRepository")
@@ -18,7 +19,7 @@ use Doctrine\ORM\PersistentCollection;
 class Show
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
@@ -37,7 +38,6 @@ class Show
      * @var string
      *
      * @ORM\Column(name="token", type="string",length=20, nullable=false,unique=true)
-     *
      */
     private $token;
 
@@ -64,21 +64,21 @@ class Show
     private $createdAt;
 
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="score", type="integer", nullable=false)
      */
     private $score = 0;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="profanity", type="boolean", nullable=false)
      */
     private $profanity = false;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="attendance_optional", type="boolean", nullable=false)
      */
@@ -91,28 +91,27 @@ class Show
      */
     private $updatedAt;
 
-
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="strike_count", type="integer", nullable=false)
      */
     private $strikeCount = 0;
 
     /**
-     * @var boolean
+     * @var bool
      * @ORM\Column(name="suspended", type="boolean", nullable=true)
      */
     private $suspended = false;
 
     /**
-     * @var boolean
+     * @var bool
      * @ORM\Column(name="archive", type="boolean", nullable=true)
      */
     private $archive = false;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="enable_comments", type="boolean", nullable=true)
      */
@@ -120,6 +119,7 @@ class Show
 
     /**
      * Many Shows have Many Images.
+     *
      * @ORM\ManyToMany(targetEntity="Image")
      * @ORM\JoinTable(name="show_image",
      *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id")},
@@ -128,18 +128,18 @@ class Show
      */
     private $images;
 
-
     /**
-    * Many Shows have Many Images.
-    * @ORM\ManyToMany(targetEntity="Comment", inversedBy="show")
-    * @ORM\JoinTable(name="show_comment",
-    *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id")},
-    *      inverseJoinColumns={@ORM\JoinColumn(name="comment_id", referencedColumnName="id", unique=true)}
-    *      )
-    * @return ArrayCollection
-    */
+     * Many Shows have Many Images.
+     *
+     * @ORM\ManyToMany(targetEntity="Comment", inversedBy="show")
+     * @ORM\JoinTable(name="show_comment",
+     *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="comment_id", referencedColumnName="id", unique=true)}
+     *      )
+     *
+     * @return ArrayCollection
+     */
     private $comments;
-
 
     /**
      * @var ArrayCollection
@@ -160,21 +160,21 @@ class Show
     /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="Schedule", mappedBy="show")
-     *
      */
     private $schedule;
 
     /**
      * Many Shows have Many Images.
+     *
      * @ORM\ManyToMany(targetEntity="Genre", indexBy="genre")
      * @ORM\JoinTable(name="show_genre",
      *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="genre_id", referencedColumnName="id")}
      *      )
+     *
      * @var PersistentCollection
      */
     private $genres;
-
 
     /**
      * @var ArrayCollection
@@ -188,14 +188,13 @@ class Show
      */
     private $tags;
 
-
-
     /**
      * @ORM\ManyToMany(targetEntity="Dj", mappedBy="shows")
      * @ORM\JoinTable(name="show_comment",
      *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="dj_id", referencedColumnName="id", unique=true)}
      *      )
+     *
      * @return ArrayCollection
      */
     private $djs;
@@ -203,10 +202,8 @@ class Show
     /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="Event", mappedBy="show")
-     *
      */
     private $events;
-
 
     public function __construct()
     {
@@ -216,11 +213,9 @@ class Show
         $this->djs = new ArrayCollection();
         $this->genres = new ArrayCollection();
         $this->tags = new ArrayCollection();
-
     }
 
     /**
-     *
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
@@ -229,7 +224,7 @@ class Show
         $this->updatedAt = new \DateTime('now');
 
         if ($this->createdAt === null) {
-            $this->token = substr(bin2hex(random_bytes(12)),10);
+            $this->token = substr(bin2hex(random_bytes(12)), 10);
             $this->createdAt = new \DateTime('now');
         }
     }
@@ -239,7 +234,7 @@ class Show
         return $this->excerpt;
     }
 
-    public  function setExcerpt($excerpt)
+    public function setExcerpt($excerpt)
     {
         $this->excerpt = $excerpt;
     }
@@ -275,7 +270,7 @@ class Show
         $this->score = $score;
     }
 
-    public  function getScore()
+    public function getScore()
     {
         return $this->score;
     }
@@ -311,13 +306,13 @@ class Show
      */
     public function addGenre($genre)
     {
-        $this->genres->set($genre->getGenre(),$genre);
+        $this->genres->set($genre->getGenre(), $genre);
     }
 
     /**
      * @param string $key
      */
-    public  function removeGenre($key)
+    public function removeGenre($key)
     {
         $this->genres->remove($key);
     }
@@ -327,18 +322,18 @@ class Show
      */
     public function addTag($tag)
     {
-        $this->tags->set($tag->getTag(),$tag);
+        $this->tags->set($tag->getTag(), $tag);
     }
 
     /**
      * @param $tag
+     *
      * @return mixed
      */
     public function removeTag($tag)
     {
         return $this->tags->remove($tag);
     }
-
 
     public function getHeaderImage()
     {
@@ -411,7 +406,8 @@ class Show
     }
 
     /**
-     * get the Datetime of the show createdat
+     * get the Datetime of the show createdat.
+     *
      * @return \DateTime
      */
     public function getCreatedAt()
@@ -420,7 +416,8 @@ class Show
     }
 
     /**
-     * get the the time that the show was updated at
+     * get the the time that the show was updated at.
+     *
      * @return \DateTime
      */
     public function updatedAt()
@@ -429,7 +426,8 @@ class Show
     }
 
     /**
-     * Returns the description of the show
+     * Returns the description of the show.
+     *
      * @return resource
      */
     public function getDescription()
@@ -438,7 +436,8 @@ class Show
     }
 
     /**
-     * set the show description
+     * set the show description.
+     *
      * @param string $description
      */
     public function setDescription($description)
@@ -446,14 +445,14 @@ class Show
         $this->description = $description;
     }
 
-
     public function addComment($comment)
     {
         $this->comments->add($comment);
     }
 
     /**
-     * return array of comments
+     * return array of comments.
+     *
      * @return ArrayCollection
      */
     public function getComments()
@@ -473,8 +472,8 @@ class Show
 
     public function setSlug($slug)
     {
-        $result = str_replace(' ','-',$slug);
-        $result = preg_replace('/\-+/', '-',$result);
+        $result = str_replace(' ', '-', $slug);
+        $result = preg_replace('/\-+/', '-', $result);
         $this->slug = $result;
     }
 
@@ -487,7 +486,4 @@ class Show
     {
         $this->events->add($event);
     }
-
-
 }
-

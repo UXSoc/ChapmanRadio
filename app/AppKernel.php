@@ -1,7 +1,7 @@
 <?php
 
-use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\HttpKernel\Kernel;
 
 class AppKernel extends Kernel
 {
@@ -20,10 +20,10 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle(),
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new BroadcastBundle\BroadcastBundle(),
-            new \HybridAuthBundle\HybridAuthBundle()
+            new \HybridAuthBundle\HybridAuthBundle(),
         ];
 
-        if (in_array($this->getEnvironment(), ['dev', 'test','hot'], true)) {
+        if (in_array($this->getEnvironment(), ['dev', 'test', 'hot'], true)) {
             $bundles[] = new Symfony\Bundle\DebugBundle\DebugBundle();
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
@@ -32,6 +32,7 @@ class AppKernel extends Kernel
             $bundles[] = new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle();
             $bundles[] = new \Symfony\Bundle\WebServerBundle\WebServerBundle();
         }
+
         return $bundles;
     }
 

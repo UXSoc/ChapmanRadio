@@ -1,10 +1,11 @@
 <?php
+
 namespace BroadcastBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Event
+ * Event.
  *
  * @ORM\Table(name="stream")
  * @ORM\Entity(repositoryClass="CoreBundle\Repository\StreamRepository")
@@ -13,9 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Stream
 {
-
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
@@ -23,18 +23,15 @@ class Stream
      */
     private $id;
 
-
     /**
      * @var string
      * @ORM\Column(name="username", type="string",length=20, nullable=false,unique=true)
-     *
      */
     private $username;
 
     /**
      * @var string
      * @ORM\Column(name="token", type="string",length=20, nullable=false,unique=true)
-     *
      */
     private $password;
 
@@ -50,8 +47,6 @@ class Stream
      */
     private $recording;
 
-
-
     /**
      * @var \DateTime
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
@@ -59,14 +54,13 @@ class Stream
     private $createdAt;
 
     /**
-     *
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
     public function updatedTimestamps()
     {
         if ($this->createdAt === null) {
-            $this->token = substr(bin2hex(random_bytes(12)),10);
+            $this->token = substr(bin2hex(random_bytes(12)), 10);
             $this->createdAt = new \DateTime('now');
         }
     }
@@ -76,7 +70,7 @@ class Stream
         return $this->id;
     }
 
-    public  function getCreatedAt()
+    public function getCreatedAt()
     {
         return $this->createdAt;
     }
@@ -110,7 +104,6 @@ class Stream
     {
         return $this->username;
     }
-
 
     public function getPassword()
     {

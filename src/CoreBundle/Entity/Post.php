@@ -1,16 +1,16 @@
 <?php
+
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
+
 namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 /**
- * Blog
+ * Blog.
  *
  * @ORM\Table(name="post")
  * @ORM\Entity(repositoryClass="CoreBundle\Repository\PostRepository")
@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Post
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
@@ -33,7 +33,6 @@ class Post
      * @var string
      *
      * @ORM\Column(name="name", type="string",length=100, nullable=false,unique=true)
-     *
      */
     private $name;
 
@@ -41,7 +40,6 @@ class Post
      * @var string
      *
      * @ORM\Column(name="token", type="string",length=20, nullable=false,unique=true)
-     *
      */
     private $token;
 
@@ -67,7 +65,6 @@ class Post
      */
     private $updatedAt;
 
-
     /**
      * @var string
      *
@@ -83,7 +80,7 @@ class Post
     private $status;
 
     /**
-     * @var boolean
+     * @var bool
      * @ORM\Column(name="is_pinned", type="boolean", nullable=true)
      */
     private $isPinned = 0;
@@ -93,7 +90,7 @@ class Post
      *
      * @ORM\Column(name="content", type="text", length=65535, nullable=false)
      */
-    private $content = "";
+    private $content = '';
 
     /**
      * @var User
@@ -105,18 +102,20 @@ class Post
 
     /**
      * Many Shows have Many Images.
+     *
      * @ORM\ManyToMany(targetEntity="Image")
      * @ORM\JoinTable(name="post_image",
      *      joinColumns={@ORM\JoinColumn(name="post_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="image_id", referencedColumnName="id", unique=true)}
      *      )
+     *
      * @return ArrayCollection
      */
     private $images;
 
     /**
      * @var ArrayCollection
-     * Many Shows have Many Images.
+     *                      Many Shows have Many Images.
      * @ORM\ManyToMany(targetEntity="Comment",inversedBy="post")
      * @ORM\JoinTable(name="post_comment",
      *      joinColumns={@ORM\JoinColumn(name="post_id", referencedColumnName="id")},
@@ -149,9 +148,7 @@ class Post
      */
     private $tags;
 
-
     /**
-     *
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
@@ -160,7 +157,7 @@ class Post
         $this->updatedAt = new \DateTime('now');
 
         if ($this->createdAt === null) {
-            $this->token = substr(bin2hex(random_bytes(12)),10);
+            $this->token = substr(bin2hex(random_bytes(12)), 10);
             $this->createdAt = new \DateTime('now');
         }
     }
@@ -171,8 +168,6 @@ class Post
         $this->comments = new ArrayCollection();
         $this->tags = new ArrayCollection();
         $this->categories = new ArrayCollection();
-
-
     }
 
     public function getId()
@@ -195,7 +190,7 @@ class Post
         $this->images->add($image);
     }
 
-    public  function removeImage($image)
+    public function removeImage($image)
     {
         $this->images->remove($image);
     }
@@ -218,7 +213,7 @@ class Post
         return $this->name;
     }
 
-    public  function setName($name)
+    public function setName($name)
     {
         $this->name = $name;
     }
@@ -226,7 +221,7 @@ class Post
     /**
      * @return resource
      */
-    public  function getContent()
+    public function getContent()
     {
         return $this->content;
     }
@@ -267,32 +262,36 @@ class Post
     }
 
     /**
-     * return array of comments
+     * return array of comments.
+     *
      * @return ArrayCollection
      */
     public function getComments()
     {
-       return $this->comments;
+        return $this->comments;
     }
 
-    public  function getCreatedAt()
+    public function getCreatedAt()
     {
         return $this->createdAt;
     }
-    public  function getUpdatedAt()
+
+    public function getUpdatedAt()
     {
         return $this->updatedAt;
     }
+
     /**
      * @param Tag $tag
      */
     public function addTag($tag)
     {
-        $this->tags->set($tag->getTag(),$tag);
+        $this->tags->set($tag->getTag(), $tag);
     }
 
     /**
      * @param $tag
+     *
      * @return mixed
      */
     public function removeTag($tag)
@@ -300,11 +299,10 @@ class Post
         return $this->tags->remove($tag);
     }
 
-
     /**
      * @return ArrayCollection
      */
-    public  function getTags()
+    public function getTags()
     {
         return $this->tags;
     }
@@ -312,13 +310,14 @@ class Post
     /**
      * @param Category $category
      */
-    public  function addCategory($category)
+    public function addCategory($category)
     {
-        $this->categories->set($category->getCategory(),$category);
+        $this->categories->set($category->getCategory(), $category);
     }
 
     /**
      * @param string $category
+     *
      * @return mixed
      */
     public function removeCategory($category)
@@ -326,11 +325,10 @@ class Post
         return $this->categories->remove($category);
     }
 
-    public  function getCategories()
+    public function getCategories()
     {
         return $this->categories;
     }
-
 
     public function getToken()
     {
@@ -344,10 +342,8 @@ class Post
 
     public function setSlug($slug)
     {
-        $result = str_replace(' ','-',$slug);
-        $result = preg_replace('/\-+/', '-',$result);
+        $result = str_replace(' ', '-', $slug);
+        $result = preg_replace('/\-+/', '-', $result);
         $this->slug = $result;
     }
-
 }
-

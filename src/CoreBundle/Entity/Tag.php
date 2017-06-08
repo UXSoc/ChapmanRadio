@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 5/25/17
- * Time: 1:55 PM
+ * Time: 1:55 PM.
  */
 
 namespace CoreBundle\Entity;
@@ -11,16 +11,15 @@ namespace CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * BlogCategory
+ * BlogCategory.
  *
  * @ORM\Table(name="tag")
  * @ORM\Entity(repositoryClass="CoreBundle\Repository\TagRepository")
- *
  */
 class Tag
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
@@ -39,7 +38,7 @@ class Tag
         return $this->id;
     }
 
-    public  function getTag()
+    public function getTag()
     {
         return $this->tag;
     }

@@ -3,26 +3,23 @@
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 5/25/17
- * Time: 1:55 PM
+ * Time: 1:55 PM.
  */
 
 namespace CoreBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
-
 /**
- * BlogCategory
+ * BlogCategory.
  *
  * @ORM\Table(name="category")
  * @ORM\Entity(repositoryClass="CoreBundle\Repository\CategoryRepository")
- *
  */
 class Category
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
@@ -41,7 +38,7 @@ class Category
         return $this->id;
     }
 
-    public  function getCategory()
+    public function getCategory()
     {
         return $this->category;
     }

@@ -1,4 +1,5 @@
 <?php
+
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 use Carbon\Carbon;
 use CoreBundle\Entity\Comment;
@@ -6,25 +7,22 @@ use CoreBundle\Entity\Genre;
 use CoreBundle\Entity\Show;
 use CoreBundle\Entity\Tag;
 use CoreBundle\Entity\User;
-use CoreBundle\Repository\UserRepository;
 use CoreBundle\Service\ScheduleService;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Recurr\Frequency;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
-
     /**
      * @var ContainerInterface
      */
     private $container;
 
     /**
-     * Load data fixtures with the passed EntityManager
+     * Load data fixtures with the passed EntityManager.
      *
      * @param \Doctrine\Common\Persistence\ObjectManager $manager
      */
@@ -41,8 +39,7 @@ class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, C
         $users = $manager->getRepository(User::class)->findAll();
         $tags = $manager->getRepository(Tag::class)->findAll();
 
-        for ($i = 0; $i < 20; $i++)
-        {
+        for ($i = 0; $i < 20; $i++) {
             $show = new Show();
             $show->setName($faker->name);
             $show->setDescription($faker->paragraph(20));
@@ -53,43 +50,38 @@ class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, C
             $show->setExcerpt($faker->paragraph(1));
 
             /** @var Comment[] $comments */
-            $comments = array();
-            for($j = 0; $j < 20; $j++)
-            {
+            $comments = [];
+            for ($j = 0; $j < 20; $j++) {
                 $c = new Comment();
-                $c->setUser($users[array_rand($users,1)]);
+                $c->setUser($users[array_rand($users, 1)]);
                 $c->setContent($faker->paragraph(3));
                 $show->addComment($c);
                 $manager->persist($c);
                 $comments[] = $c;
             }
-            for($j = 0; $j < 10; $j++)
-            {
-                $comments[$j]->setParentComment($comments[array_rand($comments,1)]);
+            for ($j = 0; $j < 10; $j++) {
+                $comments[$j]->setParentComment($comments[array_rand($comments, 1)]);
                 $manager->persist($comments[$j]);
             }
 
-
-            for($b =0; $b < 3; $b++)
-            {
+            for ($b = 0; $b < 3; $b++) {
                 /** @var Genre $genre */
-                $genre = $genres[array_rand($genres,1)];
-                if(!in_array($genre->getGenre(),$show->getGenres()->getKeys()))
+                $genre = $genres[array_rand($genres, 1)];
+                if (!in_array($genre->getGenre(), $show->getGenres()->getKeys())) {
                     $show->addGenre($genre);
-
+                }
             }
 
-            for ($c = 0; $c < 10; $c++)
-            {
+            for ($c = 0; $c < 10; $c++) {
                 /** @var Tag $tag */
-                $tag = $tags[array_rand($tags,1)];
-                if(!in_array($tag->getTag(),$show->getTags()->getKeys()))
+                $tag = $tags[array_rand($tags, 1)];
+                if (!in_array($tag->getTag(), $show->getTags()->getKeys())) {
                     $show->addTag($tag);
+                }
             }
 
-            $time = random_int(1,5);
+            $time = random_int(1, 5);
             for ($k = 0; $k < $time; $k++) {
-
                 $schedule = null;
                 $rule = null;
                 switch (random_int(0, 5)) {
@@ -116,7 +108,6 @@ class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, C
                 $st = new Carbon($faker->time('H:i:s', 'now'));
                 $end = $faker->dateTimeBetween($st->copy(), $st->copy()->endOfDay());
 
-
                 $sch = $calendar->createSchedule($rule,
                     $faker->dateTimeBetween('-1 months', 'now'),
                     $faker->dateTimeBetween('now', '1 months'),
@@ -129,7 +120,7 @@ class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, C
             for ($k = 0; $k < 20; $k++) {
                 $st = new Carbon($faker->time('H:i:s', 'now'));
                 $end = $faker->dateTimeBetween($st->copy(), $st->copy()->endOfDay());
-                $temp  =$faker->dateTimeBetween('-1 months', '1 months');
+                $temp = $faker->dateTimeBetween('-1 months', '1 months');
                 $sch = $calendar->createSchedule(new \Recurr\Rule(),
                     $temp,
                     $temp,
@@ -146,9 +137,9 @@ class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, C
     }
 
     /**
-     * Get the order of this fixture
+     * Get the order of this fixture.
      *
-     * @return integer
+     * @return int
      */
     public function getOrder()
     {

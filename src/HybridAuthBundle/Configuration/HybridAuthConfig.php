@@ -1,4 +1,5 @@
 <?php
+
 namespace HybridAuthBundle\Configuration;
 
 use HybridAuthBundle\DependencyInjection\HybridAuthExtension;
@@ -9,12 +10,10 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 6/3/17
- * Time: 5:07 PM
+ * Time: 5:07 PM.
  */
-class HybridAuthConfig implements  ConfigurationInterface
+class HybridAuthConfig implements ConfigurationInterface
 {
-
-
     /**
      * Generates the configuration tree builder.
      *
@@ -38,7 +37,6 @@ class HybridAuthConfig implements  ConfigurationInterface
                     ->end()
                 ->end();
         }
-
 
         return $treeBuilder;
     }

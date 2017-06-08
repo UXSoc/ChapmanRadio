@@ -3,38 +3,34 @@
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 5/24/17
- * Time: 10:46 PM
+ * Time: 10:46 PM.
  */
 
 namespace RestfulBundle\Controller\Api\V3;
 
-use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Comment;
+use CoreBundle\Entity\Post;
 use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Helper\SuccessWrapper;
-use CoreBundle\Normalizer\PostNormalizer;
 use CoreBundle\Normalizer\CategoryNormalizer;
 use CoreBundle\Normalizer\CommentNormalizer;
 use CoreBundle\Normalizer\PaginatorNormalizer;
+use CoreBundle\Normalizer\PostNormalizer;
 use CoreBundle\Normalizer\TagNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
-use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\CommentRepository;
+use CoreBundle\Repository\PostRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
 
 /**
  * @Route("/api/v3/")
  */
 class BlogController extends Controller
 {
-
     /**
      * @Route("post",
      *     options = { "expose" = true },
@@ -45,13 +41,13 @@ class BlogController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         /** @var PostRepository $postRepository */
-        $postRepository =  $em->getRepository(Post::class);
+        $postRepository = $em->getRepository(Post::class);
 
         $pagination = $postRepository->paginator($postRepository->filter($request),
-            $request->get('page',0),
-            $request->get('entries',10),20);
+            $request->get('page', 0),
+            $request->get('entries', 10), 20);
 
-        return RestfulEnvelope::successResponseTemplate(null,$pagination,[new PostNormalizer(),new UserNormalizer(),new PaginatorNormalizer()])->response();
+        return RestfulEnvelope::successResponseTemplate(null, $pagination, [new PostNormalizer(), new UserNormalizer(), new PaginatorNormalizer()])->response();
     }
 
     /**
@@ -67,9 +63,11 @@ class BlogController extends Controller
         $postRepository = $em->getRepository(Post::class);
 
         /** @var Post $post */
-        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
-            return RestfulEnvelope::successResponseTemplate("Tags",$post->getTags(),[new TagNormalizer()])->response();
-        return RestfulEnvelope::errorResponseTemplate("Post not found")->setStatus(410)->response();
+        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug)) {
+            return RestfulEnvelope::successResponseTemplate('Tags', $post->getTags(), [new TagNormalizer()])->response();
+        }
+
+        return RestfulEnvelope::errorResponseTemplate('Post not found')->setStatus(410)->response();
     }
 
     /**
@@ -85,9 +83,11 @@ class BlogController extends Controller
         $postRepository = $em->getRepository(Post::class);
 
         /** @var Post $post */
-        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
-            return RestfulEnvelope::successResponseTemplate("Categories",$post->getCategories(),[new CategoryNormalizer()])->response();
-        return RestfulEnvelope::errorResponseTemplate("Post not found")->setStatus(410)->response();
+        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug)) {
+            return RestfulEnvelope::successResponseTemplate('Categories', $post->getCategories(), [new CategoryNormalizer()])->response();
+        }
+
+        return RestfulEnvelope::errorResponseTemplate('Post not found')->setStatus(410)->response();
     }
 
     /**
@@ -103,9 +103,11 @@ class BlogController extends Controller
         $postRepository = $em->getRepository(Post::class);
 
         /** @var Post $post */
-        if ( $post = $postRepository->getPostByTokenAndSlug($token,$slug))
-            return RestfulEnvelope::successResponseTemplate("Post found",$post,[new PostNormalizer(),new UserNormalizer()])->response();
-        return RestfulEnvelope::errorResponseTemplate("Post not found")->setStatus(410)->response();
+        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug)) {
+            return RestfulEnvelope::successResponseTemplate('Post found', $post, [new PostNormalizer(), new UserNormalizer()])->response();
+        }
+
+        return RestfulEnvelope::errorResponseTemplate('Post not found')->setStatus(410)->response();
     }
 
     /**
@@ -128,30 +130,32 @@ class BlogController extends Controller
         $commentRepository = $em->getRepository(Comment::class);
 
         /** @var Post $post */
-        if ($post = $postRepository->getPostByTokenAndSlug($token,$slug))
-        {
+        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug)) {
             $comment = new Comment();
-            $comment->setContent($request->get("content"));
+            $comment->setContent($request->get('content'));
             $comment->setUser($this->getUser());
 
             if ($comment_token !== null) {
-                if($c = $commentRepository->getCommentByPostAndToken($post, $comment_token))
+                if ($c = $commentRepository->getCommentByPostAndToken($post, $comment_token)) {
                     $comment->setParentComment($c);
-                else
-                    return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->response();
+                } else {
+                    return RestfulEnvelope::errorResponseTemplate('Unknown comment')->setStatus(410)->response();
+                }
             }
 
             $errors = $validator->validate($comment);
-            if($errors->count() > 0)
-                return RestfulEnvelope::errorResponseTemplate("invalid Comment")->addErrors($errors)->response();
+            if ($errors->count() > 0) {
+                return RestfulEnvelope::errorResponseTemplate('invalid Comment')->addErrors($errors)->response();
+            }
 
             $em->persist($comment);
             $em->flush();
-            return RestfulEnvelope::successResponseTemplate('Comment Added',$comment,[new UserNormalizer(),new CommentNormalizer()])->response();
-        }
-        return RestfulEnvelope::errorResponseTemplate("comment not found")->setStatus(410)->response();
-    }
 
+            return RestfulEnvelope::successResponseTemplate('Comment Added', $comment, [new UserNormalizer(), new CommentNormalizer()])->response();
+        }
+
+        return RestfulEnvelope::errorResponseTemplate('comment not found')->setStatus(410)->response();
+    }
 
     /**
      * @Route("post/{token}/{slug}/comment/{comment_token}",
@@ -169,21 +173,18 @@ class BlogController extends Controller
         $commentRepository = $em->getRepository(Comment::class);
 
         /** @var Post $post */
-        if($post = $postRepository->getPostByTokenAndSlug($token, $slug)) {
+        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug)) {
             if ($comment_token) {
                 return RestfulEnvelope::successResponseTemplate('Comments',
-                    $commentRepository->getCommentByPostAndToken($post,$comment_token),
+                    $commentRepository->getCommentByPostAndToken($post, $comment_token),
                     [new UserNormalizer(), new CommentNormalizer()])->response();
-            }
-            else
-            {
+            } else {
                 return RestfulEnvelope::successResponseTemplate('Comments',
                     $commentRepository->getAllRootCommentsForPost($post),
                     [new UserNormalizer(), new CommentNormalizer()])->response();
             }
-
         }
-        return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->response();
-    }
 
+        return RestfulEnvelope::errorResponseTemplate('Unknown comment')->setStatus(410)->response();
+    }
 }

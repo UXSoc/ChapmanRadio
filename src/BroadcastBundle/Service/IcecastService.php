@@ -1,8 +1,8 @@
 <?php
+
 namespace BroadcastBundle\Service;
 
 use BroadcastBundle\Entity\Stream;
-use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -13,29 +13,27 @@ class IcecastService
 
     /**
      * IcecastService constructor.
+     *
      * @param Kernel $kernel
      */
-    function __construct(KernelInterface $kernel)
+    public function __construct(KernelInterface $kernel)
     {
         $this->kernel = $kernel;
     }
 
-
     public function getPublicAddr()
     {
-        return $this->getParameter('icecast_public_addr','localhost:' . $this->getParameter('icecast_port',9000));
+        return $this->getParameter('icecast_public_addr', 'localhost:'.$this->getParameter('icecast_port', 9000));
     }
 
     /**
      * @param Stream[] $streams
      */
-    public function updateConfig( $streams)
+    public function updateConfig($streams)
     {
         $combinedMounts = '';
-        /** @var Stream $stream*/
-        foreach ($streams as $stream)
-        {
-
+        /** @var Stream $stream */
+        foreach ($streams as $stream) {
             $path = $this->generateRecordingPath($stream->getRecording());
 
             $route_mount = $stream->getMount();
@@ -68,28 +66,27 @@ xml;
             // <stream-url>http://some.place.com</stream-url>
             // <genre>classical</genre>
         }
-        $rootDir = $this->kernel->getRootDir() . '/../';
+        $rootDir = $this->kernel->getRootDir().'/../';
 
-        $clients = $this->getParameter('icecast_clients',5000);
-        $sources = $this->getParameter('icecast_sources',10);
-        $workers =  $this->getParameter('icecast_workers',5);
-        $queueSize = $this->getParameter('icecast_queue_size',1048576);
-        $headerTimeout = $this->getParameter('icecast_queue_size',1048576);
-        $sourceTimeout = $this->getParameter('icecast_works',10);
-        $burstSize = $this->getParameter('icecast_works',500000);
+        $clients = $this->getParameter('icecast_clients', 5000);
+        $sources = $this->getParameter('icecast_sources', 10);
+        $workers = $this->getParameter('icecast_workers', 5);
+        $queueSize = $this->getParameter('icecast_queue_size', 1048576);
+        $headerTimeout = $this->getParameter('icecast_queue_size', 1048576);
+        $sourceTimeout = $this->getParameter('icecast_works', 10);
+        $burstSize = $this->getParameter('icecast_works', 500000);
 
         $relayUser = $this->getParameter('icecast_relay_username');
         $relayPassword = $this->getParameter('icecast_relay_password');
         $adminUsername = $this->getParameter('icecast_admin_username');
         $adminPassword = $this->getParameter('icecast_admin_password');
 
-        $port = $this->getParameter('icecast_port',9000);
+        $port = $this->getParameter('icecast_port', 9000);
         $admin = $this->getParameter('icecast_admin_email');
         $hostName = $this->getParameter('icecast_host');
         $location = $this->getParameter('icecast_location');
 
         $pidFile = $this->getProcessPidPath();
-
 
         $result = <<<xml
 <icecast>
@@ -133,39 +130,36 @@ xml;
     
 </icecast>
 xml;
-        file_put_contents($this->getConfigPath(),$result);
+        file_put_contents($this->getConfigPath(), $result);
     }
-
 
     private function generateRecordingDirectory()
     {
-        return $this->kernel->getRootDir() . '/data/recordings/';
+        return $this->kernel->getRootDir().'/data/recordings/';
     }
 
     private function generateRecordingPath($hash)
     {
-        return $this->generateRecordingDirectory() . $hash . '.mp3';
+        return $this->generateRecordingDirectory().$hash.'.mp3';
     }
-
-
 
     public function getProcessPidPath()
     {
-       return $this->kernel->getRootDir() . '/../var/icecast.pid';
+        return $this->kernel->getRootDir().'/../var/icecast.pid';
     }
 
     public function getConfigPath()
     {
-       return $this->kernel->getRootDir() . '/../var/icecast.xml';
+        return $this->kernel->getRootDir().'/../var/icecast.xml';
     }
 
-
-    public function startIcecast($configPage,$background = false)
+    public function startIcecast($configPage, $background = false)
     {
-        if($background == true)
+        if ($background == true) {
             exec('/bin/icecast -b -c '.$configPage);
-        else
+        } else {
             exec('/bin/icecast -c '.$configPage);
+        }
     }
 
     public function refreshIcecast()
@@ -173,22 +167,24 @@ xml;
         $fileSystem = new Filesystem();
 
         $pidFile = $this->getProcessPidPath();
-        if($fileSystem->exists($pidFile))
-            posix_kill(intval(file_get_contents($pidFile)),SIGHUP);
+        if ($fileSystem->exists($pidFile)) {
+            posix_kill(intval(file_get_contents($pidFile)), SIGHUP);
+        }
     }
 
     public function isIcecastRunning()
     {
         $fileSystem = new Filesystem();
         $pidFile = $this->getProcessPidPath();
+
         return $fileSystem->exists($pidFile);
     }
 
-    private function getParameter($parameter,$default = null)
+    private function getParameter($parameter, $default = null)
     {
-
-        if(!$this->kernel->getContainer()->hasParameter($parameter))
+        if (!$this->kernel->getContainer()->hasParameter($parameter)) {
             return $default;
+        }
         $param = $this->kernel->getContainer()->getParameter($parameter);
 
         return $param;

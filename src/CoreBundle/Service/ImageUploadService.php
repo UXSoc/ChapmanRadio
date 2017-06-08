@@ -1,22 +1,18 @@
 <?php
+
 namespace CoreBundle\Service;
 
 use CoreBundle\Entity\Image;
 use CoreBundle\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Intervention\Image\ImageManagerStatic as Intervention;
-use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Validator\Constraints\File;
-use Symfony\Component\Validator\Constraints\FileValidator;
-
 
 /**
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 5/18/17
- * Time: 10:34 PM
+ * Time: 10:34 PM.
  */
 class ImageUploadService
 {
@@ -24,6 +20,7 @@ class ImageUploadService
 
     /**
      * ImageUploadService constructor.
+     *
      * @param string $targetDir
      */
     public function __construct($targetDir)
@@ -31,11 +28,12 @@ class ImageUploadService
         $this->targetDir = $targetDir;
     }
 
-    public function createImage(UploadedFile $image,User $user)
+    public function createImage(UploadedFile $image, User $user)
     {
         $image = new Image();
         $image->setAuthor($user);
         $image->setImage($image);
+
         return $image;
     }
 
@@ -50,27 +48,24 @@ class ImageUploadService
         /** @var \Intervention\Image\Image $intervention */
         $intervention = Intervention::make($image->getImage());
         $source = substr(bin2hex(random_bytes(12)), 12);
-        $fs->mkdir($this->targetDir . '/' . $this->generateDirectory($source));
+        $fs->mkdir($this->targetDir.'/'.$this->generateDirectory($source));
 
         $image->setSource($source);
-        $intervention->save($this->targetDir . '/' . $this->generatePath($source, 'png'));
-
+        $intervention->save($this->targetDir.'/'.$this->generatePath($source, 'png'));
     }
 
     public function deleteImage(Image $image)
     {
-
     }
 
     private function generateDirectory($hash)
     {
-        return substr($hash, 0, 2) . '/' . substr($hash, 2, 2) . '/';
+        return substr($hash, 0, 2).'/'.substr($hash, 2, 2).'/';
     }
 
     private function generatePath($hash, $ext)
     {
-        return $this->generateDirectory($hash) . substr($hash, 4) . '.' . $ext;
-
+        return $this->generateDirectory($hash).substr($hash, 4).'.'.$ext;
     }
 
     public function getTargetDir()

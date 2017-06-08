@@ -1,4 +1,5 @@
 <?php
+
 namespace CoreBundle\EventListener;
 
 use CoreBundle\Event\UserEvent;
@@ -15,12 +16,10 @@ use Twig_Environment;
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 6/4/17
- * Time: 9:24 AM
+ * Time: 9:24 AM.
  */
 class AuthSubscriber implements EventSubscriberInterface
 {
-
-
     /**
      * @var Twig_Environment
      */
@@ -38,7 +37,7 @@ class AuthSubscriber implements EventSubscriberInterface
      */
     private $tokenService;
 
-    function __construct(Swift_Mailer $mailer, Twig_Environment $twig, LoggerInterface $logger,UserTokenService $tokenService)
+    public function __construct(Swift_Mailer $mailer, Twig_Environment $twig, LoggerInterface $logger, UserTokenService $tokenService)
     {
         $this->twig = $twig;
         $this->logger = $logger;
@@ -46,22 +45,22 @@ class AuthSubscriber implements EventSubscriberInterface
         $this->tokenService = $tokenService;
     }
 
-
     public static function getSubscribedEvents()
     {
-        return array(
-            Events::USER_CONFIRMATION => 'userConfirmation',
-            Events::USER_PASSWORD_RESET => 'userReset'
-        );
+        return [
+            Events::USER_CONFIRMATION   => 'userConfirmation',
+            Events::USER_PASSWORD_RESET => 'userReset',
+        ];
     }
 
-    public function userConfirmation(UserEvent $event){
+    public function userConfirmation(UserEvent $event)
+    {
         $user = $event->getUser();
 
-        $this->logger->info(sprintf('user conformation sent: %s',$user->getUsername()));
+        $this->logger->info(sprintf('user conformation sent: %s', $user->getUsername()));
 
-        $token = substr(bin2hex(random_bytes(20)),20);
-        $this->tokenService->bindConfirmationToken($token,$user);
+        $token = substr(bin2hex(random_bytes(20)), 20);
+        $this->tokenService->bindConfirmationToken($token, $user);
 
         $message = new Swift_Message();
         $message->setSubject('Welcome')
@@ -70,22 +69,21 @@ class AuthSubscriber implements EventSubscriberInterface
             ->setBody(
                 $this->twig->render(
                     'email/confirm.html.twig',
-                    array('user' => $user,'token' => $token)
+                    ['user' => $user, 'token' => $token]
                 ),
                 'text/html'
             );
         $this->mailer->send($message);
-
     }
 
     public function userReset(UserEvent $event)
     {
         $user = $event->getUser();
 
-        $this->logger->info(sprintf('user password sent: %s',$user->getUsername()));
+        $this->logger->info(sprintf('user password sent: %s', $user->getUsername()));
 
-        $token = substr(bin2hex(random_bytes(20)),20);
-        $this->tokenService->bindPasswordResetToken($token,$user);
+        $token = substr(bin2hex(random_bytes(20)), 20);
+        $this->tokenService->bindPasswordResetToken($token, $user);
 
         $message = new Swift_Message();
         $message->setSubject('Welcome')
@@ -94,12 +92,10 @@ class AuthSubscriber implements EventSubscriberInterface
             ->setBody(
                 $this->twig->render(
                     'email/reset.html.twig',
-                    array('user' => $user,'token' => $token)
+                    ['user' => $user, 'token' => $token]
                 ),
                 'text/html'
             );
         $this->mailer->send($message);
-
-
     }
 }

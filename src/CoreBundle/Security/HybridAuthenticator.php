@@ -1,6 +1,6 @@
 <?php
-namespace CoreBundle\Security;
 
+namespace CoreBundle\Security;
 
 use Hybridauth\Adapter\AbstractAdapter;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,10 +13,9 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 class HybridAuthenticator extends AbstractGuardAuthenticator
 {
+    private $adapter;
 
-    private  $adapter;
-
-    function __construct(AbstractAdapter $adapter)
+    public function __construct(AbstractAdapter $adapter)
     {
         $this->adapter = $adapter;
     }
@@ -34,7 +33,7 @@ class HybridAuthenticator extends AbstractGuardAuthenticator
      *  B) For an API token authentication system, you return a 401 response
      *      return new Response('Auth header required', 401);
      *
-     * @param Request $request The request that resulted in an AuthenticationException
+     * @param Request                 $request       The request that resulted in an AuthenticationException
      * @param AuthenticationException $authException The exception that started the authentication process
      *
      * @return Response
@@ -71,14 +70,12 @@ class HybridAuthenticator extends AbstractGuardAuthenticator
      */
     public function getCredentials(Request $request)
     {
-        if($this->adapter->authenticate() === true)
-        {
+        if ($this->adapter->authenticate() === true) {
             return[
                 'access_token' => $this->adapter->getAccessToken(),
-                'user_profile' => $this->adapter->getUserProfile()
+                'user_profile' => $this->adapter->getUserProfile(),
             ];
         }
-        return null;
     }
 
     /**
@@ -89,7 +86,7 @@ class HybridAuthenticator extends AbstractGuardAuthenticator
      * You may throw an AuthenticationException if you wish. If you return
      * null, then a UsernameNotFoundException is thrown for you.
      *
-     * @param mixed $credentials
+     * @param mixed                 $credentials
      * @param UserProviderInterface $userProvider
      *
      * @throws AuthenticationException
@@ -110,12 +107,12 @@ class HybridAuthenticator extends AbstractGuardAuthenticator
      *
      * The *credentials* are the return value from getCredentials()
      *
-     * @param mixed $credentials
+     * @param mixed         $credentials
      * @param UserInterface $user
      *
-     * @return bool
-     *
      * @throws AuthenticationException
+     *
+     * @return bool
      */
     public function checkCredentials($credentials, UserInterface $user)
     {
@@ -131,7 +128,7 @@ class HybridAuthenticator extends AbstractGuardAuthenticator
      * If you return null, the request will continue, but the user will
      * not be authenticated. This is probably not what you want to do.
      *
-     * @param Request $request
+     * @param Request                 $request
      * @param AuthenticationException $exception
      *
      * @return Response|null
@@ -150,9 +147,9 @@ class HybridAuthenticator extends AbstractGuardAuthenticator
      * If you return null, the current request will continue, and the user
      * will be authenticated. This makes sense, for example, with an API.
      *
-     * @param Request $request
+     * @param Request        $request
      * @param TokenInterface $token
-     * @param string $providerKey The provider (i.e. firewall) key
+     * @param string         $providerKey The provider (i.e. firewall) key
      *
      * @return Response|null
      */

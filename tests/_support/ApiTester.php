@@ -1,10 +1,9 @@
 <?php
-use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
-use Doctrine\Common\DataFixtures\Purger\ORMPurger;
-use Symfony\Component\HttpKernel\Kernel;
+
 
 /**
- * Inherited Methods
+ * Inherited Methods.
+ *
  * @method void wantToTest($text)
  * @method void wantTo($text)
  * @method void execute($callable)
@@ -17,36 +16,33 @@ use Symfony\Component\HttpKernel\Kernel;
  * @method \Codeception\Lib\Friend haveFriend($name, $actorClass = NULL)
  *
  * @SuppressWarnings(PHPMD)
-*/
+ */
 class ApiTester extends \Codeception\Actor
 {
     use _generated\ApiTesterActions;
 
-
     public function isRestfulSuccessResponse()
     {
-        $this->seeResponseContainsJson(array(
-            "success" => true
-        ));
+        $this->seeResponseContainsJson([
+            'success' => true,
+        ]);
     }
 
-    public  function isRestfulFailedResponse()
+    public function isRestfulFailedResponse()
     {
-        $this->seeResponseContainsJson(array(
-            "success" => false
-        ));
+        $this->seeResponseContainsJson([
+            'success' => false,
+        ]);
     }
 
-
-    public function loginUser($username,$password)
+    public function loginUser($username, $password)
     {
         $I = $this;
-        $I->sendPOST('/login',[
-            "_username" => $username,
-            "_password" => $password,
-            "_remember_me" => false
+        $I->sendPOST('/login', [
+            '_username'    => $username,
+            '_password'    => $password,
+            '_remember_me' => false,
         ]);
         $I->seeResponseIsJson();
     }
-
 }

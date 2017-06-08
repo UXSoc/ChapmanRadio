@@ -1,5 +1,7 @@
 <?php
+
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
+
 namespace CoreBundle\Entity;
 
 use BroadcastBundle\Entity\Stream;
@@ -7,7 +9,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Event
+ * Event.
  *
  * @ORM\Table(name="event")
  * @ORM\Entity(repositoryClass="CoreBundle\Repository\EventRepository")
@@ -15,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Event
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
@@ -85,7 +87,6 @@ class Event
         return $this->stream;
     }
 
-
     public function setStartTime($start)
     {
         $this->startTime = $start;
@@ -107,7 +108,7 @@ class Event
     /**
      * @return DateTime
      */
-    public  function  getEndTime()
+    public function getEndTime()
     {
         return $this->endTime;
     }
@@ -127,8 +128,4 @@ class Event
     {
         return $this->show;
     }
-
-
-
 }
-

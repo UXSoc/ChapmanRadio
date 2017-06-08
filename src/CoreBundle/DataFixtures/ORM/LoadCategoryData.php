@@ -1,4 +1,5 @@
 <?php
+
 use CoreBundle\Entity\Category;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -10,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 5/25/17
- * Time: 8:40 PM
+ * Time: 8:40 PM.
  */
 class LoadCategoryData extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
@@ -30,7 +31,7 @@ class LoadCategoryData extends AbstractFixture implements OrderedFixtureInterfac
     }
 
     /**
-     * Load data fixtures with the passed EntityManager
+     * Load data fixtures with the passed EntityManager.
      *
      * @param \Doctrine\Common\Persistence\ObjectManager $manager
      */
@@ -38,8 +39,7 @@ class LoadCategoryData extends AbstractFixture implements OrderedFixtureInterfac
     {
         $faker = Faker\Factory::create();
 
-        for($i = 0; $i < 20; $i++)
-        {
+        for ($i = 0; $i < 20; $i++) {
             $category = new Category();
             $category->setCategory($faker->unique()->word);
             $manager->persist($category);
@@ -48,9 +48,9 @@ class LoadCategoryData extends AbstractFixture implements OrderedFixtureInterfac
     }
 
     /**
-     * Get the order of this fixture
+     * Get the order of this fixture.
      *
-     * @return integer
+     * @return int
      */
     public function getOrder()
     {

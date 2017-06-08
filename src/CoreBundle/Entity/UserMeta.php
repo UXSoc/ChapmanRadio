@@ -3,27 +3,23 @@
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 5/31/17
- * Time: 9:48 PM
+ * Time: 9:48 PM.
  */
 
 namespace CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
-
 
 /**
- * User
+ * User.
  *
  * @ORM\Entity()
  * @ORM\Table(name="user_meta")
- *
  */
 class UserMeta
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
@@ -39,7 +35,7 @@ class UserMeta
     private $metaKey;
 
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="meta_value", type="bigint", nullable=true)
      */
@@ -84,6 +80,4 @@ class UserMeta
     {
         return $this->user;
     }
-
-
 }

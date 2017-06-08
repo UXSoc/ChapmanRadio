@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 6/3/17
- * Time: 8:54 AM
+ * Time: 8:54 AM.
  */
 
 namespace RestfulBundle\Controller\Api\V3\Secure;
@@ -12,9 +12,8 @@ use CoreBundle\Entity\Event;
 use CoreBundle\Entity\Show;
 use CoreBundle\Repository\EventRepository;
 use CoreBundle\Repository\ShowRepository;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -40,24 +39,17 @@ class StreamController extends Controller
         $eventRepository = $em->getRepository(Event::class);
 
         /** @var Show $show */
-        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug))
-        {
+        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug)) {
             /** @var Event $event */
             $event = $eventRepository->getEventByTime(new \DateTime('now'));
 
-            if ($event->getShow()->getId() == $show->getId())
-            {
-
+            if ($event->getShow()->getId() == $show->getId()) {
             }
                 //return $this->messageError("Show Not Bound to Event", 410);
-
         }
            // return $this->messageError("Show Not Found", 410);
 
        // if ($event == null)
        //     return $this->messageError("No Shows Scheduled", 410);
-
-
     }
 }
-

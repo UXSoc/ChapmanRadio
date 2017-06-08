@@ -1,5 +1,7 @@
 <?php
+
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
+
 namespace CoreBundle\Handler;
 
 use CoreBundle\Entity\User;
@@ -7,14 +9,11 @@ use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -24,8 +23,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerI
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 use Symfony\Component\Serializer\Serializer;
 
-
-class AuthenticationHandler implements AuthenticationEntryPointInterface,AuthenticationFailureHandlerInterface, AuthenticationSuccessHandlerInterface
+class AuthenticationHandler implements AuthenticationEntryPointInterface, AuthenticationFailureHandlerInterface, AuthenticationSuccessHandlerInterface
 {
     private $router;
     private $session;
@@ -33,8 +31,9 @@ class AuthenticationHandler implements AuthenticationEntryPointInterface,Authent
 
     /**
      * AuthenticationHandler constructor.
-     * @param RouterInterface $router
-     * @param SessionInterface $session
+     *
+     * @param RouterInterface   $router
+     * @param SessionInterface  $session
      * @param RegistryInterface $registry
      */
     public function __construct(RouterInterface $router, SessionInterface $session, RegistryInterface $registry)
@@ -49,16 +48,16 @@ class AuthenticationHandler implements AuthenticationEntryPointInterface,Authent
      * called by authentication listeners inheriting from
      * AbstractAuthenticationListener.
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param \Symfony\Component\HttpFoundation\Request                          $request
      * @param \Symfony\Component\Security\Core\Exception\AuthenticationException $exception
      *
      * @return JsonResponse The response to return, never null
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        $normalizer =  new Serializer([new WrapperNormalizer()]);
-        return new JsonResponse($normalizer->normalize(new ErrorWrapper("Failed Authentication")),400);
+        $normalizer = new Serializer([new WrapperNormalizer()]);
 
+        return new JsonResponse($normalizer->normalize(new ErrorWrapper('Failed Authentication')), 400);
     }
 
     /**
@@ -66,7 +65,7 @@ class AuthenticationHandler implements AuthenticationEntryPointInterface,Authent
      * is called by authentication listeners inheriting from
      * AbstractAuthenticationListener.
      *
-     * @param Request $request
+     * @param Request        $request
      * @param TokenInterface $token
      *
      * @return Response never null
@@ -82,8 +81,9 @@ class AuthenticationHandler implements AuthenticationEntryPointInterface,Authent
         $em->persist($user);
         $em->flush();
 
-        $normalizer =  new Serializer([new WrapperNormalizer(),new UserNormalizer()]);
-        return new JsonResponse($normalizer->normalize(new SuccessWrapper($token->getUser(),"Authenticated Successful")),200);
+        $normalizer = new Serializer([new WrapperNormalizer(), new UserNormalizer()]);
+
+        return new JsonResponse($normalizer->normalize(new SuccessWrapper($token->getUser(), 'Authenticated Successful')), 200);
     }
 
     /**
@@ -99,17 +99,18 @@ class AuthenticationHandler implements AuthenticationEntryPointInterface,Authent
      *  B) For an API token authentication system, you return a 401 response
      *      return new Response('Auth header required', 401);
      *
-     * @param Request $request The request that resulted in an AuthenticationException
+     * @param Request                 $request       The request that resulted in an AuthenticationException
      * @param AuthenticationException $authException The exception that started the authentication process
      *
      * @return Response
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $normalizer =  new Serializer([new WrapperNormalizer()]);
-        if($authException instanceof InsufficientAuthenticationException) {
-            return new JsonResponse($normalizer->normalize(new ErrorWrapper("Permission Error")),400);
+        $normalizer = new Serializer([new WrapperNormalizer()]);
+        if ($authException instanceof InsufficientAuthenticationException) {
+            return new JsonResponse($normalizer->normalize(new ErrorWrapper('Permission Error')), 400);
         }
-        return new JsonResponse($normalizer->normalize(new ErrorWrapper("Authentication Error")),400);
+
+        return new JsonResponse($normalizer->normalize(new ErrorWrapper('Authentication Error')), 400);
     }
 }

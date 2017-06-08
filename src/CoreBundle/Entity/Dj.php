@@ -1,12 +1,14 @@
 <?php
+
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
+
 namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Dj
+ * Dj.
  *
  * @ORM\Table(name="dj", uniqueConstraints={@ORM\UniqueConstraint(name="dj_user_id_uindex", columns={"user_id"})})
  * @ORM\Entity
@@ -14,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Dj
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
@@ -30,14 +32,14 @@ class Dj
     private $description;
 
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="strike_count", type="integer", nullable=true)
      */
     private $strikeCount = 0;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="attend_workshop", type="boolean", nullable=true)
      */
@@ -55,25 +57,29 @@ class Dj
 
     /**
      * Many Shows have Many Images.
+     *
      * @ORM\ManyToMany(targetEntity="Image")
      * @ORM\JoinTable(name="dj_image",
      *      joinColumns={@ORM\JoinColumn(name="dj_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="image_id", referencedColumnName="id", unique=true)}
      *      )
+     *
      * @return ArrayCollection
      */
     private $images;
 
     /**
      * DJ's can have multiple shows.
+     *
      * @ORM\ManyToMany(targetEntity="Show", inversedBy="djs")
+     *
      * @return ArrayCollection
      */
     private $shows;
 
-    function __construct()
+    public function __construct()
     {
-        $this->shows =  new ArrayCollection();
+        $this->shows = new ArrayCollection();
         $this->images = new ArrayCollection();
     }
 
@@ -82,49 +88,48 @@ class Dj
         return $this->shows;
     }
 
-    public  function getId()
+    public function getId()
     {
         return $this->id;
     }
 
-    public  function setUser($user)
+    public function setUser($user)
     {
         $this->user = $user;
     }
 
-    public  function  getUser()
+    public function getUser()
     {
         return $this->user;
     }
 
-    public  function setDescription($description){
+    public function setDescription($description)
+    {
         $this->description = $description;
     }
 
-    public  function  getDescription()
+    public function getDescription()
     {
         return $this->description;
     }
 
-    public  function  getStrikeCount()
+    public function getStrikeCount()
     {
         return $this->strikeCount;
     }
 
-    public  function  setStrikeCount($count)
+    public function setStrikeCount($count)
     {
         $this->strikeCount = $count;
     }
 
-    public  function setAttendWorkshop($workshop)
+    public function setAttendWorkshop($workshop)
     {
         $this->attendWorkshop = $workshop;
     }
 
-    public  function  getAttendWorkshop()
+    public function getAttendWorkshop()
     {
         return $this->attendWorkshop;
     }
-
 }
-

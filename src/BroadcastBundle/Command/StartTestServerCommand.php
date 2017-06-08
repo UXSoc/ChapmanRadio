@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 6/2/17
- * Time: 8:03 PM
+ * Time: 8:03 PM.
  */
 
 namespace BroadcastBundle\Command;
-
 
 use BroadcastBundle\Entity\Stream;
 use BroadcastBundle\Service\IcecastService;
@@ -19,14 +18,14 @@ class StartTestServerCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
-        $this->setName("icecast:test:start")
-            ->setDescription("Start Icecast server");
+        $this->setName('icecast:test:start')
+            ->setDescription('Start Icecast server');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         /** @var IcecastService $service */
-        $service =  $this->getContainer()->get('brodcast.icecast');
+        $service = $this->getContainer()->get('brodcast.icecast');
 
         $stream = new Stream();
         $stream->setMount('main.mp3');
@@ -34,9 +33,10 @@ class StartTestServerCommand extends ContainerAwareCommand
         $stream->setUsername('username');
         $stream->updatedTimestamps();
         $service->updateConfig([$stream]);
-        if($service->isIcecastRunning())
+        if ($service->isIcecastRunning()) {
             $service->refreshIcecast();
-        else
-            $service->startIcecast($service->getConfigPath(),true);
+        } else {
+            $service->startIcecast($service->getConfigPath(), true);
+        }
     }
 }

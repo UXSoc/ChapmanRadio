@@ -3,27 +3,24 @@
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 5/29/17
- * Time: 6:55 PM
+ * Time: 6:55 PM.
  */
 
 namespace CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\Role\Role as SRole;
-use Symfony\Component\Security\Core\Role\RoleInterface;
 
 /**
- *
  * @ORM\Table(name="user_role")
  *  @ORM\Entity
  */
 class Role extends SRole
 {
-
-    const ROLE_STAFF = "ROLE_STAFF";
+    const ROLE_STAFF = 'ROLE_STAFF';
 
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
@@ -47,8 +44,7 @@ class Role extends SRole
      */
     private $name;
 
-
-    function __construct($role)
+    public function __construct($role)
     {
         $this->name = $role;
         parent::__construct($role);
@@ -59,12 +55,10 @@ class Role extends SRole
         $this->user = $user;
     }
 
-
     public function setRole($role)
     {
         $this->name = $role;
     }
-
 
     /**
      * Returns the role.
@@ -78,6 +72,6 @@ class Role extends SRole
      */
     public function getRole()
     {
-       return $this->name;
+        return $this->name;
     }
 }

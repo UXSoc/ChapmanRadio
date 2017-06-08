@@ -1,20 +1,18 @@
 <?php
+
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
+
 namespace CoreBundle\Helper;
-use Doctrine\ORM\EntityRepository;
+
 use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\Query;
-use Doctrine\ORM\Query\Parser;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Traversable;
 
-class DataTable  implements \Countable, \IteratorAggregate
+class DataTable implements \Countable, \IteratorAggregate
 {
-
     /** @var QueryBuilder */
     private $query;
-    private $columnSort = array();
+    private $columnSort = [];
     private $perPage = 10;
     private $currentPage = 0;
     private $columnAlias = [];
@@ -23,14 +21,18 @@ class DataTable  implements \Countable, \IteratorAggregate
 
     /**
      * DataTable constructor.
+     *
      * @param QueryBuilder $repository
      */
-    public function __construct($queryBuilder){
+    public function __construct($queryBuilder)
+    {
         $this->query = $queryBuilder;
     }
 
-    public  function setAlias($alias){
+    public function setAlias($alias)
+    {
         $this->columnAlias = $alias;
+
         return $this;
     }
 
@@ -45,61 +47,65 @@ class DataTable  implements \Countable, \IteratorAggregate
     /**
      * @return int
      */
-    public  function getCurrentPage()
+    public function getCurrentPage()
     {
         return $this->currentPage;
     }
 
     /**
      * @param $page
+     *
      * @return DataTable $this
      */
     public function setCurrentPage($page)
     {
         $this->currentPage = $page;
+
         return $this;
     }
 
     /**
      * @param $count
+     *
      * @return DataTable $this
      */
-    public  function setPerPage($count)
+    public function setPerPage($count)
     {
         $this->perPage = $count;
+
         return $this;
     }
 
     /**
      * @param $column
      * @param $sort
+     *
      * @return DataTable $this
      */
-    public function setSort($column,$sort)
+    public function setSort($column, $sort)
     {
         $this->columnSort[$column] = $sort;
+
         return $this;
     }
 
     /**
      * @param $index
+     *
      * @return DataTable $this
      */
-    public  function setIndex($index)
+    public function setIndex($index)
     {
         $this->index = $index;
+
         return $this;
     }
 
-
-    public function parseSort($columns,$input)
+    public function parseSort($columns, $input)
     {
-        foreach ($input as $key => $value)
-        {
-            if(in_array($key,$columns))
-            {
-                switch ($value)
-                {
+        foreach ($input as $key => $value) {
+            if (in_array($key, $columns)) {
+                switch ($value) {
                     case 'asc':
                         $this->columnSort[$key] = 'asc';
                         break;
@@ -107,19 +113,18 @@ class DataTable  implements \Countable, \IteratorAggregate
                         $this->columnSort[$key] = 'desc';
                         break;
                 }
-
             }
         }
+
         return $this;
     }
-
 
     public function getQueryBuilder()
     {
         $query = clone $this->query;
 
         foreach ($this->columnSort as $key => $value) {
-            if(array_key_exists($key,$this->columnAlias)) {
+            if (array_key_exists($key, $this->columnAlias)) {
                 $query->addOrderBy($this->columnAlias[$key], $value);
             }
         }
@@ -131,37 +136,34 @@ class DataTable  implements \Countable, \IteratorAggregate
 
     public function count()
     {
-
         if ($this->count === null) {
             try {
-                $countQuery =  $this->getQueryBuilder();
+                $countQuery = $this->getQueryBuilder();
 
                 $countQuery->setFirstResult(null)->setMaxResults(null);
                 $countQuery->select('count('.$this->index.')');
 
-                $this->count = (int)$countQuery->getQuery()->getSingleScalarResult();
-            } catch(NoResultException $e) {
+                $this->count = (int) $countQuery->getQuery()->getSingleScalarResult();
+            } catch (NoResultException $e) {
                 $this->count = 0;
             }
         }
+
         return $this->count;
     }
 
-
-
     /**
-     * Retrieve an external iterator
+     * Retrieve an external iterator.
+     *
      * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
+     *
      * @return Traversable An instance of an object implementing <b>Iterator</b> or
-     * <b>Traversable</b>
+     *                     <b>Traversable</b>
+     *
      * @since 5.0.0
      */
     public function getIterator()
     {
         return new \ArrayIterator($this->getQueryBuilder()->getQuery()->getResult());
     }
-
-
-
-
 }

@@ -1,11 +1,13 @@
 <?php
+
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
+
 namespace CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Strike
+ * Strike.
  *
  * @ORM\Table(name="strike", uniqueConstraints={@ORM\UniqueConstraint(name="strike_id_uindex", columns={"id"})}, indexes={@ORM\Index(name="strike_user_id_fk", columns={"user_id"})})
  * @ORM\Entity
@@ -13,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Strike
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
@@ -36,7 +38,7 @@ class Strike
     private $reason;
 
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="email_student", type="boolean", nullable=true)
      */
@@ -58,7 +60,4 @@ class Strike
      * })
      */
     private $user;
-
-
 }
-

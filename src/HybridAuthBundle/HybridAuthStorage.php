@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 6/3/17
- * Time: 7:48 PM
+ * Time: 7:48 PM.
  */
 
 namespace HybridAuthBundle;
-
 
 use Hybridauth\Storage\StorageInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -15,7 +14,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class HybridAuthStorage implements StorageInterface
 {
     /**
-     * Namespace
+     * Namespace.
      *
      * @var string
      */
@@ -23,7 +22,7 @@ class HybridAuthStorage implements StorageInterface
 
     private $session;
 
-    function __construct()
+    public function __construct()
     {
         $this->session = new Session();
 
@@ -31,7 +30,7 @@ class HybridAuthStorage implements StorageInterface
     }
 
     /**
-     * Retrieve a item from storage
+     * Retrieve a item from storage.
      *
      * @param string $key
      *
@@ -42,49 +41,44 @@ class HybridAuthStorage implements StorageInterface
         $this->session->get($key);
     }
 
-
-
     /**
-     * Add or Update an item to storage
+     * Add or Update an item to storage.
      *
      * @param string $key
      * @param string $value
      */
     public function set($key, $value)
     {
-        return $this->session->get($key,$value);
+        return $this->session->get($key, $value);
     }
 
     /**
-     * Delete an item from storage
+     * Delete an item from storage.
      *
      * @param string $key
      */
     public function delete($key)
     {
-       return $this->session->remove($key);
+        return $this->session->remove($key);
     }
 
     /**
-     * Delete a item from storage
+     * Delete a item from storage.
      *
      * @param string $key
-     *
      */
     public function deleteMatch($key)
     {
         /** @var \ArrayIterator $itr */
-        foreach ($this->session->getIterator() as $itr)
-        {
-            if(strstr($itr->key(),$key))
-            {
+        foreach ($this->session->getIterator() as $itr) {
+            if (strstr($itr->key(), $key)) {
                 $this->session->remove($itr->key());
             }
         }
     }
 
     /**
-     * Clear all items in storage
+     * Clear all items in storage.
      */
     public function clear()
     {

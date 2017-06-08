@@ -3,25 +3,23 @@
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 6/6/17
- * Time: 10:48 PM
+ * Time: 10:48 PM.
  */
 
 namespace CoreBundle\Helper;
 
-
 use CoreBundle\Entity\Show;
 use DateTime;
-use Symfony\Component\Cache\CacheItem;
 
 class ScheduleEntry
 {
-    /** @var  DateTime */
+    /** @var DateTime */
     private $date;
-    /** @var  DateTime */
+    /** @var DateTime */
     private $startTime;
-    /** @var  DateTime */
+    /** @var DateTime */
     private $endTime;
-    /** @var  Show */
+    /** @var Show */
     private $show;
 
     public function setShow(Show $show)
