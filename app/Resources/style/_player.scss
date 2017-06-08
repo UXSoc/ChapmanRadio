@@ -76,6 +76,11 @@ input[type=submit]:active {
   vertical-align: top
 }
 
+.player-art-exp {
+  height: 300px;
+  width: 300px;
+}
+
 .player-trackinfo {
   display: inline-block;
   color: #fff;
@@ -105,4 +110,27 @@ input[type=submit]:active {
   padding-top: 3px;
   padding-bottom: 5px;
   font-size: 13px;
+}
+
+.sample {
+  position: relative; //this will make the thing appear btw
+  height: 100%;
+  width: 100%;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.player-artistname-exp {
+  font-size: 30px;
+  color: #bdbdbd;
+  padding-bottom: 20px;
+}
+
+.player-text:after {
+  display: block;
+  height: 1px;
+  background-color: #fff;
+  content: " ";
 }

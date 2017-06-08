@@ -56,7 +56,7 @@
                 <div class="img-container" :style="{ backgroundImage: 'url(' + 'https://images.genius.com/df91da4c0c20709e276c25f1bb6ff87f.640x640x1.jpg' + ')' }"></div>
                 <div class="blur"></div>
             </div>
-            <div class="container-fluid inner nopadding">
+            <div class="container-fluid inner nopadding" :class="isinvisible">
                 <div class="row heightfix marginfix">
                     <div class="col-md-5 nopadding">
                         <img class="player-art" src="https://images.genius.com/df91da4c0c20709e276c25f1bb6ff87f.640x640x1.jpg">
@@ -72,6 +72,48 @@
                     </div>
                     <div style="text-align:right;" class="col-md-5 nopadding heightfix">
                         <i class="fa fa-chevron-up player-btn vertalign" @click="expanded = !expanded; hasoverflow()"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="sample" :class="notinvisible">
+                <div class="container" style="height:100vh;">
+                    <div style="text-align:right;position:relative;padding-top:27px;">
+                        <i class="fa fa-close player-btn" @click="expanded = !expanded; hasoverflow()"></i>
+                    </div>
+                    <div class="row" style="height:50%;padding-top:50px;">
+                        <div class="col-md-4">
+                            <img class="player-art-exp" src="https://images.genius.com/df91da4c0c20709e276c25f1bb6ff87f.640x640x1.jpg">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="player-text">
+                                <p style="font-size:24px;color:#fff;">
+                                    Planet Moon<br>
+                                </p>
+                                <p style="font-size:18px;color:#bdbdbd;">
+                                    DJ Crispin
+                                </p>
+                                <p style="padding-top:50px;font-size:36px;color:#fff;">
+                                    Passionfruit<br>
+                                </p>
+                                <p class="player-artistname-exp">
+                                    Drake
+                                </p>
+                            </div>
+                            <div class="row" style="padding-top:20px;">
+                                <div class="col-md-4">
+
+                                </div>
+                                <div class="col-md-4">
+                                    <i class="fa fa-play-circle player-btn centerinparent"></i>
+                                </div>
+                                <div class="col-md-4">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="height:50%;">
+                        this is the chat box
                     </div>
                 </div>
             </div>
@@ -92,6 +134,16 @@
           return {
             'bottom-fixed': !this.expanded,
             expand: this.expanded
+          }
+        },
+        isinvisible: function () {
+          return {
+            invisible: this.expanded
+          }
+        },
+        notinvisible: function () {
+          return {
+            invisible: !this.expanded
           }
         },
         hasoverflow: function () {
