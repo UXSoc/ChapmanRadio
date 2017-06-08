@@ -48,23 +48,65 @@
             </div><!-- /.container-fluid -->
         </nav>
         <router-view></router-view>
-        <cr-player image="https://images.genius.com/df91da4c0c20709e276c25f1bb6ff87f.640x640x1.jpg"></cr-player>
+
+        <!--Expandable Bottom Fixed Player-->
+        <div :class="fullscreen">
+            <div class="content-container">
+                <div class="color-container"></div>
+                <div class="img-container" :style="{ backgroundImage: 'url(' + 'https://images.genius.com/df91da4c0c20709e276c25f1bb6ff87f.640x640x1.jpg' + ')' }"></div>
+                <div class="blur"></div>
+            </div>
+            <div class="container-fluid inner nopadding">
+                <div class="row heightfix marginfix">
+                    <div class="col-md-5 nopadding">
+                        <img class="player-art" src="https://images.genius.com/df91da4c0c20709e276c25f1bb6ff87f.640x640x1.jpg">
+                        <div class="player-trackinfo">
+                            <p class="player-showname">Planet Moon</p>
+                            <p class="player-songname">Passionfruit</p>
+                            <p class="player-artistname">Drake</p>
+                            <a class="btn-player btn-ghost" href="#">VIEW SHOW PAGE</a>
+                        </div>
+                    </div>
+                    <div class="col-md-2 nopadding heightfix centerinparent">
+                        <i class="fa fa-play-circle player-btn"></i>
+                    </div>
+                    <div style="text-align:right;" class="col-md-5 nopadding heightfix">
+                        <i class="fa fa-chevron-up player-btn vertalign" @click="expanded = !expanded; hasoverflow()"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
 </template>
 
 <script>
-    import CrPlayer from '../../components/CrPlayer.vue'
-    export default{
-      data () {
-        return {}
+    export default {
+      data: function () {
+        return {
+          expanded: false
+        }
+      },
+      computed: {
+        fullscreen: function () {
+          return {
+            'bottom-fixed': !this.expanded,
+            expand: this.expanded
+          }
+        },
+        hasoverflow: function () {
+          if (this.expanded) {
+            document.body.classList.add('noscroll')
+          } else {
+            document.body.classList.remove('noscroll')
+          }
+        }
       },
       methods: {
       },
       watch: {
       },
       components: {
-        CrPlayer
       }
     }
 </script>

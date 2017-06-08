@@ -1,4 +1,8 @@
 // https://paper-leaf.com/blog/2016/01/creating-blurred-background-using-only-css/
+.noscroll {
+  overflow: hidden;
+}
+
 .bottom-fixed {
   position: fixed;
   bottom: 0;

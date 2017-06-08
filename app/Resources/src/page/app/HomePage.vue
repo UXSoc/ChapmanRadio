@@ -39,7 +39,6 @@
     import SmallBox from '../../components/SmallBox.vue'
     import TrackBox from '../../components/TrackBox.vue'
     import ShowBox from '../../components/ShowBox.vue'
-    import CrPlayer from '../../components/CrPlayer.vue'
     export default{
       data () {
         return {}
@@ -53,8 +52,7 @@
         WideBox,
         SmallBox,
         TrackBox,
-        ShowBox,
-        CrPlayer
+        ShowBox
       }
     }
 </script>
