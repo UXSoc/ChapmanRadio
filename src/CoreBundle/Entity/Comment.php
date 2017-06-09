@@ -28,7 +28,6 @@ class Comment
 
     /**
      * @var \DateTime
-     *
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
     private $createdAt;
@@ -49,7 +48,6 @@ class Comment
 
     /**
      * @var string
-     *
      * @ORM\Column(name="token", type="string",length=100, nullable=false,unique=true)
      *
      */

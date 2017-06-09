@@ -2,32 +2,17 @@
 /**
  * Created by PhpStorm.
  * User: michaelpollind
- * Date: 6/6/17
- * Time: 1:32 PM
+ * Date: 6/8/17
+ * Time: 8:31 AM
  */
 
 namespace CoreBundle\EventListener;
 
 
-use CoreBundle\Event\CommentEvent;
-use CoreBundle\Event\ScheduleEvent;
-use CoreBundle\Events;
-use Recurr\RecurrenceCollection;
-use Recurr\Transformer\ArrayTransformer;
-use Recurr\Transformer\Constraint\BeforeConstraint;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class SchedulerSubscriber implements EventSubscriberInterface
+class CommentSubscriber implements EventSubscriberInterface
 {
-
-    private $register;
-
-    function __construct(RegistryInterface $register)
-    {
-        $this->register = $register;
-    }
-
     /**
      * Returns an array of event names this subscriber wants to listen to.
      *
@@ -49,16 +34,6 @@ class SchedulerSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            Events::ON_COMMENT_CREATED =>   'onCommentCreated'
         ];
     }
-
-
-    public function onCommentCreated(CommentEvent $event){
-
-
-    }
-
-
-
 }

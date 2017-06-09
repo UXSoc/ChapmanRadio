@@ -400,11 +400,17 @@ class Show
         $this->profanity = $profanity;
     }
 
+    /**
+     * @param $optional
+     */
     public function setAttendenceOptional($optional)
     {
         $this->attendanceoptional = $optional;
     }
 
+    /**
+     * @return bool
+     */
     public function getAttendenceOptional()
     {
         return $this->attendanceOptional;
@@ -447,7 +453,10 @@ class Show
     }
 
 
-    public function addComment($comment)
+    /**
+     * @param Comment $comment
+     */
+    public function addComment(Comment $comment)
     {
         $this->comments->add($comment);
     }
@@ -483,9 +492,19 @@ class Show
         return $this->events;
     }
 
-    public function addEvent($event)
+    public function addEvent(Event $event)
     {
         $this->events->add($event);
+    }
+
+    public function setArchive($archive)
+    {
+        $this->archive = $archive;
+    }
+
+    public function getArchive()
+    {
+        return $this->archive;
     }
 
 

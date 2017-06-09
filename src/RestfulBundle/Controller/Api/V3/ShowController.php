@@ -16,6 +16,7 @@ use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\CommentRepository;
 use CoreBundle\Repository\EventRepository;
 use CoreBundle\Repository\ShowRepository;
+use RestfulBundle\Validation\CommentType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -132,10 +133,10 @@ class ShowController extends Controller
         /** @var Show $show */
         if ($show = $showRepository->getShowByTokenAndSlug($token,$slug))
         {
+
             $comment = new Comment();
             $comment->setContent($request->get("content"));
             $comment->setUser($this->getUser());
-
             if ($comment_token !== null) {
                 if($c = $commentRepository->getCommentByShowAndToken($show, $comment_token))
                     $comment->setParentComment($c);
@@ -143,14 +144,17 @@ class ShowController extends Controller
                     return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->response();
             }
 
-            $errors = $validator->validate($comment);
-            if($errors->count() > 0)
-                return RestfulEnvelope::errorResponseTemplate("invalid Comment")->addErrors($errors)->response();
+            $form = $this->createForm(CommentType::class,$comment);
+            $form->handleRequest($request);
+            if($form->isValid())
+            {
 
-            $em->persist($comment);
-            $em->flush();
-            return RestfulEnvelope::successResponseTemplate('Comment Added',
-                $comment,[new UserNormalizer(),new CommentNormalizer()])->response();
+                $em->persist($comment);
+                $em->flush();
+                return RestfulEnvelope::successResponseTemplate('Comment Added',
+                    $comment,[new UserNormalizer(),new CommentNormalizer()])->response();
+            }
+            return RestfulEnvelope::errorResponseTemplate("invalid Comment")->addErrors($form->getErrors())->response();
         }
         return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->response();
     }

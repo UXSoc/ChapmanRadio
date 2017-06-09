@@ -3,15 +3,11 @@
         <h1 class="cr_header">Blog</h1>
         <div class="row">
             <div class="col-md-8 nopadding">
-                <post-entry></post-entry>
-                <post-entry></post-entry>
-                <post-entry></post-entry>
-                <post-entry></post-entry>
-                <post-entry></post-entry>
-                <post-entry></post-entry>
+                <template v-if="data" v-for="(item, index) in data">
+                    <post-excerpt :post="item"></post-excerpt>
+                </template>
             </div>
             <div class="col-md-4 nopadding">
-
             </div>
         </div>
         <div class="row">
@@ -21,37 +17,37 @@
 </template>
 
 <script>
-    import PostEntry from '../../../components/PostEntry.vue'
+    import PostExcerpt from '../../../components/PostExcerpt.vue'
+    import PostService from '../../../service/postService'
+    import Pagination from '../../../entity/pagination'
+    import Post from '../../../entity/post'
+
     import axios from 'axios'
     export default{
       props: {
       },
       data () {
         return {
-          data: [],
-          page: 0,
-          maxPage: 0,
+          pagination: null,
+          data: null,
           loading: false
         }
       },
       methods: {
         update: function () {
-          let qs = require('qs')
           let _this = this
           _this.loading = true
-          axios.get(Routing.generate('get_posts') + '?' + qs.stringify({page: this.page})).then(function (response) {
-            let pageinator = response.data.data
+          PostService.getPosts(_this.page, (data) => {
             _this.loading = false
-            _this.maxPage = Math.ceil(pageinator.count / pageinator.perPage)
-            let result = _this.data.concat(pageinator.result)
-            _this.$set(_this, 'data', result)
-          }).catch(function (error) {
+            _this.data.concat(data.getResult())
+            _this.$set(_this, 'pagination', data)
+          }, (errors) => {
           })
         },
         handleScroll () {
           if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
             if (!this.loading) {
-              if (this.page <= this.maxPage) {
+              if (this.pagination.currentPage() <= this.pagination.maxPage()) {
                 this.page += 1
                 this.update(this.page)
               }
@@ -69,7 +65,7 @@
         window.removeEventListener('scroll', this.handleScroll)
       },
       components: {
-        PostEntry
+          PostExcerpt
       }
     }
 </script>

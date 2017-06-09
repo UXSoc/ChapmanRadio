@@ -13,7 +13,7 @@ use CoreBundle\Repository\ScheduleRepository;
 use CoreBundle\Repository\ShowRepository;
 use CoreBundle\Service\ScheduleService;
 use Recurr\Rule;
-use RestfulBundle\Validation\RRuleType;
+use RestfulBundle\Validation\RuleWrapper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -50,7 +50,7 @@ class ScheduleController extends Controller
         if($schedule = $scheduleRepository->getByToken($token)) {
             $rule = new Rule($schedule->getMeta());
 
-            $ruleType = new RRuleType();
+            $ruleType = new RuleWrapper();
 
             $ruleType->setByYearDay($request->get('byYearDay',$rule->getByYearDay()));
             $ruleType->setByDay($request->get('days', $rule->getByDay()));
@@ -100,7 +100,7 @@ class ScheduleController extends Controller
         /** @var Show $show */
         if ($show = $showRepository->getShowByTokenAndSlug($token, $slug))
         {
-            $ruleType  = new RRuleType();
+            $ruleType  = new RuleWrapper();
 
             $ruleType->setByYearDay($request->get('byYearDay',[]));
             $ruleType->setByMonthDay($request->get('byMonthDay',[]));

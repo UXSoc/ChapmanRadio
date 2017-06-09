@@ -58,18 +58,18 @@ const router = new VueRouter({ routes: [
       // Posts --------------------------------------------------------------------
       {path: 'post', component: PostPage, children: [
           {name: 'post', path: '/', component: PostList},
-          {name: 'post_single', path: 'post/:token/:slug', component: PostSingle}
+          {name: 'post_single', path: ':token/:slug', component: PostSingle}
       ]},
       // Shows --------------------------------------------------------------------
       {path: 'show', component: ShowPage, children: [
           {name: 'show', path: '/', component: ShowList},
-          {name: 'show_single', path: '/:token/:slug', component: ShowSinglePage}
+          {name: 'show_single', path: ':token/:slug', component: ShowSinglePage}
       ]},
       // --------------------------------------------------------------------------
       {path: 'schedule', component: SchedulePage, children: [
         {name: 'schedule', path: '/', component: ScheduleList},
-        {name: 'schedule_list', path: '/:year/:month/:day', component: ScheduleList},
-        {name: 'schedule_single', path: '/:token', component: ScheduleSingle}
+        {name: 'schedule_list', path: ':year/:month/:day', component: ScheduleList},
+        {name: 'schedule_single', path: ':token', component: ScheduleSingle}
       ]}
     ]
   },

@@ -1,9 +1,9 @@
 <?php
-namespace RestfulBundle\Validation;
+namespace RestfulBundle\Validation\Items;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class PasswordType
+class Password
 {
     /**
      * @Assert\NotBlank()

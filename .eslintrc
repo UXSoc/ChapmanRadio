@@ -2,5 +2,8 @@
   "extends": "standard",
   "plugins": [
     "html"
-  ]
+  ],
+  "globals": {
+    "Routing": true
+  }
 }

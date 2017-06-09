@@ -3,7 +3,7 @@
 namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Helper\RestfulEnvelope;
-use RestfulBundle\Validation\PasswordType;
+use RestfulBundle\Validation\Password;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -29,8 +29,8 @@ class AccountController extends Controller
         /** @var ValidatorInterface $validator */
         $validator = $this->get('validator');
 
-        $oldPasswordType = new PasswordType($request->get("oldPassword"));
-        $newPasswordType = new PasswordType($request->get("newPassword"));
+        $oldPasswordType = new Password($request->get("oldPassword"));
+        $newPasswordType = new Password($request->get("newPassword"));
 
         $e1 = $validator->validate($oldPasswordType);
         $e2 = $validator->validate($newPasswordType);

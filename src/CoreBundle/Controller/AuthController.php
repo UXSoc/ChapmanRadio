@@ -7,7 +7,7 @@ use CoreBundle\Event\UserEvent;
 use CoreBundle\Events;
 use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Service\UserTokenService;
-use RestfulBundle\Validation\PasswordType;
+use RestfulBundle\Validation\Items\Password;
 use CoreBundle\Entity\User;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Repository\UserRepository;
@@ -45,7 +45,7 @@ class AuthController extends Controller
         $user->setName($request->get("name"));
         $user->setUsername($request->get("username"));
         $user->setEmail($request->get("email"));
-        $passwordType = new PasswordType($request->get("password"));
+        $passwordType = new Password($request->get("password"));
         $user->setStudentId($request->get("studentId"));
 
         $errors = $validator->validate($user);
@@ -64,7 +64,7 @@ class AuthController extends Controller
         $em->flush();
 
         $dispatcher->dispatch(Events::USER_CONFIRMATION,new UserEvent($user));
-        return RestfulEnvelope::successResponseTemplate('User registered',$user,[new UserNormalizer()]);
+        return RestfulEnvelope::successResponseTemplate('User registered',$user,[new UserNormalizer()])->response();
     }
 
 
@@ -121,7 +121,7 @@ class AuthController extends Controller
                         ->setStatus(410)
                         ->response();
 
-                $passwordType = new PasswordType($request->get("password"));
+                $passwordType = new Password($request->get("password"));
                 $errors = $validator->validate($passwordType);
                 if($errors->count() > 0)
                     return RestfulEnvelope::errorResponseTemplate("Couldn't reset password")

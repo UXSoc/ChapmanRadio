@@ -7,6 +7,7 @@ use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Normalizer\CommentNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Repository\CommentRepository;
+use RestfulBundle\Validation\CommentType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -43,16 +44,18 @@ class CommentController extends Controller
         if ($comment = $commentRepository->getCommentByToken($token)) {
             $this->denyAccessUnlessGranted('edit', $comment);
 
-            $comment->setContent($request->get("content"));
-
-            $errors = $validator->validate($comment);
-            if ($errors->count() == 0) {
+            $form = $this->createForm(CommentType::class,$comment);
+            $form->handleRequest($request);
+            if($form->isValid())
+            {
                 $em->persist($comment);
                 $em->flush();
 
                 return RestfulEnvelope::successResponseTemplate('Comment Saved', $comment,
                     [new UserNormalizer(), new CommentNormalizer()])->response();
             }
+
+            return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(400)->addErrors($form->getErrors())->response();
         }
         return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->response();
     }
