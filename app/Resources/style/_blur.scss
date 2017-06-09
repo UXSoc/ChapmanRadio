@@ -1,4 +1,8 @@
 // https://paper-leaf.com/blog/2016/01/creating-blurred-background-using-only-css/
+.noscroll {
+  overflow: hidden;
+}
+
 .bottom-fixed {
   position: fixed;
   bottom: 0;
@@ -39,115 +43,6 @@
     position: absolute;
     z-index: 1002;
   }
-}
-
-.inner {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
-
-.centerinparent {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.vertalign {
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-  margin-right: 30px;
-}
-
-.expand {
-  position: fixed;
-  padding: 0;
-  margin: 0;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.btn-player:link,
-.btn-player:visited,
-input[type=submit] {
-  display: inline-block;
-  padding: 10px 30px;
-  text-decoration: none;
-  border-radius: 200px;
-  transition: background-color 0.2s, border 0.2s, color 0.2s;
-  position: absolute;
-  top: 50%;
-  left: 60%;
-  transform: translate(0,-50%);
-  font-size: 14px;
-}
-
-.btn-ghost:link,
-.btn-ghost:visited {
-  border: 2px solid $white;
-  color: $white;
-}
-
-.btn-player:hover,
-.btn-player:active,
-input[type=submit]:hover,
-input[type=submit]:active {
-  //background-color: #5e9434;
-}
-
-.btn-ghost:hover,
-.btn-ghost:active {
-  border: 2px solid #bdbdbd;
-  color: #bdbdbd;
-}
-
-.player-content {
-  z-index: 1003;
-}
-
-.heightfix {
-  height: 100%;
-}
-
-.player-art {
-  display: inline-block;
-  height: 75px;
-  width: 75px;
-  vertical-align: top
-}
-
-.player-trackinfo {
-  display: inline-block;
-  color: #fff;
-  width: 70%;
-  height: 75%;
-  padding-left: 10px;
-}
-
-.player-btn {
-  color: #fff;
-  font-size: 48px;
-}
-
-.player-showname {
-  color: #bdbdbd;
-  padding-top: 5px;
-  padding-bottom: 3px;
-  font-size: 13px;
-}
-
-.player-songname {
-  font-size: 16px;
-}
-
-.player-artistname {
-  color: #bdbdbd;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  font-size: 13px;
 }
 
 .blur {
