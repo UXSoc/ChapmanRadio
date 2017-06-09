@@ -1,4 +1,4 @@
 {
-  "presets": ["env"],
-  "plugins": ["transform-vue-jsx","syntax-flow"]
+  "presets": ["env","flow"],
+  "plugins": ["syntax-flow","transform-vue-jsx"]
 }

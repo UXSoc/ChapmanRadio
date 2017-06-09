@@ -12,7 +12,7 @@ export default class Pagination extends BaseEntity {
     return Math.ceil(this._count / this._perPage)
   }
 
-  getcurrentPage () {
+  getCurrentPage () {
     return this._page
   }
 

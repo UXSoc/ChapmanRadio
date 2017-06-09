@@ -1,36 +1,43 @@
 <template>
     <div>
-
+        <post v-if="post" :post="post"></post>
+        <comment style="background:pink" v-if="comments"  v-for="comm in comments" :comment="comm" :key="comm.getToken()"></comment>
     </div>
 </template>
 
 <script>
-    import axios from 'axios'
-
+    import PostService from '../../../service/postService'
+    import Post from '../../../components/Post.vue'
+    import Comment from '../../../components/Comment.vue'
     export default{
       data () {
         return {
+          post: null,
+          comments: []
         }
       },
       methods: {
         query: function () {
-          let qs = require('qs')
           let _this = this
-          axios.get(Routing.generate('get_post', {token: this.$route.params.token, slug: this.$route.params.slug})).then(function (response) {
-            console.log(response.data)
-          }).catch(function (error) {
+          PostService.getPost(this.$route.params.token, this.$route.params.slug, (data) => {
+            _this.$set(_this, 'post', data.getResult())
+          }, (data) => {
+          })
 
+          PostService.getPostComments(this.$route.params.token, this.$route.params.slug, null, (data) => {
+            _this.$set(_this, 'comments', data.getResult())
+          }, (data) => {
           })
         }
       },
       created () {
         this.query()
-//        this.token = this.$route.params.token
-//        this.slug = this.$route.params.slug
       },
       destroyed () {
       },
       components: {
+        Post,
+        Comment
       }
     }
 </script>

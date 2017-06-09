@@ -1,7 +1,12 @@
 import BaseEntity from './baseEntity'
 import { ErrorBag } from 'vee-validate'
-export default class Envelope extends BaseEntity {
-  constructor (create, data) {
+export default class Envelope<T> extends BaseEntity {
+  _success: string
+  _message: string
+  _errors: {[string]: string}
+  _data: T
+
+  constructor (create : (result: Object) => T, data) {
     super()
     this._success = data.success
     this._message = data.message
@@ -32,9 +37,10 @@ export default class Envelope extends BaseEntity {
     return this._errors
   }
 
-  fillErrorBag(errorBag : ErrorBag)
-  {
-
+  fillErrorBag (errorBag : ErrorBag) {
+    for (let key in this._errors) {
+      errorBag.add(key, this._errors[key])
+    }
   }
 
 }

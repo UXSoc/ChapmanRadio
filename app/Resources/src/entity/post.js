@@ -3,47 +3,47 @@ import BaseEntity from './baseEntity'
 export default class Post extends BaseEntity {
   constructor (data) {
     super()
-    this.categories = this.get('categories', data, '')
-    this.tags = this.get('tags', data, '')
-    this.token = this.get('token', data, '')
-    this.name = this.get('name', data, '')
-    this.slug = this.get('slug', data, '')
-    this.created_at = this.get('created_at', data, {})
-    this.updated_at = this.get('updated_at', data, {})
-    this.content = this.get('content', data, '')
-    this.token = this.get('token', data, '')
+    this._categories = this.get('categories', data, '')
+    this._tags = this.get('tags', data, '')
+    this._token = this.get('token', data, '')
+    this._name = this.get('name', data, '')
+    this._slug = this.get('slug', data, '')
+    this._created_at = this.get('created_at', data, {})
+    this._updated_at = this.get('updated_at', data, {})
+    this._content = this.get('content', data, '')
+    this._token = this.get('token', data, '')
   }
 
   getCategories () {
-    return this.categories
+    return this._categories
   }
 
   getTags () {
-    return this.tags
+    return this._tags
   }
 
   getToken () {
-    return this.token
+    return this._token
   }
 
   getName () {
-    return this.name
+    return this._name
   }
 
   getSlug () {
-    return this.slug
+    return this._slug
   }
 
   getCreatedAt () {
-    return this.created_at
+    return this._created_at
   }
 
   getUpdatedAt () {
-    return this.updated_at
+    return this._updated_at
   }
 
   getContent () {
-    return this.content
+    return this._content
   }
 
   getRoute () {
