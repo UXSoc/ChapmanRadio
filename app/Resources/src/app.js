@@ -4,27 +4,20 @@ import App from './App.vue'
 import Dashboard from './page/dashboard/Dashboard.vue'
 
 // -------------------------------DASHBOARD----------------------------------------------
-import AllCommentDashboard from './page/dashboard/comment/AllCommentDashboard.vue'
+import BroadcastLiveDashboard from './page/dashboard/dj/BroadcastLiveDashboard.vue'
+import GradesAttendanceDashboard from './page/dashboard/dj/GradesAttendanceDashboard.vue'
+import MyShowsDashboard from './page/dashboard/dj/MyShowsDashboard.vue'
+import SettingsDashboard from './page/dashboard/dj/SettingsDashboard.vue'
 
-import AllPostDashboard from './page/dashboard/post/AllPostDashboard.vue'
-import AddNewPostDashboard from './page/dashboard/post/AddNewPostDashboard.vue'
-import PostCategoryDashboard from './page/dashboard/post/PostCategoryDashboard.vue'
-import PostTagDashboard from './page/dashboard/post/PostTagDashboard.vue'
-
-import ProfileDashboard from './page/dashboard/profile/ProfileDashboard.vue'
-import ProfileSettingsDashboard from './page/dashboard/profile/ProfileSettingDashboard.vue'
-
-import SettingDashboard from './page/dashboard/setting/SettingDashboard.vue'
-
-import AllShowDashboard from './page/dashboard/show/AllShowDashboard.vue'
-import AddNewShowDashboard from './page/dashboard/show/AddNewShowDashboard.vue'
-import ShowCategoryDashboard from './page/dashboard/show/ShowCategoryDashboard.vue'
-import ShowTagDashboard from './page/dashboard/show/ShowTagDashboard.vue'
-import ShowDashboard from './page/dashboard/show/ShowDashboard.vue'
-
-import AddNewUserDashboard from './page/dashboard/user/AddNewUserDashboard.vue'
-import AllUserDashboard from './page/dashboard/user/AllUserDashboard.vue'
-import UserDashboard from './page/dashboard/user/UserDashboard.vue'
+import AttendanceDashboard from './page/dashboard/siteadmin/AttendanceDashboard.vue'
+import BlogDashboard from './page/dashboard/siteadmin/BlogDashboard.vue'
+import EmailAlertsDashboard from './page/dashboard/siteadmin/EmailAlertsDashboard.vue'
+import GradeMgmtDashboard from './page/dashboard/siteadmin/GradeMgmtDashboard.vue'
+import ScheduleDashboard from './page/dashboard/siteadmin/ScheduleDashboard.vue'
+import ShowsDashboard from './page/dashboard/siteadmin/ShowsDashboard.vue'
+import StaffDashboard from './page/dashboard/siteadmin/StaffDashboard.vue'
+import StrikesDashboard from './page/dashboard/siteadmin/StrikesDashboard.vue'
+import UsersDashboard from './page/dashboard/siteadmin/UsersDashboard.vue'
 // -------------------------------App----------------------------------------------
 
 import AppPage from './page/app/AppPage.vue'
@@ -77,33 +70,20 @@ const router = new VueRouter({ routes: [
   {
     name: 'dashboard', path: '/dashboard/', component: Dashboard,
     children: [
-        // shows
-        {name: 'dashboard_all_show', path: 'show', component: AllShowDashboard},
-        {name: 'dashboard_add_new_show', path: 'show/add', component: AddNewShowDashboard},
-        {name: 'dashboard_category_show', path: 'show/category', component: ShowCategoryDashboard},
-        {name: 'dashboard_tag_show', path: 'show/tag', component: ShowTagDashboard},
-        {name: 'dashboard_show', path: 'show/:id', component: ShowDashboard},
+        {name: 'dashboard_broadcast_live', path: 'broadcastlive', component: BroadcastLiveDashboard},
+        {name: 'dashboard_grades_attendance', path: 'gradesattendance', component: GradesAttendanceDashboard},
+        {name: 'dashboard_my_shows', path: 'myshows', component: MyShowsDashboard},
+        {name: 'dashboard_settings', path: 'settings', component: SettingsDashboard},
 
-        // settings
-        {name: 'dashboard_setting', path: 'setting', component: SettingDashboard},
-
-        // user
-        {name: 'dashboard_add_new_user', path: 'user/new-user', component: AddNewUserDashboard},
-        {name: 'dashboard_all_user', path: 'user', component: AllUserDashboard},
-        {name: 'dashboard_user', path: 'user/:id', component: UserDashboard},
-
-        // profile
-        {name: 'dashboard_profile', path: 'profile', component: ProfileDashboard},
-        {name: 'dashboard_profile_setting', path: 'profile/setting', component: ProfileSettingsDashboard},
-
-        // post
-        {name: 'dashboard_all_post', path: 'post', component: AllPostDashboard},
-        {name: 'dashboard_add_new_post', path: 'post/add', component: AddNewPostDashboard},
-        {name: 'dashboard_category_post', path: 'post/category', component: PostCategoryDashboard},
-        {name: 'dashboard_tag_post', path: 'post/tag', component: PostTagDashboard},
-
-        // comment
-        {name: 'dashboard_all_comment', path: 'comment', component: AllCommentDashboard}
+        {name: 'dashboard_attendance', path: 'attendance', component: AttendanceDashboard},
+        {name: 'dashboard_blog', path: 'blog', component: BlogDashboard},
+        {name: 'dashboard_emailalerts', path: 'emailalerts', component: EmailAlertsDashboard},
+        {name: 'dashboard_grade_mgmt', path: 'grademgmt', component: GradeMgmtDashboard},
+        {name: 'dashboard_schedule', path: 'schedule', component: ScheduleDashboard},
+        {name: 'dashboard_shows', path: 'shows', component: ShowsDashboard},
+        {name: 'dashboard_staff', path: 'staff', component: StaffDashboard},
+        {name: 'dashboard_strikes', path: 'strikes', component: StrikesDashboard},
+        {name: 'dashboard_users', path: 'users', component: UsersDashboard}
     ]
   }
   // -------------------------------App----------------------------------------------

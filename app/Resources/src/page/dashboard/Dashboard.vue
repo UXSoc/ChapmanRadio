@@ -66,37 +66,27 @@
     data () {
       return {
         menu: [
-          {'name': 'Dashboard', 'route': 'dashboard', 'icon': 'fa-bar-chart-o'},
-          {
-            'name': 'Shows',
-            'icon': 'fa-bar-chart-o',
-            'sub_menu': [
-              {name: 'All Shows', route: 'dashboard_all_show', 'icon': 'fa-bar-chart-o'},
-              {name: 'Add New', route: 'dashboard_add_new_show', 'icon': 'fa-bar-chart-o'},
-              {name: 'Categories', route: 'dashboard_category_show', 'icon': 'fa-bar-chart-o'},
-              {name: 'Tags', route: 'dashboard_tag_show', 'icon': 'fa-bar-chart-o'}
-            ]
-          },
-          {
-            'name': 'Posts',
-            'icon': 'fa-bar-chart-o',
-            'sub_menu': [
-              {name: 'All Posts', route: 'dashboard_all_post', 'icon': 'fa-bar-chart-o'},
-              {name: 'Add New', route: 'dashboard_add_new_post', 'icon': 'fa-bar-chart-o'},
-              {name: 'Categories', route: 'dashboard_category_post', 'icon': 'fa-bar-chart-o'},
-              {name: 'Tags', route: 'dashboard_tag_post', 'icon': 'fa-bar-chart-o'}
-            ]
-          },
-          {'name': 'Comments', 'route': 'dashboard_all_comment', 'icon': 'fa-bar-chart-o'},
-          {
-            'name': 'Users',
-            'icon': 'fa-bar-chart-o',
-            'sub_menu': [
-              {name: 'All Users', route: 'dashboard_all_user', 'icon': 'fa-bar-chart-o'},
-              {name: 'Add New', route: 'dashboard_add_new_user', 'icon': 'fa-bar-chart-o'}
-            ]
-          },
-          {'name': 'Settings', 'route': 'dashboard_setting', 'icon': 'fa-bar-chart-o'}
+//          {
+//            'name': 'Users',
+//            'icon': 'fa-bar-chart-o',
+//            'sub_menu': [
+//              {name: 'All Users', route: 'dashboard_all_user', 'icon': 'fa-bar-chart-o'},
+//              {name: 'Add New', route: 'dashboard_add_new_user', 'icon': 'fa-bar-chart-o'}
+//            ]
+//          },
+          {'name': 'Broadcast Live', 'route': 'dashboard_broadcast_live', 'icon': 'fa-bar-chart-o'},
+          {'name': 'My Shows', 'route': 'dashboard_my_shows', 'icon': 'fa-bar-chart-o'},
+          {'name': 'Grades / Attendance', 'route': 'dashboard_grades_attendance', 'icon': 'fa-bar-chart-o'},
+          {'name': 'Settings', 'route': 'dashboard_settings', 'icon': 'fa-bar-chart-o'},
+          {'name': 'Attendance', 'route': 'dashboard_attendance', 'icon': 'fa-bar-chart-o'},
+          {'name': 'Blog', 'route': 'dashboard_blog', 'icon': 'fa-bar-chart-o'},
+          {'name': 'Users', 'route': 'dashboard_users', 'icon': 'fa-bar-chart-o'},
+          {'name': 'Shows', 'route': 'dashboard_shows', 'icon': 'fa-bar-chart-o'},
+          {'name': 'Schedule', 'route': 'dashboard_schedule', 'icon': 'fa-bar-chart-o'},
+          {'name': 'Staff', 'route': 'dashboard_staff', 'icon': 'fa-bar-chart-o'},
+          {'name': 'Grade Management', 'route': 'dashboard_grade_mgmt', 'icon': 'fa-bar-chart-o'},
+          {'name': 'Email Alerts', 'route': 'dashboard_emailalerts', 'icon': 'fa-bar-chart-o'},
+          {'name': 'Strikes', 'route': 'dashboard_strikes', 'icon': 'fa-bar-chart-o'}
         ]
       }
     },
@@ -123,6 +113,7 @@
           $('#page-wrapper').css('min-height', (height) + 'px')
         }
       })
+      document.body.classList.add('whiteback')
     },
     beforeMount:{
 
