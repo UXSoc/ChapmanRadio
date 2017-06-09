@@ -14,8 +14,10 @@ export default class Comment extends BaseEntity {
     this._content = this.get('content', data, '')
     this._user = this.get('user', data, {})
     this._children = []
-    for (let i = 0; i < data.children.length; i++) {
-      this._children.push(new Comment(data.children[i]))
+    if (data.children) {
+      for (let i = 0; i < data.children.length; i++) {
+        this._children.push(new Comment(data.children[i]))
+      }
     }
   }
 

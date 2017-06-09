@@ -25,7 +25,7 @@ export default {
   },
   getPostComments: function (token: string, slug:string, root: string, responseCallback : (result: Envelope<Comment>) => void, errorResponseCallback: (result: Envelope) => void) {
     axios.get(Routing.generate('get_blog_comment', {token: token, slug: slug, comment_token: root})).then((response) => {
-      responseCallback(new Envelope((commentData) => new Comment(commentData), response.data))
+      responseCallback(new Envelope((commentData) => commentData.map((r) => new Comment(r)), response.data))
     }).catch((error) => {
       Util.handleErrorResponse(error, errorResponseCallback)
     })
