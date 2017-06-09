@@ -1,8 +1,15 @@
 {
-  "extends": "standard",
+  "parser": "babel-eslint",
   "plugins": [
     "html"
   ],
+  "extends": [
+    "flowtype-errors",
+    "vue"
+  ],
+  "rules": {
+    "flowtype-errors/show-errors": 2
+  },
   "globals": {
     "Routing": true
   }

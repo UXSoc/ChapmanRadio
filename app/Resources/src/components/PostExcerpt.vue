@@ -1,16 +1,21 @@
 <template>
     <div class="post-entry">
-        <h2><router-link :to="{name: 'post_single', params: { token:getToken(), slug:getSlug()}}" :exact="true" tag="a">{{getName()}}</router-link></h2>
+        <h2><router-link :to="post.getRoute()" :exact="true" tag="a">{{post.getName()}}</router-link></h2>
         <div>
-            {{getContent()}}
+            {{post.getContent()}}
         </div>
     </div>
 </template>
 
 <script>
-    import Post from '../mixins/postmixin'
+    import Post from '../entity/post'
     export default{
-      mixins: [Post],
+      props: {
+        post: {
+          type: Post,
+          default: new Post({})
+        }
+      },
       data () {
         return {}
       }

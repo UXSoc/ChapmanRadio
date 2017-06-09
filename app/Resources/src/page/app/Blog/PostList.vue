@@ -21,16 +21,15 @@
     import PostService from '../../../service/postService'
     import Pagination from '../../../entity/pagination'
     import Post from '../../../entity/post'
-
-    import axios from 'axios'
     export default{
       props: {
       },
       data () {
         return {
           pagination: null,
-          data: null,
-          loading: false
+          data: [],
+          loading: false,
+          page: 0
         }
       },
       methods: {
@@ -39,15 +38,19 @@
           _this.loading = true
           PostService.getPosts(_this.page, (data) => {
             _this.loading = false
-            _this.data.concat(data.getResult())
-            _this.$set(_this, 'pagination', data)
-          }, (errors) => {
+            let pagination : Pagination = data.getResult()
+            let posts: [Post] = pagination.getResult()
+            let result = _this.data
+            result = result.concat(posts)
+            _this.$set(_this, 'data', result)
+            _this.$set(_this, 'pagination', pagination)
+          }, (data) => {
           })
         },
         handleScroll () {
           if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
             if (!this.loading) {
-              if (this.pagination.currentPage() <= this.pagination.maxPage()) {
+              if (this.pagination.getCurrentPage() <= this.pagination.getMaxPage()) {
                 this.page += 1
                 this.update(this.page)
               }
