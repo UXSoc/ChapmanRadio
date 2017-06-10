@@ -25,6 +25,7 @@
     import PostService from '../../../service/postService'
     import Pagination from '../../../entity/pagination'
     import Post from '../../../entity/post'
+    import $ from 'jquery'
     export default{
       props: {
       },

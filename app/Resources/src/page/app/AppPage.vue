@@ -17,8 +17,11 @@
                 </div>
 
                 <ul class="nav navbar-nav navbar-left login">
-                    <router-link active-class="active" :to="{name: 'login'}" :exact="true" tag="li">
+                    <router-link v-if="!status.isLoggedIn()" active-class="active" :to="{name: 'login'}" :exact="true" tag="li">
                         <a class="nav-link"><i class="fa fa-user" aria-hidden="true"></i> Login</a>
+                    </router-link>
+                    <router-link v-else active-class="active" :to="{name: 'login'}" :exact="true" tag="li">
+                        <a class="nav-link"><i class="fa fa-user" aria-hidden="true"></i> {{status.getUsername()}}</a>
                     </router-link>
                 </ul>
 
@@ -123,10 +126,12 @@
 </template>
 
 <script>
+    import User from './../../entity/user'
     export default {
       data: function () {
         return {
-          expanded: false
+          expanded: false,
+          status: new User({})
         }
       },
       computed: {
@@ -155,14 +160,15 @@
         }
       },
       methods: {
-        fetchData () {
-          console.log(this.$auth.getStatus())
+        userStatus () {
+          this.status = this.$auth.getStatus()
         }
       },
       watch: {
-        '$auth.status' : 'fetchData'
+        '$auth.status' : 'userStatus'
       },
       created () {
+        this.userStatus()
       },
       components: {
       }

@@ -18,6 +18,7 @@
     import ShowService from '../../../service/showService'
     import Show from '../../../entity/show'
     import Pagination from '../../../entity/pagination'
+    import $ from 'jquery'
     export default{
       data () {
         return {

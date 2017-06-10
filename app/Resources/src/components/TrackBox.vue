@@ -15,22 +15,22 @@
       return {}
     },
     props: {
-        track_name: {
-            type: String,
-            default: ''
-        },
-        artist: {
-            type: String,
-            default: ''
-        },
-        mins_ago: {
-            type: String,
-            default: ''
-        },
-        img_url: {
-            type: String,
-            default: ''
-        }
+      track_name: {
+        type: String,
+        default: ''
+      },
+      artist: {
+        type: String,
+        default: ''
+      },
+      mins_ago: {
+        type: String,
+        default: ''
+      },
+      img_url: {
+        type: String,
+        default: ''
+      }
     },
     methods: {
     }

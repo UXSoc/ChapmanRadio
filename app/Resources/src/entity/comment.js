@@ -1,4 +1,5 @@
 import BaseEntity from './baseEntity'
+import User from './user'
 
 export default class Comment extends BaseEntity {
   _token: string
@@ -12,7 +13,7 @@ export default class Comment extends BaseEntity {
     this._token = this.get('token', data, '')
     this._createdAt = this.get('created_at', data, {})
     this._content = this.get('content', data, '')
-    this._user = this.get('user', data, {})
+    this._user = this.getAndInstance((data) => new User(data), 'user', data, new User({}))
     this._children = []
     if (data.children) {
       for (let i = 0; i < data.children.length; i++) {

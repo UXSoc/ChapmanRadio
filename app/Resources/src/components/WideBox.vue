@@ -17,7 +17,7 @@
     props: {
       post: {
         type: Post,
-        default: new Post({})
+                        default: new Post({})
       }
     },
     methods: {

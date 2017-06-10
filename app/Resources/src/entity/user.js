@@ -16,6 +16,22 @@ export default class User extends BaseEntity {
     this._createdAt = this.get('created_at', data, '')
   }
 
+  isLoggedIn () {
+    return !('ROLE_ANONYMOUS' in this._roles)
+  }
+
+  isDj () {
+    return ('ROLE_DJ' in this._roles)
+  }
+
+  isStaff () {
+    return ('ROLE_STAFF' in this._roles)
+  }
+
+  hasRole (role) {
+    return (role in this._roles)
+  }
+
   setUsername (test) {
     this._username = test
   }

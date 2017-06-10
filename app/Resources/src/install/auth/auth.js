@@ -1,6 +1,7 @@
 
 import { install } from './install'
 import User from './../../entity/user'
+import AuthService from './../../service/authService'
 
 export default class Auth {
   static install: () => void
@@ -12,6 +13,12 @@ export default class Auth {
     this._app = null
     this._apps = []
     this.status = new User({})
+    let _this = this
+    AuthService.getStatus((envelope) => {
+      _this.status = envelope.getResult()
+    }, (envelope) => {
+      _this.status = new User({})
+    })
   }
 
   init (app: any) {

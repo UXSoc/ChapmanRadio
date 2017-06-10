@@ -12,7 +12,6 @@ $(document).ready(function () {
     }
   })
 
-
   tinymce.init({
     selector: '.markdown-editor',  // change this value according to your HTML
     plugin: 'textpattern',
