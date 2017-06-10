@@ -1,9 +1,9 @@
 <template>
     <div class="col-md-3 wnb">
-        <router-link class="scb-box" :to="uri" :exact="true" tag="a">
-            <img :src="image_url">
-            <p class="scb-text scb-text-title"><strong>{{ show_name }}</strong></p>
-            <p class="scb-text"><i>{{ genre }}</i><br><br>{{ show_description }}<br><br></p>
+        <router-link class="scb-box" :to="show.getRoute()" :exact="true" tag="a">
+            <img src="https://images.genius.com/6d4830a2f394d01e91ef6f378fdb0c76.1000x1000x1.jpg">
+            <p class="scb-text scb-text-title"><strong>{{ show.getName()  }}</strong></p>
+            <p class="scb-text"><i></i><br><br>{{ show.getExcerpt() }}<br><br></p>
             <!--<p class="scb-genre"><i>{{ genre }}</i></p>-->
             <!--<p class="scb-desc">{{ show_description }}</p>-->
         </router-link>
@@ -11,33 +11,16 @@
 </template>
 
 <script>
-  export default{
-    data () {
-      return {}
-    },
-    props: {
-      show_name: {
-        type: String,
-        default: ''
+    import Show from '../entity/show'
+    export default{
+      props: {
+        show: {
+          type: Show,
+          default: new Show({})
+        }
       },
-      genre: {
-        type: String,
-        default: ''
-      },
-      show_description: {
-        type: String,
-        default: ''
-      },
-      uri: {
-        type: Object,
-        default: {}
-      },
-      image_url: {
-        type: String,
-        default: ''
+      data () {
+        return {}
       }
-    },
-    methods: {
     }
-  }
 </script>

@@ -49,7 +49,7 @@
     background: none;
   }
 
-  .navbar-nav .nav-link:hover{
+  .navbar-nav .nav-link:hover, .navbar-nav .active>.nav-link{
     border-bottom: #79C043;
     border-bottom-width: 6px;
     border-bottom-style: solid;

@@ -65,15 +65,15 @@ class PostRepository extends EntityRepository
 
     /**
      * @param Query $query
-     * @param $page
-     * @param $perPage
+     * @param int $page
+     * @param int $perPage
      * @param int $limit
      * @return Paginator
      */
     public function  paginator(Query $query,$page,$perPage,$limit = 10)
     {
         $pagination = new Paginator($query);
-        $num = $perPage > $limit ? $perPage :  $limit;
+        $num = $perPage < $limit ? $perPage :  $limit;
         $pagination->getQuery()->setMaxResults($num);
         $pagination->getQuery()->setFirstResult($num * $page);
         return $pagination;

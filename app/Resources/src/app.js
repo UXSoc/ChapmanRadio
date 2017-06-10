@@ -38,6 +38,12 @@ import ShowList from './page/app/Show/ShowList.vue'
 
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Player from './install/player/player'
+import Auth from './install/auth/auth'
+
+const auth = new Auth()
+
+const player = new Player()
 
 const router = new VueRouter({ routes: [
   {
@@ -90,9 +96,10 @@ const router = new VueRouter({ routes: [
 ]})
 
 window.onload = function () {
-    // router.push({name : "summary"})
   new Vue({
+    auth,
     router,
+    player,
     render: h => h(App)
   }).$mount('#app')
 }

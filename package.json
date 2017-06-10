@@ -28,6 +28,7 @@
     "eslint-loader": "^1.6.3",
     "file-loader": "^0.10.1",
     "flow": "^0.2.3",
+    "howler": "^2.0.4",
     "less": "^2.7.2",
     "less-loader": "^4.0.3",
     "less-plugin-rewrite-import": "^0.1.1",

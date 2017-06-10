@@ -6,6 +6,7 @@ namespace CoreBundle\Controller;
 use CoreBundle\Event\UserEvent;
 use CoreBundle\Events;
 use CoreBundle\Helper\RestfulEnvelope;
+use CoreBundle\Normalizer\DateTimeNormalizer;
 use CoreBundle\Service\UserTokenService;
 use RestfulBundle\Validation\Items\Password;
 use CoreBundle\Entity\User;
@@ -206,7 +207,7 @@ class AuthController extends Controller
     {
         /** @var User $user */
         $user = $this->getUser();
-        return RestfulEnvelope::successResponseTemplate('Account status',$user,[new UserNormalizer()]);
+        return RestfulEnvelope::successResponseTemplate('Account status',$user,[new UserNormalizer(),new DateTimeNormalizer()])->response();
     }
 
 }

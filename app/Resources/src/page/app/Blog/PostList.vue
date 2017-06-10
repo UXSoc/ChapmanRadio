@@ -6,6 +6,10 @@
                 <template v-if="data" v-for="(item, index) in data">
                     <post-excerpt :post="item"></post-excerpt>
                 </template>
+                <div v-if="loading">
+                    <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+                    <span class="sr-only">Loading...</span>
+                </div>
             </div>
             <div class="col-md-4 nopadding">
             </div>
@@ -28,15 +32,14 @@
         return {
           pagination: null,
           data: [],
-          loading: false,
-          page: 0
+          loading: false
         }
       },
       methods: {
-        update: function () {
+        query: function (page) {
           let _this = this
           _this.loading = true
-          PostService.getPosts(_this.page, (data) => {
+          PostService.getPosts(page, (data) => {
             _this.loading = false
             let pagination : Pagination = data.getResult()
             let posts: [Post] = pagination.getResult()
@@ -51,8 +54,7 @@
           if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
             if (!this.loading) {
               if (this.pagination.getCurrentPage() <= this.pagination.getMaxPage()) {
-                this.page += 1
-                this.update(this.page)
+                this.query(this.pagination.getNextPage())
               }
             }
           }
@@ -61,14 +63,14 @@
       watch: {
       },
       created () {
-        this.update(0)
+        this.query(0)
         window.addEventListener('scroll', this.handleScroll)
       },
       destroyed () {
         window.removeEventListener('scroll', this.handleScroll)
       },
       components: {
-          PostExcerpt
+        PostExcerpt
       }
     }
 </script>

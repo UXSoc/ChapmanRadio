@@ -49,8 +49,8 @@ class BlogController extends Controller
         $postRepository =  $em->getRepository(Post::class);
 
         $pagination = $postRepository->paginator($postRepository->filter($request),
-            $request->get('page',0),
-            $request->get('entries',10),20);
+            (int)$request->get('page',0),
+            (int)$request->get('entries',10),20);
 
         return RestfulEnvelope::successResponseTemplate(null,$pagination,
             [new PostNormalizer(),new UserNormalizer(),new PaginatorNormalizer(),new DateTimeNormalizer()])->response();

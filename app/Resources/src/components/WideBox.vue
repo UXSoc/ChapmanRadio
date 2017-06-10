@@ -1,34 +1,23 @@
 <template>
     <div class="col-md-6 wnb">
-        <router-link class="wn-box" :to="uri" :exact="true" tag="a">
-            <img :src="image_url">
-            <p class="wn-box-title wn-wb-title">{{ title }}</p>
-            <p class="wn-box-desc wn-wb-desc">{{ description }}</p>
+        <router-link class="wn-box" :to="post.getRoute()" :exact="true" tag="a">
+            <img src="https://images.genius.com/6d4830a2f394d01e91ef6f378fdb0c76.1000x1000x1.jpg">
+            <p class="wn-box-title wn-wb-title">{{ post.getName() }}</p>
+            <p class="wn-box-desc wn-wb-desc">{{ post.getExcerpt() }}</p>
         </router-link>
     </div>
 </template>
 
 <script>
+  import Post from '../entity/post'
   export default{
     data () {
       return {}
     },
     props: {
-      title: {
-        type: String,
-        default: ''
-      },
-      description: {
-        type: String,
-        default: ''
-      },
-      uri: {
-        type: Object,
-        default: {}
-      },
-      image_url: {
-        type: String,
-        default: ''
+      post: {
+        type: Post,
+        default: new Post({})
       }
     },
     methods: {

@@ -45,6 +45,7 @@
     },
     methods: {
       login: function () {
+          this.$auth.refresh()
         this.validator.validateAll({
           'username': this.username,
           'password': this.password

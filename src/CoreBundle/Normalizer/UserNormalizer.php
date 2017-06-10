@@ -47,8 +47,8 @@ class UserNormalizer implements NormalizerInterface, NormalizerAwareInterface
                 return $object->getRole();
             },$object->getRoles()),
             "username" => $object->getUsername(),
-            "created_at" => $object->getCreatedAt(),
-            "updated_at" => $object->getUpdatedAt(),
+            "created_at" => $this->normalizer->supportsNormalization($object->getCreatedAt(),$format)? $this->normalizer->normalize($object->getCreatedAt(),$format,$context): $object->getCreatedAt(),
+            "updated_at" => $this->normalizer->supportsNormalization($object->getUpdatedAt(),$format)? $this->normalizer->normalize($object->getUpdatedAt(),$format,$context): $object->getUpdatedAt(),
             "token" => $object->getToken()
         ];
 

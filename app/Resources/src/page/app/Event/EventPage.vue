@@ -3,8 +3,8 @@
         <h2 style="margin-left:15px;margin-bottom:0;" class="cr_header">Events</h2>
         <div class="row-resp">
             <template v-for="(item, index) in data">
-                <wide-box v-if="index == 0" :title="item.name" :uri="{name: 'post_single', params: { token:item.token, slug:item.slug } }" :description="item.excerpt" image_url="/bundles/public/img/dj-wide.jpeg"></wide-box>
-                <small-box v-else :title="item.name" :uri="{name: 'post_single', params: { token:item.token, slug:item.slug } }" :description="item.excerpt" image_url="/bundles/public/img/dj-wide.jpeg"></small-box>
+                <wide-box v-if="index == 0" :post="item"></wide-box>
+                <small-box v-else :post="item"></small-box>
             </template>
        </div>
        <div v-if="loading"> Loading </div>
@@ -13,37 +13,38 @@
 
 <script>
     import WideBox from '../../../components/WideBox.vue'
+    import PostService from '../../../service/postService'
     import SmallBox from '../../../components/SmallBox.vue'
-    import axios from 'axios'
+    import Pagination from '../../../entity/pagination'
+    import Post from '../../../entity/post'
     export default{
       data () {
         return {
+          pagination: null,
           data: [],
-          page: 0,
-          maxPage: 0,
           loading: false
         }
       },
       methods: {
-        query: function () {
-          let qs = require('qs')
+        query: function (page) {
           let _this = this
           _this.loading = true
-          axios.get(Routing.generate('get_posts') + '?' + qs.stringify({page: this.page, tag: ['event']})).then(function (response) {
-            let pageinator = response.data.data
+          PostService.getPosts(page, (data) => {
             _this.loading = false
-            _this.maxPage = Math.ceil(pageinator.count / pageinator.perPage)
-            let result = _this.data.concat(pageinator.result)
+            let pagination : Pagination = data.getResult()
+            let posts: [Post] = pagination.getResult()
+            let result = _this.data
+            result = result.concat(posts)
             _this.$set(_this, 'data', result)
-          }).catch(function (error) {
-          })
+            _this.$set(_this, 'pagination', pagination)
+          }, (data) => {
+          }, {tags: ['event']})
         },
         handleScroll () {
           if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
             if (!this.loading) {
               if (this.page <= this.maxPage) {
-                this.page += 1
-                this.query()
+                this.query(this.pagination.getNextPage())
               }
             }
           }
@@ -52,7 +53,7 @@
       watch: {
       },
       created () {
-        this.query()
+        this.query(0)
         window.addEventListener('scroll', this.handleScroll)
       },
       destroyed () {

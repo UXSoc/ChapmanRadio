@@ -155,8 +155,14 @@
         }
       },
       methods: {
+        fetchData () {
+          console.log(this.$auth.getStatus())
+        }
       },
       watch: {
+        '$auth.status' : 'fetchData'
+      },
+      created () {
       },
       components: {
       }

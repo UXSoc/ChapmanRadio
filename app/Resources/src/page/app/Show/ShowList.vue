@@ -3,44 +3,49 @@
         <h2 class="cr_header">Shows</h2>
         <div class="row-resp">
             <template v-for="(item, index) in data">
-                <showcase-box :show_name="item.name" genre="test" :uri="{name: 'show_single', params: { token:item.token, slug:item.slug } }" :show_description="item.excerpt" image_url="https://images.genius.com/6d4830a2f394d01e91ef6f378fdb0c76.1000x1000x1.jpg"></showcase-box>
+                <showcase-box :show="item"></showcase-box>
             </template>
+            <div v-if="loading">
+                <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
     import ShowcaseBox from '../../../components/ShowcaseBox.vue'
-    import axios from 'axios'
+    import ShowService from '../../../service/showService'
+    import Show from '../../../entity/show'
+    import Pagination from '../../../entity/pagination'
     export default{
       data () {
         return {
+          pagination: null,
           data: [],
-          page: 0,
-          maxPage: 0,
           loading: false
         }
       },
       methods: {
-        query: function () {
-          let qs = require('qs')
+        query: function (page) {
           let _this = this
           _this.loading = true
-          axios.get(Routing.generate('get_shows') + '?' + qs.stringify({page: this.page})).then(function (response) {
-            let pageinator = response.data.data
+          ShowService.getShows(page, (data) => {
             _this.loading = false
-            _this.maxPage = Math.ceil(pageinator.count / pageinator.perPage)
-            let result = _this.data.concat(pageinator.result)
+            let pagination : Pagination = data.getResult()
+            let shows: [Show] = pagination.getResult()
+            let result = _this.data
+            result = result.concat(shows)
             _this.$set(_this, 'data', result)
-          }).catch(function (error) {
+            _this.$set(_this, 'pagination', pagination)
+          }, (data) => {
           })
         },
         handleScroll () {
           if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
             if (!this.loading) {
-              if (this.page <= this.maxPage) {
-                this.page += 1
-                this.query()
+              if (this.pagination.getCurrentPage() <= this.pagination.getMaxPage()) {
+                this.query(this.pagination.getNextPage())
               }
             }
           }
@@ -52,7 +57,7 @@
         ShowcaseBox
       },
       created () {
-        this.query()
+        this.query(0)
         window.addEventListener('scroll', this.handleScroll)
       },
       destroyed () {

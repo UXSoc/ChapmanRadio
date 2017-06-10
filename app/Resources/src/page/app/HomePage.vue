@@ -5,10 +5,15 @@
 
             <div class="container">
                 <h2 class="cr_header">What's New</h2>
-                <div class="row-resp">
-                    <wide-box style="padding-left:0px;" title="Greg James' Muscochella Highlights" description="Watch Greg's favorite performances from Chapman Radio's Muscochella at Musco Lawn." image_url="/bundles/public/img/dj-wide.jpeg"></wide-box>
-                    <small-box title="The definitive A-Z of ChapRadio's Muscochella 2017" description="26 important things that happened last weekend at Muscochella." image_url="/bundles/public/img/dj-wide.jpeg"></small-box>
-                    <small-box title="Muscochella Hype Playlist" description="Here's what went down when our favorite indie artists took to the stage." image_url="/bundles/public/img/dj-wide.jpeg"></small-box>
+                <div class="row-resp" v-if="posts">
+                    <template v-for="(item, index) in posts">
+                        <wide-box v-if="index == 0" :post="item"></wide-box>
+                        <small-box v-else :post="item"></small-box>
+                    </template>
+                </div>
+                <div v-else>
+                    <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+                    <span class="sr-only">Loading...</span>
                 </div>
             </div>
 
@@ -34,6 +39,10 @@
 </template>
 
 <script>
+    import PostService from '../../service/postService'
+    import Envelope from '../../entity/envelope'
+    import Pagination from '../../entity/pagination'
+    import Post from '../../entity/post'
     import PlayWindow from '../../components/PlayWindow.vue'
     import WideBox from '../../components/WideBox.vue'
     import SmallBox from '../../components/SmallBox.vue'
@@ -41,11 +50,23 @@
     import ShowBox from '../../components/ShowBox.vue'
     export default{
       data () {
-        return {}
+        return {
+          posts: null
+        }
       },
       methods: {
+        query: function (page) {
+          let _this = this
+          PostService.getPosts(0, (result: Envelope<Pagination<Post>>) => {
+            _this.$set(_this, 'posts', result.getResult().getResult())
+          }, (data) => {
+          }, {entries: 3})
+        }
       },
       watch: {
+      },
+      created () {
+        this.query()
       },
       components: {
         PlayWindow,

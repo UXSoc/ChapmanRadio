@@ -1,6 +1,16 @@
 import BaseEntity from './baseEntity'
 
 export default class Post extends BaseEntity {
+  _categories: string
+  _tags : [string]
+  _token: string
+  _name: string
+  _slug: string
+  _createdAt: Object
+  _updatedAt: Object
+  _content: string
+  _excerpt: string
+
   constructor (data) {
     super()
     this._categories = this.get('categories', data, '')
@@ -8,10 +18,14 @@ export default class Post extends BaseEntity {
     this._token = this.get('token', data, '')
     this._name = this.get('name', data, '')
     this._slug = this.get('slug', data, '')
-    this._created_at = this.get('created_at', data, {})
-    this._updated_at = this.get('updated_at', data, {})
+    this._createdAt = this.get('created_at', data, {})
+    this._updatedAt = this.get('updated_at', data, {})
     this._content = this.get('content', data, '')
-    this._token = this.get('token', data, '')
+    this._excerpt = this.get('excerpt', data, '')
+  }
+
+  getExcerpt () {
+    return this._excerpt
   }
 
   getCategories () {

@@ -17,7 +17,7 @@
         }
       },
       methods: {
-        query: function () {
+        query: function (token,slug) {
           let _this = this
           PostService.getPost(this.$route.params.token, this.$route.params.slug, (data) => {
             _this.$set(_this, 'post', data.getResult())

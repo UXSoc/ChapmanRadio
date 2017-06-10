@@ -34,7 +34,6 @@ class StreamNormalizer implements NormalizerInterface, NormalizerAwareInterface
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        $result = array();
         $result = [
             'mount' => $object->getMount(),
         ];
