@@ -13,7 +13,12 @@ module.exports = {
   resolve: {
     modules: ['node_modules', 'bower_components'],
     descriptionFiles: ['package.json', 'bower.json'],
-    extensions: ['.vue', '.js', '.scss']
+    extensions: ['.vue', '.js', '.scss', '.ts', '.svg'],
+    alias: {
+      'parchment': path.resolve(__dirname, '../../../node_modules/parchment/src/parchment.ts'),
+      'quill$': path.resolve(__dirname, '../../../node_modules/quill/quill.js')
+    }
+
   },
 
   output: {
@@ -29,14 +34,33 @@ module.exports = {
         loaders: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: 'css-loader!resolve-url-loader!sass-loader?sourceMap=true' })
       },
       {
-        test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
+        test: /^((?!quill).)*\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
         loader: 'file-loader?name=./[name].[ext]'
+      },
+      {
+        test: /quill.*\.svg$/,
+        loader: 'html-loader',
+        options: {
+          minimize: true
+        }
       },
       {
         test: /\.js$/,
         loader: 'babel-loader!eslint-loader',
         // make sure to exclude 3rd party code in node_modules
         exclude: ['/node_modules/', '/bower_components']
+      },
+      {
+        test: /\.ts$/,
+        loader: 'ts-loader',
+        options: {
+          compilerOptions: {
+            declaration: false,
+            target: 'es5',
+            module: 'commonjs'
+          },
+          transpileOnly: true
+        }
       },
       {
         test: /\.css/,
@@ -59,7 +83,7 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
       name: ['vendor']
     }),
-    new CopyWebpackPlugin([ {from : 'bower_components/tinymce/skins', to: 'skins'}]),
-    new CopyWebpackPlugin([ {from : 'app/Resources/public', to: 'public'}])
+    new CopyWebpackPlugin([ {from: 'bower_components/tinymce/skins', to: 'skins'}]),
+    new CopyWebpackPlugin([ {from: 'app/Resources/public', to: 'public'}])
   ]
 }

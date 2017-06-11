@@ -19,16 +19,12 @@
   "dependencies": {
     "vue": "^2.3.2",
     "vue-router": "^2.5.3",
-    "tinymce": "^4.6.0",
     "jquery": "^3.2.1",
     "jquery.cookie": "^1.4.1",
     "font-awesome": "^4.7.0",
     "bootstrap-sass": "^3.3.7",
-    "metisMenu": "metismenu#^2.7.0",
     "axios": "^0.16.1",
     "vee-validate": "2.0.0-rc.3",
-    "qs": "^0.4.8",
-    "simplemde": "^1.11.2",
-    "codemirror-spell-checker": "^1.1.2"
+    "qs": "^0.4.8"
   }
 }

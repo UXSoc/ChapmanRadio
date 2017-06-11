@@ -12,7 +12,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" href="#">
-                        <img alt="Brand" src="./../../../public/img/title.svg"/>
+                        <img alt="Brand" src="/bundles/public/img/title.svg"/>
                     </a>
                 </div>
 

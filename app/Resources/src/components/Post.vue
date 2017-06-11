@@ -4,6 +4,7 @@
         <div>
             {{post.getContent()}}
         </div>
+        <slot></slot>
     </div>
 </template>
 

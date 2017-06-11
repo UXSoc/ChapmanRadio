@@ -1,7 +1,8 @@
 <template>
     <div>
-        <post v-if="post" :post="post"></post>
-        <comment style="background:pink" v-if="comments"  v-for="comm in comments" :comment="comm" :key="comm.getToken()"></comment>
+        <post v-if="post" :post="post">
+            <comment v-if="comments"  v-for="comm in comments" :comment="comm" :key="comm.getToken()"></comment>
+        </post>
     </div>
 </template>
 

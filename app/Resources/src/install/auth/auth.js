@@ -13,12 +13,7 @@ export default class Auth {
     this._app = null
     this._apps = []
     this.status = new User({})
-    let _this = this
-    AuthService.getStatus((envelope) => {
-      _this.status = envelope.getResult()
-    }, (envelope) => {
-      _this.status = new User({})
-    })
+    this.refresh()
   }
 
   init (app: any) {
@@ -39,8 +34,12 @@ export default class Auth {
   }
 
   refresh () {
-    this.status = new User({'username': 'derp'})
-    // this.updateUser()
+    let _this = this
+    AuthService.getStatus((envelope) => {
+      _this.status = envelope.getResult()
+    }, (envelope) => {
+      _this.status = new User({})
+    })
   }
 
   // updateUser () {
