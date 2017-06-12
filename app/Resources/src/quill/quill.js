@@ -9,7 +9,7 @@ import Header from 'quill/formats/header'
 import Image from 'quill/formats/image'
 import Link from 'quill/formats/link'
 import Strike from 'quill/formats/strike'
-import List from 'quill/formats/list'
+import List, { ListItem } from 'quill/formats/list'
 import Underline from 'quill/formats/underline'
 import BlockQuote from 'quill/formats/blockquote'
 import { AlignClass } from 'quill/formats/align'
@@ -29,6 +29,7 @@ Quill.register({
   'formats/list': List,
   'formats/underline': Underline,
   'formats/blockquote': BlockQuote,
+  'formats/list/item': ListItem,
   'formats/size': SizeStyle,
   'formats/video': Video
 })

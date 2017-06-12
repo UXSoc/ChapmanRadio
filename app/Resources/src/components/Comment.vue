@@ -29,7 +29,7 @@
     import Comment from '../entity/comment'
     import { EventBus } from './../eventBus'
     import Quill from '../quill/quill'
-    import DeltaMarkdown from '../quill/transform/markdown'
+    import { fromDelta } from 'quill-delta-markdown'
 
     export default{
       name: 'comment',
@@ -57,8 +57,8 @@
             modules: {
               toolbar: {
                 container: [[{header: [1, 2, 3, 4, 5, 6, false]}],
-                  ['bold', 'italic', 'underline'],
-                  ['image', 'blockquote', 'link', 'list']],
+                  ['bold', 'italic', 'underline', { list: 'ordered' }, { list: 'bullet' }],
+                  ['image', 'blockquote', 'link']],
                 handlers: {
                   image: () => {
                     let range = this.quill.getSelection()
@@ -75,7 +75,7 @@
         },
         submit () {
           console.log( this.quill.getContents())
-          console.log( new DeltaMarkdown().fromDelta(this.quill.getContents()))
+          console.log( fromDelta(this.quill.getContents()))
         },
         onEditor (payload) {
           console.log('derp')
