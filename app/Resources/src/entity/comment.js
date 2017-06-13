@@ -26,12 +26,23 @@ export default class Comment extends BaseEntity {
     return this._children
   }
 
-  getUser () : Object {
-    return this._user
+  shift (comment: Comment) {
+    this._children.shift(comment)
   }
 
-  getConent () : string {
+  push (comment: Comment) {
+    this._children.push(comment)
+  }
+
+  setContent (content: string) {
+    this._content = content
+  }
+  getContent () : string {
     return this._content
+  }
+
+  getUser () : Object {
+    return this._user
   }
 
   getCreatedAt () : Object {

@@ -81,7 +81,20 @@ class CommentRepository  extends EntityRepository
      */
     public function getCommentByShowAndToken(Show $show,  $token)
     {
-        return $this->findOneBy(['id' => $show->getId(), 'token' => $token]);
+        $qb = $this->createQueryBuilder('c');
+        try {
+            $result = $qb->join('c.show', 's', 'WITH', $qb->expr()->eq('s.id', ':id'))
+                ->setParameter('id', $show->getId())
+                ->where($qb->expr()->eq('c.token', ':token'))
+                ->setParameter('token', $token)
+                ->getQuery()
+                ->getSingleResult();
+            return $result;
+        }
+        catch (\Exception $e)
+        {
+            return null;
+        }
     }
 
 
@@ -90,9 +103,24 @@ class CommentRepository  extends EntityRepository
      * @param string $token
      * @return Comment | null
      */
-    public function getCommentByPostAndToken($post, $token)
+    public function getCommentByPostAndToken(Post $post, $token)
     {
-        return $this->findOneBy(['id' => $post->getId(), 'token' => $token]);
+        $qb = $this->createQueryBuilder('c');
+        try {
+
+            $result = $qb->join('c.post', 'p', 'WITH', $qb->expr()->eq('p.id', ':id'))
+                ->setParameter('id', $post->getId())
+                ->where($qb->expr()->eq('c.token', ':token'))
+                ->setParameter('token', $token)
+                ->getQuery()
+                ->getSingleResult();
+            return $result;
+        }
+        catch (NoResultException $e)
+        {
+            return null;
+        }
+
     }
 
 

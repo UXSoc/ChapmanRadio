@@ -17,19 +17,19 @@ export default class User extends BaseEntity {
   }
 
   isLoggedIn () {
-    return !('ROLE_ANONYMOUS' in this._roles)
+    return !this._roles.includes('ROLE_ANONYMOUS')
   }
 
   isDj () {
-    return ('ROLE_DJ' in this._roles)
+    return this._roles.includes('ROLE_DJ')
   }
 
   isStaff () {
-    return ('ROLE_STAFF' in this._roles)
+    return this._roles.includes('ROLE_STAFF')
   }
 
   hasRole (role) {
-    return (role in this._roles)
+    return this._roles.includes(role)
   }
 
   setUsername (test) {

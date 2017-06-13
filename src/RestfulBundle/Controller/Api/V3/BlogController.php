@@ -21,6 +21,7 @@ use CoreBundle\Normalizer\TagNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\CommentRepository;
+use RestfulBundle\Validation\CommentType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -119,8 +120,6 @@ class BlogController extends Controller
      */
     public function postPostCommentAction(Request $request, $token, $slug, $comment_token = null)
     {
-        /** @var ValidatorInterface $validator */
-        $validator = $this->get('validator');
 
         $em = $this->getDoctrine()->getManager();
 
@@ -135,6 +134,7 @@ class BlogController extends Controller
             $comment = new Comment();
             $comment->setContent($request->get("content"));
             $comment->setUser($this->getUser());
+            $post->addComment($comment);
 
             if ($comment_token !== null) {
                 if($c = $commentRepository->getCommentByPostAndToken($post, $comment_token))
@@ -143,13 +143,16 @@ class BlogController extends Controller
                     return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->response();
             }
 
-            $errors = $validator->validate($comment);
-            if($errors->count() > 0)
-                return RestfulEnvelope::errorResponseTemplate("invalid Comment")->addErrors($errors)->response();
-
-            $em->persist($comment);
-            $em->flush();
-            return RestfulEnvelope::successResponseTemplate('Comment Added',$comment,[new UserNormalizer(),new CommentNormalizer()])->response();
+            $form = $this->createForm(CommentType::class,$comment);
+            $form->submit($request->request->all());
+            if($form->isValid())
+            {
+                $em->persist($comment);
+                $em->persist($post);
+                $em->flush();
+                return RestfulEnvelope::successResponseTemplate('Comment Added',$comment,[new UserNormalizer(),new CommentNormalizer()])->response();
+            }
+            return RestfulEnvelope::errorResponseTemplate("invalid Comment")->addFormErrors($form)->response();
         }
         return RestfulEnvelope::errorResponseTemplate("comment not found")->setStatus(410)->response();
     }

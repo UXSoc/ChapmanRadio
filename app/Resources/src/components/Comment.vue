@@ -3,23 +3,16 @@
         <div class="media-left">
         </div>
         <div>
-            {{comment.getConent()}}
-            <button v-if="owner" v-on:click.prevent="editcomment ()" >Edit</button>
-            <p>username: {{comment.getUser().getUsername()}}</p>
+            <p>username: {{item.getUser().getUsername()}}</p>
 
-            <comment v-if="!edit" v-for="(comm, index) in comment.getChildren()" :comment="comm" :key="comm.getToken()"></comment>
-            <div v-else>
-                <!--<textarea class="markdown-editor" ref="edit" ></textarea>-->
-            </div>
+            <template v-if="!edit"> {{item.getContent()}}</template>
+            <button v-if="!edit && owner" v-on:click.prevent="editComment()">Edit</button>
+            <comment-editor :visible="edit" @submit="onEditSubmit" :content="item.getContent()" ></comment-editor>
 
-            <button v-on:click.prevent="respondToComment()">Respond</button>
-            <div v-if="respond">
+            <button v-if="!respond" v-on:click.prevent="respondToComment()">Respond</button>
+            <comment-editor :visible="respond" @submit="onRespondSubmit"></comment-editor>
 
-            </div>
-            <div ref="respond" >
-            </div>
-            <button v-on:click.prevent="submit()">Button</button>
-
+            <comment v-for="(comm, index) in item.getChildren()" :editCallback="editCallback"  :respondCallback="respondCallback" :comment="comm" :key="comm.getToken()"></comment>
         </div>
     </div>
 </template>
@@ -28,8 +21,8 @@
     import User from '../entity/user'
     import Comment from '../entity/comment'
     import { EventBus } from './../eventBus'
-    import Quill from '../quill/quill'
-    import { fromDelta } from 'quill-delta-markdown'
+    import CommentEditor from './quill/commentEditor'
+    import Envelope from './../entity/envelope'
 
     export default{
       name: 'comment',
@@ -37,66 +30,91 @@
         comment: {
           type: Comment,
           default: null
+        },
+        respondCallback: {
+          type: Function,
+          default: (parent: Comment, response: string, successcallback: (e: Envelope<Comment>) => void, failCallback: (e: Envelope) => void) => {}
+        },
+        editCallback: {
+          type: Function,
+          default: (current: Comment, response: string, successcallback: (e: Envelope<Comment>) => void, failCallback: (e: Envelope) => void) => {}
         }
       },
       methods: {
-        updateCommentStatus () {
-          const user: User = this.$auth.getStatus()
-          if (user.getToken() === this.comment.getUser().getToken()) {
-            this.owner = true
-          } else {
-            this.owner = false
-          }
+        onRespondSubmit (markdown: string) {
+          let _this = this
+          this.respondCallback(this.comment, markdown, (e : Envelope<Comment>) => {
+            _this.item.shift(e.getResult())
+            _this.$set(_this, 'item', _this.item)
+            _this.$set(_this, 'respond', false)
+          }, (e: Envelope) => {
+          })
         },
-        editcomment () {
-          EventBus.$emit('comment-edit', this.comment.getToken())
+        onEditSubmit (markdown: string) {
+          let _this = this
+          this.editCallback(this.comment, markdown, (e : Envelope<Comment>) => {
+            _this.item.setContent(e.getResult().getContent())
+            _this.$set(_this, 'item', _this.item)
+            _this.$set(_this, 'edit', false)
+          }, (e: Envelope) => {
+          })
         },
         respondToComment () {
-          this.respond = true
-          this.quill = new Quill(this.$refs.respond, {
-            modules: {
-              toolbar: {
-                container: [[{header: [1, 2, 3, 4, 5, 6, false]}],
-                  ['bold', 'italic', 'underline', { list: 'ordered' }, { list: 'bullet' }],
-                  ['image', 'blockquote', 'link']],
-                handlers: {
-                  image: () => {
-                    let range = this.quill.getSelection()
-                    let value = prompt('What is the image URL')
-                    this.quill.insertEmbed(range.index, 'image', value, Quill.sources.USER).return()
-                  }
-                }
-              }
-            },
-            theme: 'snow'  // or 'bubble'
-          })
-
-          EventBus.$emit('comment-edit', this.comment.getToken())
+          this.$set(this, 'respond', true)
+          EventBus.$emit('comment-respond', this.item.getToken())
         },
-        submit () {
-          console.log( this.quill.getContents())
-          console.log( fromDelta(this.quill.getContents()))
+        editComment () {
+          this.$set(this, 'edit', true)
+          EventBus.$emit('comment-edit', this.item.getToken())
         },
-        onEditor (payload) {
-          console.log('derp')
+        onCommentEdit (token) {
+          if (this.item.getToken() !== token) {
+            this.$set(this, 'respond', false)
+            this.$set(this, 'edit', false)
+          } else {
+            this.$set(this, 'respond', false)
+          }
+        },
+        onCommentRespond (token) {
+          if (this.item.getToken() !== token) {
+            this.$set(this, 'respond', false)
+            this.$set(this, 'edit', false)
+          } else {
+            this.$set(this, 'edit', false)
+          }
+        },
+        updateStatus () {
+          const user: User = this.$auth.getStatus()
+          this.$set(this, 'owner', user.getToken() === this.item.getUser().getToken())
         }
       },
       watch: {
-        '$auth.status': 'updateCommentStatus'
+        '$auth.status': 'updateStatus',
+        'comment': (value) => {
+          this.$set(this, 'item', value)
+          this.updateStatus()
+        }
       },
       created () {
-        EventBus.$on('comment-edit', this.onEditor)
+        this.item = this.comment
+        this.updateStatus()
+        EventBus.$on('comment-edit', this.onCommentEdit)
+        EventBus.$on('comment-respond', this.onCommentRespond )
       },
       destroyed () {
-        EventBus.$off('comment-edit', this.onEditor)
+        EventBus.$off('comment-edit', this.onCommentEdit)
+        EventBus.$off('comment-respond', this.onCommentRespond )
       },
       data () {
         return {
           owner: false,
           edit: false,
           respond: false,
-          quill: null
+          item: new Comment({})
         }
+      },
+      components: {
+        CommentEditor
       }
     }
 </script>

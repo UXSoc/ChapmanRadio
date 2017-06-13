@@ -30,7 +30,7 @@ export default {
       Util.handleErrorResponse(error, errorResponseCallback)
     })
   },
-  postPostComment: function (post: Post, comment: string, parentComment: Comment | null, responseCallback : (result: Envelope<Pagination<Post>>) => void, errorResponseCallback: (result: Envelope) => void) {
+  postPostComment: function (post: Post, comment: string, parentComment: (Comment | null), responseCallback : (result: Envelope<Comment>) => void, errorResponseCallback: (result: Envelope) => void) {
     let params = {token: post.getToken(), slug: post.getSlug()}
     if (parentComment) { params['comment_token'] = parentComment.getToken() }
     axios.post(Routing.generate('post_post_comment', params), qs.stringify({'content': comment})).then((response) => {

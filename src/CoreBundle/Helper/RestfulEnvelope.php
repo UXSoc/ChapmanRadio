@@ -10,9 +10,13 @@ namespace CoreBundle\Helper;
 
 
 use CoreBundle\Normalizer\WrapperNormalizer;
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormErrorIterator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
@@ -73,6 +77,7 @@ class RestfulEnvelope
 
     /**
      * @param array | ConstraintViolationListInterface $errors
+     * @return $this
      */
     public function addErrors($errors)
     {
@@ -81,12 +86,47 @@ class RestfulEnvelope
                 $this->errorWrapper->addError($error->getPropertyPath(), $error->getMessage());
             }
         }
-        else {
+        else
+        {
             foreach ($errors as $key => $value) {
                 $this->errorWrapper->addError($key, $value);
             }
         }
         return $this;
+    }
+
+    /**
+     * @param Form $form
+     * @return $this
+     */
+    public function addFormErrors($form){
+       $errors = $form->getErrors(true);
+
+       /** @var FormError $error */
+        foreach ($errors as $error)
+       {
+           if($error->getCause() == null)
+           {
+               $this->setMessage($error->getMessage());
+               break;
+           }
+           else
+           {
+               /** @var ConstraintViolation $cause */
+               $cause = $error->getCause();
+               $this->addErrors([$cause->getPropertyPath() => $error->getMessage()]);
+           }
+       }
+       return $this;
+    }
+
+    public function processError($children)
+    {
+        foreach ($children as $child)
+        {
+
+        }
+
     }
 
     public function setMessage($message)

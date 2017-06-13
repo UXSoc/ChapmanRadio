@@ -131,6 +131,7 @@
       data: function () {
         return {
           expanded: false,
+          isLoggedIn: false,
           status: new User({})
         }
       },
@@ -161,7 +162,7 @@
       },
       methods: {
         userStatus () {
-          this.status = this.$auth.getStatus()
+          this.$set(this, 'status', this.$auth.getStatus())
         }
       },
       watch: {

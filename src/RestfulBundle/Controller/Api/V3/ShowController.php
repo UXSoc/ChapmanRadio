@@ -137,6 +137,7 @@ class ShowController extends Controller
             $comment = new Comment();
             $comment->setContent($request->get("content"));
             $comment->setUser($this->getUser());
+            $show->addComment($comment);
             if ($comment_token !== null) {
                 if($c = $commentRepository->getCommentByShowAndToken($show, $comment_token))
                     $comment->setParentComment($c);
@@ -148,8 +149,8 @@ class ShowController extends Controller
             $form->handleRequest($request);
             if($form->isValid())
             {
-
                 $em->persist($comment);
+                $em->persist($show);
                 $em->flush();
                 return RestfulEnvelope::successResponseTemplate('Comment Added',
                     $comment,[new UserNormalizer(),new CommentNormalizer()])->response();

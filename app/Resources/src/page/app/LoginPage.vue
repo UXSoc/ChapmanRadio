@@ -30,7 +30,8 @@
   import {Validator} from 'vee-validate'
   import FormGroup from '../../components/FormGroup.vue'
   import Alert from '../../components/Alert.vue'
-  import axios from 'axios'
+  import AuthService from '../../service/authService'
+  import Envelope from './../../entity/envelope'
 
   export default{
     data () {
@@ -45,23 +46,19 @@
     },
     methods: {
       login: function () {
-          this.$auth.refresh()
+        this.$auth.refresh()
         this.validator.validateAll({
           'username': this.username,
           'password': this.password
         }).then(() => {
-          let params = new URLSearchParams()
-          params.append('_username', this.username)
-          params.append('_password', this.password)
-          params.append('_remember_me', this.remember_me)
-
           let _this = this
-          axios.post('/login', params).then(function (response) {
+          AuthService.login((result: Envelope) => {
             _this.$router.push({name: 'home'})
-          }).catch(function (error) {
+            _this.$auth.refresh()
+          }, (error: Envelope) => {
             _this.showAlert = true
-            _this.alert = error.response.data.message
-          })
+            _this.alert = error.getMessage()
+          }, this.username, this.password, this.remember_me)
         })
       }
     },

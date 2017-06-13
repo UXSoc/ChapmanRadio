@@ -31,10 +31,6 @@ class CommentController extends Controller
      */
     public function patchCommentAction(Request $request, $token)
     {
-        /** @var ValidatorInterface $validator */
-        $validator = $this->get('validator');
-
-
         $em = $this->getDoctrine()->getManager();
 
         /** @var CommentRepository $commentRepository */
@@ -45,7 +41,7 @@ class CommentController extends Controller
             $this->denyAccessUnlessGranted('edit', $comment);
 
             $form = $this->createForm(CommentType::class,$comment);
-            $form->handleRequest($request);
+            $form->submit($request->request->all());
             if($form->isValid())
             {
                 $em->persist($comment);
@@ -55,7 +51,7 @@ class CommentController extends Controller
                     [new UserNormalizer(), new CommentNormalizer()])->response();
             }
 
-            return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(400)->addErrors($form->getErrors())->response();
+            return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->addErrors($form->getErrors())->response();
         }
         return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->response();
     }
