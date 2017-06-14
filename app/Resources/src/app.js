@@ -26,7 +26,7 @@ import RegisterPage from './page/app/RegisterPage.vue'
 import PostPage from './page/app/Blog/PostPage.vue'
 import PostSingle from './page/app/Blog/PostSingle.vue'
 import PostList from './page/app/Blog/PostList.vue'
-import ShowSinglePage from './page/app/ShowSinglePage.vue'
+import ShowSingle from './page/app/Show/ShowSingle.vue'
 import ContactPage from './page/app/ContactPage.vue'
 import EventPage from './page/app/Event/EventPage.vue'
 import SchedulePage from './page/app/Schedule/SchedulePage.vue'
@@ -62,7 +62,7 @@ const router = new VueRouter({ routes: [
       // Shows --------------------------------------------------------------------
       {path: 'show', component: ShowPage, children: [
           {name: 'show', path: '/', component: ShowList},
-          {name: 'show_single', path: ':token/:slug', component: ShowSinglePage}
+          {name: 'show_single', path: ':token/:slug', component: ShowSingle}
       ]},
       // --------------------------------------------------------------------------
       {path: 'schedule', component: SchedulePage, children: [

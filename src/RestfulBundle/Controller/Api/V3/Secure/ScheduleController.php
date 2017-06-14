@@ -12,11 +12,9 @@ use CoreBundle\Normalizer\ShowNormalizer;
 use CoreBundle\Repository\ScheduleRepository;
 use CoreBundle\Repository\ShowRepository;
 use CoreBundle\Service\ScheduleService;
-use Recurr\Rule;
-use RestfulBundle\Validation\RuleWrapper;
+use CoreBundle\Validation\ScheduleType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -38,9 +36,6 @@ class ScheduleController extends Controller
      */
     public function patchScheduleAction(Request $request, $token)
     {
-        /** @var ValidatorInterface $validator */
-        $validator = $this->get('validator');
-
         $em = $this->getDoctrine()->getManager();
 
         /** @var ScheduleRepository $scheduleRepository */
@@ -48,28 +43,16 @@ class ScheduleController extends Controller
 
         /** @var Schedule $schedule */
         if($schedule = $scheduleRepository->getByToken($token)) {
-            $rule = new Rule($schedule->getMeta());
 
-            $ruleType = new RuleWrapper();
-
-            $ruleType->setByYearDay($request->get('byYearDay',$rule->getByYearDay()));
-            $ruleType->setByDay($request->get('days', $rule->getByDay()));
-            $ruleType->setByMonthDay($request->get('byMonthDay', $rule->getByMonthDay()));
-            $ruleType->setByWeekNumber($request->get('byWeekNumber', $rule->getByWeekNumber()));
-            $ruleType->setExceptionDate($request->get('exceptionDates', $rule->getExDates()));
-
-            $ruleType->setStartTime($request->get('startTime', $ruleType->getStartTime()));
-            $ruleType->setEndTime($request->get('endTime', $ruleType->getEndTime()));
-            $ruleType->setStartDate($request->get('startDate', $ruleType->getStartDate()));
-            $ruleType->setEndDate($request->get('endDate', $ruleType->getEndDate()));
-
-            $errors = $validator->validate($ruleType);
-            if ($errors->count() > 0)
-                return RestfulEnvelope::errorResponseTemplate("Invalid Schedule")->addErrors($errors)->response();
-
-            $em->persist($schedule);
-            return RestfulEnvelope::successResponseTemplate('Schedule Entry',
-                $schedule, [new DateTimeNormalizer(), new ShowNormalizer(), new DjNormalizer()])->response();
+            $form = $this->createForm(ScheduleType::class,$schedule);
+            $form->submit($request->request->all());
+            if($form->isValid())
+            {
+                $em->persist($schedule);
+                $em->flush();
+                return RestfulEnvelope::successResponseTemplate('Comment Added',$schedule,[])->response();
+            }
+            return RestfulEnvelope::errorResponseTemplate("Invalid Schedule")->addFormErrors($form)->response();
         }
 
         return RestfulEnvelope::errorResponseTemplate("Unknown Show")->setStatus(410)->response();
@@ -86,12 +69,6 @@ class ScheduleController extends Controller
      */
     public function postScheduleAction(Request $request, $token, $slug)
     {
-        /** @var ScheduleService $scheduleService */
-        $scheduleService = $this->get(ScheduleService::class);
-
-        /** @var ValidatorInterface $validator */
-        $validator = $this->get('validator');
-
         $em = $this->getDoctrine()->getManager();
 
         /** @var ShowRepository $showRepository */
@@ -100,35 +77,21 @@ class ScheduleController extends Controller
         /** @var Show $show */
         if ($show = $showRepository->getShowByTokenAndSlug($token, $slug))
         {
-            $ruleType  = new RuleWrapper();
+            $schedule = new Schedule();
 
-            $ruleType->setByYearDay($request->get('byYearDay',[]));
-            $ruleType->setByMonthDay($request->get('byMonthDay',[]));
-            $ruleType->setByWeekNumber($request->get('byWeekNumber',[]));
-            $ruleType->setByDay($request->get('byDays',[]));
-            $ruleType->setExceptionDate($request->get('exceptionDates',[]));
-
-            $ruleType->setStartTime($request->get('startTime',null));
-            $ruleType->setEndTime($request->get('endTime',null));
-            $ruleType->setStartDate($request->get('startDate',null));
-            $ruleType->setEndDate($request->get('endDate',null));
-
-            $errors = $validator->validate($ruleType);
-            if($errors->count() > 0)
-                return RestfulEnvelope::errorResponseTemplate("Invalid Schedule")->addErrors($errors)->response();
-
-            $schedule = $scheduleService->createSchedule( $ruleType->getRule(),
-                Carbon::createFromFormat("YYYY-MM-DD",$ruleType->getStartDate()),
-                Carbon::createFromFormat("YYYY-MM-DD",$ruleType->getEndDate()),
-                Carbon::createFromFormat("HH:MM:SS",$ruleType->getStartTime()),
-                Carbon::createFromFormat("HH:MM:SS",$ruleType->getEndTime()));
-            $em->persist($schedule);
-            $show->addSchedule($schedule);
-            $em->persist($show);
-            return RestfulEnvelope::successResponseTemplate('Schedule Entry',
-                $schedule,[new DateTimeNormalizer(),new ShowNormalizer(), new DjNormalizer()])->response();
+            $form = $this->createForm(ScheduleType::class,$schedule);
+            $form->submit($request->request->all());
+            if($form->isValid())
+            {
+                $em->persist($schedule);
+                $show->addSchedule($schedule);
+                $em->persist($show);
+                $em->flush();
+                return RestfulEnvelope::successResponseTemplate('Schedule Updated',$schedule,[])->response();
+            }
+            return RestfulEnvelope::errorResponseTemplate("Invalid Schedule")->addFormErrors($form)->response();
         }
-        return RestfulEnvelope::errorResponseTemplate("Unknown Show")->setStatus(410)->response();
+        return RestfulEnvelope::errorResponseTemplate("Unknown Schedule")->setStatus(410)->response();
     }
 
 
@@ -142,9 +105,6 @@ class ScheduleController extends Controller
      */
     public function getScheduleByMonthAction(Request $request, $token, $slug, $year, $month)
     {
-        /** @var ScheduleService $scheduleService */
-        $scheduleService = $this->get(ScheduleService::class);
-
         $date = Carbon::create($year,$month);
 
         /** @var ShowRepository $showRepository */

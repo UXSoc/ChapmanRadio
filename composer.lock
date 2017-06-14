@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "026c1db430d691c16a4c0ba016b5c9ff",
+    "content-hash": "458450c0644269fa9a7d9fd883e9e978",
     "packages": [
         {
             "name": "cboden/ratchet",
@@ -112,6 +112,54 @@
                 "tls"
             ],
             "time": "2017-03-06T11:59:08+00:00"
+        },
+        {
+            "name": "deanblackborough/php-quill-renderer",
+            "version": "v0.90.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/deanblackborough/php-quill-renderer.git",
+                "reference": "226548fc298cf75087831316080c1e171d84d4ae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/deanblackborough/php-quill-renderer/zipball/226548fc298cf75087831316080c1e171d84d4ae",
+                "reference": "226548fc298cf75087831316080c1e171d84d4ae",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DBlackborough\\Quill\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dean Blackborough",
+                    "email": "dean@g3d-development.com"
+                }
+            ],
+            "description": "Render quill insert deltas to HTML and soon markdown",
+            "homepage": "https://github.com/deanblackborough/php-quill-renderer",
+            "keywords": [
+                "delta",
+                "html",
+                "parse",
+                "quill",
+                "quilljs",
+                "renderer"
+            ],
+            "time": "2017-06-06T21:24:00+00:00"
         },
         {
             "name": "doctrine/annotations",

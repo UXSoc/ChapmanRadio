@@ -4,6 +4,7 @@ namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Recurr\Rule;
 
 /**
  * ShowSchedule
@@ -27,7 +28,6 @@ class Schedule
     /**
      * @var string
      * @ORM\Column(name="token", type="string",length=20, nullable=false,unique=true)
-     *
      */
     private $token;
 
@@ -133,12 +133,17 @@ class Schedule
 
     public function getMeta()
     {
-        return $this->meta;
+        $rule =  new Rule($this->meta);
+        $rule->setStartDate($this->getStartDate());
+        $rule->setEndDate($this->getEndDate());
+        return $rule;
     }
 
-    public function setMeta($meta)
+    public function setMeta(Rule $meta)
     {
-        $this->meta = $meta;
+        $meta->setEndDate(null);
+        $meta->setStartDate(null);
+        $this->meta = $meta->getString();
     }
 
     public function setStartDate($date)

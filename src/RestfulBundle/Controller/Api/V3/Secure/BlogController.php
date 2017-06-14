@@ -17,8 +17,8 @@ use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\TagRepository;
 use CoreBundle\Security\PostVoter;
 use CoreBundle\Service\ImageUploadService;
+use CoreBundle\Validation\PostType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -42,28 +42,19 @@ class BlogController extends Controller
      */
     public function postPostAction(Request $request)
     {
-        /** @var ValidatorInterface $validator */
-        $validator = $this->get('validator');
-
         $em = $this->getDoctrine()->getManager();
 
         $post = new Post();
-        $post->setPinned($request->get('pinned'));
-        $post->setContent($request->get('content'));
-        $post->setSlug($request->get('slug', $request->get('name')));
-        $post->setExcerpt($request->get('excerpt'));
-        $post->setAuthor($this->getUser());
-        $post->setName($request->get('name'));
 
-
-        $errors = $validator->validate($post);
-        if ($errors->count() > 0)
-            return RestfulEnvelope::errorResponseTemplate('Invalid post')->addErrors($errors)->response();
-
-        $em->persist($post);
-        $em->flush();
-
-        return RestfulEnvelope::successResponseTemplate("Post created",$post,[new PostNormalizer(),new UserNormalizer()])->response();
+        $form = $this->createForm(PostType::class,$post);
+        $form->submit($request->request->all());
+        if($form->isValid())
+        {
+            $em->persist($post);
+            $em->flush();
+            return RestfulEnvelope::successResponseTemplate('Post Added',$post,[new PostNormalizer(),new UserNormalizer()])->response();
+        }
+        return RestfulEnvelope::errorResponseTemplate("Invalid Post")->addFormErrors($form)->response();
     }
 
 
@@ -75,9 +66,6 @@ class BlogController extends Controller
      */
     public function patchPostAction(Request $request, $token, $slug)
     {
-        /** @var ValidatorInterface $validator */
-        $validator = $this->get('validator');
-
         $em = $this->getDoctrine()->getManager();
         /** @var PostRepository $postRepository */
         $postRepository = $em->getRepository(Post::class);
@@ -86,20 +74,17 @@ class BlogController extends Controller
         {
             $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
 
-            $post->setContent($request->get("content", $post->getContent()));
-            $post->setName($request->get("name", $post->getName()));
-            $post->setSlug($request->get("slug", $post->getSlug()));
-            $post->setExcerpt($request->get("excerpt", $post->getExcerpt()));
-            $post->setPinned($request->get("pinned", $post->isPinned()));
-            $errors = $validator->validate($post);
-            if ($errors->count() > 0)
-                return RestfulEnvelope::errorResponseTemplate('Invalid post')->addErrors($errors)->response();
-
-            $em->persist($post);
-            $em->flush();
-            return RestfulEnvelope::successResponseTemplate("Post updated",$post,[new PostNormalizer(),new UserNormalizer()])->response();
+            $form = $this->createForm(PostType::class,$post);
+            $form->submit($request->request->all());
+            if($form->isValid())
+            {
+                $em->persist($post);
+                $em->flush();
+                return RestfulEnvelope::successResponseTemplate('Post Updated',$post,[new PostNormalizer(),new UserNormalizer()])->response();
+            }
+            return RestfulEnvelope::errorResponseTemplate("invalid Post")->addFormErrors($form)->response();
         }
-        return RestfulEnvelope::errorResponseTemplate('Invalid post')->response();
+        return RestfulEnvelope::errorResponseTemplate("Invalid Post")->setStatus(410)->response();
 
     }
 

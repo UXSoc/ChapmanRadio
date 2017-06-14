@@ -6,23 +6,21 @@ use CoreBundle\Entity\Comment;
 use CoreBundle\Entity\Event;
 use CoreBundle\Entity\Show;
 use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\CommentNormalizer;
 use CoreBundle\Normalizer\EventNormalizer;
 use CoreBundle\Normalizer\PaginatorNormalizer;
 use CoreBundle\Normalizer\ShowNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
-use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\CommentRepository;
 use CoreBundle\Repository\EventRepository;
 use CoreBundle\Repository\ShowRepository;
-use RestfulBundle\Validation\CommentType;
+use CoreBundle\Validation\CommentType;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/api/v3/")
@@ -120,9 +118,6 @@ class ShowController extends Controller
      */
     public function postPostCommentAction(Request $request, $token, $slug, $comment_token = null)
     {
-        /** @var ValidatorInterface $validator */
-        $validator = $this->get('validator');
-
         $em = $this->getDoctrine()->getManager();
 
         /** @var ShowRepository $showRepository */
@@ -135,7 +130,6 @@ class ShowController extends Controller
         {
 
             $comment = new Comment();
-            $comment->setContent($request->get("content"));
             $comment->setUser($this->getUser());
             $show->addComment($comment);
             if ($comment_token !== null) {
@@ -146,7 +140,7 @@ class ShowController extends Controller
             }
 
             $form = $this->createForm(CommentType::class,$comment);
-            $form->handleRequest($request);
+            $form->submit($request->request->all());
             if($form->isValid())
             {
                 $em->persist($comment);
@@ -155,7 +149,7 @@ class ShowController extends Controller
                 return RestfulEnvelope::successResponseTemplate('Comment Added',
                     $comment,[new UserNormalizer(),new CommentNormalizer()])->response();
             }
-            return RestfulEnvelope::errorResponseTemplate("invalid Comment")->addErrors($form->getErrors())->response();
+            return RestfulEnvelope::errorResponseTemplate("invalid Comment")->addFormErrors($form)->response();
         }
         return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->response();
     }

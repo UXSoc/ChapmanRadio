@@ -39,7 +39,6 @@ class ScheduleController extends Controller
      */
     public function getTimeAction(Request $request)
     {
-
         return RestfulEnvelope::successResponseTemplate('time',new \DateTime('now'),[new DateTimeNormalizer()])->response();
     }
 
@@ -50,7 +49,7 @@ class ScheduleController extends Controller
      */
     public function getCurrentDateTimeAction(Request $request,$year,$month,$day)
     {
-        $date = Carbon::createFromDate($year,$month,$day);
+        $date = Carbon::create($year,$month,$day);
 
         /** @var ScheduleService $calendarService */
         $calendarService = $this->get(ScheduleService::class);

@@ -1,5 +1,5 @@
 <?php
-namespace RestfulBundle\Validation\Items;
+namespace CoreBundle\Validation\Items;
 
 use Symfony\Component\Validator\Constraints as Assert;
 

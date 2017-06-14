@@ -34,7 +34,7 @@ class DateTimeNormalizer implements NormalizerInterface, NormalizerAwareInterfac
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        $format = array_key_exists("datetime-format",$context) ? $context["datetime-format"] : Carbon::COOKIE;
+        $format = array_key_exists("datetime-format",$context) ? $context["datetime-format"] : Carbon::ISO8601;
         return Carbon::instance($object)->format($format);
     }
 

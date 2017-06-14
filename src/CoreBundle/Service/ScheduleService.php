@@ -48,7 +48,7 @@ class ScheduleService
 
         $schedule->setStartTime($startTime);
         $schedule->setEndTime($endTime);
-        $schedule->setMeta($rule->getString());
+        $schedule->setMeta($rule);
         return $schedule;
     }
 
@@ -60,8 +60,6 @@ class ScheduleService
         $schedules = $scheduleRepository->getByDatetime($start,$archive,$profanity);
 
         return $this->getScheduleResult($day,$schedules);
-
-
     }
 
     private function getScheduleResult(DateTime $day, $schedule_entries)
@@ -83,7 +81,7 @@ class ScheduleService
             /** @var Schedule $schedule */
             foreach ($schedule_entries as $schedule) {
 
-                $rule = new Rule($schedule->getMeta(), $schedule->getStartDate(), $schedule->getEndDate());
+                $rule = $schedule->getMeta();
                 $result = $transformer->transform($rule, $c);
                 if ($result->count() > 0) {
                     $entry = new ScheduleEntry();
@@ -112,12 +110,10 @@ class ScheduleService
             foreach ($items as $item)
             {
                 //refreshes show items from cache
-                $item->setShow( $showRepository->find($item->getShow()->getId()));
+                $item->setShow($showRepository->find($item->getShow()->getId()));
             }
             return $items ;
         }
-
-
         return $entries;
     }
 

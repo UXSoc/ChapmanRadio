@@ -15,11 +15,21 @@
 </template>
 
 <script>
+    import Show from '../entity/show'
+    import Moment from 'moment'
     export default{
       data () {
         return {}
       },
       props: {
+        show: {
+          type: Show,
+          default: null
+        },
+        showTime: {
+          type: Moment,
+          default: null
+        },
         image: {
           type: String,
           default: ''

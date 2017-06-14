@@ -1,17 +1,18 @@
 <template>
     <div>
-        <post v-if="post" :post="post">
-            <comment v-if="comments"  v-for="comm in comments" :comment="comm" :key="comm.getToken()" :respondCallback="respondCallback" :editCallback="editCallback"></comment>
-        </post>
+        <post-item v-if="post" :post="post">
+            <comment-item v-if="comments"  v-for="comm in comments" :comment="comm" :key="comm.getToken()" :respondCallback="respondCallback" :editCallback="editCallback"></comment-item>
+        </post-item>
     </div>
 </template>
 
 <script>
     import PostService from '../../../service/postService'
-    import Post from '../../../components/Post.vue'
+    import PostItem from '../../../components/PostItem.vue'
     import Envelope from '../../../entity/envelope'
-    import Comment from '../../../components/Comment.vue'
+    import CommentItem from '../../../components/CommentItem.vue'
     import CommentService from '../../../service/commentService'
+    import Post from '../../../entity/post'
 
     export default{
       data () : { post:Post, comments: [Comment] } {
@@ -21,7 +22,7 @@
         }
       },
       methods: {
-        query: function (token, slug) {
+        query: function () {
           let _this = this
           PostService.getPost(this.$route.params.token, this.$route.params.slug, (data) => {
             _this.$set(_this, 'post', data.getResult())
@@ -54,8 +55,8 @@
       destroyed () {
       },
       components: {
-        Post,
-        Comment
+        PostItem,
+        CommentItem
       }
     }
 </script>

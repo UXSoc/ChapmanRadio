@@ -23,6 +23,7 @@
     "require": {
         "php": ">=5.5.9",
         "cboden/ratchet": "^0.3.6",
+        "deanblackborough/php-quill-renderer": "^0.90.0",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/doctrine-fixtures-bundle": "^2.3",
         "doctrine/doctrine-migrations-bundle": "^1.0",

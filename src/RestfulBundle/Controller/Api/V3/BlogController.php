@@ -21,7 +21,7 @@ use CoreBundle\Normalizer\TagNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\CommentRepository;
-use RestfulBundle\Validation\CommentType;
+use CoreBundle\Validation\CommentType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -132,7 +132,6 @@ class BlogController extends Controller
         if ($post = $postRepository->getPostByTokenAndSlug($token,$slug))
         {
             $comment = new Comment();
-            $comment->setContent($request->get("content"));
             $comment->setUser($this->getUser());
             $post->addComment($comment);
 
@@ -167,7 +166,6 @@ class BlogController extends Controller
     public function getPostCommentAction(Request $request, $token, $slug, $comment_token = null)
     {
         $em = $this->getDoctrine()->getManager();
-
         /** @var PostRepository $postRepository */
         $postRepository = $em->getRepository(Post::class);
         /** @var CommentRepository $commentRepository */

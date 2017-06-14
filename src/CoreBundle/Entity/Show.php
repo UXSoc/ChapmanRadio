@@ -5,6 +5,7 @@ namespace CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
+use CoreBundle\Validation\Constraints As CoreAssert;
 
 
 /**
@@ -52,6 +53,7 @@ class Show
     /**
      * @var resource
      *
+     * @CoreAssert\Delta
      * @ORM\Column(name="description", type="text", length=65535, nullable=false)
      */
     private $description;
@@ -153,6 +155,7 @@ class Show
 
     /**
      * @var string
+     * @CoreAssert\Delta
      * @ORM\Column(name="excerpt", type="text", length=6000, nullable=true)
      */
     private $excerpt;

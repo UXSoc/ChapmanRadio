@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use CoreBundle\Validation\Constraints As CoreAssert;
 
 
 /**
@@ -91,6 +92,7 @@ class Post
     /**
      * @var resource
      *
+     * @CoreAssert\Delta
      * @ORM\Column(name="content", type="text", length=65535, nullable=false)
      */
     private $content = "";
