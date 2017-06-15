@@ -2,35 +2,43 @@
 /**
  * Created by PhpStorm.
  * User: michaelpollind
- * Date: 6/6/17
- * Time: 9:03 PM
+ * Date: 6/15/17
+ * Time: 8:35 AM
  */
 
 namespace CoreBundle\Event;
 
 
-use CoreBundle\Entity\Show;
-use Recurr\Rule;
+use CoreBundle\Entity\Schedule;
 
 class ScheduleEvent
 {
-    private  $rule;
-    private  $show;
+    private $schedule;
+    private $start;
+    private $end;
 
-    function __construct(Rule $rule,Show $show)
+    function __construct(Schedule $schedule,$start,$end)
     {
-        $this->rule = $rule;
-        $this->show = $show;
+        $this->schedule = $schedule;
+        $this->start = $start;
+        $this->end = $end;
     }
 
-    public function getRule()
+    /**
+     * @return Schedule
+     */
+    public function getSchedule()
     {
-        return $this->rule;
+        return $this->schedule;
     }
 
-    public function getShow()
+    public function getStart()
     {
-        return $this->show;
+        return $this->start;
     }
 
+    public function getEnd()
+    {
+        return $this->end;
+    }
 }

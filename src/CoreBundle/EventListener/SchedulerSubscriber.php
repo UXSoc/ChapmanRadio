@@ -9,12 +9,18 @@
 namespace CoreBundle\EventListener;
 
 
+use Carbon\Carbon;
+use Carbon\CarbonInterval;
+use CoreBundle\Caches;
+use CoreBundle\Entity\Schedule;
 use CoreBundle\Event\CommentEvent;
 use CoreBundle\Event\ScheduleEvent;
 use CoreBundle\Events;
+use Psr\Cache\CacheItemPoolInterface;
 use Recurr\RecurrenceCollection;
 use Recurr\Transformer\ArrayTransformer;
 use Recurr\Transformer\Constraint\BeforeConstraint;
+use RRule\RRule;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -22,10 +28,12 @@ class SchedulerSubscriber implements EventSubscriberInterface
 {
 
     private $register;
+    private $cacheService;
 
-    function __construct(RegistryInterface $register)
+    function __construct(RegistryInterface $register,CacheItemPoolInterface  $cacheService)
     {
         $this->register = $register;
+        $this->cacheService = $cacheService;
     }
 
     /**
@@ -49,13 +57,38 @@ class SchedulerSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            Events::ON_COMMENT_CREATED =>   'onCommentCreated'
+            Events::ON_SCHEDULE_RULE =>   'onScheduleRule'
         ];
     }
 
+    /**
+     * @param ScheduleEvent $event
+     * @return \DateTime[] mixed
+     */
+    public function onScheduleRule(ScheduleEvent $event){
+        $schedule = $event->getSchedule();
+        $token  = (new Carbon($schedule->getUpdatedAt()))->toCookieString();
+        $ruleCache =  $this->cacheService->getItem(Caches::SCHEDULE_RULE_CACHE . $token);
+        if(!$ruleCache->isHit()) {
+           $rule = new RRule($schedule->getRule());
+           $ruleCache->set($rule);
+        }
+        $ruleCache->expiresAfter(new CarbonInterval(0, 0, 1, 0, 0, 0, 0));
 
-    public function onCommentCreated(CommentEvent $event){
+        $start  = (new Carbon($event->getStart()))->toCookieString();
+        $end  = (new Carbon($event->getEnd()))->toCookieString();
+        $dayCache =  $this->cacheService->getItem(Caches::SCHEDULE_RULE_CACHE_BETWEEN . $token .'.'.$start . '.' . $end);
+        if(!$dayCache->isHit())
+        {
+            /** @var RRule $c */
+            $c = $ruleCache->get();
+            $dayCache->set($c->getOccurrencesBetween($event->getStart(),$event->getEnd()));
+        }
+        $dayCache->expiresAfter(new CarbonInterval(0, 0, 1, 0, 0, 0, 0));
 
+        $this->cacheService->save($ruleCache);
+        $this->cacheService->save($dayCache);
+        return $dayCache->get();
 
     }
 

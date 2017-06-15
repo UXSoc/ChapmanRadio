@@ -4,7 +4,7 @@ namespace CoreBundle\Entity;
 
 use Carbon\Carbon;
 use Doctrine\Common\Collections\ArrayCollection;
-use Recurr\Rule;
+use RRule\RRule;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -176,13 +176,23 @@ class Schedule
     public function validate(ExecutionContextInterface $context, $payload)
     {
         try{
-            $this->getRule();
+            new RRule($this->getRule());
         }
         catch (\Exception $e)
         {
             $context->addViolation($e->getMessage());
 
         }
+    }
+
+
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    public function getCreatedAt(){
+        return $this->createdAt;
     }
 
     public function getId()
@@ -228,43 +238,44 @@ class Schedule
     }
 
 
-    public function setRule(Rule $rule,$showLength)
+    /**
+     * @param $rule
+     * @param $showLength
+     */
+    public function setRule($rule)
     {
-        $this->showLength = $showLength;
-        $this->setFrequency($rule->getFreq() !== null ? $rule->getFreq() : 0);
-        $this->setStartDate($rule->getStartDate());
-        $this->setEndDate($rule->getEndDate());
-        $this->setByHour($rule->getByHour()[0]);
-        $this->setByMinute($rule->getByMinute()[0]);
-        $this->setByMonthDay($rule->getByMonthDay());
-        $this->setByYearDay($rule->getByYearDay());
-        $this->setByDay($rule->getByDay());
-        $this->setByWeekNumber($rule->getByWeekNumber());
-        $this->setByMonth($rule->getByMonth());
+        $this->setFrequency($rule['FREQ']);
+        $this->setStartDate($rule['DTSTART']);
+        $this->setEndDate($rule['UNTIL']);
+        $this->setByHour($rule['BYHOUR']);
+        $this->setByMinute($rule['BYMINUTE']);
+        $this->setByMonthDay($rule['BYMONTHDAY']);
+        $this->setByYearDay($rule['BYYEARDAY']);
+        $this->setByDay($rule['BYDAY']);
+        $this->setByWeekNumber($rule['BYWEEKNO']);
+        $this->setByMonth($rule['BYMONTH']);
 
     }
 
     public function getRule()
     {
-        $rule = new Rule();
-
-        $rule->setFreq($this->freq);
-        $rule->setStartDate($this->getStartDate());
-        $rule->setEndDate($this->getEndDate());
-        $rule->setByHour([$this->byHour]);
-        $rule->setByMinute([$this->byMinute]);
-        if (count($this->byMonthDay) > 0)
-            $rule->setByMonthDay($this->byMonthDay);
-        if (count($this->byYearDay) > 0)
-            $rule->setByYearDay($this->byYearDay);
-        if (count($this->byDay) > 0)
-            $rule->setByDay($this->byDay);
-        if (count($this->byWeekNumber) > 0)
-            $rule->setByWeekNumber($this->byWeekNumber);
-        if (count($this->byMonth) > 0)
-            $rule->setByMonth($this->byMonth);
-
-        return $rule;
+        return array(
+            'DTSTART' => $this->getStartDate(),
+            'FREQ' => $this->getFrequency(),
+            'UNTIL' => $this->getEndDate(),
+            'COUNT' => null,
+            'INTERVAL' => 1,
+            'BYSECOND' => null,
+            'BYMINUTE' => $this->getByMinute(),
+            'BYHOUR' => $this->getByHour(),
+            'BYDAY' => null,
+            'BYMONTHDAY' => $this->getByMonthDay(),
+            'BYYEARDAY' => $this->getByYearDay(),
+            'BYWEEKNO' => $this->getByWeekNumber(),
+            'BYMONTH' => $this->getByMonth(),
+            'BYSETPOS' => null,
+            'WKST' => 'MO'
+        );
     }
 
     public function setByDay($byday)

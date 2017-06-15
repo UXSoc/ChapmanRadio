@@ -12,4 +12,6 @@ namespace CoreBundle;
 class Caches
 {
     const SCHEDULE_EVENTS = "scheduler.events.";
+    const SCHEDULE_RULE_CACHE = "schedule.rule.cache.";
+    const SCHEDULE_RULE_CACHE_BETWEEN = "schedule.rule.cache.between.";
 }
