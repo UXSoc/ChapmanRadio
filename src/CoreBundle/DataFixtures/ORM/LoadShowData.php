@@ -113,31 +113,34 @@ class LoadShowData extends AbstractFixture implements OrderedFixtureInterface, C
                         break;
                 }
 
-                $st = new Carbon($faker->time('H:i:s', 'now'));
-                $end = $faker->dateTimeBetween($st->copy(), $st->copy()->endOfDay());
+//                $st = new Carbon($faker->time('H:i:s', 'now'));
+//                $end = $faker->dateTimeBetween($st->copy(), $st->copy()->endOfDay());
 
+                $rule->setStartDate( $faker->dateTimeBetween('-1 months', 'now'));
+                $rule->setEndDate($faker->dateTimeBetween('now', '1 months'));
 
-                $sch = $calendar->createSchedule($rule,
-                    $faker->dateTimeBetween('-1 months', 'now'),
-                    $faker->dateTimeBetween('now', '1 months'),
-                    $st,
-                    $end);
+                $rule->setByHour([random_int(0,23)]);
+                $rule->setByMinute([random_int(0,59)]);
 
-                $manager->persist($sch);
-                $show->addSchedule($sch);
+                $schedule = new \CoreBundle\Entity\Schedule();
+                $schedule->setRule($rule,random_int(5000,100000));
+
+                $manager->persist($schedule);
+                $show->addSchedule($schedule);
             }
             for ($k = 0; $k < 20; $k++) {
-                $st = new Carbon($faker->time('H:i:s', 'now'));
-                $end = $faker->dateTimeBetween($st->copy(), $st->copy()->endOfDay());
-                $temp  =$faker->dateTimeBetween('-1 months', '1 months');
-                $sch = $calendar->createSchedule(new \Recurr\Rule(),
-                    $temp,
-                    $temp,
-                    $st,
-                    $end);
 
-                $manager->persist($sch);
-                $show->addSchedule($sch);
+                $schedule = new \CoreBundle\Entity\Schedule();
+                $rule = new \Recurr\Rule();
+                $rule->setByHour([random_int(0,23)]);
+                $rule->setByMinute([random_int(0,59)]);
+                $rule->setStartDate($faker->dateTimeBetween('-1 months', 'now'));
+                $rule->setEndDate($rule->getStartDate());
+                $schedule->setRule($rule,random_int(5000,100000));
+                $manager->persist($schedule);
+                $show->addSchedule($schedule);
+
+
             }
 
             $manager->persist($show);

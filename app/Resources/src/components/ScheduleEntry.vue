@@ -1,15 +1,15 @@
 <template>
     <div class="row schedule-entry">
         <div class="col-md-2">
-            <p class="schedule-time">00:00</p>
+            <p class="schedule-time">{{formatTime}}</p>
         </div>
         <div class="col-md-3 trackview">
-            <img :src="image">
+            <!--<img :src="image">-->
         </div>
         <div class="col-md-7">
-            <p class="schedule-showname">{{show_name}}</p>
-            <p class="schedule-showdesc">{{show_excerpt}}</p>
-            <p class="schedule-epdesc">{{episode_descrption}}</p>
+            <p class="schedule-showname">{{show.getName()}}</p>
+            <p class="schedule-showdesc">derp</p>
+            <p class="schedule-epdesc">{{show.getExcerpt()}}</p>
         </div>
     </div>
 </template>
@@ -27,27 +27,16 @@
           default: null
         },
         showTime: {
-          type: Moment,
-          default: null
-        },
-        image: {
           type: String,
-          default: ''
-        },
-        show_name: {
-          type: String,
-          default: ''
-        },
-        show_excerpt: {
-          type: String,
-          default: ''
-        },
-        episode_descrption: {
-          type: String,
-          default: ''
+          default: '00:00:00'
         }
       },
       methods: {
+      },
+      computed: {
+        formatTime: function () {
+          return Moment(this.showTime, 'HH:mm:ss').format('h:mm a')
+        }
       }
     }
 </script>

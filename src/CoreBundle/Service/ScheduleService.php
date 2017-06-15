@@ -35,23 +35,6 @@ class ScheduleService
         $this->cacheService= $cacheService;
     }
 
-    public function createSchedule(Rule $rule,DateTime $startDate, DateTime $endDate,DateTime $startTime,DateTime $endTime)
-    {
-        if($startDate > $endDate)
-            throw new \Exception("start date has to less then end date");
-        if($startTime > $endTime)
-            throw new \Exception("start time has to be less then end time");
-
-        $schedule = new Schedule();
-        $schedule->setStartDate($startDate);
-        $schedule->setEndDate($endDate);
-
-        $schedule->setStartTime($startTime);
-        $schedule->setEndTime($endTime);
-        $schedule->setMeta($rule);
-        return $schedule;
-    }
-
     public function getEventsForDay(DateTime $day,$archive = null,$profanity = null)
     {
         $start = Carbon::instance($day)->copy()->startOfDay();
@@ -76,12 +59,13 @@ class ScheduleService
             $end = Carbon::instance($day)->copy()->endOfDay();
             $transformer = new ArrayTransformer();
 
+
             $c = new BetweenConstraint($start, $end, true);
+
 
             /** @var Schedule $schedule */
             foreach ($schedule_entries as $schedule) {
-
-                $rule = $schedule->getMeta();
+                $rule = $schedule->getRule();
                 $result = $transformer->transform($rule, $c);
                 if ($result->count() > 0) {
                     $entry = new ScheduleEntry();

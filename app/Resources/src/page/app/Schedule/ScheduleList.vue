@@ -1,15 +1,8 @@
 <template>
-    <div class="schedule-shows">
+    <div class="schedule-shows" v-if="scheduleEntries">
         <p class="schedule-time-heading">EARLY</p>
-        <template v-if="schedule">
-
-        </template>
-        <schedule-entry image="/bundles/public/img/showoftheweek.jpg" show_name="Knife Murderers" show_excerpt="DJ Rexford plays you the hottest EDM records to end the night." episode_descrption="Episode special description lorem ipsium dolor sin amet consecutur alit sed ut mank alderstan boniaop visde fallson."></schedule-entry>
-        <schedule-entry image="/bundles/public/img/showoftheweek.jpg" show_name="Knife Murderers" show_excerpt="DJ Rexford plays you the hottest EDM records to end the night." episode_descrption="Episode special description lorem ipsium dolor sin amet consecutur alit sed ut mank alderstan boniaop visde fallson."></schedule-entry>
-        <schedule-entry image="/bundles/public/img/showoftheweek.jpg" show_name="Knife Murderers" show_excerpt="DJ Rexford plays you the hottest EDM records to end the night." episode_descrption="Episode special description lorem ipsium dolor sin amet consecutur alit sed ut mank alderstan boniaop visde fallson."></schedule-entry>
-        <schedule-entry image="/bundles/public/img/showoftheweek.jpg" show_name="Knife Murderers" show_excerpt="DJ Rexford plays you the hottest EDM records to end the night." episode_descrption="Episode special description lorem ipsium dolor sin amet consecutur alit sed ut mank alderstan boniaop visde fallson."></schedule-entry>
-        <schedule-entry image="/bundles/public/img/showoftheweek.jpg" show_name="Knife Murderers" show_excerpt="DJ Rexford plays you the hottest EDM records to end the night." episode_descrption="Episode special description lorem ipsium dolor sin amet consecutur alit sed ut mank alderstan boniaop visde fallson."></schedule-entry>
-    </div>
+        <schedule-entry v-for="(item, index) in scheduleEntries" :key="index" :show="item.getShow()" :showTime="item.getStartTime()"></schedule-entry>
+     </div>
 </template>
 
 <script>
@@ -21,7 +14,7 @@
         return {
           current: Moment.utc(),
           start: Moment.utc(),
-          schedule: null
+          scheduleEntries: null
         }
       },
       methods: {
@@ -38,10 +31,9 @@
             } else {
               _this.$set(_this, 'start', Moment(envelope.getResult()))
             }
-            ScheduleService.getCurrentDateTime(_this.start.year(), _this.start.month(), _this.start.date(), (envelope) => {
-              _this.$set(_this, 'schedule', envelope.getResult())
+            ScheduleService.getCurrentDateTime(_this.start.year(), (_this.start.month() + 1), _this.start.date(), (envelope) => {
+              _this.$set(_this, 'scheduleEntries', envelope.getResult())
             }, (envelope) => {
-
             })
           }, (envelope) => {
           })

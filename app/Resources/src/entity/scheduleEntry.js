@@ -12,8 +12,8 @@ export default class ScheduleEntry extends BaseEntity {
     super()
     this._show = this.getAndInstance((data) => new Show(data), 'show', data, new Show({}))
     this._date = this.get('date', data, '')
-    this._startTime = this.getAndInstance('start_time', data, '')
-    this._endTime = this.getAndInstance('end_time', data, '')
+    this._startTime = this.get('start_time', data, '')
+    this._endTime = this.get('end_time', data, '')
   }
 
   getShow () {

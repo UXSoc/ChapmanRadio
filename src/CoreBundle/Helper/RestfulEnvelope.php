@@ -9,6 +9,7 @@
 namespace CoreBundle\Helper;
 
 
+use CoreBundle\Normalizer\DateTimeNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
@@ -24,9 +25,9 @@ class RestfulEnvelope
 {
     private $errorWrapper;
     private $normalizers;
-    private  $message;
-    private  $payload;
-    private  $status;
+    private $message;
+    private $payload;
+    private $status;
 
     function __construct()
     {
@@ -65,14 +66,14 @@ class RestfulEnvelope
 
     public function addNormalizer($normalizer)
     {
-        array_merge($this->normalizers,$normalizer);
+        array_merge($this->normalizers, $normalizer);
         return $this;
     }
 
     public function setPayload($payload)
     {
-         $this->payload = $payload;
-         return $this;
+        $this->payload = $payload;
+        return $this;
     }
 
     /**
@@ -81,13 +82,11 @@ class RestfulEnvelope
      */
     public function addErrors($errors)
     {
-        if($errors instanceof ConstraintViolationList) {
+        if ($errors instanceof ConstraintViolationList) {
             foreach ($errors as $error) {
                 $this->errorWrapper->addError($error->getPropertyPath(), $error->getMessage());
             }
-        }
-        else
-        {
+        } else {
             foreach ($errors as $key => $value) {
                 $this->errorWrapper->addError($key, $value);
             }
@@ -99,31 +98,27 @@ class RestfulEnvelope
      * @param Form $form
      * @return $this
      */
-    public function addFormErrors($form){
-       $errors = $form->getErrors(true);
+    public function addFormErrors($form)
+    {
+        $errors = $form->getErrors(true);
 
-       /** @var FormError $error */
-        foreach ($errors as $error)
-       {
-           if($error->getCause() == null)
-           {
-               $this->setMessage($error->getMessage());
-               break;
-           }
-           else
-           {
-               /** @var ConstraintViolation $cause */
-               $cause = $error->getCause();
-               $this->addErrors([$cause->getPropertyPath() => $error->getMessage()]);
-           }
-       }
-       return $this;
+        /** @var FormError $error */
+        foreach ($errors as $error) {
+            if ($error->getCause() == null) {
+                $this->setMessage($error->getMessage());
+                break;
+            } else {
+                /** @var ConstraintViolation $cause */
+                $cause = $error->getCause();
+                $this->addErrors([$cause->getPropertyPath() => $error->getMessage()]);
+            }
+        }
+        return $this;
     }
 
     public function processError($children)
     {
-        foreach ($children as $child)
-        {
+        foreach ($children as $child) {
 
         }
 
@@ -131,29 +126,24 @@ class RestfulEnvelope
 
     public function setMessage($message)
     {
-        $this->message= $message;
+        $this->message = $message;
         return $this;
     }
 
-    public function response($format = [],$context = [])
+    public function response($format = [], $context = [])
     {
-        if($this->status >= 400)
-        {
-            $this->normalizers[] = new WrapperNormalizer();
+        $this->normalizers[] = new WrapperNormalizer();
+        $this->normalizers[] = new DateTimeNormalizer();
+        if ($this->status >= 400) {
 
             $normalizer = new Serializer($this->normalizers);
             $this->errorWrapper->setMessage($this->message);
             return new JsonResponse($normalizer->normalize($this->errorWrapper, $format, $context), $this->status);
-        }
-        else
-        {
-            $this->normalizers[] = new WrapperNormalizer();
+        } else {
 
-            $normalizer = new Serializer( $this->normalizers);
-            return new JsonResponse($normalizer->normalize(new SuccessWrapper($this->payload,$this->message), $format, $context), $this->status);
+            $normalizer = new Serializer($this->normalizers);
+            return new JsonResponse($normalizer->normalize(new SuccessWrapper($this->payload, $this->message), $format, $context), $this->status);
 
         }
     }
-
-
 }

@@ -19,6 +19,10 @@ class ScheduleRepository extends EntityRepository
     private function byDateTime(Carbon $dateTime)
     {
         $qb = $this->createQueryBuilder('s');
+
+        $qb->orderBy('s.byHour','ASC');
+        $qb->orderBy('s.byMinute','ASC');
+
         $qb->where($qb->expr()->lte('s.startDate',':start'))
             ->setParameter('start',$dateTime->startOfDay());
 
@@ -30,6 +34,9 @@ class ScheduleRepository extends EntityRepository
     private function byDateTimeRange(Carbon $start,Carbon $end)
     {
         $qb = $this->createQueryBuilder('s');
+
+        $qb->orderBy('s.byHour','ASC');
+        $qb->orderBy('s.byMinute','ASC');
 
         $qb->where($qb->expr()->orX($qb->expr()->lte(':start','s.endDate'),$qb->expr()->isNull('s.endDate')))
             ->setParameter('start',$start->startOfDay());

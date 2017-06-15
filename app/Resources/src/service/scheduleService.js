@@ -21,7 +21,7 @@ export default {
   },
   getCurrentDateTime (year, month, day, responseCallback : (result: Envelope<Date>) => void, errorResponseCallback: (result: Envelope) => void) {
     axios.get(Routing.generate('get_schedule_by_date', {year: year, month: month, day: day})).then((response) => {
-      responseCallback(new Envelope((data) => new ScheduleEntry(data), response.data))
+      responseCallback(new Envelope((data) => data.map((r) => new ScheduleEntry(r)), response.data))
     }).catch((error) => {
       Util.handleErrorResponse(error, errorResponseCallback)
     })
