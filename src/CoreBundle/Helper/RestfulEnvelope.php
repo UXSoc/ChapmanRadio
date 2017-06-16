@@ -11,6 +11,7 @@ namespace CoreBundle\Helper;
 
 use CoreBundle\Normalizer\DateTimeNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
+use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormErrorIterator;
@@ -94,35 +95,47 @@ class RestfulEnvelope
         return $this;
     }
 
-    /**
-     * @param Form $form
-     * @return $this
-     */
-    public function addFormErrors($form)
+    public function addFormErrors(Form $form)
     {
-        $errors = $form->getErrors(true);
-
-        /** @var FormError $error */
-        foreach ($errors as $error) {
-            if ($error->getCause() == null) {
-                $this->setMessage($error->getMessage());
-                break;
-            } else {
-                /** @var ConstraintViolation $cause */
-                $cause = $error->getCause();
-                $this->addErrors([$cause->getPropertyPath() => $error->getMessage()]);
-            }
+        foreach ($this->subErrors($form) as $key => $child) {
+            $this->errorWrapper->addError($key,$child);
         }
         return $this;
     }
 
-    public function processError($children)
+
+    public  function subErrors(Form $form)
     {
-        foreach ($children as $child) {
 
+        $errors = [];
+        /** @var FormError $error */
+        foreach ($form->getErrors() as $error) {
+            $this->errorWrapper->addError($this->parseCause($error->getCause()),$error->getMessage());
         }
-
+        foreach ($form->getIterator() as $key => $child) {
+            foreach ($child->getErrors() as $error) {
+                $errors[$this->parseCause($error->getCause())] = $error->getMessage();
+            }
+            if (($child instanceof Form) && (count($child->getIterator()) > 0)) {
+                $errors[$key][] = $this->subErrors($child);
+            }
+        }
+        return $errors;
     }
+
+    /**
+     * @param string $property
+     */
+    private function parseCause($cause)
+    {
+        if($cause instanceof ConstraintViolation) {
+            $properties = explode('.', $cause->getPropertyPath());
+            return $properties[count($properties) - 1];
+        }
+        throw new LogicException("unknown cause" . get_class($cause));
+    }
+
+
 
     public function setMessage($message)
     {

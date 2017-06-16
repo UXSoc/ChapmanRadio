@@ -13,10 +13,6 @@ export default class Envelope<T> extends BaseEntity {
     if (this._success) {
       this._data = create(data.data)
     } else {
-      this._errors = []
-      for (let i = 0; i < data.errors.length; i++) {
-        this._errors[data.errors[i].field] = data.errors[i].message
-      }
       this._errors = data.errors
     }
   }
@@ -39,7 +35,9 @@ export default class Envelope<T> extends BaseEntity {
 
   fillErrorBag (errorBag : ErrorBag) {
     for (let key in this._errors) {
-      errorBag.add(key, this._errors[key])
+      if (typeof this._errors[key] === 'string') {
+        errorBag.add(key, this._errors[key])
+      }
     }
   }
 

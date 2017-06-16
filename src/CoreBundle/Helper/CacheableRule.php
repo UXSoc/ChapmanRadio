@@ -37,9 +37,4 @@ class CacheableRule extends RRule
         return ($this->restoredTotal !== $this->total);
     }
 
-    public function isCacheUsed()
-    {
-        return $this->total !== null && $this->total !== 0;
-    }
-
 }

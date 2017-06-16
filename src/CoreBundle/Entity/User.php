@@ -5,7 +5,6 @@ namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
-use phpDocumentor\Reflection\Types\String_;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -22,6 +21,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="user")
  *
  * @ORM\HasLifecycleCallbacks
+ *
+ * @Assert\UniqueEntity(
+ *     fields="email",
+ *     errorPath="email"
+ *     message="email already used")
+ *
+ * @Assert\UniqueEntity(
+ *     fields="username",
+ *     errorPath="username"
+ *     message="username already used")
  */
 class User implements AdvancedUserInterface
 {
@@ -51,13 +60,19 @@ class User implements AdvancedUserInterface
 
     /**
      * @var string
-     *
+     * @Assert\Email(
+     *     message = "The email '{{ value }}' is not a valid email.",
+     *     checkMX = true
+     * )
+     * @Assert\NotBlank
      * @ORM\Column(name="email", type="string", length=100, nullable=false)
      */
     private $email;
 
     /**
      * @var string
+     *
+     * @Assert\Regex("/[0-9][0-9][0-9][0-9][0-9][0-9][0-9]/")
      * @Assert\NotBlank()
      * @ORM\Column(name="student_id", type="string", length=15, nullable=false)
      */
@@ -72,7 +87,7 @@ class User implements AdvancedUserInterface
 
     /**
      * @var string
-     *
+     * @Assert\NotBlank()
      * @ORM\Column(name="name", type="string", length=120, nullable=false)
      */
     private $name;
@@ -114,7 +129,7 @@ class User implements AdvancedUserInterface
 
     /**
      * @var string
-     *
+     * @Assert\NotBlank()
      * @ORM\Column(name="username", type="string", length=30, nullable=true)
      */
     private $username;
@@ -147,6 +162,13 @@ class User implements AdvancedUserInterface
      * @ORM\OneToMany(targetEntity="UserMeta",mappedBy="user", indexBy="metaKey")
      */
     private $userMeta;
+
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Length(max=4096)
+     * @var string
+     */
+    private $plainTextPassword;
 
 
     public function __construct()
@@ -276,6 +298,17 @@ class User implements AdvancedUserInterface
     public function setPhone($phone)
     {
         $this->phone = $phone;
+    }
+
+    public function setPlainTextPassword($password)
+    {
+        $this->plainTextPassword = $password;
+
+    }
+
+    public function getPlainTextPassword()
+    {
+        return $this->plainTextPassword;
     }
 
     /**
@@ -475,6 +508,7 @@ class User implements AdvancedUserInterface
      */
     public function eraseCredentials()
     {
+        $this->plainTextPassword = '';
     }
 }
 

@@ -21,7 +21,7 @@ use CoreBundle\Normalizer\TagNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\CommentRepository;
-use CoreBundle\Validation\CommentType;
+use CoreBundle\Validation\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -142,7 +142,7 @@ class BlogController extends Controller
                     return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->response();
             }
 
-            $form = $this->createForm(CommentType::class,$comment);
+            $form = $this->createForm(UserType::class,$comment);
             $form->submit($request->request->all());
             if($form->isValid())
             {

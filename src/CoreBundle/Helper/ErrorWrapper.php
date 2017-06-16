@@ -49,8 +49,9 @@ class ErrorWrapper
 
     public function addError($key, $error)
     {
-        $this->errors[] = ["field" => $key, "message" => $error];
+        $this->errors[$key] = $error;
     }
+
 
 
 }

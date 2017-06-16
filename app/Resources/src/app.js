@@ -35,6 +35,8 @@ import HomePage from './page/app/HomePage.vue'
 import ScheduleList from './page/app/Schedule/ScheduleList.vue'
 import ScheduleSingle from './page/app/Schedule/ScheduleSingle.vue'
 import ShowList from './page/app/Show/ShowList.vue'
+import ProfilePage from './page/app/profile/ProfilePage.vue'
+import ProfileSettings from './page/app/profile/ProfileSettings.vue'
 
 import Vue from 'vue'
 import VueRouter from 'vue-router'
@@ -58,6 +60,10 @@ const router = new VueRouter({ routes: [
       {path: 'post', component: PostPage, children: [
           {name: 'post', path: '/', component: PostList},
           {name: 'post_single', path: ':token/:slug', component: PostSingle}
+      ]},
+      // Profile ------------------------------------------------------------------
+      { path: 'profile', component: ProfilePage, children: [
+        {name: 'profile', path: '/', component: ProfileSettings}
       ]},
       // Shows --------------------------------------------------------------------
       {path: 'show', component: ShowPage, children: [

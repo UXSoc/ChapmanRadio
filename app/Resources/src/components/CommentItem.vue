@@ -5,7 +5,7 @@
         <div>
             <p>username: {{item.getUser().getUsername()}}</p>
 
-            <template v-if="!edit"> {{item.getContent()}}</template>
+            <template v-if="!edit"> <div v-html="$options.filters.markdown(item.getContent())"></div> </template>
             <button v-if="!edit && owner" v-on:click.prevent="editComment()">Edit</button>
             <comment-editor :visible="edit" @submit="onEditSubmit" :content="item.getContent()" ></comment-editor>
 
@@ -23,8 +23,10 @@
     import { EventBus } from './../eventBus'
     import CommentEditor from './quill/commentEditor'
     import Envelope from './../entity/envelope'
+    import Markdown from './../mixins/markdown'
 
     export default{
+      mixins: [Markdown],
       name: 'comment',
       props: {
         comment: {

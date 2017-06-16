@@ -20,7 +20,7 @@
                     <router-link v-if="!status.isLoggedIn()" active-class="active" :to="{name: 'login'}" :exact="true" tag="li">
                         <a class="nav-link"><i class="fa fa-user" aria-hidden="true"></i> Login</a>
                     </router-link>
-                    <router-link v-else active-class="active" :to="{name: 'login'}" :exact="true" tag="li">
+                    <router-link v-else active-class="active" :to="{name: 'profile'}" :exact="true" tag="li">
                         <a class="nav-link"><i class="fa fa-user" aria-hidden="true"></i> {{status.getUsername()}}</a>
                     </router-link>
                 </ul>

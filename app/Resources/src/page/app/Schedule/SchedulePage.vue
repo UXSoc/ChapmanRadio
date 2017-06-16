@@ -41,8 +41,7 @@
 
 
         <div class="container schedule-shows">
-
-
+            <router-view></router-view>
         </div>
     </div>
 </template>

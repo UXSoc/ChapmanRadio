@@ -19,7 +19,7 @@
   import { Validator } from 'vee-validate'
   import FormGroup from './../components/FormGroup.vue'
   import Alert from './../components/Alert.vue'
-  import axios from 'axios/dist/axios'
+  import AccountService from '../service/accountService'
 
   export default{
     data () {
@@ -33,22 +33,16 @@
     },
     methods: {
       validateForm: function () {
+        let _this = this
         this.validator.validateAll({
           oldPassword: this.oldPassword,
           newPassword: this.newPassword
         }).then(() => {
-          let params = new URLSearchParams()
-          params.append('oldPassword', this.oldPassword)
-          params.append('newPassword', this.newPassword)
-
-          let _this = this
-          axios.patch(Routing.generate('account_patch_password'), params).then(function (response) {
+          AccountService.postChangePassword(this.oldPassword, this.newPassword, (envelope) => {
             _this.showSuccess = true
-          }).catch(function (error) {
-            let e = error.response.data.errors
-            for (let i = 0; i < e.length; i++) {
-              _this.validator.errorBag.add(e[i].field, e[i].message)
-            }
+          },
+          (envelope) => {
+            envelope.fillErrorBag(_this.validator.errorBag)
           })
         })
       }

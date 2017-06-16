@@ -69,7 +69,7 @@ class SchedulerSubscriber implements EventSubscriberInterface
     public function onScheduleRule(ScheduleBetweenEvent $event){
         $schedule = $event->getSchedule();
         $token  = (Carbon::instance($schedule->getUpdatedAt()))->getTimestamp();
-        $ruleCache =  $this->cacheService->getItem(Caches::SCHEDULE_RULE_CACHE . $schedule->getId() . '.' . $token);
+        $ruleCache =  $this->cacheService->getItem(Caches::SCHEDULE_RULE_CACHE . $schedule->getToken() . '.' . $token);
         $rule = new CacheableRule($schedule->getRule());
 
         if($ruleCache->isHit()) {
@@ -79,7 +79,7 @@ class SchedulerSubscriber implements EventSubscriberInterface
 
         $start  = (Carbon::instance($event->getStart()))->copy()->format('h-m');
         $end  = (Carbon::instance($event->getEnd()))->copy()->format('h-m');
-        $dayCache =  $this->cacheService->getItem(Caches::SCHEDULE_RULE_CACHE_BETWEEN . $schedule->getId() . '.'. $token .'.'.$start . '.' . $end);
+        $dayCache =  $this->cacheService->getItem(Caches::SCHEDULE_RULE_CACHE_BETWEEN . $schedule->getToken() . '.'. $token .'.'.$start . '.' . $end);
         if(!$dayCache->isHit())
         {
             $dayCache->set($rule->getOccurrencesBetween($event->getStart(),$event->getEnd()));
@@ -89,7 +89,7 @@ class SchedulerSubscriber implements EventSubscriberInterface
 
         $event->setDateTimes($dayCache->get());
 
-        if($rule->isCacheExausted() && $rule->isCacheUsed()) {
+        if($rule->isCacheExausted() ) {
             $ruleCache->set($rule->getCache());
             $this->cacheService->saveDeferred($ruleCache);
         }
