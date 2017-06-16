@@ -211,6 +211,7 @@ class Show
     private $events;
 
 
+
     public function __construct()
     {
         $this->images = new ArrayCollection();

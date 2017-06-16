@@ -1,7 +1,7 @@
 <template>
     <div class="schedule-shows" v-if="scheduleEntries">
         <p class="schedule-time-heading">EARLY</p>
-        <schedule-entry v-for="(item, index) in scheduleEntries" :key="index" :show="item.getShow()" :showTime="item.getStartTime()"></schedule-entry>
+        <schedule-entry v-for="(item, index) in scheduleEntries" :key="index" :show="item.getShow()" :showDate="item.getDate()"></schedule-entry>
      </div>
 </template>
 

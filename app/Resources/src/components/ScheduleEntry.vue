@@ -26,16 +26,16 @@
           type: Show,
           default: null
         },
-        showTime: {
+        showDate: {
           type: String,
-          default: '00:00:00'
+          default: null
         }
       },
       methods: {
       },
       computed: {
         formatTime: function () {
-          return Moment(this.showTime, 'HH:mm:ss').format('h:mm a')
+          return Moment(this.showDate).format('h:mm a')
         }
       }
     }

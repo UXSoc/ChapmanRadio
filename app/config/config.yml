@@ -11,6 +11,9 @@ parameters:
     locale: en
 
 framework:
+#    cache:
+#        app: cache.adapter.redis
+#        default_redis_provider: "redis://localhost"
     #esi: ~
     #translator: { fallbacks: ['%locale%'] }
     secret: '%env(SYMFONY_SECRET)%'

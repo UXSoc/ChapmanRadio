@@ -14,8 +14,9 @@ use Carbon\CarbonInterval;
 use CoreBundle\Caches;
 use CoreBundle\Entity\Schedule;
 use CoreBundle\Event\CommentEvent;
-use CoreBundle\Event\ScheduleEvent;
+use CoreBundle\Event\ScheduleBetweenEvent;
 use CoreBundle\Events;
+use CoreBundle\Helper\CacheableRule;
 use Psr\Cache\CacheItemPoolInterface;
 use Recurr\RecurrenceCollection;
 use Recurr\Transformer\ArrayTransformer;
@@ -62,33 +63,36 @@ class SchedulerSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param ScheduleEvent $event
+     * @param ScheduleBetweenEvent $event
      * @return \DateTime[] mixed
      */
-    public function onScheduleRule(ScheduleEvent $event){
+    public function onScheduleRule(ScheduleBetweenEvent $event){
         $schedule = $event->getSchedule();
-        $token  = (new Carbon($schedule->getUpdatedAt()))->toCookieString();
-        $ruleCache =  $this->cacheService->getItem(Caches::SCHEDULE_RULE_CACHE . $token);
-        if(!$ruleCache->isHit()) {
-           $rule = new RRule($schedule->getRule());
-           $ruleCache->set($rule);
+        $token  = (Carbon::instance($schedule->getUpdatedAt()))->getTimestamp();
+        $ruleCache =  $this->cacheService->getItem(Caches::SCHEDULE_RULE_CACHE . $schedule->getId() . '.' . $token);
+        $rule = new CacheableRule($schedule->getRule());
+
+        if($ruleCache->isHit()) {
+            $rule->restoreFromCache($ruleCache->get());
         }
         $ruleCache->expiresAfter(new CarbonInterval(0, 0, 1, 0, 0, 0, 0));
 
-        $start  = (new Carbon($event->getStart()))->toCookieString();
-        $end  = (new Carbon($event->getEnd()))->toCookieString();
-        $dayCache =  $this->cacheService->getItem(Caches::SCHEDULE_RULE_CACHE_BETWEEN . $token .'.'.$start . '.' . $end);
+        $start  = (Carbon::instance($event->getStart()))->copy()->format('h-m');
+        $end  = (Carbon::instance($event->getEnd()))->copy()->format('h-m');
+        $dayCache =  $this->cacheService->getItem(Caches::SCHEDULE_RULE_CACHE_BETWEEN . $schedule->getId() . '.'. $token .'.'.$start . '.' . $end);
         if(!$dayCache->isHit())
         {
-            /** @var RRule $c */
-            $c = $ruleCache->get();
-            $dayCache->set($c->getOccurrencesBetween($event->getStart(),$event->getEnd()));
+            $dayCache->set($rule->getOccurrencesBetween($event->getStart(),$event->getEnd()));
+            $dayCache->expiresAfter(new CarbonInterval(0, 0, 0, 0, 1, 0, 0));
+            $this->cacheService->save($dayCache);
         }
-        $dayCache->expiresAfter(new CarbonInterval(0, 0, 1, 0, 0, 0, 0));
 
-        $this->cacheService->save($ruleCache);
-        $this->cacheService->save($dayCache);
-        return $dayCache->get();
+        $event->setDateTimes($dayCache->get());
+
+        if($rule->isCacheExausted() && $rule->isCacheUsed()) {
+            $ruleCache->set($rule->getCache());
+            $this->cacheService->saveDeferred($ruleCache);
+        }
 
     }
 

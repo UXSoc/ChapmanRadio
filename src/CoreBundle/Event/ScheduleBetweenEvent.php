@@ -10,12 +10,17 @@ namespace CoreBundle\Event;
 
 
 use CoreBundle\Entity\Schedule;
+use Symfony\Component\EventDispatcher\Event;
 
-class ScheduleEvent
+class ScheduleBetweenEvent extends Event
 {
     private $schedule;
     private $start;
     private $end;
+
+    private  $datetimes;
+
+
 
     function __construct(Schedule $schedule,$start,$end)
     {
@@ -23,6 +28,7 @@ class ScheduleEvent
         $this->start = $start;
         $this->end = $end;
     }
+
 
     /**
      * @return Schedule
@@ -40,5 +46,22 @@ class ScheduleEvent
     public function getEnd()
     {
         return $this->end;
+    }
+
+    public function getDateTimes()
+    {
+        return $this->datetimes;
+    }
+
+    public function hasDates() {
+        return count($this->datetimes) > 0;
+    }
+
+    /**
+     * @param \DateTime[] $dateTimes
+     */
+    public function setDateTimes($dateTimes)
+    {
+        $this->datetimes = $dateTimes;
     }
 }

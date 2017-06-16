@@ -5,15 +5,13 @@ import Show from './show'
 export default class ScheduleEntry extends BaseEntity {
   _show: Show;
   _date: string
-  _startTime: string
-  _endTime: string
+  _length: string
 
   constructor (data) {
     super()
     this._show = this.getAndInstance((data) => new Show(data), 'show', data, new Show({}))
     this._date = this.get('date', data, '')
-    this._startTime = this.get('start_time', data, '')
-    this._endTime = this.get('end_time', data, '')
+    this._length = this.get('length', data, '')
   }
 
   getShow () {
@@ -22,10 +20,6 @@ export default class ScheduleEntry extends BaseEntity {
 
   getDate () {
     return this._date
-  }
-
-  getStartTime () {
-    return this._startTime
   }
 
   getEndTime () {

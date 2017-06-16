@@ -29,6 +29,7 @@ class Schedule
      */
     private $id;
 
+
     /**
      * @var string
      * @ORM\Column(name="token", type="string",length=20, nullable=false,unique=true)
@@ -61,12 +62,21 @@ class Schedule
 
 
     /**
-     * @var int
+     * @var string
      * @Assert\NotBlank,
      * @Assert\Range(min=0,max=6)
-     * @ORM\Column(name="freq", type="integer", nullable=false)
+     * @Assert\Choice({"YEARLY", "MONTHLY", "WEEKLY", "DAILY"})
+     * @ORM\Column(name="freq", type="string", length=20, nullable=false)
      */
-    private $freq = 0;
+    private $freq = "YEARLY";
+
+
+    /**
+     * //as UNIX TIME
+     * @var int
+     * @ORM\Column(name="inter", type="integer", nullable=false)
+     */
+    private $interval = 1;
 
     /**
      * //as UNIX TIME
@@ -132,6 +142,17 @@ class Schedule
      * @var int[]
      * @Assert\All({
      *  @Assert\NotBlank,
+     * })
+     * @ORM\Column(name="ex_dates", type="simple_array", nullable=true)
+     */
+    private $exDates;
+
+
+
+    /**
+     * @var int[]
+     * @Assert\All({
+     *  @Assert\NotBlank,
      *  @Assert\Range(min=1,max=12)
      * })
      * @ORM\Column(name="by_month", type="simple_array", nullable=true)
@@ -148,6 +169,7 @@ class Schedule
      * })
      */
     private $show;
+
 
 
     public function __construct()
@@ -401,6 +423,16 @@ class Schedule
     public function getByMonth()
     {
         return $this->byMonth;
+    }
+
+    public function setInterval($interval)
+    {
+        $this->interval = $interval;
+    }
+
+    public function getInterval()
+    {
+        return $this->interval;
     }
 
 }

@@ -43,9 +43,8 @@ class ScheduleEntryNormalizer implements NormalizerInterface, NormalizerAwareInt
     {
         return [
             'show' => $this->normalizer->normalize($object->getShow(),$format,$context),
-            'date' => $this->normalizer->normalize($object->getDate(),$format,$context),
-            'start_time' => Carbon::instance($object->getStartTime())->toTimeString(),
-            'end_time' => Carbon::instance($object->getEndTime())->toTimeString()
+            'date' => $this->normalizer->normalize($object->getShowDate(),$format,$context),
+            'length' => $object->getLenght()
         ];
     }
 

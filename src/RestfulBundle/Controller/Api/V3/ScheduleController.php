@@ -2,15 +2,22 @@
 namespace RestfulBundle\Controller\Api\V3;
 
 use Carbon\Carbon;
+use CoreBundle\Entity\Schedule;
+use CoreBundle\Event\ScheduleBetweenEvent;
+use CoreBundle\Events;
 use CoreBundle\Helper\RestfulEnvelope;
+use CoreBundle\Helper\ScheduleEntry;
 use CoreBundle\Normalizer\DateTimeNormalizer;
 use CoreBundle\Normalizer\ScheduleEntryNormalizer;
 use CoreBundle\Normalizer\ShowNormalizer;
+use CoreBundle\Repository\ScheduleRepository;
 use CoreBundle\Service\ScheduleService;
+use RRule\RRule;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -23,13 +30,10 @@ class ScheduleController extends Controller
      * @Route("schedule/today", options = { "expose" = true }, name="get_schedule_today")
      * @Method({"GET"})
      */
-    public function getTodayScheduleAction()
+    public function getTodayScheduleAction(Request $request)
     {
-        /** @var ScheduleService $calendarService */
-        $calendarService = $this->get(ScheduleService::class);
-        $entires = $calendarService->getEventsForDay(new \DateTime('now'));
-        return RestfulEnvelope::successResponseTemplate('Show Schedule', $entires,
-            [new ScheduleEntryNormalizer(),new ShowNormalizer()])->response();
+        $c = new Carbon('now');
+        return $this->getCurrentDateTimeAction($request,$c->year,$c->month,$c->day);
     }
 
 
@@ -49,12 +53,37 @@ class ScheduleController extends Controller
      */
     public function getCurrentDateTimeAction(Request $request,$year,$month,$day)
     {
-        $date = Carbon::create($year,$month,$day);
+        $c = Carbon::create($year,$month,$day);
 
-        /** @var ScheduleService $calendarService */
-        $calendarService = $this->get(ScheduleService::class);
-        $entires = $calendarService->getEventsForDay($date);
-        return RestfulEnvelope::successResponseTemplate('Show Schedule', $entires,
+        /** @var ScheduleRepository $scheduleRepository */
+        $scheduleRepository = $this->getDoctrine()->getRepository(Schedule::class);
+
+        /** @var EventDispatcher $dispatcher */
+        $dispatcher = $this->get('event_dispatcher');
+
+        $start = $c->copy()->startOfDay();
+        $end = $c->copy()->endOfDay();
+        $schedules = $scheduleRepository->getByDatetime($c);
+
+        $result = array();
+        /** @var Schedule $schdule */
+        foreach ($schedules as $schdule)
+        {
+            $dates = new ScheduleBetweenEvent($schdule,$start->copy(),$end->copy());
+            $dispatcher->dispatch(Events::ON_SCHEDULE_RULE,$dates);
+            if($dates->hasDates())
+            {
+                foreach ($dates->getDateTimes() as $date) {
+                    $entry = new ScheduleEntry();
+                    $entry->setDate($date);
+                    $entry->setShow($schdule->getShow());
+                    $entry->setLength($schdule->getShowLength());
+                    $result[] = $entry;
+                }
+            }
+        }
+
+        return RestfulEnvelope::successResponseTemplate('Show Schedule', $result,
             [new ScheduleEntryNormalizer(),new ShowNormalizer()])->response();
     }
 

@@ -20,5 +20,5 @@ class Events
     const ON_COMMENT_CREATED = "comment.created";
 
 
-    const ON_SCHEDULE_RULE = "schedule.rule";
+    const ON_SCHEDULE_RULE = "schedule.rule.";
 }

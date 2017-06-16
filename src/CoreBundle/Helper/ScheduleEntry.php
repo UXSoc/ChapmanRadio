@@ -16,11 +16,11 @@ use Symfony\Component\Cache\CacheItem;
 class ScheduleEntry
 {
     /** @var  DateTime */
-    private $date;
-    /** @var  DateTime */
-    private $startTime;
-    /** @var  DateTime */
-    private $endTime;
+    private $showDate;
+
+    /** @var  int */
+    private $length;
+
     /** @var  Show */
     private $show;
 
@@ -36,31 +36,22 @@ class ScheduleEntry
 
     public function setDate(DateTime $date)
     {
-        $this->date = $date;
+        $this->showDate = $date;
     }
 
-    public function getDate()
+    public function getShowDate()
     {
-        return $this->date;
+        return $this->showDate;
     }
 
-    public function setStartTime($time)
+    public function getLenght()
     {
-        $this->startTime = $time;
+        return $this->length;
     }
 
-    public function setEndTime($time)
+    public function setLength($length)
     {
-        $this->endTime = $time;
+        $this->length = $length;
     }
 
-    public function getStartTime()
-    {
-        return $this->startTime;
-    }
-
-    public function getEndTime()
-    {
-        return $this->endTime;
-    }
 }
