@@ -1,8 +1,8 @@
-var webpack = require('webpack')
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
-var helpers = require('./helper')
-var path = require('path')
-var CopyWebpackPlugin = require('copy-webpack-plugin')
+let webpack = require('webpack')
+let ExtractTextPlugin = require('extract-text-webpack-plugin')
+let helpers = require('./helper')
+let path = require('path')
+let CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   entry: {
@@ -83,7 +83,6 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
       name: ['vendor']
     }),
-    new CopyWebpackPlugin([ {from: 'bower_components/tinymce/skins', to: 'skins'}]),
     new CopyWebpackPlugin([ {from: 'app/Resources/public', to: 'public'}])
   ]
 }

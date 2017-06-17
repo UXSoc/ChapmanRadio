@@ -22,14 +22,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\HasLifecycleCallbacks
  *
- * @Assert\UniqueEntity(
+ * @UniqueEntity(
  *     fields="email",
- *     errorPath="email"
+ *     errorPath="email",
  *     message="email already used")
  *
- * @Assert\UniqueEntity(
+ * @UniqueEntity(
  *     fields="username",
- *     errorPath="username"
+ *     errorPath="username",
  *     message="username already used")
  */
 class User implements AdvancedUserInterface
