@@ -11,7 +11,6 @@ namespace CoreBundle\Validation;
 
 use CoreBundle\Entity\Post;
 use CoreBundle\Entity\User;
-use CoreBundle\Validation\Items\ResetPassword;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;

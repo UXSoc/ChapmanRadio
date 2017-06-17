@@ -224,7 +224,10 @@ class User implements AdvancedUserInterface
         return $this->dj;
     }
 
-    public function setDj($dj)
+    /**
+     * @param Dj $dj
+     */
+    public function setDj(Dj $dj)
     {
         $dj->setUser($this);
         $this->dj = $dj;

@@ -11,7 +11,6 @@ namespace CoreBundle\Validation;
 
 use CoreBundle\Entity\Post;
 use CoreBundle\Entity\User;
-use CoreBundle\Validation\Items\ResetPassword;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -24,13 +23,13 @@ use Symfony\Component\Security\Core\Tests\Encoder\PasswordEncoder;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Context\ExecutionContext;
 
-class ResetPasswordType extends AbstractType
+class UserRegisterType extends AbstractType
 {
     /** @var  UserPasswordEncoder */
     private $passwordEncoder;
 
     /** @var  User */
-    private  $user;
+    private $user;
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
