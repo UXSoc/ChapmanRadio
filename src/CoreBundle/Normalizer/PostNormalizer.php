@@ -4,6 +4,8 @@ namespace CoreBundle\Normalizer;
 
 use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Tag;
+use DBlackborough\Quill\Render;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
@@ -20,6 +22,12 @@ class PostNormalizer implements NormalizerInterface, NormalizerAwareInterface
     /** @var  NormalizerInterface */
     private $normalizer;
 
+    private $cacheService;
+
+    function __construct(CacheItemPoolInterface  $cacheService)
+    {
+        $this->cacheService = $cacheService;
+    }
 
     /**
      * Sets the owning Normalizer object.
@@ -52,10 +60,14 @@ class PostNormalizer implements NormalizerInterface, NormalizerAwareInterface
             'categories' => $object->getCategories() != null ? $object->getCategories()->getKeys() : null,
             'tags' => $object->getTags() != null ? $object->getTags()->getKeys() : null,
             'is_pinned' => (boolean)$object->isPinned(),
-            'author' => $this->normalizer->normalize($object->getAuthor(), $format, $context),
-            'content' => $object->getContent()
+            'author' => $this->normalizer->normalize($object->getAuthor(), $format, $context)
         ];
-
+        if(array_key_exists('delta',$context) && $context['delta'] === true) {
+            $result['content'] = $object->getContent();
+        } else {
+            $quill = new Render($object->getContent(),'HTML');
+            $result['content'] = $quill->render();
+        }
 
         return $result;
     }

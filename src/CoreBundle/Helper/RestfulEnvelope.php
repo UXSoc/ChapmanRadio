@@ -143,7 +143,7 @@ class RestfulEnvelope
         return $this;
     }
 
-    public function response($format = [], $context = [])
+    public function response($format = '', $context = [])
     {
         $this->normalizers[] = new WrapperNormalizer();
         $this->normalizers[] = new DateTimeNormalizer();

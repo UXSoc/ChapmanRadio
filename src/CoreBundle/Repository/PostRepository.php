@@ -3,6 +3,7 @@ namespace CoreBundle\Repository;
 
 
 use CoreBundle\Entity\Post;
+use CoreBundle\Helper\Datatable;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -17,17 +18,17 @@ class PostRepository extends EntityRepository
     {
         return $this->createQueryBuilder('p')
             ->where('p.name = :name')
-            ->setParameter('name',$name)
+            ->setParameter('name', $name)
             ->getQuery()
             ->getSingleResult();
     }
 
-    public function getPostByTokenAndSlug($token,$slug)
+    public function getPostByTokenAndSlug($token, $slug)
     {
-        return $this->findOneBy(["token" => $token,"slug" => $slug]);
+        return $this->findOneBy(["token" => $token, "slug" => $slug]);
     }
 
-    public function filter(Request $request)
+    private function _filter(Request $request)
     {
         $qb = $this->createQueryBuilder('s');
         if($name = $request->get('name',null))
@@ -59,8 +60,38 @@ class PostRepository extends EntityRepository
                     ->setParameter('category',$category);
             }
         }
+        return $qb;
+    }
 
-        return $qb->getQuery();
+    public function filter(Request $request)
+    {
+        return $this->_filter($request)->getQuery();
+    }
+
+    public function dataTableFilter(Request $request)
+    {
+        $qb = $this->_filter($request);
+        $dataTable = new Datatable();
+        $dataTable->handleSort($request,['name','created_at','updated_at','status','author']);
+        foreach ($dataTable->getSort() as $key => $value)
+        {
+            switch ($key)
+            {
+                case 'author':
+                    $qb->join('s.author','a','WITH');
+                    $qb->orderBy('a.name', $value);
+                    break;
+                default:
+                    $qb->orderBy('s.' . $key,$value);
+                    break;
+            }
+        }
+        $paginator = $this->paginator($qb->getQuery(),
+            (int)$request->get('page',0),
+            (int)$request->get('entries',10),20);
+
+        $dataTable->setPayload($paginator);
+        return $dataTable;
     }
 
     /**

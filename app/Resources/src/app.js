@@ -9,8 +9,14 @@ import GradesAttendanceDashboard from './page/dashboard/dj/GradesAttendanceDashb
 import MyShowsDashboard from './page/dashboard/dj/MyShowsDashboard.vue'
 import SettingsDashboard from './page/dashboard/dj/SettingsDashboard.vue'
 
+import BlogDashboardPage from './page/dashboard/blog/BlogDashboardPage.vue'
+import BlogDashboardList from './page/dashboard/blog/BlogDashboardList.vue'
+import BlogDashboardEdit from './page/dashboard/blog/BlogDashboardEdit.vue'
+import BlogDashboardTags from './page/dashboard/blog/BlogDashboardTags.vue'
+
+import DashboardProfilePage from './page/dashboard/DashboardProfilePage.vue'
+
 import AttendanceDashboard from './page/dashboard/siteadmin/AttendanceDashboard.vue'
-import BlogDashboard from './page/dashboard/siteadmin/BlogDashboard.vue'
 import EmailAlertsDashboard from './page/dashboard/siteadmin/EmailAlertsDashboard.vue'
 import GradeMgmtDashboard from './page/dashboard/siteadmin/GradeMgmtDashboard.vue'
 import ScheduleDashboard from './page/dashboard/siteadmin/ScheduleDashboard.vue'
@@ -82,20 +88,26 @@ const router = new VueRouter({ routes: [
   {
     name: 'dashboard', path: '/dashboard/', component: Dashboard,
     children: [
-        {name: 'dashboard_broadcast_live', path: 'broadcastlive', component: BroadcastLiveDashboard},
-        {name: 'dashboard_grades_attendance', path: 'gradesattendance', component: GradesAttendanceDashboard},
-        {name: 'dashboard_my_shows', path: 'myshows', component: MyShowsDashboard},
-        {name: 'dashboard_settings', path: 'settings', component: SettingsDashboard},
+      {name: 'dashboard_broadcast_live', path: 'broadcastlive', component: BroadcastLiveDashboard},
+      {name: 'dashboard_grades_attendance', path: 'gradesattendance', component: GradesAttendanceDashboard},
+      {name: 'dashboard_my_shows', path: 'myshows', component: MyShowsDashboard},
+      {name: 'dashboard_settings', path: 'settings', component: SettingsDashboard},
 
-        {name: 'dashboard_attendance', path: 'attendance', component: AttendanceDashboard},
-        {name: 'dashboard_blog', path: 'blog', component: BlogDashboard},
-        {name: 'dashboard_emailalerts', path: 'emailalerts', component: EmailAlertsDashboard},
-        {name: 'dashboard_grade_mgmt', path: 'grademgmt', component: GradeMgmtDashboard},
-        {name: 'dashboard_schedule', path: 'schedule', component: ScheduleDashboard},
-        {name: 'dashboard_shows', path: 'shows', component: ShowsDashboard},
-        {name: 'dashboard_staff', path: 'staff', component: StaffDashboard},
-        {name: 'dashboard_strikes', path: 'strikes', component: StrikesDashboard},
-        {name: 'dashboard_users', path: 'users', component: UsersDashboard}
+      {name: 'dashboard_attendance', path: 'attendance', component: AttendanceDashboard},
+      {path: 'blog', component: BlogDashboardPage, children: [
+          {name: 'dashboard_blog', path: '/', component: BlogDashboardList},
+          {name: 'dashboard_blog_add', path: '/add', component: BlogDashboardEdit},
+          {name: 'dashboard_blog_edit', path: '/edit/:token', component: BlogDashboardEdit},
+          {name: 'dashboard_blog_tags', path: '/tags', component: BlogDashboardTags}
+      ]},
+      {name: 'dashboard_profile', path: 'profile', component: DashboardProfilePage},
+      {name: 'dashboard_emailalerts', path: 'emailalerts', component: EmailAlertsDashboard},
+      {name: 'dashboard_grade_mgmt', path: 'grademgmt', component: GradeMgmtDashboard},
+      {name: 'dashboard_schedule', path: 'schedule', component: ScheduleDashboard},
+      {name: 'dashboard_shows', path: 'shows', component: ShowsDashboard},
+      {name: 'dashboard_staff', path: 'staff', component: StaffDashboard},
+      {name: 'dashboard_strikes', path: 'strikes', component: StrikesDashboard},
+      {name: 'dashboard_users', path: 'users', component: UsersDashboard}
     ]
   }
   // -------------------------------App----------------------------------------------

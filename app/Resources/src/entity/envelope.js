@@ -6,7 +6,7 @@ export default class Envelope<T> extends BaseEntity {
   _errors: {[string]: string}
   _data: T
 
-  constructor (create : (result: Object) => T, data) {
+  constructor (create : (result: Object) => T, data: {}) {
     super()
     this._success = data.success
     this._message = data.message

@@ -7,6 +7,8 @@ use CoreBundle\Entity\Image;
 use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Tag;
 use CoreBundle\Helper\RestfulEnvelope;
+use CoreBundle\Normalizer\DatatableNormalizer;
+use CoreBundle\Normalizer\PaginatorNormalizer;
 use CoreBundle\Normalizer\PostNormalizer;
 use CoreBundle\Normalizer\CategoryNormalizer;
 use CoreBundle\Normalizer\ImageNormalizer;
@@ -35,6 +37,24 @@ class BlogController extends Controller
 
     /**
      * @Security("has_role('ROLE_STAFF')")
+     * @Route("/post/datatable",
+     *     options = { "expose" = true },
+     *     name="get_post_dataTable")
+     * @Method({"GET"})
+     */
+    public function getPostDatatableAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var PostRepository $postRepository */
+        $postRepository = $em->getRepository(Post::class);
+
+
+        return RestfulEnvelope::successResponseTemplate('Here is your data', $postRepository->dataTableFilter($request),
+            [$this->get(PostNormalizer::class), new PaginatorNormalizer(),new DatatableNormalizer(), new UserNormalizer()])->response();
+    }
+
+    /**
+     * @Security("has_role('ROLE_STAFF')")
      * @Route("/post",
      *     options = { "expose" = true },
      *     name="post_post")
@@ -43,7 +63,6 @@ class BlogController extends Controller
     public function postPostAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-
         $post = new Post();
 
         $form = $this->createForm(PostType::class,$post);
@@ -52,7 +71,7 @@ class BlogController extends Controller
         {
             $em->persist($post);
             $em->flush();
-            return RestfulEnvelope::successResponseTemplate('Post Added',$post,[new PostNormalizer(),new UserNormalizer()])->response();
+            return RestfulEnvelope::successResponseTemplate('Post Added',$post,[ $this->get(PostNormalizer::class),new UserNormalizer()])->response();
         }
         return RestfulEnvelope::errorResponseTemplate("Invalid Post")->addFormErrors($form)->response();
     }
@@ -80,9 +99,9 @@ class BlogController extends Controller
             {
                 $em->persist($post);
                 $em->flush();
-                return RestfulEnvelope::successResponseTemplate('Post Updated',$post,[new PostNormalizer(),new UserNormalizer()])->response();
+                return RestfulEnvelope::successResponseTemplate('Post Updated',$post,[$this->get(PostNormalizer::class),new UserNormalizer()])->response();
             }
-            return RestfulEnvelope::errorResponseTemplate("invalid Post")->addFormErrors($form)->response();
+            return RestfulEnvelope::errorResponseTemplate("Invalid Post")->addFormErrors($form)->response();
         }
         return RestfulEnvelope::errorResponseTemplate("Invalid Post")->setStatus(410)->response();
 

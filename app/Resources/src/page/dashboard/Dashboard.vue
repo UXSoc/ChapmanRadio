@@ -62,6 +62,8 @@
 </template>
 
 <script>
+  import $ from 'jquery'
+
   export default{
     data () {
       return {
@@ -79,7 +81,12 @@
           {'name': 'Grades / Attendance', 'route': 'dashboard_grades_attendance', 'icon': 'fa-bar-chart-o'},
           {'name': 'Settings', 'route': 'dashboard_settings', 'icon': 'fa-bar-chart-o'},
           {'name': 'Attendance', 'route': 'dashboard_attendance', 'icon': 'fa-bar-chart-o'},
-          {'name': 'Blog', 'route': 'dashboard_blog', 'icon': 'fa-bar-chart-o'},
+          {'name': 'Blog', 'icon': 'fa-bar-chart-o',
+            'sub_menu': [
+              {name: 'All Posts', route: 'dashboard_blog', 'icon': 'fa-bar-chart-o'},
+              {name: 'Add New', route: 'dashboard_blog_add', 'icon': 'fa-bar-chart-o'},
+              {name: 'Tags', route: 'dashboard_blog_tags', 'icon': 'fa-bar-chart-o'}
+            ]},
           {'name': 'Users', 'route': 'dashboard_users', 'icon': 'fa-bar-chart-o'},
           {'name': 'Shows', 'route': 'dashboard_shows', 'icon': 'fa-bar-chart-o'},
           {'name': 'Schedule', 'route': 'dashboard_schedule', 'icon': 'fa-bar-chart-o'},
@@ -94,31 +101,26 @@
 
     },
     mounted: function () {
-      $('#side-menu').metisMenu({toggle: false})
+//      $('#side-menu').metisMenu({toggle: false})
 
-      $(window).bind('load resize', function () {
-        var topOffset = 50
-        var width = (this.window.innerWidth > 0) ? this.window.innerWidth : this.screen.width
-        if (width < 768) {
-          $('div.navbar-collapse').addClass('collapse')
-          topOffset = 100 // 2-row-menu
-        } else {
-          $('div.navbar-collapse').removeClass('collapse')
-        }
-
-        var height = ((this.window.innerHeight > 0) ? this.window.innerHeight : this.screen.height) - 1
-        height = height - topOffset
-        if (height < 1) height = 1
-        if (height > topOffset) {
-          $('#page-wrapper').css('min-height', (height) + 'px')
-        }
-      })
-      document.body.classList.add('whiteback')
-    },
-    beforeMount:{
-
-    },
-    watch: {
+//      $(window).bind('load resize', function () {
+//        var topOffset = 50
+//        var width = (this.window.innerWidth > 0) ? this.window.innerWidth : this.screen.width
+//        if (width < 768) {
+//          $('div.navbar-collapse').addClass('collapse')
+//          topOffset = 100 // 2-row-menu
+//        } else {
+//          $('div.navbar-collapse').removeClass('collapse')
+//        }
+//
+//        var height = ((this.window.innerHeight > 0) ? this.window.innerHeight : this.screen.height) - 1
+//        height = height - topOffset
+//        if (height < 1) height = 1
+//        if (height > topOffset) {
+//          $('#page-wrapper').css('min-height', (height) + 'px')
+//        }
+//      })
+//      document.body.classList.add('whiteback')
     },
     components: {
     }

@@ -1,6 +1,6 @@
 import BaseEntity from './baseEntity'
-export default class Pagination extends BaseEntity {
-  constructor (create, data) {
+export default class Pagination<T> extends BaseEntity {
+  constructor (create : (result: Object) => T, data: {}) {
     super()
     this._page = this.get('pages', data, 0)
     this._perPage = this.get('perPage', data, 0)

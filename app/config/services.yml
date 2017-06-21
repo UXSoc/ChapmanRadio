@@ -20,6 +20,9 @@ services:
     CoreBundle\Service\:
         resource: '../../src/CoreBundle/Service/*'
         public: true
+    CoreBundle\Normalizer\:
+        resource: '../../src/CoreBundle/Normalizer/*'
+        public: true
     BroadcastBundle\Service\:
         resource: '../../src/BroadcastBundle/Service/*'
         public: true

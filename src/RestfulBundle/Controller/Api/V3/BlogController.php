@@ -54,7 +54,7 @@ class BlogController extends Controller
             (int)$request->get('entries',10),20);
 
         return RestfulEnvelope::successResponseTemplate(null,$pagination,
-            [new PostNormalizer(),new UserNormalizer(),new PaginatorNormalizer(),new DateTimeNormalizer()])->response();
+            [ $this->get(PostNormalizer::class),new UserNormalizer(),new PaginatorNormalizer(),new DateTimeNormalizer()])->response('json',[$request->get('delta',false)]);
     }
 
     /**
@@ -107,8 +107,8 @@ class BlogController extends Controller
 
         /** @var Post $post */
         if ( $post = $postRepository->getPostByTokenAndSlug($token,$slug))
-            return RestfulEnvelope::successResponseTemplate("Post found",$post,[new PostNormalizer(),new UserNormalizer()])->response();
-        return RestfulEnvelope::errorResponseTemplate("Post not found")->setStatus(410)->response();
+            return RestfulEnvelope::successResponseTemplate("Post found",$post,[$this->get(PostNormalizer::class),new UserNormalizer()])->response();
+        return RestfulEnvelope::errorResponseTemplate("Post not found")->setStatus(410)->response('json');
     }
 
     /**

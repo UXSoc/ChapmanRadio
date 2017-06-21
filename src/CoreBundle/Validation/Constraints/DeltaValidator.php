@@ -24,6 +24,7 @@ class DeltaValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
+
         try{
             $parser = new Html();
             $parser->load($value);

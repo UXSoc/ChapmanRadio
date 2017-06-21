@@ -90,12 +90,11 @@ class Post
     private $isPinned = 0;
 
     /**
-     * @var resource
-     *
+     * @var object
      * @CoreAssert\Delta
-     * @ORM\Column(name="content", type="text", length=65535, nullable=false)
+     * @ORM\Column(name="content",  type="text", nullable=false)
      */
-    private $content = "";
+    private $content;
 
     /**
      * @var User
@@ -210,6 +209,9 @@ class Post
         return $this->images;
     }
 
+    /**
+     * @param object $content
+     */
     public function setContent($content)
     {
         $this->content = $content;

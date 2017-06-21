@@ -1,9 +1,7 @@
 <template>
     <div class="post-entry" v-if="post">
         <h2><router-link :to="post.getRoute()" :exact="true" tag="a">{{post.getName()}}</router-link></h2>
-        <div>
-            {{post.getContent()}}
-        </div>
+        <div v-html="post.getContent()"></div>
         <slot></slot>
     </div>
 </template>

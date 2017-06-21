@@ -9,7 +9,6 @@
 
 <script>
     import Quill from '../../quill/quill'
-    import { fromDelta, toDelta } from 'quill-delta-markdown'
 
     export default{
       data () {
@@ -38,16 +37,16 @@
           },
           theme: 'snow'  // or 'bubble'
         })
-        this.quill.setContents(toDelta(this.content))
+        this.quill.setContents(this.content)
       },
       watch: {
         content: function () {
-          this.quill.setContents(toDelta(this.content))
+          this.quill.setContents(this.content)
         }
       },
       methods: {
         submit () {
-          this.$emit('submit', fromDelta(this.quill.getContents()))
+          this.$emit('submit', this.quill.getContents())
         }
       }
     }

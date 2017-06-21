@@ -1,12 +1,4 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: michaelpollind
- * Date: 6/13/17
- * Time: 3:27 PM
- */
-
-namespace CoreBundle\Validation;
+<?php namespace CoreBundle\Validation;
 
 
 use CoreBundle\Entity\Post;

@@ -54,7 +54,7 @@ class Show
      * @var resource
      *
      * @CoreAssert\Delta
-     * @ORM\Column(name="description", type="text", length=65535, nullable=false)
+     * @ORM\Column(name="description", type="text", nullable=false)
      */
     private $description;
 
