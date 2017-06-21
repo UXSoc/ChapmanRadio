@@ -9,6 +9,9 @@ export default class Pagination<T> extends BaseEntity {
   }
 
   getMaxPage () {
+    if (this._count === this._perPage) {
+      return 0
+    }
     return Math.ceil(this._count / this._perPage)
   }
 

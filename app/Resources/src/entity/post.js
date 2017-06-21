@@ -65,4 +65,10 @@ export default class Post extends BaseEntity {
       name: 'post_single', params: {token: this.getToken(), slug: this.getSlug()}
     }
   }
+
+  getRouteToEdit () {
+    return {
+      name: 'dashboard_blog_edit', params: {token: this.getToken(), slug: this.getSlug()}
+    }
+  }
 }

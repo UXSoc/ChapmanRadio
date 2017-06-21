@@ -1,43 +1,67 @@
 <template>
-    <div class="panel panel-default">
-            <!-- Default panel contents -->
-            <div class="panel-heading">Panel heading</div>
-            <datatable :dataTable="dataTable" :columns="['token','slug','name']">
-                <template slot="column" scope="props">
-                    <th>{{props.column}}</th>
-                </template>
-                <template slot="result" scope="props">
-                    <tr>
-                        <td>{{props.item.getToken()}}</td>
-                        <td>{{props.item.getSlug()}}</td>
-                        <td>{{props.item.getName()}}</td>
-                    </tr>
-                </template>
-            </datatable>
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">Panel heading</div>
+                <datatable @onNumOfEntriesChange="triggerEntries" @onPageChange="triggerPageChange" :dataTable="dataTable" :columns="['token','slug','name']">
+                    <template slot="column" scope="props">
+                        <th>{{props.column}}</th>
+                    </template>
+                    <template slot="result" scope="props">
+                        <tr>
+                            <td><router-link :to="props.item.getRouteToEdit ()">{{props.item.getToken()}}</router-link></td>
+                            <td><router-link :to="props.item.getRouteToEdit ()">{{props.item.getSlug()}}</router-link></td>
+                            <td><router-link :to="props.item.getRouteToEdit ()">{{props.item.getName()}}</router-link></td>
+                        </tr>
+                    </template>
+                </datatable>
+            </div>
         </div>
-
+    </div>
+    </div>
 </template>
 
 <script>
   import Datatable from './../../../components/Datatable.vue'
   import PostService from './../../../service/postService'
+  import RouterLink from "../../../../../../bower_components/vue-router/src/components/link";
   export default{
     props: {
     },
     data () {
       return {
-        dataTable: null
+        dataTable: null,
+        page: 0,
+        numEntries: 10
+      }
+    },
+    methods: {
+      triggerPageChange: function (value) {
+        this.page = value
+        this.query()
+      },
+      triggerEntries: function (value) {
+        this.numEntries = value
+        this.query()
+      },
+      query: function () {
+        let _this = this
+        PostService.getPostsDatatable(_this.page, [], function (envelope) {
+          _this.$set(_this, 'dataTable', envelope.getResult())
+        }, function (envelope) {
+        }, {
+          entries: _this.numEntries
+        })
       }
     },
     components: {
+      RouterLink,
       Datatable
     },
     created () {
-      let _this = this
-      PostService.getPostsDatatable(0,[], function (envelope) {
-        _this.$set(_this, 'dataTable', envelope.getResult())
-      }, function (envelope) {
-      })
+      this.query()
     }
   }
 </script>

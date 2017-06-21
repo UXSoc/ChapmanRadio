@@ -88,7 +88,7 @@ class PostRepository extends EntityRepository
         }
         $paginator = $this->paginator($qb->getQuery(),
             (int)$request->get('page',0),
-            (int)$request->get('entries',10),20);
+            (int)$request->get('entries',10),200);
 
         $dataTable->setPayload($paginator);
         return $dataTable;

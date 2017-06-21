@@ -14,6 +14,10 @@ import BlogDashboardList from './page/dashboard/blog/BlogDashboardList.vue'
 import BlogDashboardEdit from './page/dashboard/blog/BlogDashboardEdit.vue'
 import BlogDashboardTags from './page/dashboard/blog/BlogDashboardTags.vue'
 
+import ShowDashboardPage from './page/dashboard/show/ShowDashboardPage.vue'
+import ShowDashboardEdit from './page/dashboard/show/ShowDashboardEdit.vue'
+import ShowDashboardList from './page/dashboard/show/ShowDashboardList.vue'
+
 import DashboardProfilePage from './page/dashboard/DashboardProfilePage.vue'
 
 import AttendanceDashboard from './page/dashboard/siteadmin/AttendanceDashboard.vue'
@@ -96,9 +100,14 @@ const router = new VueRouter({ routes: [
       {name: 'dashboard_attendance', path: 'attendance', component: AttendanceDashboard},
       {path: 'blog', component: BlogDashboardPage, children: [
           {name: 'dashboard_blog', path: '/', component: BlogDashboardList},
-          {name: 'dashboard_blog_add', path: '/add', component: BlogDashboardEdit},
-          {name: 'dashboard_blog_edit', path: '/edit/:token', component: BlogDashboardEdit},
-          {name: 'dashboard_blog_tags', path: '/tags', component: BlogDashboardTags}
+          {name: 'dashboard_blog_add', path: 'add', component: BlogDashboardEdit},
+          {name: 'dashboard_blog_edit', path: 'edit/:token/:slug', component: BlogDashboardEdit},
+          {name: 'dashboard_blog_tags', path: 'tags', component: BlogDashboardTags}
+      ]},
+      {path: 'show', component: ShowDashboardPage, children: [
+        {name: 'dashboard_show', path: '/', component: ShowDashboardList},
+        {name: 'dashboard_show_add', path: 'add', component: ShowDashboardEdit},
+        {name: 'dashboard_show_edit', path: 'edit/:token/:slug', component: ShowDashboardEdit}
       ]},
       {name: 'dashboard_profile', path: 'profile', component: DashboardProfilePage},
       {name: 'dashboard_emailalerts', path: 'emailalerts', component: EmailAlertsDashboard},

@@ -62,13 +62,13 @@
         return r.reverse()
       },
       nextPage: function () {
-        this.$emit('pageChange', this.pagination.getCurrentPage() + 1)
+        this.$emit('onPageChange', this.pagination.getCurrentPage() + 1)
       },
       prevPage: function () {
-        this.$emit('pageChange', this.pagination.getCurrentPage() - 1)
+        this.$emit('onPageChange', this.pagination.getCurrentPage() - 1)
       },
       switchPage: function (n) {
-        this.$emit('pageChange', n)
+        this.$emit('onPageChange', n)
       }
     }
   }

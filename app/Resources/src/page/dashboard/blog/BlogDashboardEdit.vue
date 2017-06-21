@@ -1,7 +1,7 @@
 <template>
     <div>
         <div ref="editor"></div>
-        <tag-collection></tag-collection>
+        <tag-collection tags="tags"></tag-collection>
         <button>Submit</button>
     </div>
 </template>
@@ -13,7 +13,8 @@
     data () {
       return {
         edit: false,
-        quill: null
+        quill: null,
+        tags: []
       }
     },
     created () {
@@ -43,6 +44,10 @@
         },
         theme: 'snow'  // or 'bubble'
       })
+    },
+    methods: {
+      query () {
+      }
     },
     components: {
       TagCollection

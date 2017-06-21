@@ -88,7 +88,11 @@
               {name: 'Tags', route: 'dashboard_blog_tags', 'icon': 'fa-bar-chart-o'}
             ]},
           {'name': 'Users', 'route': 'dashboard_users', 'icon': 'fa-bar-chart-o'},
-          {'name': 'Shows', 'route': 'dashboard_shows', 'icon': 'fa-bar-chart-o'},
+          {'name': 'Shows', 'route': 'dashboard_shows', 'icon': 'fa-bar-chart-o',
+            'sub_menu': [
+              {name: 'All Shows', route: 'dashboard_show', 'icon': 'fa-bar-chart-o'},
+              {name: 'Add New', route: 'dashboard_show_add', 'icon': 'fa-bar-chart-o'}
+            ]},
           {'name': 'Schedule', 'route': 'dashboard_schedule', 'icon': 'fa-bar-chart-o'},
           {'name': 'Staff', 'route': 'dashboard_staff', 'icon': 'fa-bar-chart-o'},
           {'name': 'Grade Management', 'route': 'dashboard_grade_mgmt', 'icon': 'fa-bar-chart-o'},

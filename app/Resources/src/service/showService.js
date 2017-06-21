@@ -5,9 +5,19 @@ import Pagination from './../entity/pagination'
 import Show from './../entity/show'
 import Envelope from './../entity/envelope'
 import Util from './util'
+import Datatable from './../entity/dataTable'
 import Comment from './../entity/comment'
 
 export default {
+  getShowsDatatable: function (page : number, sort : [], responseCallback : (result: Envelope<Datatable<Pagination<Show>>>) => void, errorResponseCallback: (result: Envelope) => void, filter = {}) {
+    let result = Object.assign({page: page, sort: sort}, filter)
+    axios.get(Routing.generate('get_show_dataTable') + '?' + qs.stringify(result)).then((response) => {
+      responseCallback(
+          new Envelope((dataTableData) => new Datatable((paginationData) => new Pagination((postData) => new Show(postData), paginationData), dataTableData), response.data))
+    }).catch((error) => {
+      Util.handleErrorResponse(error, errorResponseCallback)
+    })
+  },
   getShows: function (page : number, responseCallback : (result: Envelope<Pagination<Show>>) => void, errorResponseCallback: (result: Envelope) => void, filter = {}) {
     let result = Object.assign({page: page}, filter)
     axios.get(Routing.generate('get_shows') + '?' + qs.stringify(result)).then((response) => {

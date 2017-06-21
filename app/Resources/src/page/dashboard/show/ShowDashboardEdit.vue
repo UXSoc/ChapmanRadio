@@ -1,6 +1,7 @@
 <template>
-    <router-view></router-view>
+    <div>Hello this is some text</div>
 </template>
+
 <script>
   export default{
     data () {

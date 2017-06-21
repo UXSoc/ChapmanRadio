@@ -10,7 +10,7 @@
     props: {
       tags: {
         type: Array,
-        default: []
+        default: () => []
       }
     },
     data () {
@@ -20,11 +20,11 @@
     },
     methods: {
       removeTag (tag: string) {
-        this.$emit('tagRemove', tag)
+        this.$emit('onTagRemoved', tag)
       },
       addTag () {
         if (this.tagEntry !== '') {
-          this.$emit('addTag', this.tagEntry)
+          this.$emit('onTagAdded', this.tagEntry)
         }
         this.tagEntry = ''
       }

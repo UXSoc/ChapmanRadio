@@ -8,9 +8,12 @@ use CoreBundle\Entity\Tag;
 use CoreBundle\Helper\ErrorWrapper;
 use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Helper\SuccessWrapper;
+use CoreBundle\Normalizer\DatatableNormalizer;
 use CoreBundle\Normalizer\ImageNormalizer;
+use CoreBundle\Normalizer\PaginatorNormalizer;
 use CoreBundle\Normalizer\ShowNormalizer;
 use CoreBundle\Normalizer\TagNormalizer;
+use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\ShowRepository;
 use CoreBundle\Repository\TagRepository;
@@ -29,6 +32,24 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class ShowController extends Controller
 {
+
+    /**
+     * @Security("has_role('ROLE_STAFF')")
+     * @Route("/show/datatable",
+     *     options = { "expose" = true },
+     *     name="get_show_dataTable")
+     * @Method({"GET"})
+     */
+    public function getPostDatatableAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var ShowRepository $showRepository */
+        $showRepository = $em->getRepository(Show::class);
+
+        return RestfulEnvelope::successResponseTemplate('Here is your data', $showRepository->dataTableFilter($request),
+            [new ShowNormalizer(), new PaginatorNormalizer(),new DatatableNormalizer(), new UserNormalizer()])->response('',['show_strikes' => true]);
+    }
+
     /**
      * @Security("has_role('ROLE_STAFF')")
      * @Route("/show",

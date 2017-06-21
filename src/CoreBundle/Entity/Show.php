@@ -433,7 +433,7 @@ class Show
      * get the the time that the show was updated at
      * @return \DateTime
      */
-    public function updatedAt()
+    public function getUpdatedAt()
     {
         return $this->updatedAt;
     }

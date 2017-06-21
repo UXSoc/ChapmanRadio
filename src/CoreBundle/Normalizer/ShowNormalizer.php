@@ -3,6 +3,7 @@ namespace CoreBundle\Normalizer;
 
 use CoreBundle\Entity\Dj;
 use CoreBundle\Entity\Show;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -32,14 +33,16 @@ class ShowNormalizer implements NormalizerInterface, NormalizerAwareInterface
      */
     public function normalize($object, $format = null, array $context = array())
     {
-        return [
+        $bag =  new ParameterBag($context);
+
+        $result = [
             'token' => $object->getToken(),
             'slug' => $object->getSlug(),
             'name' => $object->getName(),
             'description' => $object->getDescription(),
-            'created_at' => $object->getCreatedAt(),
+            'created_at' => $this->normalizer->normalize($object->getCreatedAt(),$format),
+            'updated_at' => $this->normalizer->normalize($object->getUpdatedAt(),$format),
             'profanity' => $object->getProfanity(),
-            'updated_at' => $object->updatedAt(),
             'enable_comments' => $object->getEnableComments(),
             'header_image' => $object->getHeaderImage(),
             'excerpt' => $object->getExcerpt(),
@@ -51,6 +54,11 @@ class ShowNormalizer implements NormalizerInterface, NormalizerAwareInterface
                 return [];
             }, $object->getDjs()->toArray())
         ];
+
+        if($bag->has('show_strikes'))
+            $result['strikes'] = $object->getStrikeCount();
+
+        return $result;
     }
 
     /**

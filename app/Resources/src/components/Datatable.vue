@@ -13,7 +13,7 @@
         <select v-model="numEntries">
             <option v-for="r in range" :value="r">{{r}}</option>
         </select>
-        <pagination v-if="hasPagination()" @pageChange="pageChange" :pagination="dataTable.getPayload()"></pagination>
+        <pagination v-if="hasPagination()" @onPageChange="triggerPageChange" :pagination="dataTable.getPayload()"></pagination>
     </div>
 </template>
 
@@ -42,8 +42,8 @@
       }
     },
     methods: {
-      pageChange (value) {
-        this.$emit('pageChange', value)
+      triggerPageChange (value: Number) {
+        this.$emit('onPageChange', value)
       },
       hasPagination () {
         return this.dataTable.getPayload() instanceof Paginator
@@ -58,7 +58,7 @@
     },
     watch: {
       numEntries (value) {
-        this.$emit('entries', value)
+        this.$emit('onNumOfEntriesChange', value)
       }
     },
     components: {

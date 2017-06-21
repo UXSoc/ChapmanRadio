@@ -6,6 +6,7 @@ namespace CoreBundle\Repository;
 
 use CoreBundle\Entity\Comment;
 use CoreBundle\Entity\Show;
+use CoreBundle\Helper\Datatable;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
@@ -21,7 +22,7 @@ class ShowRepository extends EntityRepository
     }
 
 
-    public function filter(Request $request)
+    private function _filter(Request $request)
     {
         $qb = $this->createQueryBuilder('s');
         if($name = $request->get('name',null))
@@ -55,8 +56,34 @@ class ShowRepository extends EntityRepository
                     ->setParameter('tag',$tag);
             }
         }
+        return $qb;
+    }
 
-        return $qb->getQuery();
+    public function filter(Request $request)
+    {
+        return $this->_filter($request)->getQuery();
+    }
+
+    public function dataTableFilter(Request $request)
+    {
+        $qb = $this->_filter($request);
+        $dataTable = new Datatable();
+        $dataTable->handleSort($request,['name','token','createdAt','updatedAt','strikeCount','slug']);
+        foreach ($dataTable->getSort() as $key => $value)
+        {
+            switch ($key)
+            {
+                default:
+                    $qb->orderBy('s.' . $key,$value);
+                    break;
+            }
+        }
+        $paginator = $this->paginator($qb->getQuery(),
+            (int)$request->get('page',0),
+            (int)$request->get('entries',10),200);
+
+        $dataTable->setPayload($paginator);
+        return $dataTable;
     }
 
     /**

@@ -1,8 +1,8 @@
 import BaseEntity from './baseEntity'
 
 export default class Show extends BaseEntity {
-  _createdAt: Object
-  _updatedAt: Object
+  _createdAt: string
+  _updatedAt: string
   _tags: [string]
   _description: string
   _genres: [string]
@@ -30,6 +30,7 @@ export default class Show extends BaseEntity {
     this._headerImage = this.get('header_image', data, '')
     this._enableComments = this.get('enable_comments', data, '')
     this._djs = this.get('djs', data, [])
+    this._strikes = this.get('strikes', data, null)
   }
 
   getDjs () : [Object] {
@@ -80,16 +81,20 @@ export default class Show extends BaseEntity {
     return this._slug
   }
 
-  getCreatedAt () : Object {
-    return this._created_at
+  getCreatedAt () : string {
+    return this._createdAt
   }
 
-  getUpdatedAt () : Object {
-    return this._updated_at
+  getUpdatedAt () : string {
+    return this._updatedAt
   }
 
   getContent () :string {
     return this._content
+  }
+
+  getStrikes () : string {
+    return this._strikes
   }
 
   getRoute () : {name: string, params: { token: string, slug:string}} {
