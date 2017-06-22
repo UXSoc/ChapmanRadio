@@ -1,9 +1,9 @@
-var webpack = require('webpack')
-var webpackMerge = require('webpack-merge')
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
-var commonConfig = require('./webpack.common.js')
-var helpers = require('./helper')
-var path = require('path')
+let webpack = require('webpack')
+let webpackMerge = require('webpack-merge');
+let ExtractTextPlugin = require('extract-text-webpack-plugin')
+let commonConfig = require('./webpack.common.js')
+let helpers = require('./helper')
+let path = require('path')
 
 const ENV = process.env.NODE_ENV = process.env.ENV = 'hotload'
 
@@ -19,15 +19,15 @@ module.exports = webpackMerge(commonConfig, {
       colors: true
     },
     headers: {
-        "Access-Control-Allow-Origin": "http://localhost:8000",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-        "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization",
-        "Access-Control-Allow-Credentials": "true"
+      'Access-Control-Allow-Origin': 'http://localhost:8000',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
+      'Access-Control-Allow-Credentials': 'true'
     }
   },
-    output: {
-        publicPath: 'http://localhost:9000/bundles/'
-    },
+  output: {
+    publicPath: 'http://localhost:9000/bundles/'
+  },
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {

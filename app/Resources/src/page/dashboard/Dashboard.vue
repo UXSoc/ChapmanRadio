@@ -23,7 +23,7 @@
                         <li><router-link :to="{name: 'dashboard_profile'}"><i class="fa fa-gear fa-fw"></i> Settings</router-link>
                         </li>
                         <li class="divider"></li>
-                        <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
+                        <li><a href="/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
                     </ul>
                     <!-- /.dropdown-user -->
                 </li>
@@ -68,6 +68,7 @@
     data () {
       return {
         menu: [
+
 //          {
 //            'name': 'Users',
 //            'icon': 'fa-bar-chart-o',
@@ -104,9 +105,11 @@
     methods: {
 
     },
+    created () {
+    },
     mounted: function () {
 //      $('#side-menu').metisMenu({toggle: false})
-
+//
 //      $(window).bind('load resize', function () {
 //        var topOffset = 50
 //        var width = (this.window.innerWidth > 0) ? this.window.innerWidth : this.screen.width

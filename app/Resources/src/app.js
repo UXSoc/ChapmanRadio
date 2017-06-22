@@ -52,9 +52,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Player from './install/player/player'
 import Auth from './install/auth/auth'
-
 const auth = new Auth()
-
 const player = new Player()
 
 const router = new VueRouter({ routes: [
@@ -96,7 +94,6 @@ const router = new VueRouter({ routes: [
       {name: 'dashboard_grades_attendance', path: 'gradesattendance', component: GradesAttendanceDashboard},
       {name: 'dashboard_my_shows', path: 'myshows', component: MyShowsDashboard},
       {name: 'dashboard_settings', path: 'settings', component: SettingsDashboard},
-
       {name: 'dashboard_attendance', path: 'attendance', component: AttendanceDashboard},
       {path: 'blog', component: BlogDashboardPage, children: [
           {name: 'dashboard_blog', path: '/', component: BlogDashboardList},

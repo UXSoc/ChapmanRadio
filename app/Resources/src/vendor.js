@@ -8,7 +8,5 @@ window.Vue = Vue
 window.FConfig = Config
 window.VueRouter = VueRouter
 
-// import 'bootstrap-sass/assets/javascripts/bootstrap'
-
 Vue.use(VueRouter)
 Vue.use(VeeValidate)

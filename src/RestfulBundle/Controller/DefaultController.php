@@ -22,6 +22,17 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/dashboard", name="dashboard")
+     */
+    public function dashboardAction(Request $request)
+    {
+        return $this->render('default/dashboard.html.twig', [
+            'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
+        ]);
+    }
+
+
+    /**
      * @Route("/stream", name="get_stream")
      */
     public function testStreamAction(Request $request)

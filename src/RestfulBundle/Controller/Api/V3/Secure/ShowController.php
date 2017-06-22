@@ -46,7 +46,7 @@ class ShowController extends Controller
         /** @var ShowRepository $showRepository */
         $showRepository = $em->getRepository(Show::class);
 
-        return RestfulEnvelope::successResponseTemplate('Here is your data', $showRepository->dataTableFilter($request),
+        return RestfulEnvelope::successResponseTemplate('', $showRepository->dataTableFilter($request),
             [new ShowNormalizer(), new PaginatorNormalizer(),new DatatableNormalizer(), new UserNormalizer()])->response('',['show_strikes' => true]);
     }
 
@@ -149,7 +149,7 @@ class ShowController extends Controller
     /**
      * @Route("/show/{token}/{slug}/tag/{tag}",
      *      options = { "expose" = true },
-     *     name="put_tag_post")
+     *     name="put_tag_show")
      * @Method({"PUT"})
      */
     public function putTagForShowAction(Request $request, $token, $slug, $tag)
@@ -180,7 +180,7 @@ class ShowController extends Controller
     }
 
     /**
-     * @Route("/show/{token}/{slug}/tag/{tag}", options = { "expose" = true }, name="delete_tag_post")
+     * @Route("/show/{token}/{slug}/tag/{tag}", options = { "expose" = true }, name="delete_tag_show")
      * @Method({"DELETE"})
      */
     public function deleteTagForPostAction(Request $request, $token, $slug, $tag)

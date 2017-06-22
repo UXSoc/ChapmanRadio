@@ -330,6 +330,9 @@ class Post
         return $this->categories->remove($category);
     }
 
+    /**
+     * @return ArrayCollection
+     */
     public  function getCategories()
     {
         return $this->categories;

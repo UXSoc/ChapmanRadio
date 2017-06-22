@@ -49,7 +49,7 @@ class BlogController extends Controller
         $postRepository = $em->getRepository(Post::class);
 
 
-        return RestfulEnvelope::successResponseTemplate('Here is your data', $postRepository->dataTableFilter($request),
+        return RestfulEnvelope::successResponseTemplate('', $postRepository->dataTableFilter($request),
             [$this->get(PostNormalizer::class), new PaginatorNormalizer(),new DatatableNormalizer(), new UserNormalizer()])->response();
     }
 
@@ -155,7 +155,7 @@ class BlogController extends Controller
                 return RestfulEnvelope::errorResponseTemplate('duplicate Tag')->response();
 
             /** @var TagRepository $tagRepository */
-            $tagRepository = $this->get(Tag::class);
+            $tagRepository = $em->getRepository(Tag::class);
 
             $tag = $tagRepository->getOrCreateTag($tag);
             $em->persist($tag);
@@ -237,7 +237,9 @@ class BlogController extends Controller
 
 
     /**
-     * @Route("/post/{token}/{slug}/tag/{tag}", options = { "expose" = true }, name="delete_tag_post")
+     * @Route("/post/{token}/{slug}/tag/{tag}",
+     *     options = { "expose" = true },
+     *     name="delete_tag_post")
      * @Method({"DELETE"})
      */
     public function deleteTagForPostAction(Request $request, $token, $slug, $tag)

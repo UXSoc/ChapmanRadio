@@ -37,7 +37,8 @@ class CategoryController extends Controller
         $categoryRepository = $em->getRepository(Category::class);
 
         return RestfulEnvelope::successResponseTemplate(
-            null,$categoryRepository->findAll(),[new CategoryNormalizer()])->response();
+            null, $categoryRepository->findCategory($request->get('search', '')), [new CategoryNormalizer()])->response();
+
     }
 
     /**

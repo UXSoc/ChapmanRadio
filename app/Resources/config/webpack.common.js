@@ -5,11 +5,11 @@ let path = require('path')
 let CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
-  entry: {
-    'app': './app/Resources/src/app.js',
-    'style': './app/Resources/style/style.scss',
-    'vendor': './app/Resources/src/vendor.js'
-  },
+  entry: [
+    './app/Resources/src/app.js',
+    './app/Resources/style/style.scss',
+    './app/Resources/src/vendor.js'
+  ],
   resolve: {
     modules: ['node_modules', 'bower_components'],
     descriptionFiles: ['package.json', 'bower.json'],
@@ -18,9 +18,7 @@ module.exports = {
       'parchment': path.resolve(__dirname, '../../../node_modules/parchment/src/parchment.ts'),
       'quill$': path.resolve(__dirname, '../../../node_modules/quill/quill.js')
     }
-
   },
-
   output: {
     path: helpers.root('web/bundles/'),
     publicPath: '/bundles/',
@@ -77,7 +75,6 @@ module.exports = {
       }
     ]
   },
-
   plugins: [
     new ExtractTextPlugin('./[name].css'),
     new webpack.optimize.CommonsChunkPlugin({

@@ -6,6 +6,7 @@ use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Tag;
 use DBlackborough\Quill\Render;
 use Psr\Cache\CacheItemPoolInterface;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
@@ -50,6 +51,8 @@ class PostNormalizer implements NormalizerInterface, NormalizerAwareInterface
      */
     public function normalize($object, $format = null, array $context = array())
     {
+        $bag = new ParameterBag($context);
+
         $result = [
             'token' => $object->getToken(),
             'slug' => $object->getSlug(),
@@ -62,11 +65,11 @@ class PostNormalizer implements NormalizerInterface, NormalizerAwareInterface
             'is_pinned' => (boolean)$object->isPinned(),
             'author' => $this->normalizer->normalize($object->getAuthor(), $format, $context)
         ];
-        if(array_key_exists('delta',$context) && $context['delta'] === true) {
-            $result['content'] = $object->getContent();
-        } else {
-            $quill = new Render($object->getContent(),'HTML');
+        if ($bag->get('delta', false)) {
+            $quill = new Render($object->getContent(), 'HTML');
             $result['content'] = $quill->render();
+        } else {
+            $result['content'] = $object->getContent();
         }
 
         return $result;

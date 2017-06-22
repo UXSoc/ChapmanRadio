@@ -1,5 +1,5 @@
 import BaseEntity from './baseEntity'
-
+import Tag from './tag'
 export default class Post extends BaseEntity {
   _categories: string
   _tags : [string]
@@ -14,7 +14,7 @@ export default class Post extends BaseEntity {
   constructor (data) {
     super()
     this._categories = this.get('categories', data, '')
-    this._tags = this.get('tags', data, '')
+    this._tags = this.getAndInstance((data) => data.map((t) => new Tag(t)), 'tags', data, '')
     this._token = this.get('token', data, '')
     this._name = this.get('name', data, '')
     this._slug = this.get('slug', data, '')

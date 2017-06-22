@@ -71,7 +71,7 @@ class BlogController extends Controller
 
         /** @var Post $post */
         if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
-            return RestfulEnvelope::successResponseTemplate("Tags",$post->getTags(),[new TagNormalizer()])->response();
+            return RestfulEnvelope::successResponseTemplate("Tags",$post->getTags()->getValues(),[new TagNormalizer()])->response('json',[$request->get('delta',false)]);
         return RestfulEnvelope::errorResponseTemplate("Post not found")->setStatus(410)->response();
     }
 
@@ -89,7 +89,7 @@ class BlogController extends Controller
 
         /** @var Post $post */
         if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
-            return RestfulEnvelope::successResponseTemplate("Categories",$post->getCategories(),[new CategoryNormalizer()])->response();
+            return RestfulEnvelope::successResponseTemplate("Categories",$post->getCategories()->getValues(),[new CategoryNormalizer()])->response();
         return RestfulEnvelope::errorResponseTemplate("Post not found")->setStatus(410)->response();
     }
 
@@ -107,7 +107,8 @@ class BlogController extends Controller
 
         /** @var Post $post */
         if ( $post = $postRepository->getPostByTokenAndSlug($token,$slug))
-            return RestfulEnvelope::successResponseTemplate("Post found",$post,[$this->get(PostNormalizer::class),new UserNormalizer()])->response();
+            return RestfulEnvelope::successResponseTemplate("Post found",$post,
+                [$this->get(PostNormalizer::class),new UserNormalizer()])->response('json',[$request->get('delta',false)]);
         return RestfulEnvelope::errorResponseTemplate("Post not found")->setStatus(410)->response('json');
     }
 

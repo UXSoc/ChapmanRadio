@@ -1,0 +1,27 @@
+.tag-collection {
+  margin: 10px 0px;
+  &>div{
+    overflow: hidden;
+    display: block;
+    height:auto;
+    @extend .form-control
+  }
+  .tag{
+    margin: 2px 2px;
+    display: inline-block;
+    i{
+      padding-left: 4px;
+    }
+  }
+  input[type="text"]{
+    border: none;
+    outline: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+  }
+  .dropdown-menu{
+    width: 100%;
+  }
+
+}
