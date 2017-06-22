@@ -11,11 +11,11 @@ export default class Tag extends BaseEntity {
     this._tag = data
   }
 
-  setTag (tag: string) {
-    this._tag = tag
-  }
-
-  getTag () {
+  get tag () {
     return this._tag
   }
+  set tag (value) {
+    this._tag = value
+  }
+
 }

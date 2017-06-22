@@ -1,8 +1,9 @@
 <template>
     <div class="open tag-collection">
+
         <div v-on:click.prevent="tagInputEdit">
             <span v-on:click.prevent="clickTag" v-for="tag in collection" v-on:click="$event.stopPropagation()">
-                <slot name="tag" :tag="tag" :removeTag="removeTag"></slot>
+                <slot name="tag" :tag="tag" :removeTag="() => removeTag(tag)"></slot>
             </span>
             <input type="text" ref="tagInput" v-model="tagEntry" v-on:keyup.enter="addTag()"/>
         </div>

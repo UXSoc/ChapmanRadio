@@ -23,9 +23,12 @@ export default class Post extends BaseEntity {
     this._content = this.get('content', data, '')
     this._excerpt = this.get('excerpt', data, '')
   }
+  get Excerpt () {
+    return this._category
+  }
 
-  getExcerpt () {
-    return this._excerpt
+  set Excerpt (value) {
+    this._category = value
   }
 
   getCategories () {

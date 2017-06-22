@@ -5,11 +5,11 @@ let path = require('path')
 let CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
-  entry: [
-    './app/Resources/src/app.js',
-    './app/Resources/style/style.scss',
-    './app/Resources/src/vendor.js'
-  ],
+  entry: {
+    'app': './app/Resources/src/app.js',
+    'style': './app/Resources/style/style.scss',
+    'vendor': './app/Resources/src/vendor.js'
+  },
   resolve: {
     modules: ['node_modules', 'bower_components'],
     descriptionFiles: ['package.json', 'bower.json'],

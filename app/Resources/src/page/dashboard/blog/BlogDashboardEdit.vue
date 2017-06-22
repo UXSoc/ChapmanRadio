@@ -7,9 +7,10 @@
         </div>
         <div class="row">
             <div class="col-lg-8">
+                <perma-link v-if="post" :to="post.getRoute()" ></perma-link>
                 <tag-collection @onItemRemoved="removeTag" @onItemAdded="addTag" :collection="tags">
                     <template slot="tag" scope="props">
-                        <span class="tag label label-info">{{props.tag.getTag()}}<a v-on:click.prevent="props.removeTag"><i class="fa fa-times" aria-hidden="true"></i></a></span>
+                        <span class="tag label label-info">{{props.tag.tag}}<a v-on:click.prevent="props.removeTag"><i class="fa fa-times" aria-hidden="true"></i></a></span>
                     </template>
                 </tag-collection>
                 <div ref="editor" class="quill-dashboard-editor"></div>
@@ -18,6 +19,8 @@
 
                 <div class="panel panel-default">
                     <div class="panel-body">
+                        <div>Updated At: </div>
+                        <div>Created At: </div>
                         <button v-on:click.prevent="submit">Submit</button>
                     </div>
                 </div>
@@ -41,6 +44,7 @@
 <script>
   import Quill from '../../../quill/quill'
   import TagCollection from '../../../components/TagCollection.vue'
+  import PermaLink from '../../../components/PermaLink.vue'
   import CheckedCollection from '../../../components/CheckedCollection.vue'
   import PostService from '../../../service/postService'
   import CategoryService from '../../../service/categoryService'
@@ -53,7 +57,7 @@
         tags: [],
         token: '',
         slug: '',
-        post: '',
+        post: null,
         categories: [],
         selectedCategories: []
       }
@@ -132,8 +136,7 @@
         return items.find((n) => n.category === item.category) !== undefined
       },
       addTag (tag: Tag) {
-        let duplicate = this.tags.find((value) => value.getTag() === tag.getTag()) !== undefined
-        if (duplicate !== true) {
+        if (this.tags.find((value) => value.tag === tag.tag) === undefined) {
           this.tags.push(tag)
           this.$set(this, 'tags', this.tags)
         }
@@ -147,7 +150,7 @@
       },
       removeTag (tag: Tag) {
         for (let i = 0; i < this.tags.length; i++) {
-          if (this.tags[i].getTag() === tag.getTag()) {
+          if (this.tags[i].tag === tag.tag) {
             this.tags.splice(i, 1)
             this.$set(this, 'tags', this.tags)
             break
@@ -166,7 +169,8 @@
     },
     components: {
       TagCollection,
-      CheckedCollection
+      CheckedCollection,
+      PermaLink
     }
   }
 </script>
