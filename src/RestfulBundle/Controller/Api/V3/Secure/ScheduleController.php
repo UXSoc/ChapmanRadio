@@ -12,7 +12,7 @@ use CoreBundle\Normalizer\ShowNormalizer;
 use CoreBundle\Repository\ScheduleRepository;
 use CoreBundle\Repository\ShowRepository;
 use CoreBundle\Service\ScheduleService;
-use CoreBundle\Validation\ScheduleType;
+use CoreBundle\Form\ScheduleType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 

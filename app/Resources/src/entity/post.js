@@ -1,8 +1,8 @@
 import BaseEntity from './baseEntity'
-import Tag from './tag'
+
 export default class Post extends BaseEntity {
   _categories: string
-  _tags : [string]
+  _tags: [string]
   _token: string
   _name: string
   _slug: string
@@ -10,11 +10,12 @@ export default class Post extends BaseEntity {
   _updatedAt: Object
   _content: string
   _excerpt: string
+  _isPinned: boolean
 
   constructor (data) {
     super()
-    this._categories = this.get('categories', data, '')
-    this._tags = this.getAndInstance((data) => data.map((t) => new Tag(t)), 'tags', data, '')
+    this._categories = this.get('categories', data, [])
+    this._tags = this.get('tags', data, [])
     this._token = this.get('token', data, '')
     this._name = this.get('name', data, '')
     this._slug = this.get('slug', data, '')
@@ -22,56 +23,86 @@ export default class Post extends BaseEntity {
     this._updatedAt = this.get('updated_at', data, {})
     this._content = this.get('content', data, '')
     this._excerpt = this.get('excerpt', data, '')
-  }
-  get Excerpt () {
-    return this._category
+    this._isPinned = this.get('isPinned', data, false)
   }
 
-  set Excerpt (value) {
-    this._category = value
+  get isPinned () {
+    return this._isPinned
   }
 
-  getCategories () {
+  set isPinned (value) {
+    this._isPinned = value
+  }
+
+  get excerpt () {
+    return this._excerpt
+  }
+
+  set excerpt (value) {
+    this._excerpt = value
+  }
+
+  get categories () {
     return this._categories
   }
 
-  getTags () {
+  set categories (value) {
+    this._categories = value
+  }
+
+  get tags () {
     return this._tags
   }
 
-  getToken () {
+  set tags (value) {
+    this._tags = value
+  }
+
+  get token () {
     return this._token
   }
 
-  getName () {
+  get name () {
     return this._name
   }
 
-  getSlug () {
+  set name (value) {
+    this._name = value
+  }
+
+  get slug () {
     return this._slug
   }
 
-  getCreatedAt () {
-    return this._created_at
+  set slug (value) {
+    this._slug = value
   }
 
-  getUpdatedAt () {
-    return this._updated_at
-  }
-
-  getContent () {
+  get content () {
     return this._content
+  }
+
+  set content (value) {
+    this._content = value
+  }
+
+  get createdAt () {
+    return this._createdAt
+  }
+
+  get updatedAt () {
+    return this._updatedAt
   }
 
   getRoute () {
     return {
-      name: 'post_single', params: {token: this.getToken(), slug: this.getSlug()}
+      name: 'post_single', params: {token: this.token, slug: this.slug}
     }
   }
 
   getRouteToEdit () {
     return {
-      name: 'dashboard_blog_edit', params: {token: this.getToken(), slug: this.getSlug()}
+      name: 'dashboard_blog_edit', params: {token: this.token, slug: this.slug}
     }
   }
 }

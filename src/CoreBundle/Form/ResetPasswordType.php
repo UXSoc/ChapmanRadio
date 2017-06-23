@@ -6,7 +6,7 @@
  * Time: 3:27 PM
  */
 
-namespace CoreBundle\Validation;
+namespace CoreBundle\Form;
 
 
 use CoreBundle\Entity\Post;

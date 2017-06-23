@@ -6,7 +6,7 @@
  * Time: 9:28 AM
  */
 
-namespace CoreBundle\Validation;
+namespace CoreBundle\Form;
 
 
 use Recurr\Rule;

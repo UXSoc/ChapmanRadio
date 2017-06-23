@@ -19,7 +19,7 @@ use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\TagRepository;
 use CoreBundle\Security\PostVoter;
 use CoreBundle\Service\ImageUploadService;
-use CoreBundle\Validation\PostType;
+use CoreBundle\Form\PostType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 

@@ -1,8 +1,6 @@
 /* global Routing */
 import axios from 'axios'
 import qs from 'qs'
-import Tag from './../entity/tag'
-import Category from './../entity/category'
 import Pagination from './../entity/pagination'
 import Post from './../entity/post'
 import Envelope from './../entity/envelope'
@@ -37,6 +35,21 @@ export default {
       Util.handleErrorResponse(error, errorResponseCallback)
     })
   },
+  patchPost: function (post: Post, responseCallback : (result: Envelope<Post>) => void, errorResponseCallback: (result: Envelope) => void, delta = false) {
+    let payload = {
+      name: post.name,
+      content: post.content,
+      excerpt: post.excerpt,
+      slug: post.slug,
+      isPinned: post.isPinned
+    }
+    axios.patch(Routing.generate('patch_post', {token: post.token, slug: post.slug}) + '?' + qs.stringify(payload)).then((response) => {
+      responseCallback(
+          new Envelope((postData) => new Post(postData), response.data))
+    }).catch((error) => {
+      Util.handleErrorResponse(error, errorResponseCallback)
+    })
+  },
   getPostComments: function (token: string, slug:string, root: string, responseCallback : (result: Envelope<Comment>) => void, errorResponseCallback: (result: Envelope) => void) {
     axios.get(Routing.generate('get_blog_comment', {token: token, slug: slug, comment_token: root})).then((response) => {
       responseCallback(
@@ -58,7 +71,7 @@ export default {
   getPostTags: function (token: string, slug: string, responseCallback : (result: Envelope<Comment>) => void, errorResponseCallback: (result: Envelope) => void) {
     axios.get(Routing.generate('get_post_tags', {token: token, slug: slug})).then((response) => {
       responseCallback(
-          new Envelope((tagData) => tagData.map((tag) => new Tag(tag)), response.data))
+          new Envelope((tags) => tags, response.data))
     }).catch((error) => {
       Util.handleErrorResponse(error, errorResponseCallback)
     })
@@ -66,37 +79,37 @@ export default {
   getPostCategories: function (token: string, slug: string, responseCallback : (result: Envelope<Comment>) => void, errorResponseCallback: (result: Envelope) => void) {
     axios.get(Routing.generate('get_post_categories', {token: token, slug: slug})).then((response) => {
       responseCallback(
-          new Envelope((tagData) => tagData.map((category) => new Category(category)), response.data))
+          new Envelope((categories) => categories, response.data))
     }).catch((error) => {
       Util.handleErrorResponse(error, errorResponseCallback)
     })
   },
-  deletePostTag: function (post: Post, tag: Tag, responseCallback : (result: Envelope<Comment>) => void, errorResponseCallback: (result: Envelope) => void) {
-    axios.delete(Routing.generate('delete_tag_post', {token: post.getToken(), slug: post.getSlug(), tag: tag.tag})).then((response) => {
+  deletePostTag: function (post: Post, tag: string, responseCallback : (result: Envelope<Comment>) => void, errorResponseCallback: (result: Envelope) => void) {
+    axios.delete(Routing.generate('delete_tag_post', {token: post.getToken(), slug: post.getSlug(), tag: tag})).then((response) => {
       responseCallback(
-          new Envelope((tagData) => new Tag(tagData), response.data))
+          new Envelope((tag) => tag, response.data))
     }).catch((error) => {
       Util.handleErrorResponse(error, errorResponseCallback)
     })
   },
-  putPostTag: function (post: Post, tag: Tag, responseCallback : (result: Envelope<Comment>) => void, errorResponseCallback: (result: Envelope) => void) {
-    axios.put(Routing.generate('put_tag_post', {token: post.getToken(), slug: post.getSlug(), tag: tag.tag})).then((response) => {
+  putPostTag: function (post: Post, tag: string, responseCallback : (result: Envelope<Comment>) => void, errorResponseCallback: (result: Envelope) => void) {
+    axios.put(Routing.generate('put_tag_post', {token: post.getToken(), slug: post.getSlug(), tag: tag})).then((response) => {
       responseCallback(
-          new Envelope((tagData) => new Tag(tagData), response.data))
+          new Envelope((tagData) => tagData, response.data))
     }).catch((error) => {
       Util.handleErrorResponse(error, errorResponseCallback)
     })
   },
-  deletePostCategory: function (post: Post, category: Category, responseCallback : (result: Envelope<Comment>) => void, errorResponseCallback: (result: Envelope) => void) {
-    axios.delete(Routing.generate('delete_category_post', {token: post.getToken(), slug: post.getSlug(), category: category.category})).then((response) => {
-      responseCallback(new Envelope((categoryData) => new Category(categoryData), response.data))
+  deletePostCategory: function (post: Post, category: string, responseCallback : (result: Envelope<Comment>) => void, errorResponseCallback: (result: Envelope) => void) {
+    axios.delete(Routing.generate('delete_category_post', {token: post.getToken(), slug: post.getSlug(), category: category})).then((response) => {
+      responseCallback(new Envelope((category) => category, response.data))
     }).catch((error) => {
       Util.handleErrorResponse(error, errorResponseCallback)
     })
   },
-  putPostCategory: function (post: Post, category: Category, responseCallback : (result: Envelope<Comment>) => void, errorResponseCallback: (result: Envelope) => void) {
-    axios.put(Routing.generate('put_category_post', {token: post.getToken(), slug: post.getSlug(), category: category.category})).then((response) => {
-      responseCallback(new Envelope((categoryData) => new Category(categoryData), response.data))
+  putPostCategory: function (post: Post, category: string, responseCallback : (result: Envelope<Comment>) => void, errorResponseCallback: (result: Envelope) => void) {
+    axios.put(Routing.generate('put_category_post', {token: post.getToken(), slug: post.getSlug(), category: category})).then((response) => {
+      responseCallback(new Envelope((category) => category, response.data))
     }).catch((error) => {
       Util.handleErrorResponse(error, errorResponseCallback)
     })

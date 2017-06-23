@@ -6,10 +6,14 @@
  * Time: 6:05 PM
  */
 
-namespace CoreBundle\Validation;
+namespace CoreBundle\Form;
 
 
 use CoreBundle\Entity\Schedule;
+use CoreBundle\Entity\Tag;
+use CoreBundle\Form\DataTransformer\TagTransformer;
+use Doctrine\DBAL\Types\StringType;
+use Doctrine\DBAL\Types\TextType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\Exception;
@@ -19,22 +23,27 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ScheduleType extends AbstractType
+class TagType extends AbstractType
 {
+    private  $tagTransformer;
+
+    function __construct(TagTransformer $tagTransformer)
+    {
+        $this->tagTransformer = $tagTransformer;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('meta',RuleType::class,array());
-        $builder->add('startDate',DateTimeType::class,array());
-        $builder->add('endDate',DateTimeType::class,array());
-        $builder->add('startTime',TimeType::class);
-        $builder->add('endTime',TimeType::class);
+        $builder->add('tag',TextType::class);
+        $builder->get('tag')
+            ->addModelTransformer($this->tagTransformer);
 
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Schedule::class,
+            'data_class' => Tag::class,
             'csrf_protection' => false
         ]);
     }

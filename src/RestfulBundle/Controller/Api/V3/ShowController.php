@@ -14,7 +14,7 @@ use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Repository\CommentRepository;
 use CoreBundle\Repository\EventRepository;
 use CoreBundle\Repository\ShowRepository;
-use CoreBundle\Validation\UserType;
+use CoreBundle\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 

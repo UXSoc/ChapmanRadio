@@ -2,25 +2,21 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
-                <h1>Blog</h1>
+                <input type="text" v-model="post.name"/>
             </div>
         </div>
         <div class="row">
             <div class="col-lg-8">
-                <perma-link v-if="post" :to="post.getRoute()" ></perma-link>
-                <tag-collection @onItemRemoved="removeTag" @onItemAdded="addTag" :collection="tags">
-                    <template slot="tag" scope="props">
-                        <span class="tag label label-info">{{props.tag.tag}}<a v-on:click.prevent="props.removeTag"><i class="fa fa-times" aria-hidden="true"></i></a></span>
-                    </template>
-                </tag-collection>
+                <perma-link :to="post.getRoute()" ></perma-link>
+                <tag-collection  :tags="post.tags"></tag-collection>
                 <div ref="editor" class="quill-dashboard-editor"></div>
             </div>
             <div class="col-lg-4">
 
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <div>Updated At: </div>
-                        <div>Created At: </div>
+                        <div>Updated At: {{post.createdAt}}</div>
+                        <div>Created At: {{post.updatedAt}}</div>
                         <button v-on:click.prevent="submit">Submit</button>
                     </div>
                 </div>
@@ -29,11 +25,7 @@
                         Categories
                     </div>
                     <div class="panel-body">
-                        <checked-collection :collection="categories" :selectedItems="selectedCategories" :isSelected="isCategorySelected">
-                            <template slot="item" scope="props">
-                                {{props.item.category}}
-                            </template>
-                        </checked-collection>
+                        <checked-collection :items="categories" :selected="post.categories"></checked-collection>
                     </div>
                 </div>
             </div>
@@ -48,18 +40,16 @@
   import CheckedCollection from '../../../components/CheckedCollection.vue'
   import PostService from '../../../service/postService'
   import CategoryService from '../../../service/categoryService'
-  import Tag from '../../../entity/tag'
+  import Post from '../../../entity/post'
   export default{
     data () {
       return {
         edit: false,
         quill: null,
-        tags: [],
         token: '',
         slug: '',
-        post: null,
-        categories: [],
-        selectedCategories: []
+        post: new Post({}),
+        categories: []
       }
     },
     created () {
@@ -70,8 +60,6 @@
           this.edit = true
         }
         this.query()
-        this.queryCategories()
-        this.queryTags()
       }
     },
     mounted () {
@@ -96,6 +84,10 @@
         },
         theme: 'snow'  // or 'bubble'
       })
+      let _this = this
+      this.quill.on('text-change', function (delta, oldDelta, source) {
+        _this.post.content = delta
+      })
     },
     methods: {
       update () {
@@ -105,62 +97,13 @@
           let _this = this
           PostService.getPost(this.token, this.slug, function (e) {
             _this.$set(_this, 'post', e.getResult())
+            _this.quill.setContents(_this.post.content)
           }, function (e) {
           }, true)
-        }
-      },
-      queryTags () {
-        if (this.edit === true) {
-          let _this = this
-          PostService.getPostTags(this.token, this.slug, function (e) {
-            _this.$set(_this, 'tags', e.getResult())
-          }, (e) => {
-          })
-        }
-      },
-      queryCategories () {
-        let _this = this
-        CategoryService.getCategories(function (e) {
-          _this.$set(_this, 'categories', e.getResult())
-        }, function (e) {
-        })
 
-        if (_this.edit === true) {
-          PostService.getPostCategories(_this.token, _this.slug, function (e) {
-            _this.$set(_this, 'selectedCategories', e.getResult())
-          }, (e) => {
-          })
-        }
-      },
-      isCategorySelected (items, item) {
-        return items.find((n) => n.category === item.category) !== undefined
-      },
-      addTag (tag: Tag) {
-        if (this.tags.find((value) => value.tag === tag.tag) === undefined) {
-          this.tags.push(tag)
-          this.$set(this, 'tags', this.tags)
-        }
-        if (this.edit === true) {
-          let _this = this
-          PostService.putPostTag(this.post, tag, function (e) {
-            _this.queryTags()
-          }, (e) => {
-          })
-        }
-      },
-      removeTag (tag: Tag) {
-        for (let i = 0; i < this.tags.length; i++) {
-          if (this.tags[i].tag === tag.tag) {
-            this.tags.splice(i, 1)
-            this.$set(this, 'tags', this.tags)
-            break
-          }
-        }
-        if (this.edit === true) {
-          let _this = this
-          PostService.deletePostTag(this.post, tag, function (e) {
-            _this.queryTags()
-          }, (e) => {
+          CategoryService.getCategories(function (e) {
+            _this.$set(_this, 'categories', e.getResult())
+          }, function (e) {
           })
         }
       },

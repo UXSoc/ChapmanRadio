@@ -11,12 +11,16 @@ namespace CoreBundle\Helper;
 
 use CoreBundle\Normalizer\DateTimeNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
+use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormErrorIterator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -36,6 +40,8 @@ class RestfulEnvelope
         $this->errorWrapper = new ErrorWrapper();
         $this->status = 200;
         $this->message = null;
+
+        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
     }
 
     public static function restfulBuilder()
@@ -145,6 +151,7 @@ class RestfulEnvelope
 
     public function response($format = '', $context = [])
     {
+
         $this->normalizers[] = new WrapperNormalizer();
         $this->normalizers[] = new DateTimeNormalizer();
         if ($this->status >= 400) {
@@ -159,4 +166,6 @@ class RestfulEnvelope
 
         }
     }
+
+
 }

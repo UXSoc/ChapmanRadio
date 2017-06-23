@@ -9,7 +9,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use CoreBundle\Validation\Constraints As CoreAssert;
 
-
 /**
  * Blog
  *
@@ -26,13 +25,11 @@ class Post
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     * @Groups({"all"})
      */
     private $id;
 
     /**
      * @var string
-     *
      * @ORM\Column(name="name", type="string",length=100, nullable=false,unique=true)
      *
      */
@@ -71,7 +68,6 @@ class Post
 
     /**
      * @var string
-     *
      * @ORM\Column(name="excerpt", type="text", length=6000, nullable=true)
      */
     private $excerpt;
@@ -217,6 +213,11 @@ class Post
         $this->content = $content;
     }
 
+    public  function getContent()
+    {
+        return $this->content;
+    }
+
     public function getName()
     {
         return $this->name;
@@ -225,14 +226,6 @@ class Post
     public  function setName($name)
     {
         $this->name = $name;
-    }
-
-    /**
-     * @return resource
-     */
-    public  function getContent()
-    {
-        return $this->content;
     }
 
     public function isPinned()

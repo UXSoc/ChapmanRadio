@@ -21,13 +21,19 @@ use CoreBundle\Normalizer\TagNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\CommentRepository;
-use CoreBundle\Validation\UserType;
+use CoreBundle\Form\UserType;
+use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 

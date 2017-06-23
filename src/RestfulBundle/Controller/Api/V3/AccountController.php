@@ -4,8 +4,8 @@ namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Entity\User;
 use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Validation\Items\ResetPassword;
-use CoreBundle\Validation\ResetPasswordType;
+use CoreBundle\Form\Items\ResetPassword;
+use CoreBundle\Form\ResetPasswordType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 

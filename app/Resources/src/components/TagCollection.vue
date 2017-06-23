@@ -2,10 +2,13 @@
     <div class="open tag-collection">
 
         <div v-on:click.prevent="tagInputEdit">
-            <span v-on:click.prevent="clickTag" v-for="tag in collection" v-on:click="$event.stopPropagation()">
-                <slot name="tag" :tag="tag" :removeTag="() => removeTag(tag)"></slot>
+            <span v-for="(tag,index) in tags" v-on:click="$event.stopPropagation()" class="tag label label-info">
+                {{tag}}
+                <a v-on:click.prevent="removeTag(index)">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </a>
             </span>
-            <input type="text" ref="tagInput" v-model="tagEntry" v-on:keyup.enter="addTag()"/>
+            <input type="text" ref="tagInput" v-model="entry" v-on:keyup.enter="addTag(entry)"/>
         </div>
         <!--<ul class="dropdown-menu">-->
             <!--<li><a href="#">Action</a></li>-->
@@ -18,29 +21,26 @@
 </template>
 
 <script>
-  import Tag from '../entity/tag'
   import $ from 'jquery'
   export default{
     props: {
-      collection: {
+      tags: {
         type: Array,
         default: () => []
       }
     },
     data () {
       return {
-        tagEntry: ''
+        entry: ''
       }
     },
     methods: {
-      removeTag (tag: Tag) {
-        this.$emit('onItemRemoved', tag)
+      removeTag (index) {
+        this.tags.splice(index, 1)
       },
-      addTag () {
-        if (this.tagEntry !== '') {
-          this.$emit('onItemAdded', Tag.createTag(this.tagEntry))
-        }
-        this.tagEntry = ''
+      addTag (tag: string) {
+        this.tags.push(this.entry)
+        this.entry = ''
       },
       tagInputEdit () {
         $(this.$refs.tagInput).focus()

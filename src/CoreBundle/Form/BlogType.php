@@ -2,30 +2,30 @@
 /**
  * Created by PhpStorm.
  * User: michaelpollind
- * Date: 6/8/17
- * Time: 10:11 AM
+ * Date: 6/13/17
+ * Time: 12:20 PM
  */
 
-namespace CoreBundle\Validation;
+namespace CoreBundle\Form;
 
 
-use CoreBundle\Entity\Comment;
+use CoreBundle\Entity\Post;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class UserType extends AbstractType
+class BlogType extends AbstractType
 {
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('content',TextType::class,array());
+
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Comment::class,
+            'data_class' => Post::class,
             'csrf_protection' => false
         ]);
     }

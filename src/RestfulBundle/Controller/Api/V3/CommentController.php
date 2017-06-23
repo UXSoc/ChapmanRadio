@@ -7,7 +7,7 @@ use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Normalizer\CommentNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Repository\CommentRepository;
-use CoreBundle\Validation\UserType;
+use CoreBundle\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
