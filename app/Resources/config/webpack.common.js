@@ -1,8 +1,8 @@
-let webpack = require('webpack')
-let ExtractTextPlugin = require('extract-text-webpack-plugin')
-let helpers = require('./helper')
-let path = require('path')
-let CopyWebpackPlugin = require('copy-webpack-plugin')
+const webpack = require('webpack')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const helpers = require('./helper')
+const path = require('path')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   entry: {
@@ -80,6 +80,6 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
       name: ['vendor']
     }),
-    new CopyWebpackPlugin([ {from: 'app/Resources/public', to: 'public'}])
+    new CopyWebpackPlugin([{ from: 'app/Resources/public', to: 'public' }])
   ]
 }

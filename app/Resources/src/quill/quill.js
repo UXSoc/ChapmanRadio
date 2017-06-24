@@ -1,3 +1,4 @@
+/* @flow */
 import Quill from 'quill/core'
 
 import Toolbar from 'quill/modules/toolbar'

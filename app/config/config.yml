@@ -10,12 +10,33 @@ parameters:
     recording_directory: '%kernel.root_dir%/../web/uploads/recordings/'
     locale: en
 
+fos_rest:
+    param_fetcher_listener: true
+    format_listener:
+        rules:
+            - { path: ^/api/v3/, priorities: [json], fallback_format: json, prefer_extension: false }
+            - { path: ^/, priorities: [html], fallback_format: html, prefer_extension: false }
+    view:
+        formats:
+            rss: true
+            json: true
+            xml: true
+        templating_formats:
+            html: true
+        force_redirects:
+            html: true
+        failed_validation: HTTP_BAD_REQUEST
+        view_response_listener:
+            enabled: true
+            force: false
+
 framework:
 #    cache:
 #        app: cache.adapter.redis
 #        default_redis_provider: "redis://localhost"
     #esi: ~
     #translator: { fallbacks: ['%locale%'] }
+    serializer: { enable_annotations: true }
     secret: '%env(SYMFONY_SECRET)%'
     router:
         resource: '%kernel.root_dir%/config/routing.yml'
@@ -23,7 +44,6 @@ framework:
     form: ~
     csrf_protection: ~
     validation: { enable_annotations: true }
-    #serializer: { enable_annotations: true }
     templating:
         engines: ['twig']
     default_locale: '%locale%'

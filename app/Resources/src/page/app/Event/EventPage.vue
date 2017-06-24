@@ -12,6 +12,7 @@
 </template>
 
 <script>
+    /* @flow */
     import WideBox from '../../../components/WideBox.vue'
     import PostService from '../../../service/postService'
     import SmallBox from '../../../components/SmallBox.vue'

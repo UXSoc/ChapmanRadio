@@ -27,6 +27,7 @@
 </template>
 
 <script>
+  /* @flow */
   import {Validator} from 'vee-validate'
   import FormGroup from '../../components/FormGroup.vue'
   import Alert from '../../components/Alert.vue'

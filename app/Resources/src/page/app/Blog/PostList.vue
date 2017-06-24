@@ -4,7 +4,12 @@
         <div class="row">
             <div class="col-md-8 nopadding">
                 <template v-if="data" v-for="(item, index) in data">
-                    <post-excerpt :post="item"></post-excerpt>
+                    <div class="post-entry">
+                        <h2><router-link :to="post.getRoute()" :exact="true" tag="a">{{post.getName()}}</router-link></h2>
+                        <div>
+                            {{post.getContent()}}
+                        </div>
+                    </div>
                 </template>
                 <div v-if="loading">
                     <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
@@ -21,18 +26,24 @@
 </template>
 
 <script>
+    /* global Routing */
+    /* @flow */
     import PostExcerpt from '../../../components/PostExcerpt.vue'
     import PostService from '../../../service/postService'
-    import Pagination from '../../../entity/pagination'
     import Post from '../../../entity/post'
     import $ from 'jquery'
+    import axios from 'axios'
+    import qs from 'qs'
+
     export default{
       props: {
       },
       data () {
         return {
-          pagination: null,
-          data: [],
+          posts: null,
+          count: 0,
+          perPage: 0,
+          page: 0,
           loading: false
         }
       },
@@ -40,6 +51,13 @@
         query: function (page) {
           let _this = this
           _this.loading = true
+          axios.get(Routing.generate('get_posts') + '?' + qs.stringify({page: page})).then((response) => {
+            const pagination: Pagination = response.data
+            this.$set(this, 'page', pagination.page)
+            this.$set(this, 'count', pagination.count)
+            this.$set(this, 'perPage', pagination.perPage)
+          })
+
           PostService.getPosts(page, (data) => {
             _this.loading = false
             let pagination : Pagination = data.getResult()

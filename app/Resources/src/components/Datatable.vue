@@ -18,7 +18,7 @@
 </template>
 
 <script>
-  import Paginator from './../entity/pagination'
+  import Paginator from '../entity/pagination'
   import Pagination from './Pagination.vue'
   import Datatable from './../entity/dataTable'
   export default{

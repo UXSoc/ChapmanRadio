@@ -6,19 +6,21 @@ use CoreBundle\Entity\User;
 use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Form\Items\ResetPassword;
 use CoreBundle\Form\ResetPasswordType;
+use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/api/v3")
  */
-class AccountController extends Controller
+class AccountController extends FOSRestController
 {
     /**
      * @Security("has_role('ROLE_USER')")
@@ -48,9 +50,8 @@ class AccountController extends Controller
             $user->setPassword($new_password);
             $em->persist($user);
             $em->flush();
-            return RestfulEnvelope::successResponseTemplate('Password Changed')->response();
+            return $this->view();
         }
-        return RestfulEnvelope::errorResponseTemplate("Invalid Password")->setStatus(410)->addFormErrors($form)->response();
-
-    }
+        throw new HttpException(410,"Invalid Password");
+     }
 }

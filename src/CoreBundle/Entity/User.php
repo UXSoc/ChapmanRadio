@@ -2,7 +2,6 @@
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace CoreBundle\Entity;
 
-
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
@@ -10,6 +9,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation As JMS;
 
 /**
  * User
@@ -54,7 +54,7 @@ class User implements AdvancedUserInterface
      * @var string
      *
      * @ORM\Column(name="token", type="string",length=20, nullable=false,unique=true)
-     *
+     * @JMS\Groups({"detail","list"})
      */
     private $token;
 
@@ -103,6 +103,7 @@ class User implements AdvancedUserInterface
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=500, nullable=false)
+     * @JMS\Exclude
      */
     private $password;
 
@@ -117,6 +118,7 @@ class User implements AdvancedUserInterface
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
+     * @JMS\Groups({"detail","list"})
      */
     private $createdAt;
 
@@ -124,6 +126,7 @@ class User implements AdvancedUserInterface
      * @var \DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     * @JMS\Groups({"detail","list"})
      */
     private $updatedAt;
 

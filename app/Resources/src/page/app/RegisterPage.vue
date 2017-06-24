@@ -40,6 +40,7 @@
 </template>
 
 <script>
+  /* @flow */
   import { Validator } from 'vee-validate'
   import FormGroup from '../../components/FormGroup.vue'
   import axios from 'axios/dist/axios'

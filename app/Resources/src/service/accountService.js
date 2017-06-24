@@ -1,3 +1,4 @@
+// @flow
 /* global Routing */
 import axios from 'axios'
 import Envelope from './../entity/envelope'

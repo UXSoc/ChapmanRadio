@@ -7,6 +7,7 @@
 </template>
 
 <script>
+    /* @flow */
     import PostService from '../../../service/postService'
     import PostItem from '../../../components/PostItem.vue'
     import Envelope from '../../../entity/envelope'

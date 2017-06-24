@@ -42,6 +42,11 @@ class CategoryRepository extends EntityRepository
         return $result;
     }
 
+    /**
+     * @param $category
+     * @param int $limit
+     * @return array
+     */
     public function findCategory($category,$limit = -1)
     {
         $qb = $this->createQueryBuilder("t");

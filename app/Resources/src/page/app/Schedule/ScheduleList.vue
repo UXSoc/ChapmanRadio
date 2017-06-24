@@ -6,6 +6,7 @@
 </template>
 
 <script>
+    /* @flow */
     import ScheduleEntry from '../../../components/ScheduleEntry.vue'
     import ScheduleService from '../../../service/scheduleService'
     import Moment from 'moment'

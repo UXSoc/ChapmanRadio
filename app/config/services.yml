@@ -12,29 +12,6 @@ services:
         # this means you cannot fetch services directly from the container via $container->get()
         # if you need to do this, you can override this setting on individual services
         public: false
-    core.normalize:
-        class: 'Symfony\Component\Serializer\Serializer'
-        arguments:
-            0:
-                - '@CoreBundle\Normalizer\PostNormalizer'
-                - '@CoreBundle\Normalizer\AccountNormalizer'
-                - '@CoreBundle\Normalizer\CategoryNormalizer'
-                - '@CoreBundle\Normalizer\CommentNormalizer'
-                - '@CoreBundle\Normalizer\DatatableNormalizer'
-                - '@CoreBundle\Normalizer\DateTimeNormalizer'
-                - '@CoreBundle\Normalizer\DjNormalizer'
-                - '@CoreBundle\Normalizer\EventNormalizer'
-                - '@CoreBundle\Normalizer\GenreNormalizer'
-                - '@CoreBundle\Normalizer\ImageNormalizer'
-                - '@CoreBundle\Normalizer\PaginatorNormalizer'
-                - '@CoreBundle\Normalizer\ScheduleEntryNormalizer'
-                - '@CoreBundle\Normalizer\EventNormalizer'
-                - '@CoreBundle\Normalizer\ScheduleNormalizer'
-                - '@CoreBundle\Normalizer\ShowNormalizer'
-                - '@CoreBundle\Normalizer\StreamNormalizer'
-                - '@CoreBundle\Normalizer\TagNormalizer'
-                - '@CoreBundle\Normalizer\WrapperNormalizer'
-        public: true
     CoreBundle\:
         resource: '../../src/CoreBundle/*'
         # you can exclude directories or files

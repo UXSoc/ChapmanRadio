@@ -1,0 +1,15 @@
+[include]
+./app/Resources/src
+
+[ignore]
+.*/node_modules/.*
+.*/vendor/.*
+.*/bower_components/.*
+
+[libs]
+app/Resources/src/flow-typed
+flow-typed
+
+[options]
+module.file_ext=.vue
+module.file_ext=.js

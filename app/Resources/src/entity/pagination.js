@@ -30,5 +30,4 @@ export default class Pagination<T> extends BaseEntity {
   getResult () {
     return this._result
   }
-
 }

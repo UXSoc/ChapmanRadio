@@ -24,6 +24,7 @@
 </template>
 
 <script>
+  /* @flow */
   import Datatable from './../../../components/Datatable.vue'
   import PostService from './../../../service/postService'
   import RouterLink from "../../../../../../bower_components/vue-router/src/components/link";

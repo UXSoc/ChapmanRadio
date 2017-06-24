@@ -126,6 +126,7 @@
 </template>
 
 <script>
+    /* @flow */
     import User from './../../entity/user'
     export default {
       data: function () {

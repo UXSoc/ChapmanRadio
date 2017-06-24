@@ -7,6 +7,7 @@
 </template>
 
 <script>
+  /* @flow */
   import Show from '../../../entity/show'
   import CommentItem from '../../../components/CommentItem.vue'
   import ShowItem from '../../../components/ShowItem.vue'

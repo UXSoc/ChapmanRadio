@@ -8,6 +8,7 @@ use CoreBundle\Normalizer\CommentNormalizer;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Repository\CommentRepository;
 use CoreBundle\Form\UserType;
+use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -21,7 +22,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 /**
  * @Route("/api/v3/")
  */
-class CommentController extends Controller
+class CommentController extends FOSRestController
 {
 
     /**
@@ -46,13 +47,9 @@ class CommentController extends Controller
             {
                 $em->persist($comment);
                 $em->flush();
-
-                return RestfulEnvelope::successResponseTemplate('Comment Saved', $comment,
-                    [new UserNormalizer(), new CommentNormalizer()])->response();
             }
-
-            return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->addFormErrors($form)->response();
+            return $this->view($form);
         }
-        return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->response();
+        throw $this->createNotFoundException('Comment Not Found');
     }
 }

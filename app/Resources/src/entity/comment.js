@@ -52,5 +52,4 @@ export default class Comment extends BaseEntity {
   getToken () : string {
     return this._token
   }
-
 }

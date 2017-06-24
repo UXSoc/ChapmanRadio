@@ -14,6 +14,7 @@
 </template>
 
 <script>
+    /* @flow */
     import ShowcaseBox from '../../../components/ShowcaseBox.vue'
     import ShowService from '../../../service/showService'
     import Show from '../../../entity/show'

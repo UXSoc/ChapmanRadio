@@ -99,7 +99,7 @@ export default class Show extends BaseEntity {
 
   getRoute () : {name: string, params: { token: string, slug:string}} {
     return {
-      name: 'show_single', params: {token: this.getToken(), slug: this.getSlug()}
+      name: 'show_single', params: { token: this.getToken(), slug: this.getSlug() }
     }
   }
 }

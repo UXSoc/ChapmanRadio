@@ -25,5 +25,4 @@ export default class ScheduleEntry extends BaseEntity {
   getEndTime () {
     return this._endTime
   }
-
 }

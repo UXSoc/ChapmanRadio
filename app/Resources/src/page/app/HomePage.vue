@@ -39,9 +39,9 @@
 </template>
 
 <script>
+    /* @flow */
     import PostService from '../../service/postService'
     import Envelope from '../../entity/envelope'
-    import Pagination from '../../entity/pagination'
     import Post from '../../entity/post'
     import PlayWindow from '../../components/PlayWindow.vue'
     import WideBox from '../../components/WideBox.vue'

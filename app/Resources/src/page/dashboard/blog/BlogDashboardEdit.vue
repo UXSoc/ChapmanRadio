@@ -7,7 +7,7 @@
         </div>
         <div class="row">
             <div class="col-lg-8">
-                <perma-link :to="post.getRoute()" ></perma-link>
+                <perma-link :to="{name: 'post_single', params: {token: post.token, slug: post.slug}}" ></perma-link>
                 <tag-collection  :tags="post.tags"></tag-collection>
                 <div ref="editor" class="quill-dashboard-editor"></div>
             </div>
@@ -34,13 +34,16 @@
 </template>
 
 <script>
+  /* @flow */
+  /* global Routing */
   import Quill from '../../../quill/quill'
   import TagCollection from '../../../components/TagCollection.vue'
   import PermaLink from '../../../components/PermaLink.vue'
   import CheckedCollection from '../../../components/CheckedCollection.vue'
-  import PostService from '../../../service/postService'
-  import CategoryService from '../../../service/categoryService'
   import Post from '../../../entity/post'
+  import axios from 'axios'
+  import qs from 'qs'
+
   export default{
     data () {
       return {
@@ -48,7 +51,7 @@
         quill: null,
         token: '',
         slug: '',
-        post: new Post({}),
+        post: {},
         categories: []
       }
     },
@@ -95,16 +98,15 @@
       query () {
         if (this.edit === true) {
           let _this = this
-          PostService.getPost(this.token, this.slug, function (e) {
-            _this.$set(_this, 'post', e.getResult())
-            _this.quill.setContents(_this.post.content)
-          }, function (e) {
-          }, true)
-
-          CategoryService.getCategories(function (e) {
-            _this.$set(_this, 'categories', e.getResult())
-          }, function (e) {
+          axios.get(Routing.generate('get_post', {token: this.token, slug: this.slug}) + '?' + qs.stringify({delta: true})).then((response) => {
+            _this.$set(_this, 'post', response.data)
+          }).catch((error) => {
           })
+
+//          CategoryService.getCategories(function (e) {
+//            _this.$set(_this, 'categories', e.getResult())
+//          }, function (e) {
+//          })
         }
       },
       submit () {
