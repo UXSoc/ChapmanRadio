@@ -32,7 +32,6 @@ class Tag
     /**
      * @var string
      * @ORM\Column(name="tag",  type="string", length=100, nullable=false, unique=true, nullable=false)
-     * @JMS\Groups({"detail","list"})
      */
     private $tag;
 

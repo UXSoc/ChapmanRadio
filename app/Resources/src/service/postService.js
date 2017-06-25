@@ -1,5 +1,4 @@
 /* @flow */
-/* global Routing */
 import axios from 'axios'
 import qs from 'qs'
 import Pagination from '../entity/pagination'
@@ -48,7 +47,7 @@ export default {
     })
   },
   getPostComments: function (token: string, slug:string, root: string, responseCallback : (result: Envelope<Comment>) => void, errorResponseCallback: (result: Envelope) => void) {
-    axios.get(Routing.generate('get_blog_comment', { token: token, slug: slug, comment_token: root })).then((response) => {
+    axios.get(Routing.generate('get_blog_comment', { token: token, slug: slug, commentToken: root })).then((response) => {
       responseCallback(new Envelope((commentData) => commentData.map((r) => new Comment(r)), response.data))
     }).catch((error) => {
       Util.handleErrorResponse(error, errorResponseCallback)

@@ -23,7 +23,6 @@ declare module 'babel-preset-flow-vue' {
  * needed.
  */
 
-
 // Filename aliases
 declare module 'babel-preset-flow-vue/index' {
   declare module.exports: $Exports<'babel-preset-flow-vue'>;

@@ -23,7 +23,6 @@ declare module 'eslint-plugin-vue' {
  * needed.
  */
 
-
 // Filename aliases
 declare module 'eslint-plugin-vue/index' {
   declare module.exports: $Exports<'eslint-plugin-vue'>;

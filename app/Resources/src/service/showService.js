@@ -34,7 +34,7 @@ export default {
     })
   },
   getShowComments: function (token: string, slug: string, root: string, responseCallback: (result: Envelope<Comment>) => void, errorResponseCallback: (result: Envelope) => void) {
-    axios.get(Routing.generate('get_show_comment', { token: token, slug: slug, comment_token: root })).then((response) => {
+    axios.get(Routing.generate('get_show_comment', { token: token, slug: slug, commentToken: root })).then((response) => {
       responseCallback(new Envelope((commentData) => commentData.map((r) => new Comment(r)), response.data))
     }).catch((error) => {
       Util.handleErrorResponse(error, errorResponseCallback)
@@ -42,7 +42,7 @@ export default {
   },
   postPostComment: function (show: Show, comment: string, parentComment: (Comment | null), responseCallback: (result: Envelope<Comment>) => void, errorResponseCallback: (result: Envelope) => void) {
     const params: any = { token: show.getToken(), slug: show.getSlug() }
-    if (parentComment) { params['comment_token'] = parentComment.getToken() }
+    if (parentComment) { params['commentToken'] = parentComment.getToken() }
     axios.post(Routing.generate('post_show_comment', params), qs.stringify({ 'content': comment })).then((response) => {
       responseCallback(new Envelope((commentData) => new Comment(commentData), response.data))
     }).catch((error) => {

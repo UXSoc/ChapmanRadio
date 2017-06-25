@@ -29,7 +29,7 @@ module.exports = {
     rules: [
       {
         test: /\.scss$/,
-        loaders: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: 'css-loader!resolve-url-loader!sass-loader?sourceMap=true' })
+        loaders: ExtractTextPlugin.extract({ loader: 'css-loader!resolve-url-loader!sass-loader?sourceMap=true' })
       },
       {
         test: /^((?!quill).)*\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,

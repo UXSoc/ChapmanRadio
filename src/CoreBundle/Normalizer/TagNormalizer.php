@@ -2,59 +2,59 @@
 /**
  * Created by PhpStorm.
  * User: michaelpollind
- * Date: 5/26/17
- * Time: 11:37 AM
+ * Date: 6/24/17
+ * Time: 6:04 PM
  */
 
 namespace CoreBundle\Normalizer;
 
 
 use CoreBundle\Entity\Tag;
-use phpDocumentor\Reflection\Types\Scalar;
-use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\SerializerAwareInterface;
-use Symfony\Component\Serializer\SerializerAwareTrait;
+use JMS\Serializer\Context;
+use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Handler\SubscribingHandlerInterface;
+use JMS\Serializer\JsonSerializationVisitor;
 
-class TagNormalizer implements NormalizerInterface, NormalizerAwareInterface
+class TagNormalizer implements SubscribingHandlerInterface
 {
-    /** @var  NormalizerInterface */
-    private  $normalizer;
 
     /**
-     * Sets the owning Normalizer object.
+     * Return format:
      *
-     * @param NormalizerInterface $normalizer
+     *      array(
+     *          array(
+     *              'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+     *              'format' => 'json',
+     *              'type' => 'DateTime',
+     *              'method' => 'serializeDateTimeToJson',
+     *          ),
+     *      )
+     *
+     * The direction and method keys can be omitted.
+     *
+     * @return array
      */
-    public function setNormalizer(NormalizerInterface $normalizer)
+    public static function getSubscribingMethods()
     {
-        $this->normalizer = $normalizer;
+        return array(
+            array(
+                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'format' => 'json',
+                'type' => Tag::class,
+                'method' => 'serializeDateTimeToJson',
+            ),
+        );
     }
 
     /**
-     * Normalizes an object into a set of arrays/scalars.
-     *
-     * @param Tag $object object to normalize
-     * @param string $format format the normalization result will be encoded as
-     * @param array $context Context options for the normalizer
-     *
-     * @return array|scalar
+     * @param JsonSerializationVisitor $visitor
+     * @param Tag $date
+     * @param array $type
+     * @param Context $context
+     * @return string
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, Tag $date, array $type, Context $context)
     {
-        return $object->getTag();
-    }
-
-    /**
-     * Checks whether the given class is supported for normalization by this normalizer.
-     *
-     * @param mixed $data Data to normalize
-     * @param string $format The format being (de-)serialized from or into
-     *
-     * @return bool
-     */
-    public function supportsNormalization($data, $format = null)
-    {
-        return $data instanceof Tag;
+        return $date->getTag();
     }
 }

@@ -37,18 +37,10 @@ class TagController extends FOSRestController
         /** @var TagRepository $tagRepository */
         $tagRepository = $this->getDoctrine()->getManager()->getRepository(Tag::class);
 
-        $page = (int)$request->get('page',0);
-        $perPage = (int)$request->get('perPage',20);
+        return $this->view(['payload' =>
+            $tagRepository->paginator($tagRepository->filter($request), (int)$request->get('page',0), (int)$request->get('perPage',20),20)]);
 
-        $tags = $tagRepository->paginator($tagRepository->filter($request), $page, $perPage,20)->getQuery()->getResult();
 
-        return $this->view([
-            "page" => $page,
-            "perPage" => $perPage,
-            "tags" => array_map(function($value) {
-                return $value->getTag();
-            },$tags)
-        ]);
     }
     /**
      * @Route("tag/{name}",

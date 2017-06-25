@@ -47,16 +47,11 @@ class ShowController extends FOSRestController
 
         /** @var ShowRepository $showRepository */
         $showRepository = $em->getRepository(Show::class);
-        $page = (int)$request->get('page', 0);
-        $perPage = (int)$request->get('perPage', 10);
 
-        return $this->view([
-            "page" => $page,
-            "perPage" => $perPage,
-            "posts" => $showRepository->paginator($showRepository->filter($request),
-                $page,
-                $perPage, 20)->getQuery()->getResult()
-        ]);
+        return $this->view(['payload' =>
+            $showRepository->paginator($showRepository->filter($request),
+                (int)$request->get('page', 0),
+                (int)$request->get('perPage', 10), 20)]);
     }
 
 

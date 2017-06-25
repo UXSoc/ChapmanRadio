@@ -2,57 +2,59 @@
 /**
  * Created by PhpStorm.
  * User: michaelpollind
- * Date: 5/30/17
- * Time: 9:26 AM
+ * Date: 6/24/17
+ * Time: 6:08 PM
  */
 
 namespace CoreBundle\Normalizer;
 
 
 use CoreBundle\Entity\Genre;
-use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\scalar;
+use JMS\Serializer\Context;
+use JMS\Serializer\GraphNavigator;
+use JMS\Serializer\Handler\SubscribingHandlerInterface;
+use JMS\Serializer\JsonSerializationVisitor;
 
-class GenreNormalizer implements NormalizerInterface, NormalizerAwareInterface
+class GenreNormalizer implements SubscribingHandlerInterface
 {
-    /** @var  NormalizerInterface */
-    private  $normalizer;
 
     /**
-     * Sets the owning Normalizer object.
+     * Return format:
      *
-     * @param NormalizerInterface $normalizer
-     */
-    public function setNormalizer(NormalizerInterface $normalizer)
-    {
-        $this->normalizer = $normalizer;
-    }
-
-    /**
-     * Normalizes an object into a set of arrays/scalars.
+     *      array(
+     *          array(
+     *              'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+     *              'format' => 'json',
+     *              'type' => 'DateTime',
+     *              'method' => 'serializeDateTimeToJson',
+     *          ),
+     *      )
      *
-     * @param Genre $object object to normalize
-     * @param string $format format the normalization result will be encoded as
-     * @param array $context Context options for the normalizer
+     * The direction and method keys can be omitted.
      *
      * @return array
      */
-    public function normalize($object, $format = null, array $context = array())
+    public static function getSubscribingMethods()
     {
-        return $object->getGenre();
+        return array(
+            array(
+                'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
+                'format' => 'json',
+                'type' => Genre::class,
+                'method' => 'serializeDateTimeToJson',
+            ),
+        );
     }
 
     /**
-     * Checks whether the given class is supported for normalization by this normalizer.
-     *
-     * @param mixed $data Data to normalize
-     * @param string $format The format being (de-)serialized from or into
-     *
-     * @return bool
+     * @param JsonSerializationVisitor $visitor
+     * @param Genre $date
+     * @param array $type
+     * @param Context $context
+     * @return string
      */
-    public function supportsNormalization($data, $format = null)
+    public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, Genre $date, array $type, Context $context)
     {
-        return $data instanceof Genre;
+        return $date->getGenre();
     }
 }

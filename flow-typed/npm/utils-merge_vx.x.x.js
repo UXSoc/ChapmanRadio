@@ -23,7 +23,6 @@ declare module 'utils-merge' {
  * needed.
  */
 
-
 // Filename aliases
 declare module 'utils-merge/index' {
   declare module.exports: $Exports<'utils-merge'>;

@@ -7,8 +7,8 @@
                 <h2 class="cr_header">What's New</h2>
                 <div class="row-resp" v-if="posts">
                     <template v-for="(item, index) in posts">
-                        <wide-box v-if="index == 0" :post="item"></wide-box>
-                        <small-box v-else :post="item"></small-box>
+                        <wide-box v-if="index == 0" :name="item.name" :excerpt="item.excerpt" :to="{name: 'post_single', params: { token: item.token, slug: item.slug }}" ></wide-box>
+                        <small-box v-else :name="item.name" :excerpt="item.excerpt" :to="{name: 'post_single', params: { token: item.token, slug: item.slug }}"></small-box>
                     </template>
                 </div>
                 <div v-else>
@@ -40,14 +40,14 @@
 
 <script>
     /* @flow */
-    import PostService from '../../service/postService'
-    import Envelope from '../../entity/envelope'
     import Post from '../../entity/post'
     import PlayWindow from '../../components/PlayWindow.vue'
     import WideBox from '../../components/WideBox.vue'
     import SmallBox from '../../components/SmallBox.vue'
     import TrackBox from '../../components/TrackBox.vue'
     import ShowBox from '../../components/ShowBox.vue'
+    import axios from 'axios'
+    import qs from 'qs'
     export default{
       data () {
         return {
@@ -55,12 +55,12 @@
         }
       },
       methods: {
-        query: function (page) {
-          let _this = this
-          PostService.getPosts(0, (result: Envelope<Pagination<Post>>) => {
-            _this.$set(_this, 'posts', result.getResult().getResult())
-          }, (data) => {
-          }, {entries: 3})
+        query: function (page: number) {
+          const _this = this
+          axios.get(Routing.generate('get_posts') + '?' + qs.stringify({page: 0,entries: 3})).then((response) => {
+            const pageination: Pagination<Post> = response.data
+            _this.$set(_this, 'posts', pageination.items)
+          })
         }
       },
       watch: {

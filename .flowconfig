@@ -7,8 +7,7 @@
 .*/bower_components/.*
 
 [libs]
-app/Resources/src/flow-typed
-flow-typed
+./flow-typed
 
 [options]
 module.file_ext=.vue

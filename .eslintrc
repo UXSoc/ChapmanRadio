@@ -2,10 +2,13 @@
   "parser"  : "babel-eslint",
   "plugins": [
     "html",
-    "flowtype-errors"
+    "flowtype-errors",
+    "flowtype"
   ],
   "extends": ["plugin:vue-libs/recommended"],
   "rules": {
-    "flowtype-errors/show-errors": 2
+    "flowtype-errors/show-errors": 2,
+    "flowtype/define-flow-type": 1,
+    "flowtype/use-flow-type": 1
   }
 }

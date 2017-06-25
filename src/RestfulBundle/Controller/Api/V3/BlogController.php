@@ -52,20 +52,11 @@ class BlogController extends FOSRestController
         $em = $this->getDoctrine()->getManager();
         /** @var PostRepository $postRepository */
         $postRepository = $em->getRepository(Post::class);
-        $page = (int)$request->get('page', 0);
-        $perPage = (int)$request->get('perPage', 10);
 
-        $pagination = $postRepository->paginator($postRepository->filter($request), $page, $perPage, 20);
-
-        return $this->view([
-            "page" => $page,
-            "perPage" => $perPage,
-            "count" => $pagination->count(),
-            "posts" => $postRepository->paginator($postRepository->filter($request),
-                $page,
-                $perPage, 20)->getQuery()->getResult()
-        ]);
-
+        return $this->view(['payload' =>
+            $postRepository->paginator($postRepository->filter($request),
+                (int)$request->get('page', 0),
+                (int)$request->get('perPage', 10), 20)]);
     }
 
     /**

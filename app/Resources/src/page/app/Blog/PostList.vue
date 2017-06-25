@@ -26,8 +26,8 @@
 </template>
 
 <script>
+    // @flow
     /* global Routing */
-    /* @flow */
     import PostExcerpt from '../../../components/PostExcerpt.vue'
     import PostService from '../../../service/postService'
     import Post from '../../../entity/post'
@@ -36,8 +36,7 @@
     import qs from 'qs'
 
     export default{
-      props: {
-      },
+      props: {},
       data () {
         return {
           posts: null,
@@ -48,25 +47,14 @@
         }
       },
       methods: {
-        query: function (page) {
-          let _this = this
+        query: function (page: number) {
+          const _this = this
           _this.loading = true
           axios.get(Routing.generate('get_posts') + '?' + qs.stringify({page: page})).then((response) => {
-            const pagination: Pagination = response.data
+            const pagination: Pagination<Number> = response.data
             this.$set(this, 'page', pagination.page)
             this.$set(this, 'count', pagination.count)
             this.$set(this, 'perPage', pagination.perPage)
-          })
-
-          PostService.getPosts(page, (data) => {
-            _this.loading = false
-            let pagination : Pagination = data.getResult()
-            let posts: [Post] = pagination.getResult()
-            let result = _this.data
-            result = result.concat(posts)
-            _this.$set(_this, 'data', result)
-            _this.$set(_this, 'pagination', pagination)
-          }, (data) => {
           })
         },
         handleScroll () {
@@ -79,8 +67,7 @@
           }
         }
       },
-      watch: {
-      },
+      watch: {},
       created () {
         this.query(0)
         window.addEventListener('scroll', this.handleScroll)
