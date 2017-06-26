@@ -12,7 +12,6 @@
       },
       methods: {},
       watch: {},
-      components: {
-      }
+      components: {}
     }
 </script>

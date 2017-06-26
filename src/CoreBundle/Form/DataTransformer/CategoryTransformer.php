@@ -2,20 +2,21 @@
 /**
  * Created by PhpStorm.
  * User: michaelpollind
- * Date: 6/22/17
- * Time: 9:25 PM
+ * Date: 6/26/17
+ * Time: 9:54 AM
  */
 
 namespace CoreBundle\Form\DataTransformer;
 
 
-use CoreBundle\Entity\Genre;
+use CoreBundle\Entity\Category;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
-class GenreTransformer  implements DataTransformerInterface
+class CategoryTransformer  implements DataTransformerInterface
 {
+
     private $em;
 
     public function __construct(EntityManagerInterface $em)
@@ -44,7 +45,7 @@ class GenreTransformer  implements DataTransformerInterface
      * By convention, transform() should return an empty string if NULL is
      * passed.
      *
-     * @param Genre $value The value in the original representation
+     * @param Category $value The value in the original representation
      *
      * @return mixed The value in the transformed representation
      *
@@ -55,7 +56,7 @@ class GenreTransformer  implements DataTransformerInterface
         if (null === $value) {
             return '';
         }
-        return $value->getGenre();
+        return $value->getCategory();
     }
 
     /**
@@ -76,7 +77,7 @@ class GenreTransformer  implements DataTransformerInterface
      * By convention, reverseTransform() should return NULL if an empty string
      * is passed.
      *
-     * @param string $value The value in the transformed representation
+     * @param Category $value The value in the transformed representation
      *
      * @return mixed The value in the original representation
      *
@@ -88,13 +89,13 @@ class GenreTransformer  implements DataTransformerInterface
             return null;
         }
 
-        $genre = $this->em->getRepository(Genre::class)->findOneBy(['genre' => $value]);
+        $category = $this->em->getRepository(Category::class)->findOneBy(['category' => $value]);
 
-        if (!$genre) {
-            $genre = new Genre();
-            $genre->setGenre($value);
+        if (!$category) {
+            $category = new Category();
+            $category->setCategory($value);
         }
 
-        return $genre;
+        return $category;
     }
 }

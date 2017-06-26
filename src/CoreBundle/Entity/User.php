@@ -40,6 +40,7 @@ class User implements AdvancedUserInterface
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @JMS\Exclude
      */
     private $id;
 
@@ -134,12 +135,12 @@ class User implements AdvancedUserInterface
      * @var string
      * @Assert\NotBlank()
      * @ORM\Column(name="username", type="string", length=30, nullable=true)
+     * @JMS\Groups({"detail","list"})
      */
     private $username;
 
     /**
      * @var boolean
-     *
      * @ORM\Column(name="confirmed", type="boolean", nullable=false)
      */
     private $confirmed = 0;

@@ -2,17 +2,17 @@
     <div v-if="comment">
         <div class="media-left">
         </div>
-        <div>
-            <p>username: {{item.getUser().getUsername()}}</p>
+        <div v-if="comment">
+            <p>username: {{comment.user.username}}</p>
 
-            <template v-if="!edit"> <div v-html="$options.filters.markdown(item.getContent())"></div> </template>
+            <template v-if="!edit"> <div v-html="$options.filters.markdown(comment.content)"></div> </template>
             <button v-if="!edit && owner" v-on:click.prevent="editComment()">Edit</button>
-            <comment-editor :visible="edit" @submit="onEditSubmit" :content="item.getContent()" ></comment-editor>
+            <comment-editor :visible="edit" @submit="onEditSubmit" :content="comment.content" ></comment-editor>
 
             <button v-if="!respond" v-on:click.prevent="respondToComment()">Respond</button>
             <comment-editor :visible="respond" @submit="onRespondSubmit"></comment-editor>
 
-            <comment v-for="(comm, index) in item.getChildren()" :editCallback="editCallback"  :respondCallback="respondCallback" :comment="comm" :key="comm.getToken()"></comment>
+            <comment v-for="(comm, index) in comment.children" :comment="comm" :key="comm.token" @respond="passSubmit" @edit="passEdit"></comment>
         </div>
     </div>
 </template>
@@ -22,7 +22,6 @@
     import Comment from '../entity/comment'
     import { EventBus } from './../eventBus'
     import CommentEditor from './quill/commentEditor'
-    import Envelope from './../entity/envelope'
     import Markdown from './../mixins/markdown'
 
     export default{
@@ -32,45 +31,31 @@
         comment: {
           type: Comment,
           default: null
-        },
-        respondCallback: {
-          type: Function,
-          default: (parent: Comment, response: string, successcallback: (e: Envelope<Comment>) => void, failCallback: (e: Envelope) => void) => {}
-        },
-        editCallback: {
-          type: Function,
-          default: (current: Comment, response: string, successcallback: (e: Envelope<Comment>) => void, failCallback: (e: Envelope) => void) => {}
         }
       },
       methods: {
+        passSubmit (markdown: string, comment: Comment, CommentItem: this) {
+          this.$emit('respond', markdown, comment, CommentItem)
+        },
+        passEdit (markdown: string, comment: Comment, CommentItem: this) {
+          this.$emit('edit', markdown, comment, CommentItem)
+        },
         onRespondSubmit (markdown: string) {
-          let _this = this
-          this.respondCallback(this.comment, markdown, (e : Envelope<Comment>) => {
-            _this.item.shift(e.getResult())
-            _this.$set(_this, 'item', _this.item)
-            _this.$set(_this, 'respond', false)
-          }, (e: Envelope) => {
-          })
+          this.$emit('respond', markdown, this.comment, this)
         },
         onEditSubmit (markdown: string) {
-          let _this = this
-          this.editCallback(this.comment, markdown, (e : Envelope<Comment>) => {
-            _this.item.setContent(e.getResult().getContent())
-            _this.$set(_this, 'item', _this.item)
-            _this.$set(_this, 'edit', false)
-          }, (e: Envelope) => {
-          })
+          this.$emit('edit', markdown, this.comment, this)
         },
         respondToComment () {
           this.$set(this, 'respond', true)
-          EventBus.$emit('comment-respond', this.item.getToken())
+          EventBus.$emit('comment-respond', this.comment.token)
         },
         editComment () {
           this.$set(this, 'edit', true)
-          EventBus.$emit('comment-edit', this.item.getToken())
+          EventBus.$emit('comment-edit', this.comment.token)
         },
         onCommentEdit (token) {
-          if (this.item.getToken() !== token) {
+          if (this.comment.token !== token) {
             this.$set(this, 'respond', false)
             this.$set(this, 'edit', false)
           } else {
@@ -78,7 +63,7 @@
           }
         },
         onCommentRespond (token) {
-          if (this.item.getToken() !== token) {
+          if (this.comment.token !== token) {
             this.$set(this, 'respond', false)
             this.$set(this, 'edit', false)
           } else {
@@ -87,18 +72,16 @@
         },
         updateStatus () {
           const user: User = this.$auth.getStatus()
-          this.$set(this, 'owner', user.getToken() === this.item.getUser().getToken())
+          this.$set(this, 'owner', user.token === this.comment.user.token)
         }
       },
       watch: {
         '$auth.status': 'updateStatus',
-        'comment': (value) => {
-          this.$set(this, 'item', value)
+        'comment': function (value) {
           this.updateStatus()
         }
       },
       created () {
-        this.item = this.comment
         this.updateStatus()
         EventBus.$on('comment-edit', this.onCommentEdit)
         EventBus.$on('comment-respond', this.onCommentRespond )
@@ -111,8 +94,7 @@
         return {
           owner: false,
           edit: false,
-          respond: false,
-          item: new Comment({})
+          respond: false
         }
       },
       components: {

@@ -8,11 +8,8 @@
       data () {
         return {}
       },
-      methods: {
-      },
-      watch: {
-      },
-      components: {
-      }
+      methods: {},
+      watch: {},
+      components: {}
     }
 </script>

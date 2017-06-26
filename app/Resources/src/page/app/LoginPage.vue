@@ -32,7 +32,7 @@
   import FormGroup from '../../components/FormGroup.vue'
   import Alert from '../../components/Alert.vue'
   import AuthService from '../../service/authService'
-  import Envelope from './../../entity/envelope'
+  import Form from './../../entity/form'
 
   export default{
     data () {
@@ -52,14 +52,19 @@
           'username': this.username,
           'password': this.password
         }).then(() => {
-          let _this = this
-          AuthService.login((result: Envelope) => {
-            _this.$router.push({name: 'home'})
-            _this.$auth.refresh()
-          }, (error: Envelope) => {
-            _this.showAlert = true
-            _this.alert = error.getMessage()
-          }, this.username, this.password, this.remember_me)
+          AuthService.login({
+            username: this.username,
+            password: this.password,
+            rememberMe: this.rememberMe
+          }, (result: Form) => {
+            if (result.code > 0) {
+              this.showAlert = true
+              this.alert = result.message
+            } else {
+              this.$router.push({ name: 'home' })
+              this.$auth.refresh()
+            }
+          })
         })
       }
     },

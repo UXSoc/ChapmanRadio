@@ -29,18 +29,12 @@
       },
       methods: {
         query: function (page) {
-          let _this = this
-          _this.loading = true
+          this.loading = true
           PostService.getPosts(page, (data) => {
-            _this.loading = false
-            let pagination : Pagination = data.getResult()
-            let posts: [Post] = pagination.getResult()
-            let result = _this.data
-            result = result.concat(posts)
-            _this.$set(_this, 'data', result)
-            _this.$set(_this, 'pagination', pagination)
-          }, (data) => {
-          }, {tags: ['event']})
+            this.loading = false
+            this.$set(this, 'data', this.data.concat(data.result))
+            this.$set(this, 'pagination', data)
+          }, { tags: ['event'] })
         },
         handleScroll () {
           if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {

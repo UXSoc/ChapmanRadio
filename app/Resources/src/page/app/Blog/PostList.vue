@@ -4,12 +4,7 @@
         <div class="row">
             <div class="col-md-8 nopadding">
                 <template v-if="data" v-for="(item, index) in data">
-                    <div class="post-entry">
-                        <h2><router-link :to="post.getRoute()" :exact="true" tag="a">{{post.getName()}}</router-link></h2>
-                        <div>
-                            {{post.getContent()}}
-                        </div>
-                    </div>
+                    <post-excerpt :post="item"></post-excerpt>
                 </template>
                 <div v-if="loading">
                     <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
@@ -26,57 +21,49 @@
 </template>
 
 <script>
-    // @flow
-    /* global Routing */
-    import PostExcerpt from '../../../components/PostExcerpt.vue'
-    import PostService from '../../../service/postService'
-    import Post from '../../../entity/post'
-    import $ from 'jquery'
-    import axios from 'axios'
-    import qs from 'qs'
-
-    export default{
-      props: {},
-      data () {
-        return {
-          posts: null,
-          count: 0,
-          perPage: 0,
-          page: 0,
-          loading: false
-        }
+  import PostExcerpt from '../../../components/PostExcerpt.vue'
+  import PostService from '../../../service/postService'
+  import Post from '../../../entity/post'
+  import Paginator from '../../../entity/pagination'
+  import $ from 'jquery'
+  export default{
+    props: {},
+    data () {
+      return {
+        pagination: null,
+        data: [],
+        loading: false
+      }
+    },
+    methods: {
+      query: function (page) {
+        this.loading = true
+        PostService.getPosts(page, (data: Paginator<Post>) => {
+          this.loading = false
+          this.$set(this, 'data', this.data.concat(data.result))
+          this.$set(this, 'pagination', data)
+        })
       },
-      methods: {
-        query: function (page: number) {
-          const _this = this
-          _this.loading = true
-          axios.get(Routing.generate('get_posts') + '?' + qs.stringify({page: page})).then((response) => {
-            const pagination: Pagination<Number> = response.data
-            this.$set(this, 'page', pagination.page)
-            this.$set(this, 'count', pagination.count)
-            this.$set(this, 'perPage', pagination.perPage)
-          })
-        },
-        handleScroll () {
-          if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
-            if (!this.loading) {
-              if (this.pagination.getCurrentPage() <= this.pagination.getMaxPage()) {
-                this.query(this.pagination.getNextPage())
-              }
+      handleScroll () {
+        if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
+          if (!this.loading) {
+            if (this.pagination.currentPage <= this.pagination.maxPage) {
+              this.query(this.pagination.getNextPage())
             }
           }
         }
-      },
-      watch: {},
-      created () {
-        this.query(0)
-        window.addEventListener('scroll', this.handleScroll)
-      },
-      destroyed () {
-        window.removeEventListener('scroll', this.handleScroll)
-      },
-      components: {
-        PostExcerpt
       }
+    },
+    watch: {},
+    created () {
+      this.query(0)
+      window.addEventListener('scroll', this.handleScroll)
+    },
+    destroyed () {
+      window.removeEventListener('scroll', this.handleScroll)
+    },
+    components: {
+      PostExcerpt
     }
+  }
 </script>

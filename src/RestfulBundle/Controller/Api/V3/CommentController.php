@@ -3,21 +3,15 @@
 namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Entity\Comment;
-use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Normalizer\CommentNormalizer;
-use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Repository\CommentRepository;
 use CoreBundle\Form\UserType;
 use FOS\RestBundle\Controller\FOSRestController;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
-
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/api/v3/")
@@ -27,8 +21,9 @@ class CommentController extends FOSRestController
 
     /**
      * @Security("has_role('ROLE_USER')")
-     * @Route("comment/{token}", options = { "expose" = true }, name="patch_comment")
-     * @Method({"PATCH"})
+     * @Rest\Patch("comment/{token}",
+     *     options = { "expose" = true },
+     *     name="patch_comment")
      */
     public function patchCommentAction(Request $request, $token)
     {
@@ -43,7 +38,7 @@ class CommentController extends FOSRestController
 
             $form = $this->createForm(UserType::class,$comment);
             $form->submit($request->request->all());
-            if($form->isValid())
+            if($form->isSubmitted() && $form->isValid())
             {
                 $em->persist($comment);
                 $em->flush();

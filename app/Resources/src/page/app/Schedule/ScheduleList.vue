@@ -1,7 +1,7 @@
 <template>
     <div class="schedule-shows" v-if="scheduleEntries">
         <p class="schedule-time-heading">EARLY</p>
-        <schedule-entry v-for="(item, index) in scheduleEntries" :key="index" :show="item.getShow()" :showDate="item.getDate()"></schedule-entry>
+        <schedule-entry v-for="(item, index) in scheduleEntries" :key="index" :show="item.show" :showDate="item.date"></schedule-entry>
      </div>
 </template>
 
@@ -20,23 +20,21 @@
       },
       methods: {
         query: function () {
-          const _this = this
-          ScheduleService.getTodayDate((envelope) => {
-            _this.$set(_this, 'current', Moment(envelope.getResult()))
-            if (_this.$route.name === 'schedule_list') {
-              _this.$set(_this, 'start', Moment().set({
-                year: _this.$route.params.year,
-                month: _this.$route.params.month,
-                date: _this.$route.params.day
+          ScheduleService.getTodayDate((time) => {
+            this.$set(this, 'current', Moment(time))
+            if (this.$route.name === 'schedule_list') {
+              this.$set(this, 'start', Moment().set({
+                year: this.$route.params.year,
+                month: this.$route.params.month,
+                date: this.$route.params.day
               }))
             } else {
-              _this.$set(_this, 'start', Moment(envelope.getResult()))
+              this.$set(this, 'start', Moment(time))
             }
-            ScheduleService.getCurrentDateTime(_this.start.year(), (_this.start.month() + 1), _this.start.date(), (envelope) => {
-              _this.$set(_this, 'scheduleEntries', envelope.getResult())
+            ScheduleService.getScheduleByDate(this.start.year(), this.start.month(), this.start.date(), (entries) => {
+              this.$set(this, 'scheduleEntries', entries)
             }, (envelope) => {
             })
-          }, (envelope) => {
           })
         }
       },

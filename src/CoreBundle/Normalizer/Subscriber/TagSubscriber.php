@@ -6,8 +6,7 @@
  * Time: 6:04 PM
  */
 
-namespace CoreBundle\Normalizer;
-
+namespace CoreBundle\Normalizer\Subscriber;
 
 use CoreBundle\Entity\Tag;
 use JMS\Serializer\Context;
@@ -15,7 +14,8 @@ use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 
-class TagNormalizer implements SubscribingHandlerInterface
+
+class TagSubscriber implements SubscribingHandlerInterface
 {
 
     /**

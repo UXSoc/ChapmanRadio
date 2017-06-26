@@ -7,41 +7,23 @@ use CoreBundle\Entity\Show;
 use CoreBundle\Event\ScheduleBetweenEvent;
 use CoreBundle\Events;
 use CoreBundle\Form\ScheduleType;
-use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Helper\ScheduleEntry;
-use CoreBundle\Normalizer\DateTimeNormalizer;
-use CoreBundle\Normalizer\ScheduleEntryNormalizer;
-use CoreBundle\Normalizer\ShowNormalizer;
 use CoreBundle\Repository\ScheduleRepository;
 use CoreBundle\Repository\ShowRepository;
-use CoreBundle\Service\ScheduleService;
 use FOS\RestBundle\Controller\FOSRestController;
-use RRule\RRule;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpFoundation\Request;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
  * @Route("/api/v3/")
  */
 class ScheduleController extends FOSRestController
 {
-    /**
-     * @Route("schedule/today",
-     *     options = { "expose" = true },
-     *      name="get_schedule_today")
-     * @Method({"GET"})
-     */
-    public function getTodayScheduleAction(Request $request)
-    {
-        $c = new Carbon('now');
-        return $this->getCurrentDateTimeAction($request,$c->year,$c->month,$c->day);
-    }
-
 
     /**
      * @Route("time",
@@ -51,15 +33,15 @@ class ScheduleController extends FOSRestController
      */
     public function getTimeAction(Request $request)
     {
-        return $this->view(new \DateTime('now'));
+        return $this->view(['time' => new \DateTime('now')]);
     }
 
 
     /**
-     * @Route("schedule/{year}/{month}/{day}",
+     * @Rest\Get("schedule/{year}/{month}/{day}",
      *     options = { "expose" = true },
      *     name="get_schedule_by_date")
-     * @Method({"GET"})
+     * @Rest\View(serializerGroups={"list"})
      */
     public function getCurrentDateTimeAction(Request $request,$year,$month,$day)
     {
@@ -92,15 +74,14 @@ class ScheduleController extends FOSRestController
                 }
             }
         }
-        return $this->view($result);
+        return $this->view(['scheduleEntries' => $result]);
     }
 
 
     /**
-     * @Route("/schedule/{token}",
+     * @Rest\Patch("/schedule/{token}",
      *     options = { "expose" = true },
      *     name="patch_show_schedule")
-     * @Method({"PATCH"})
      */
     public function patchScheduleAction(Request $request, $token)
     {
@@ -114,7 +95,7 @@ class ScheduleController extends FOSRestController
 
             $form = $this->createForm(ScheduleType::class,$schedule);
             $form->submit($request->request->all());
-            if($form->isValid())
+            if($form->isSubmitted() && $form->isValid())
             {
                 $em->persist($schedule);
                 $em->flush();
@@ -128,10 +109,9 @@ class ScheduleController extends FOSRestController
 
 
     /**
-     * @Route("/show/{token}/{slug}/schedule",
+     * @@Rest\Post("/show/{token}/{slug}/schedule",
      *     options = { "expose" = true },
      *     name="post_show_schedule")
-     * @Method({"POST"})
      */
     public function postScheduleAction(Request $request, $token, $slug)
     {
@@ -163,10 +143,9 @@ class ScheduleController extends FOSRestController
 
 
     /**
-     * @Route("/show/{token}/{slug}/schedule/{year}/{month}",
+     * @Rest\Get("/show/{token}/{slug}/schedule/{year}/{month}",
      *     options = { "expose" = true },
      *     name="get_show_schedule_month")
-     * @Method({"GET"})
      */
     public function getScheduleByMonthAction(Request $request, $token, $slug, $year, $month)
     {
@@ -189,10 +168,9 @@ class ScheduleController extends FOSRestController
     }
 
     /**
-     * @Route("/schedule/{year}/{month}",
+     * @Rest\Get("/schedule/{year}/{month}",
      *     options = { "expose" = true },
      *     name="get_schedule_month")
-     * @Method({"GET"})
      */
     public function getSchedule(Request $request, $year, $month)
     {

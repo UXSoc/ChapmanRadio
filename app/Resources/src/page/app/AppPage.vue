@@ -21,7 +21,7 @@
                         <a class="nav-link"><i class="fa fa-user" aria-hidden="true"></i> Login</a>
                     </router-link>
                     <router-link v-else active-class="active" :to="{name: 'profile'}" :exact="true" tag="li">
-                        <a class="nav-link"><i class="fa fa-user" aria-hidden="true"></i> {{status.getUsername()}}</a>
+                        <a class="nav-link"><i class="fa fa-user" aria-hidden="true"></i> {{status.username}}</a>
                     </router-link>
                 </ul>
 

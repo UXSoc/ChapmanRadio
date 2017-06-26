@@ -7,8 +7,8 @@
                 <h2 class="cr_header">What's New</h2>
                 <div class="row-resp" v-if="posts">
                     <template v-for="(item, index) in posts">
-                        <wide-box v-if="index == 0" :name="item.name" :excerpt="item.excerpt" :to="{name: 'post_single', params: { token: item.token, slug: item.slug }}" ></wide-box>
-                        <small-box v-else :name="item.name" :excerpt="item.excerpt" :to="{name: 'post_single', params: { token: item.token, slug: item.slug }}"></small-box>
+                        <wide-box v-if="index == 0" :post="item"></wide-box>
+                        <small-box v-else :post="item"></small-box>
                     </template>
                 </div>
                 <div v-else>
@@ -33,47 +33,42 @@
                 <h2 class="cr_header">Show of the Week</h2>
                 <show-box show_name="pantherBuck$" dj_names="Courtney Bankhead & Taylor Cox" show_desc="Not strictly pop. You will hear everything that has good acoustics, a beat, and vocals. Plus, we're pretty funny so please listen to us!"></show-box>
             </div>
-            
+
         </div>
     </div>
 </template>
 
 <script>
-    /* @flow */
-    import Post from '../../entity/post'
-    import PlayWindow from '../../components/PlayWindow.vue'
-    import WideBox from '../../components/WideBox.vue'
-    import SmallBox from '../../components/SmallBox.vue'
-    import TrackBox from '../../components/TrackBox.vue'
-    import ShowBox from '../../components/ShowBox.vue'
-    import axios from 'axios'
-    import qs from 'qs'
-    export default{
-      data () {
-        return {
-          posts: null
-        }
-      },
-      methods: {
-        query: function (page: number) {
-          const _this = this
-          axios.get(Routing.generate('get_posts') + '?' + qs.stringify({page: 0,entries: 3})).then((response) => {
-            const pageination: Pagination<Post> = response.data
-            _this.$set(_this, 'posts', pageination.items)
-          })
-        }
-      },
-      watch: {
-      },
-      created () {
-        this.query()
-      },
-      components: {
-        PlayWindow,
-        WideBox,
-        SmallBox,
-        TrackBox,
-        ShowBox
+  import PostService from '../../service/postService'
+  import PlayWindow from '../../components/PlayWindow.vue'
+  import WideBox from '../../components/WideBox.vue'
+  import SmallBox from '../../components/SmallBox.vue'
+  import TrackBox from '../../components/TrackBox.vue'
+  import ShowBox from '../../components/ShowBox.vue'
+  export default{
+    data () {
+      return {
+        posts: null
       }
+    },
+    methods: {
+      query: function (page) {
+        const _this = this
+        PostService.getPosts(0, (result) => {
+          _this.$set(_this, 'posts', result.result)
+        }, {perPage: 3})
+      }
+    },
+    watch: {},
+    created () {
+      this.query()
+    },
+    components: {
+      PlayWindow,
+      WideBox,
+      SmallBox,
+      TrackBox,
+      ShowBox
     }
+  }
 </script>

@@ -6,7 +6,7 @@
  * Time: 6:05 PM
  */
 
-namespace CoreBundle\Form;
+namespace CoreBundle\Form\Type;
 
 
 use CoreBundle\Entity\Schedule;
@@ -18,6 +18,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\Exception;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -25,19 +26,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TagType extends AbstractType
 {
-    private  $tagTransformer;
+    private  $transformer;
 
-    function __construct(TagTransformer $tagTransformer)
+    function __construct(TagTransformer $transformer)
     {
-        $this->tagTransformer = $tagTransformer;
+        $this->transformer = $transformer;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('tag',TextType::class);
-        $builder->get('tag')
-            ->addModelTransformer($this->tagTransformer);
-
+        $builder->addModelTransformer($this->transformer);
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -48,5 +46,8 @@ class TagType extends AbstractType
         ]);
     }
 
-
+    public function getParent()
+    {
+        return TextType::class;
+    }
 }

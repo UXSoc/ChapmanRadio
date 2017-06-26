@@ -35,10 +35,8 @@ export default class Auth {
 
   refresh () {
     const _this = this
-    AuthService.getStatus((envelope) => {
-      _this.status = envelope.getResult()
-    }, (envelope) => {
-      _this.status = new User({})
+    AuthService.getStatus((user) => {
+      _this.status = user
     })
   }
 

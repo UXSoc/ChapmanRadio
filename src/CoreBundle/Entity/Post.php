@@ -98,7 +98,7 @@ class Post
      * @var object
      * @CoreAssert\Delta
      * @ORM\Column(name="content",  type="text", nullable=false)
-     * @JMS\Groups({"detail"})
+     * @JMS\Groups({"detail","list"})
      */
     private $content;
 
@@ -131,7 +131,7 @@ class Post
      *      joinColumns={@ORM\JoinColumn(name="post_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="comment_id", referencedColumnName="id", unique=true)}
      *      )
-     * @JMS\Groups({"comments"})
+     * @JMS\Exclude
      */
     private $comments;
 
@@ -145,8 +145,6 @@ class Post
      *      inverseJoinColumns={@ORM\JoinColumn(name="category_id", referencedColumnName="id")}
      *      )
      * @JMS\Groups({"detail","list"})
-     * @JMS\Accessor(getter="getCategoryKeys")
-     * @JMS\Type("array<string>")
      */
     private $categories;
 
@@ -160,10 +158,10 @@ class Post
      *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
      *      )
      * @JMS\Groups({"detail","list"})
-     * @JMS\Accessor(getter="getTagKeys")
-     * @JMS\Type("array<string>")
      */
     private $tags;
+
+    private $deltaRenderer = 'HTML';
 
 
     /**
@@ -187,9 +185,18 @@ class Post
         $this->comments = new ArrayCollection();
         $this->tags = new ArrayCollection();
         $this->categories = new ArrayCollection();
-
-
     }
+
+    public function setDeltaRenderer($praser)
+    {
+        $this->deltaRenderer = $praser;
+    }
+
+    public function getDeltaRenderer()
+    {
+        return $this->deltaRenderer;
+    }
+
 
     public function getId()
     {
@@ -225,7 +232,7 @@ class Post
     }
 
     /**
-     * @param object $content
+     * @param string $content
      */
     public function setContent($content)
     {
@@ -326,10 +333,6 @@ class Post
     }
 
 
-    public  function getTagKeys()
-    {
-        return $this->tags->getKeys();
-    }
 
 
     /**
@@ -357,10 +360,6 @@ class Post
         return $this->categories;
     }
 
-    public function getCategoryKeys()
-    {
-        return $this->categories->getKeys();
-    }
 
 
 

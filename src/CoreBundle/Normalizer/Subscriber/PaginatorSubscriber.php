@@ -2,20 +2,21 @@
 /**
  * Created by PhpStorm.
  * User: michaelpollind
- * Date: 6/24/17
- * Time: 6:12 PM
+ * Date: 5/26/17
+ * Time: 10:29 AM
  */
 
-namespace CoreBundle\Normalizer;
+namespace CoreBundle\Normalizer\Subscriber;
 
-
-use CoreBundle\Entity\Category;
-use FOS\RestBundle\Context\Context;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 
-class CategoryNormalizer implements SubscribingHandlerInterface
+
+
+class PaginatorSubscriber implements SubscribingHandlerInterface
 {
 
     /**
@@ -40,21 +41,27 @@ class CategoryNormalizer implements SubscribingHandlerInterface
             array(
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format' => 'json',
-                'type' => Category::class,
+                'type' => Paginator::class,
                 'method' => 'serializeDateTimeToJson',
             ),
         );
     }
 
-    /**
-     * @param JsonSerializationVisitor $visitor
-     * @param Category $date
-     * @param array $type
-     * @param Context $context
-     * @return string
-     */
-    public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, Category $date, array $type, Context $context)
+    public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, Paginator $date, array $type, Context $context)
     {
-        return $date->getCategory();
+        $query = $date->getQuery();
+        $count = $date->count();
+        $perPage = $query->getMaxResults();
+        $offset = $query->getFirstResult();
+
+        return [
+            "count" => $count,
+            "perPage" => $perPage,
+            "pages" => ceil( $offset/$perPage),
+            "result" => array_map(function ($object) use ($context)
+            {
+               return $context->accept($object);
+            },$query->getResult())
+        ];
     }
 }

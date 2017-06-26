@@ -3,19 +3,21 @@
  * Created by PhpStorm.
  * User: michaelpollind
  * Date: 6/24/17
- * Time: 6:08 PM
+ * Time: 6:12 PM
  */
 
-namespace CoreBundle\Normalizer;
+namespace CoreBundle\Normalizer\Subscriber;
 
 
-use CoreBundle\Entity\Genre;
+use CoreBundle\Entity\Category;
 use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
 
-class GenreNormalizer implements SubscribingHandlerInterface
+
+
+class CategorySubscriber implements SubscribingHandlerInterface
 {
 
     /**
@@ -40,7 +42,7 @@ class GenreNormalizer implements SubscribingHandlerInterface
             array(
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format' => 'json',
-                'type' => Genre::class,
+                'type' => Category::class,
                 'method' => 'serializeDateTimeToJson',
             ),
         );
@@ -48,13 +50,13 @@ class GenreNormalizer implements SubscribingHandlerInterface
 
     /**
      * @param JsonSerializationVisitor $visitor
-     * @param Genre $date
+     * @param Category $date
      * @param array $type
      * @param Context $context
      * @return string
      */
-    public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, Genre $date, array $type, Context $context)
+    public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, Category $date, array $type, Context $context)
     {
-        return $date->getGenre();
+        return $date->getCategory();
     }
 }

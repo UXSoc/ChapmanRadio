@@ -33,73 +33,73 @@ export default class Show extends BaseEntity {
     this._strikes = this.get('strikes', data, null)
   }
 
-  getDjs () : [Object] {
+  get dj () : [Object] {
     return this._djs
   }
 
-  getTags () : [string] {
+  get tags () : [string] {
     return this._tags
   }
 
-  getHeaderImage () : string {
+  get headerImage () : string {
     return this._headerImage
   }
 
-  hasProfanity () : boolean {
+  get hasProfanity () : boolean {
     return this._profanity
   }
 
-  hasCommentsEnabled () : boolean {
+  get hasCommentsEnabled () : boolean {
     return this._enableComments
   }
 
-  getGenres () : [string] {
+  get genres () : [string] {
     return this._genres
   }
 
-  getProfanity () : boolean {
+  get profanity () : boolean {
     return this._profanity
   }
 
-  getExcerpt () : string {
+  get excerpt () : string {
     return this._excerpt
   }
 
-  getDescription () : string {
+  get description () : string {
     return this._description
   }
 
-  getToken (): string {
+  get token (): string {
     return this._token
   }
 
-  getName () : string {
+  get name () : string {
     return this._name
   }
 
-  getSlug () : string {
+  get slug () : string {
     return this._slug
   }
 
-  getCreatedAt () : string {
+  get createdAt () : string {
     return this._createdAt
   }
 
-  getUpdatedAt () : string {
+  get updatedAt () : string {
     return this._updatedAt
   }
 
-  getContent () :string {
+  get content () :string {
     return this._content
   }
 
-  getStrikes () : string {
+  get strikes () : string {
     return this._strikes
   }
 
   getRoute () : {name: string, params: { token: string, slug:string}} {
     return {
-      name: 'show_single', params: { token: this.getToken(), slug: this.getSlug() }
+      name: 'show_single', params: { token: this.token, slug: this.slug }
     }
   }
 }

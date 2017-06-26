@@ -8,6 +8,8 @@ use CoreBundle\Helper\SuccessWrapper;
 use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use FOS\RestBundle\View\View;
+use FOS\RestBundle\View\ViewHandlerInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,6 +32,7 @@ class AuthenticationHandler implements AuthenticationEntryPointInterface,Authent
     private $router;
     private $session;
     private $registry;
+    private $handler;
 
     /**
      * AuthenticationHandler constructor.
@@ -37,11 +40,12 @@ class AuthenticationHandler implements AuthenticationEntryPointInterface,Authent
      * @param SessionInterface $session
      * @param RegistryInterface $registry
      */
-    public function __construct(RouterInterface $router, SessionInterface $session, RegistryInterface $registry)
+    public function __construct(RouterInterface $router, SessionInterface $session, RegistryInterface $registry,ViewHandlerInterface $handler)
     {
         $this->router = $router;
         $this->session = $session;
         $this->registry = $registry;
+        $this->handler = $handler;
     }
 
     /**
@@ -52,12 +56,11 @@ class AuthenticationHandler implements AuthenticationEntryPointInterface,Authent
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Symfony\Component\Security\Core\Exception\AuthenticationException $exception
      *
-     * @return JsonResponse The response to return, never null
+     * @return Response
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        $normalizer =  new Serializer([new WrapperNormalizer()]);
-        return new JsonResponse($normalizer->normalize(new ErrorWrapper("Failed Authentication")),400);
+        return $this->handler->handle(View::create(['message' => "Failed Authentication",'code' => 400],400,[]));
 
     }
 
@@ -69,7 +72,7 @@ class AuthenticationHandler implements AuthenticationEntryPointInterface,Authent
      * @param Request $request
      * @param TokenInterface $token
      *
-     * @return Response never null
+     * @return Response
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
@@ -82,8 +85,7 @@ class AuthenticationHandler implements AuthenticationEntryPointInterface,Authent
         $em->persist($user);
         $em->flush();
 
-        $normalizer =  new Serializer([new WrapperNormalizer(),new UserNormalizer()]);
-        return new JsonResponse($normalizer->normalize(new SuccessWrapper($token->getUser(),"Authenticated Successful")),200);
+        return $this->handler->handle(View::create(['message' => "Authentication Success"],200,[]));
     }
 
     /**
@@ -106,10 +108,9 @@ class AuthenticationHandler implements AuthenticationEntryPointInterface,Authent
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $normalizer =  new Serializer([new WrapperNormalizer()]);
         if($authException instanceof InsufficientAuthenticationException) {
-            return new JsonResponse($normalizer->normalize(new ErrorWrapper("Permission Error")),400);
+            return $this->handler->handle(View::create([],403,[]));
         }
-        return new JsonResponse($normalizer->normalize(new ErrorWrapper("Authentication Error")),400);
+        return $this->handler->handle(View::create([],401,[]));
     }
 }

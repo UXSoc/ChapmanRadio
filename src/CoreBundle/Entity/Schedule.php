@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use RRule\RRule;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
+use JMS\Serializer\Annotation As JMS;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -26,6 +27,7 @@ class Schedule
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @JMS\Exclude
      */
     private $id;
 
@@ -33,30 +35,35 @@ class Schedule
     /**
      * @var string
      * @ORM\Column(name="token", type="string",length=20, nullable=false,unique=true)
+     * @JMS\Groups({"detail","list"})
      */
     private $token;
 
     /**
      * @var \DateTime
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     * @JMS\Groups({"detail","list"})
      */
     private $createdAt;
 
     /**
      * @var \DateTime
      * @ORM\Column(name="last_updated", type="datetime", nullable=false)
+     * @JMS\Groups({"detail","list"})
      */
     private $updatedAt;
 
     /**
      * @var \DateTime
      * @ORM\Column(name="start_date", type="date", nullable=false)
+     * @JMS\Exclude
      */
     private $startDate;
 
     /**
      * @var \DateTime
      * @ORM\Column(name="end_date", type="date", nullable=false)
+     * @JMS\Exclude
      */
     private $endDate;
 
@@ -67,6 +74,7 @@ class Schedule
      * @Assert\Range(min=0,max=6)
      * @Assert\Choice({"YEARLY", "MONTHLY", "WEEKLY", "DAILY"})
      * @ORM\Column(name="freq", type="string", length=20, nullable=false)
+     * @JMS\Exclude
      */
     private $freq = "YEARLY";
 
@@ -75,6 +83,7 @@ class Schedule
      * //as UNIX TIME
      * @var int
      * @ORM\Column(name="inter", type="integer", nullable=false)
+     * @JMS\Exclude
      */
     private $interval = 1;
 
@@ -82,6 +91,7 @@ class Schedule
      * //as UNIX TIME
      * @var int
      * @ORM\Column(name="show_length", type="integer", nullable=false)
+     * @JMS\Exclude
      */
     private $showLength;
 
@@ -90,6 +100,7 @@ class Schedule
      * @ORM\Column(name="by_hour", type="integer", nullable=false)
      * @Assert\NotBlank,
      * @Assert\Range(min=0,max=23)
+     * @JMS\Exclude
      */
     private $byHour;
 
@@ -98,6 +109,7 @@ class Schedule
      * @ORM\Column(name="by_minute", type="integer", nullable=false)
      * @Assert\NotBlank,
      * @Assert\Range(min=0,max=59)
+     * @JMS\Exclude
      */
     private $byMinute;
 
@@ -107,6 +119,7 @@ class Schedule
      *  @Assert\NotBlank,
      *  @Assert\Range(min=1,max=31)
      * })
+     * @JMS\Exclude
      */
     private $byMonthDay;
 
@@ -117,6 +130,7 @@ class Schedule
      *  @Assert\NotBlank,
      *  @Assert\Range(min=1,max=366)
      * })
+     * @JMS\Exclude
      */
     private $byYearDay;
 
@@ -124,6 +138,7 @@ class Schedule
      * @var int[]
      * @ORM\Column(name="by_day", type="simple_array", nullable=true)
      * @Assert\Choice({"MO", "TU", "WE", "TH", "FR", "SA", "SU"})
+     * @JMS\Exclude
      */
     private $byDay;
 
@@ -134,6 +149,7 @@ class Schedule
      *  @Assert\Range(min=1,max=53)
      * })
      * @ORM\Column(name="by_week_number", type="simple_array", nullable=true)
+     * @JMS\Exclude
      */
     private $byWeekNumber;
 
@@ -144,6 +160,7 @@ class Schedule
      *  @Assert\NotBlank,
      * })
      * @ORM\Column(name="ex_dates", type="simple_array", nullable=true)
+     * @JMS\Exclude
      */
     private $exDates;
 
@@ -156,6 +173,7 @@ class Schedule
      *  @Assert\Range(min=1,max=12)
      * })
      * @ORM\Column(name="by_month", type="simple_array", nullable=true)
+     * @JMS\Exclude
      */
     private $byMonth;
 
@@ -167,6 +185,7 @@ class Schedule
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="show_id", referencedColumnName="id", nullable=false)
      * })
+     * @JMS\Exclude
      */
     private $show;
 
@@ -277,6 +296,16 @@ class Schedule
         $this->setByWeekNumber($rule['BYWEEKNO']);
         $this->setByMonth($rule['BYMONTH']);
 
+    }
+
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("rfc")
+     * @return string
+     */
+    public function getRfcString()
+    {
+        return (new RRule($this->getRule()))->rfcString();
     }
 
     public function getRule()

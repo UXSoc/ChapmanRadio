@@ -20,11 +20,16 @@ services:
     CoreBundle\Service\:
         resource: '../../src/CoreBundle/Service/*'
         public: true
-    CoreBundle\Normalizer\:
-        resource: '../../src/CoreBundle/Normalizer/*'
+    CoreBundle\Normalizer\Subscriber\:
+        resource: '../../src/CoreBundle/Normalizer/Subscriber/*'
         public: true
         tags:
             - { name: jms_serializer.subscribing_handler }
+    CoreBundle\Normalizer\Event\:
+        resource: '../../src/CoreBundle/Normalizer/Event/*'
+        public: true
+        tags:
+            - { name: jms_serializer.event_subscriber }
     BroadcastBundle\Service\:
         resource: '../../src/BroadcastBundle/Service/*'
         public: true

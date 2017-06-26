@@ -17,6 +17,8 @@ use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\ImageRepository;
 use CoreBundle\Service\ImageUploadService;
+use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\FOSRestBundle;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -24,7 +26,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class ImageController  extends Controller
+class ImageController  extends FOSRestController
 {
     /**
      * @Route("/image/{token}",
@@ -43,7 +45,7 @@ class ImageController  extends Controller
         /** @var Image $image */
         $image = $imageRepository->getImageByToken($token);
         if($image == null)
-            return RestfulEnvelope::errorResponseTemplate("Unknown image")->setStatus(410)->response();
+            throw  $this->createNotFoundException('Image Not Found');
 
         return new BinaryFileResponse( $imageUploadService->getTargetDir().'/'. $imageUploadService->getImagePath($image));
     }

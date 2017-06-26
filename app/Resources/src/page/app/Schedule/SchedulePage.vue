@@ -65,7 +65,7 @@
           ScheduleService.getTodayDate((envelope) => {
             _this.$set(_this, 'current', Moment(envelope.getResult()))
             if (_this.$route.name === 'schedule_list') {
-              _this.$set(_this, 'start', Moment().set({year: _this.$route.params.year, month: _this.$route.params.month, date: _this.$route.params.day}))
+              _this.$set(_this, 'start', Moment().set({ year: _this.$route.params.year, month: _this.$route.params.month, date: _this.$route.params.day }))
             } else {
               _this.$set(_this, 'start', Moment(envelope.getResult()))
             }

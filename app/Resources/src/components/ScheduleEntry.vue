@@ -7,9 +7,9 @@
             <!--<img :src="image">-->
         </div>
         <div class="col-md-7">
-            <p class="schedule-showname">{{show.getName()}}</p>
+            <p class="schedule-showname">{{show.name}}</p>
             <p class="schedule-showdesc">derp</p>
-            <p class="schedule-epdesc">{{show.getExcerpt()}}</p>
+            <p class="schedule-epdesc">{{show.excerpt}}</p>
         </div>
     </div>
 </template>

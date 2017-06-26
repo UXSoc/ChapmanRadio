@@ -10,16 +10,15 @@ namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Entity\Tag;
 use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Normalizer\PaginatorNormalizer;
 use CoreBundle\Normalizer\TagNormalizer;
 use CoreBundle\Repository\TagRepository;
 use FOS\RestBundle\Controller\FOSRestController;
+use Symfony\Component\HttpFoundation\Request;
+
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-
 
 /**
  * @Route("/api/v3/")
@@ -27,10 +26,9 @@ use Symfony\Component\HttpFoundation\Request;
 class TagController extends FOSRestController
 {
     /**
-     * @Route("tag",
+     * @Rest\Get("tag",
      *     options = { "expose" = true },
      *     name="get_tags")
-     * @Method({"GET"})
      */
     public function getTagsAction(Request $request)
     {
@@ -43,10 +41,9 @@ class TagController extends FOSRestController
 
     }
     /**
-     * @Route("tag/{name}",
+     * @Rest\Get("tag/{name}",
      *     options = { "expose" = true },
      *     name="get_tag")
-     * @Method({"GET"})
      */
     public function getTagAction(Request $request,$name)
     {
@@ -61,10 +58,9 @@ class TagController extends FOSRestController
 
     /**
      * @Security("has_role('ROLE_STAFF')")
-     * @Route("/tag/{tag}",
+     * @Rest\Put("/tag/{tag}",
      *     options = { "expose" = true },
      *     name="put_tag")
-     * @Method({"PUT"})
      */
     public function putTagAction($tag)
     {
@@ -86,10 +82,9 @@ class TagController extends FOSRestController
 
     /**
      * @Security("has_role('ROLE_STAFF')")
-     * @Route("/tag/{tag}",
+     * @Rest\Delete("/tag/{tag}",
      *     options = { "expose" = true },
      *     name="delete_tag")
-     * @Method({"DELETE"})
      */
     public function deleteTagAction($tag)
     {

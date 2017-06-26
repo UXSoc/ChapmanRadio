@@ -4,14 +4,10 @@ namespace RestfulBundle\Controller\Api\V3;
 use BroadcastBundle\Entity\Stream;
 use CoreBundle\Entity\Event;
 use CoreBundle\Entity\Show;
-use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Normalizer\EventNormalizer;
-use CoreBundle\Normalizer\StreamNormalizer;
 use CoreBundle\Repository\EventRepository;
 use CoreBundle\Repository\ShowRepository;
 use CoreBundle\Repository\StreamRepository;
 use FOS\RestBundle\Controller\FOSRestController;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;

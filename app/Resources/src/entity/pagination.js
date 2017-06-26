@@ -1,5 +1,10 @@
 import BaseEntity from './baseEntity'
 export default class Pagination<T> extends BaseEntity {
+  _page: number
+  _perPage: number
+  _count: number
+  _result: [T]
+
   constructor (create : (result: Object) => T, data: {}) {
     super()
     this._page = this.get('pages', data, 0)
@@ -8,26 +13,27 @@ export default class Pagination<T> extends BaseEntity {
     this._result = data.result.map((v) => create(v))
   }
 
-  getMaxPage () {
+  get maxPage () {
     if (this._count === this._perPage) {
       return 0
     }
     return Math.ceil(this._count / this._perPage)
   }
 
-  getNextPage () {
+  get nextPage () {
     return this._page + 1
   }
 
-  getPreviousPage () {
+  get previousPage () {
     return this._page - 1
   }
 
-  getCurrentPage () {
+  get currentPage () {
     return this._page
   }
 
-  getResult () {
+  get result () {
     return this._result
   }
 }
+

@@ -1,18 +1,12 @@
 <?php
 namespace RestfulBundle\Controller\Api\V3;
 
-
 use CoreBundle\Entity\Comment;
 use CoreBundle\Entity\Event;
 use CoreBundle\Entity\Image;
 use CoreBundle\Entity\Show;
 use CoreBundle\Entity\Tag;
 use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Normalizer\CommentNormalizer;
-use CoreBundle\Normalizer\EventNormalizer;
-use CoreBundle\Normalizer\PaginatorNormalizer;
-use CoreBundle\Normalizer\ShowNormalizer;
-use CoreBundle\Normalizer\UserNormalizer;
 use CoreBundle\Repository\CommentRepository;
 use CoreBundle\Repository\EventRepository;
 use CoreBundle\Repository\ShowRepository;
@@ -21,15 +15,12 @@ use CoreBundle\Repository\TagRepository;
 use CoreBundle\Security\ShowVoter;
 use CoreBundle\Service\ImageUploadService;
 use FOS\RestBundle\Controller\FOSRestController;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/api/v3/")
@@ -40,6 +31,7 @@ class ShowController extends FOSRestController
      * @Rest\Get("show",
      *     options = { "expose" = true },
      *     name="get_shows")
+     * @Rest\View(serializerGroups={"list"})
      */
     public function getShowsAction(Request $request)
     {
@@ -60,14 +52,17 @@ class ShowController extends FOSRestController
      * @Rest\Get("show/{token}/{slug}",
      *     options = { "expose" = true },
      *     name="get_show")
+     * @Rest\View(serializerGroups={"detail"})
      */
     public function getShowAction(Request $request,$token,$slug){
         $em = $this->getDoctrine()->getManager();
         /** @var ShowRepository $showRepository */
         $showRepository = $em->getRepository(Show::class);
 
-        if($show = $showRepository->getShowByTokenAndSlug($token,$slug))
+        if($show = $showRepository->getShowByTokenAndSlug($token,$slug)) {
+            $show->setDeltaRenderer($request->get('delta','HTML'));
             return $this->view(['show' => $show]);
+        }
         throw $this->createNotFoundException("Show Not Found");
     }
 
@@ -141,7 +136,7 @@ class ShowController extends FOSRestController
 
             $form = $this->createForm(UserType::class,$comment);
             $form->submit($request->request->all());
-            if($form->isValid())
+            if($form->isSubmitted() && $form->isValid())
             {
                 $em->persist($comment);
                 $em->persist($show);

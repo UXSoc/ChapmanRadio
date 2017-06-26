@@ -2,10 +2,10 @@
     <div>
         <h2 class="cr_header">Shows</h2>
         <div class="row-resp">
-            <template v-for="(item, index) in data">
+            <template v-if="data.length > 0" v-for="(item, index) in data">
                 <showcase-box :show="item"></showcase-box>
             </template>
-            <div v-if="loading">
+            <div v-else>
                 <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
                 <span class="sr-only">Loading...</span>
             </div>
@@ -20,34 +20,26 @@
     import Show from '../../../entity/show'
     import Pagination from '../../../entity/pagination'
     import $ from 'jquery'
+
     export default{
       data () {
         return {
           pagination: null,
-          data: [],
-          loading: false
+          data: []
         }
       },
       methods: {
         query: function (page) {
-          let _this = this
-          _this.loading = true
-          ShowService.getShows(page, (data) => {
-            _this.loading = false
-            let pagination : Pagination = data.getResult()
-            let shows: [Show] = pagination.getResult()
-            let result = _this.data
-            result = result.concat(shows)
-            _this.$set(_this, 'data', result)
-            _this.$set(_this, 'pagination', pagination)
-          }, (data) => {
+          ShowService.getShows(page, (result: Pagination<Show>) => {
+            this.$set(this, 'pagination', result)
+            this.$set(this, 'data', this.data.concat(result.result))
           })
         },
         handleScroll () {
           if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
-            if (!this.loading) {
-              if (this.pagination.getCurrentPage() <= this.pagination.getMaxPage()) {
-                this.query(this.pagination.getNextPage())
+            if (this.pagination) {
+              if (this.pagination.currentPage <= this.pagination.maxPage) {
+                this.query(this.pagination.nextPage)
               }
             }
           }

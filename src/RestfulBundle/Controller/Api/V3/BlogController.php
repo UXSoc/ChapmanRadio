@@ -13,22 +13,21 @@ use CoreBundle\Entity\Image;
 use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Comment;
 use CoreBundle\Entity\Tag;
+use CoreBundle\Form\CommentType;
 use CoreBundle\Form\PostType;
+use CoreBundle\Form\ImageType;
 use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Repository\CategoryRepository;
 use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\CommentRepository;
-use CoreBundle\Form\UserType;
 use CoreBundle\Repository\TagRepository;
 use CoreBundle\Security\PostVoter;
 use CoreBundle\Service\ImageUploadService;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\Request;
-
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -53,46 +52,10 @@ class BlogController extends FOSRestController
         /** @var PostRepository $postRepository */
         $postRepository = $em->getRepository(Post::class);
 
-        return $this->view(['payload' =>
+        return $this->view(["payload" =>
             $postRepository->paginator($postRepository->filter($request),
                 (int)$request->get('page', 0),
                 (int)$request->get('perPage', 10), 20)]);
-    }
-
-    /**
-     * @Rest\Get("post/{token}/{slug}/tags",
-     *     options = { "expose" = true },
-     *     name="get_post_tags")
-     * @Rest\View(serializerGroups={"detail"})
-     */
-    public function getPostTagsAction(Request $request, $token, $slug)
-    {
-        $em = $this->getDoctrine()->getManager();
-        /** @var PostRepository $postRepository */
-        $postRepository = $em->getRepository(Post::class);
-
-        /** @var Post $post */
-        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
-            return $this->view(['tags' => $post->getTagKeys()]);
-        throw $this->createNotFoundException("Post Not Found");
-    }
-
-    /**
-     * @Route("post/{token}/{slug}/categories",
-     *     options = { "expose" = true },
-     *     name="get_post_categories")
-     * @Method({"GET"})
-     */
-    public function getPostCategoriesAction(Request $request, $token, $slug)
-    {
-        $em = $this->getDoctrine()->getManager();
-        /** @var PostRepository $postRepository */
-        $postRepository = $em->getRepository(Post::class);
-
-        /** @var Post $post */
-        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
-            return $this->view(['categories' => $post->getCategoryKeys()]);
-        throw $this->createNotFoundException("Post Not Found");
     }
 
     /**
@@ -109,6 +72,7 @@ class BlogController extends FOSRestController
 
         /** @var Post $post */
         if ($post = $postRepository->getPostByTokenAndSlug($token, $slug)) {
+            $post->setDeltaRenderer($request->get('delta','HTML'));
             return $this->view([
                 "post" => $post
             ], 200);
@@ -116,13 +80,51 @@ class BlogController extends FOSRestController
         throw new NotFoundHttpException("Post Not Found");
     }
 
+
+    /**
+     * @Rest\Get("post/{token}/{slug}/tags",
+     *     options = { "expose" = true },
+     *     name="get_post_tags")
+     * @Rest\View(serializerGroups={"detail"})
+     */
+    public function getPostTagsAction(Request $request, $token, $slug)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var PostRepository $postRepository */
+        $postRepository = $em->getRepository(Post::class);
+
+        /** @var Post $post */
+        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
+            return $this->view(['tags' => $post->getTags()->getValues()]);
+        throw $this->createNotFoundException("Post Not Found");
+    }
+
+    /**
+     * @Rest\Get("post/{token}/{slug}/categories",
+     *     options = { "expose" = true },
+     *     name="get_post_categories")
+     */
+    public function getPostCategoriesAction(Request $request, $token, $slug)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var PostRepository $postRepository */
+        $postRepository = $em->getRepository(Post::class);
+
+        /** @var Post $post */
+        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
+            return $this->view(['categories' => $post->getCategories()->getValues()]);
+        throw $this->createNotFoundException("Post Not Found");
+    }
+
+
     /**
      * @Security("has_role('ROLE_USER')")
-     * @Rest\Post("post/{token}/{slug}/comment/{comment_token}",
+     * @Rest\Post("post/{token}/{slug}/comment",
      *     options = { "expose" = true },
      *     name="post_post_comment")
+     *  @Rest\View(serializerGroups={"detail"})
      */
-    public function postPostCommentAction(Request $request, $token, $slug, $comment_token = null)
+    public function postPostCommentAction(Request $request, $token, $slug)
     {
 
         $em = $this->getDoctrine()->getManager();
@@ -138,19 +140,14 @@ class BlogController extends FOSRestController
             $comment->setUser($this->getUser());
             $post->addComment($comment);
 
-            if ($comment_token !== null) {
-                if ($c = $commentRepository->getCommentByPostAndToken($post, $comment_token))
-                    $comment->setParentComment($c);
-                else
-                    throw  new HttpException("unknown parent", 410);
-            }
-
-            $form = $this->createForm(UserType::class, $comment);
-            $form->submit($request->request->all());
-            if ($form->isValid()) {
+            $form = $this->createForm(CommentType::class,$comment);
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid())
+            {
                 $em->persist($comment);
                 $em->persist($post);
                 $em->flush();
+                return $this->view(['comment' => $comment]);
             }
             return $this->view($form);
         }
@@ -162,7 +159,7 @@ class BlogController extends FOSRestController
      * @Rest\Get("post/{token}/{slug}/comment/{comment_token}",
      *     options = { "expose" = true },
      *     name="get_blog_comment")
-     * @Method({"GET"})
+     * @Rest\View(serializerGroups={"list"})
      */
     public function getPostCommentAction(Request $request, $token, $slug, $comment_token = null)
     {
@@ -203,7 +200,6 @@ class BlogController extends FOSRestController
      * @Rest\Post("/post",
      *     options = { "expose" = true },
      *     name="post_post")
-     * @Method({"POST"})
      */
     public function postPostAction(Request $request)
     {
@@ -211,8 +207,8 @@ class BlogController extends FOSRestController
         $post = new Post();
 
         $form = $this->createForm(PostType::class,$post);
-        $form->submit($request->request->all());
-        if($form->isValid())
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid())
         {
             $em->persist($post);
             $em->flush();
@@ -238,8 +234,8 @@ class BlogController extends FOSRestController
             $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
 
             $form = $this->createForm(PostType::class,$post);
-            $form->submit($request->request->all());
-            if($form->isValid())
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid())
             {
                 $em->persist($post);
                 $em->flush();
@@ -313,9 +309,6 @@ class BlogController extends FOSRestController
      */
     public function putImageForPostAction(Request $request, $token, $slug)
     {
-        /** @var ValidatorInterface $validator */
-        $validator = $this->get('validator');
-
         $em = $this->getDoctrine()->getManager();
 
         /** @var PostRepository $postRepository */
@@ -329,22 +322,19 @@ class BlogController extends FOSRestController
         {
             $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
 
-            $src = $request->files->get('image', null);
             $image = new Image();
-            $image->setImage($src);
             $image->setAuthor($this->getUser());
-
-            $errors = $validator->validate($image);
-            if($errors->count() > 0)
-                return RestfulEnvelope::errorResponseTemplate('invalid Image')->addErrors($errors)->response();
-
-            $imageService->saveImageToFilesystem($image);
-            $em->persist($image);
-
-            $post->addImage($image);
-            $em->persist($post);
-            $em->flush();
-            return $this->view(["image" => $image]);
+            $form = $this->createForm(ImageType::class,$image);
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid())
+            {
+                $imageService->saveImageToFilesystem($image);
+                $em->persist($image);
+                $post->addImage($image);
+                $em->persist($post);
+                $em->flush();
+            }
+            return $this->view($form);
         }
         throw new BadRequestHttpException('Image Error');
     }
@@ -415,7 +405,7 @@ class BlogController extends FOSRestController
         {
             $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
             if($post->getCategories()->containsKey($category))
-                return RestfulEnvelope::errorResponseTemplate('duplicate Tag')->response();
+                throw new HttpException(400,"Duplicate Tag");
 
             /** @var CategoryRepository $categoryRepository */
             $categoryRepository = $em->getRepository(Category::class);
