@@ -1,4 +1,4 @@
-
+// @flow
 import Vue from 'vue'
 import Config from './config'
 import VueRouter from 'vue-router'

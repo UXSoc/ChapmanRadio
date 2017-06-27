@@ -3,15 +3,13 @@
 </template>
 
 <script>
+    /* @flow */
     export default{
       data () {
         return {}
       },
-      methods: {
-      },
-      watch: {
-      },
-      components: {
-      }
+      methods: {},
+      watch: {},
+      components: {}
     }
 </script>

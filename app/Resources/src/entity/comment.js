@@ -15,42 +15,46 @@ export default class Comment extends BaseEntity {
     this._content = this.get('content', data, '')
     this._user = this.getAndInstance((data) => new User(data), 'user', data, new User({}))
     this._children = []
-    if (data.children) {
-      for (let i = 0; i < data.children.length; i++) {
-        this._children.push(new Comment(data.children[i]))
+    if (data.children_comment) {
+      for (let i = 0; i < data.children_comment.length; i++) {
+        this._children.push(new Comment(data.children_comment[i]))
       }
     }
   }
 
-  getChildren () : [Comment] {
+  get children (): [Comment] {
     return this._children
   }
 
-  shift (comment: Comment) {
-    this._children.shift(comment)
+  set children (value: [Comment]) {
+    this._children = value
+  }
+
+  unshift (comment: Comment) {
+    this._children.unshift(comment)
   }
 
   push (comment: Comment) {
     this._children.push(comment)
   }
 
-  setContent (content: string) {
+  set content (content: string) {
     this._content = content
   }
-  getContent () : string {
+
+  get content (): string {
     return this._content
   }
 
-  getUser () : Object {
+  get user (): Object {
     return this._user
   }
 
-  getCreatedAt () : Object {
+  get createdAt (): Object {
     return this._createdAt
   }
 
-  getToken () : string {
+  get token (): string {
     return this._token
   }
-
 }

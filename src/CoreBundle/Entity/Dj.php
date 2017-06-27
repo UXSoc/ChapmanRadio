@@ -4,6 +4,7 @@ namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation As JMS;
 
 /**
  * Dj
@@ -19,6 +20,7 @@ class Dj
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @JMS\Exclude
      */
     private $id;
 
@@ -26,6 +28,7 @@ class Dj
      * @var string
      *
      * @ORM\Column(name="description", type="blob", length=65535, nullable=true)
+     * @JMS\Groups({"detail"})
      */
     private $description;
 
@@ -68,6 +71,8 @@ class Dj
      * DJ's can have multiple shows.
      * @ORM\ManyToMany(targetEntity="Show", inversedBy="djs")
      * @return ArrayCollection
+     * @JMS\MaxDepth(1)
+     * @JMS\Groups({"detail","list"})
      */
     private $shows;
 

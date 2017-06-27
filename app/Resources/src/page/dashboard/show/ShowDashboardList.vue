@@ -27,6 +27,7 @@
 </template>
 
 <script>
+    /* @flow */
   import Datatable from './../../../components/Datatable.vue'
   import ShowService from './../../../service/showService'
   export default{

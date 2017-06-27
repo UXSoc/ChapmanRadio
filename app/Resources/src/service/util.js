@@ -1,7 +1,8 @@
+/* @flow */
 import Envelope from '../entity/envelope'
 
 export default {
-  handleErrorResponse: function (error, errorCallback : (result: Envelope) => void) {
+  handleErrorResponse: function (error: any, errorCallback : (result: Envelope) => void) {
     if (error.response) {
       errorCallback(new Envelope(() => null, error.response.data))
     } else if (error.request) {

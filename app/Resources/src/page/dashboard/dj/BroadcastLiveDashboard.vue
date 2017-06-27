@@ -180,6 +180,7 @@
 </template>
 
 <script>
+    /* @flow */
     export default{
       data () {
         return {

@@ -10,20 +10,19 @@ export default class ScheduleEntry extends BaseEntity {
   constructor (data) {
     super()
     this._show = this.getAndInstance((data) => new Show(data), 'show', data, new Show({}))
-    this._date = this.get('date', data, '')
+    this._date = this.get('show_date', data, '')
     this._length = this.get('length', data, '')
   }
 
-  getShow () {
+  get show () {
     return this._show
   }
 
-  getDate () {
+  get date () {
     return this._date
   }
 
   getEndTime () {
     return this._endTime
   }
-
 }

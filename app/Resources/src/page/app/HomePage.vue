@@ -33,47 +33,42 @@
                 <h2 class="cr_header">Show of the Week</h2>
                 <show-box show_name="pantherBuck$" dj_names="Courtney Bankhead & Taylor Cox" show_desc="Not strictly pop. You will hear everything that has good acoustics, a beat, and vocals. Plus, we're pretty funny so please listen to us!"></show-box>
             </div>
-            
+
         </div>
     </div>
 </template>
 
 <script>
-    import PostService from '../../service/postService'
-    import Envelope from '../../entity/envelope'
-    import Pagination from '../../entity/pagination'
-    import Post from '../../entity/post'
-    import PlayWindow from '../../components/PlayWindow.vue'
-    import WideBox from '../../components/WideBox.vue'
-    import SmallBox from '../../components/SmallBox.vue'
-    import TrackBox from '../../components/TrackBox.vue'
-    import ShowBox from '../../components/ShowBox.vue'
-    export default{
-      data () {
-        return {
-          posts: null
-        }
-      },
-      methods: {
-        query: function (page) {
-          let _this = this
-          PostService.getPosts(0, (result: Envelope<Pagination<Post>>) => {
-            _this.$set(_this, 'posts', result.getResult().getResult())
-          }, (data) => {
-          }, {entries: 3})
-        }
-      },
-      watch: {
-      },
-      created () {
-        this.query()
-      },
-      components: {
-        PlayWindow,
-        WideBox,
-        SmallBox,
-        TrackBox,
-        ShowBox
+  import PostService from '../../service/postService'
+  import PlayWindow from '../../components/PlayWindow.vue'
+  import WideBox from '../../components/WideBox.vue'
+  import SmallBox from '../../components/SmallBox.vue'
+  import TrackBox from '../../components/TrackBox.vue'
+  import ShowBox from '../../components/ShowBox.vue'
+  export default{
+    data () {
+      return {
+        posts: null
       }
+    },
+    methods: {
+      query: function (page) {
+        const _this = this
+        PostService.getPosts(0, (result) => {
+          _this.$set(_this, 'posts', result.result)
+        }, {perPage: 3})
+      }
+    },
+    watch: {},
+    created () {
+      this.query()
+    },
+    components: {
+      PlayWindow,
+      WideBox,
+      SmallBox,
+      TrackBox,
+      ShowBox
     }
+  }
 </script>

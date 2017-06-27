@@ -96,13 +96,13 @@ export default class Post extends BaseEntity {
 
   getRoute () {
     return {
-      name: 'post_single', params: {token: this.token, slug: this.slug}
+      name: 'post_single', params: { token: this.token, slug: this.slug }
     }
   }
 
   getRouteToEdit () {
     return {
-      name: 'dashboard_blog_edit', params: {token: this.token, slug: this.slug}
+      name: 'dashboard_blog_edit', params: { token: this.token, slug: this.slug }
     }
   }
 }

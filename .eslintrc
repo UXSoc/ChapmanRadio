@@ -1,17 +1,14 @@
 {
-  "parser": "babel-eslint",
+  "parser"  : "babel-eslint",
   "plugins": [
     "html",
-    "vue"
-  ],
-  "extends": [
     "flowtype-errors",
-    "vue"
+    "flowtype"
   ],
+  "extends": ["plugin:vue-libs/recommended"],
   "rules": {
-    "flowtype-errors/show-errors": 2
-  },
-  "globals": {
-    "Routing": true
+    "flowtype-errors/show-errors": 2,
+    "flowtype/define-flow-type": 1,
+    "flowtype/use-flow-type": 1
   }
 }

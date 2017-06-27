@@ -3,6 +3,6 @@
 </template>
 
 <script>
-	export default{
-	}
+  // @flow
+  export default{}
 </script>

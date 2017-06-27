@@ -8,6 +8,8 @@ use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use CoreBundle\Validation\Constraints As CoreAssert;
+use JMS\Serializer\Annotation As JMS;
+
 
 /**
  * Blog
@@ -25,19 +27,20 @@ class Post
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @JMS\Exclude
      */
     private $id;
 
     /**
      * @var string
      * @ORM\Column(name="name", type="string",length=100, nullable=false,unique=true)
-     *
+     * @JMS\Groups({"detail","list"})
      */
     private $name;
 
     /**
      * @var string
-     *
+     * @JMS\Groups({"detail","list"})
      * @ORM\Column(name="token", type="string",length=20, nullable=false,unique=true)
      *
      */
@@ -48,6 +51,7 @@ class Post
      *
      * @ORM\Column(name="slug", type="string",length=100, nullable=false,unique=true)
      * @Assert\Regex("/^[a-zA-Z0-9\-]+$/")
+     * @JMS\Groups({"detail","list"})
      */
     private $slug;
 
@@ -55,6 +59,7 @@ class Post
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
+     * @JMS\Groups({"detail","list"})
      */
     private $createdAt;
 
@@ -62,6 +67,7 @@ class Post
      * @var \DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     * @JMS\Groups({"detail","list"})
      */
     private $updatedAt;
 
@@ -69,6 +75,7 @@ class Post
     /**
      * @var string
      * @ORM\Column(name="excerpt", type="text", length=6000, nullable=true)
+     * @JMS\Groups({"detail","list"})
      */
     private $excerpt;
 
@@ -76,12 +83,14 @@ class Post
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=40, nullable=true)
+     * @JMS\Groups({"detail","list"})
      */
     private $status;
 
     /**
      * @var boolean
      * @ORM\Column(name="is_pinned", type="boolean", nullable=true)
+     * @JMS\Groups({"detail","list"})
      */
     private $isPinned = 0;
 
@@ -89,6 +98,7 @@ class Post
      * @var object
      * @CoreAssert\Delta
      * @ORM\Column(name="content",  type="text", nullable=false)
+     * @JMS\Groups({"detail","list"})
      */
     private $content;
 
@@ -97,10 +107,12 @@ class Post
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="author_id", referencedColumnName="id", nullable=false)
+     * @JMS\Groups({"list","detail"})
      */
     private $author;
 
     /**
+     *
      * Many Shows have Many Images.
      * @ORM\ManyToMany(targetEntity="Image")
      * @ORM\JoinTable(name="post_image",
@@ -119,6 +131,7 @@ class Post
      *      joinColumns={@ORM\JoinColumn(name="post_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="comment_id", referencedColumnName="id", unique=true)}
      *      )
+     * @JMS\Exclude
      */
     private $comments;
 
@@ -131,6 +144,7 @@ class Post
      *      joinColumns={@ORM\JoinColumn(name="post_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="category_id", referencedColumnName="id")}
      *      )
+     * @JMS\Groups({"detail","list"})
      */
     private $categories;
 
@@ -143,8 +157,11 @@ class Post
      *      joinColumns={@ORM\JoinColumn(name="post_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
      *      )
+     * @JMS\Groups({"detail","list"})
      */
     private $tags;
+
+    private $deltaRenderer = 'HTML';
 
 
     /**
@@ -168,9 +185,18 @@ class Post
         $this->comments = new ArrayCollection();
         $this->tags = new ArrayCollection();
         $this->categories = new ArrayCollection();
-
-
     }
+
+    public function setDeltaRenderer($praser)
+    {
+        $this->deltaRenderer = $praser;
+    }
+
+    public function getDeltaRenderer()
+    {
+        return $this->deltaRenderer;
+    }
+
 
     public function getId()
     {
@@ -206,7 +232,7 @@ class Post
     }
 
     /**
-     * @param object $content
+     * @param string $content
      */
     public function setContent($content)
     {
@@ -306,6 +332,9 @@ class Post
         return $this->tags;
     }
 
+
+
+
     /**
      * @param Category $category
      */
@@ -330,6 +359,8 @@ class Post
     {
         return $this->categories;
     }
+
+
 
 
     public function getToken()

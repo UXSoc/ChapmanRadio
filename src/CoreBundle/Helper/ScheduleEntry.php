@@ -12,16 +12,26 @@ namespace CoreBundle\Helper;
 use CoreBundle\Entity\Show;
 use DateTime;
 use Symfony\Component\Cache\CacheItem;
+use JMS\Serializer\Annotation As JMS;
 
 class ScheduleEntry
 {
-    /** @var  DateTime */
+    /**
+     * @var  DateTime
+     * @JMS\Groups({"detail","list"})
+     */
     private $showDate;
 
-    /** @var  int */
+    /**
+     * @var  int
+     * @JMS\Groups({"detail","list"})
+     */
     private $length;
 
-    /** @var  Show */
+    /**
+     * @var  Show
+     * @JMS\Groups({"detail","list"})
+     */
     private $show;
 
     public function setShow(Show $show)

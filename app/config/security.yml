@@ -69,7 +69,6 @@ security:
                 success_handler: core.authentication_handler
                 failure_handler: core.authentication_handler
                 require_previous_session: false
-                require_previous_session: false
         twitter:
             anonymous: ~
             entry_point: core.authentication_handler
@@ -85,5 +84,4 @@ security:
                 check_path: /login/facebook
                 success_handler: core.authentication_handler
                 failure_handler: core.authentication_handler
-                require_previous_session: false
                 require_previous_session: false

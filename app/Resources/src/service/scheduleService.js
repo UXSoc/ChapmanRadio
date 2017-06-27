@@ -1,29 +1,17 @@
+/* @flow */
 /* global Routing */
 import axios from 'axios'
 import ScheduleEntry from './../entity/scheduleEntry'
-import Envelope from './../entity/envelope'
-import Util from './util'
 
 export default {
-  getTodaySchedule (responseCallback : (result: Envelope<ScheduleEntry>) => void, errorResponseCallback: (result: Envelope) => void) {
-    axios.get(Routing.generate('get_schedule_today')).then((response) => {
-      responseCallback(new Envelope((data) => new ScheduleEntry(data), response.data))
-    }).catch((error) => {
-      Util.handleErrorResponse(error, errorResponseCallback)
+  getTodayDate (responseCallback: (result: string) => void) {
+    return axios.get(Routing.generate('get_schedule_time')).then((response) => {
+      responseCallback(response.data.time)
     })
   },
-  getTodayDate (responseCallback : (result: Envelope<string>) => void, errorResponseCallback: (result: Envelope) => void) {
-    axios.get(Routing.generate('get_schedule_time')).then((response) => {
-      responseCallback(new Envelope((data) => data, response.data))
-    }).catch((error) => {
-      Util.handleErrorResponse(error, errorResponseCallback)
-    })
-  },
-  getCurrentDateTime (year, month, day, responseCallback : (result: Envelope<Date>) => void, errorResponseCallback: (result: Envelope) => void) {
-    axios.get(Routing.generate('get_schedule_by_date', {year: year, month: month, day: day})).then((response) => {
-      responseCallback(new Envelope((data) => data.map((r) => new ScheduleEntry(r)), response.data))
-    }).catch((error) => {
-      Util.handleErrorResponse(error, errorResponseCallback)
+  getScheduleByDate (year: number, month: number, day: number, callback: (result: [ScheduleEntry]) => void) {
+    return axios.get(Routing.generate('get_schedule_by_date', { year: year, month: month, day: day })).then((response) => {
+      callback(response.data.scheduleEntries.map((r) => new ScheduleEntry(r)))
     })
   }
 }

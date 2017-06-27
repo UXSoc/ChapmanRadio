@@ -19,8 +19,6 @@ use Twig_Environment;
  */
 class AuthSubscriber implements EventSubscriberInterface
 {
-
-
     /**
      * @var Twig_Environment
      */

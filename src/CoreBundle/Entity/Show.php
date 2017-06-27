@@ -8,6 +8,9 @@ use Doctrine\ORM\PersistentCollection;
 use CoreBundle\Validation\Constraints As CoreAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
+use JMS\Serializer\Annotation As JMS;
+
+
 /**
  * Show
  *
@@ -24,6 +27,7 @@ class Show
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @JMS\Exclude
      */
     private $id;
 
@@ -31,6 +35,7 @@ class Show
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=100, nullable=false)
+     * @JMS\Groups({"detail","list"})
      */
     private $name;
 
@@ -38,7 +43,7 @@ class Show
      * @var string
      *
      * @ORM\Column(name="token", type="string",length=20, nullable=false,unique=true)
-     *
+     * @JMS\Groups({"detail","list"})
      */
     private $token;
 
@@ -47,6 +52,7 @@ class Show
      *
      * @ORM\Column(name="slug", type="string",length=100, nullable=false,unique=true)
      * @@Assert\Regex("^[a-zA-Z0-9\-]+$/")
+     * @JMS\Groups({"detail","list"})
      */
     private $slug;
 
@@ -55,6 +61,7 @@ class Show
      *
      * @CoreAssert\Delta
      * @ORM\Column(name="description", type="text", nullable=false)
+     * @JMS\Groups({"detail"})
      */
     private $description;
 
@@ -62,6 +69,7 @@ class Show
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     * @JMS\Groups({"detail","list"})
      */
     private $createdAt;
 
@@ -76,6 +84,7 @@ class Show
      * @var boolean
      *
      * @ORM\Column(name="profanity", type="boolean", nullable=false)
+     * @JMS\Groups({"detail","list"})
      */
     private $profanity = false;
 
@@ -90,6 +99,7 @@ class Show
      * @var \DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     * @JMS\Groups({"detail","list"})
      */
     private $updatedAt;
 
@@ -110,13 +120,14 @@ class Show
     /**
      * @var boolean
      * @ORM\Column(name="archive", type="boolean", nullable=true)
+     * @JMS\Groups({"detail","list"})
      */
     private $archive = false;
 
     /**
      * @var boolean
-     *
      * @ORM\Column(name="enable_comments", type="boolean", nullable=true)
+     * @JMS\Groups({"detail","list"})
      */
     private $enableComments = false;
 
@@ -139,6 +150,7 @@ class Show
     *      inverseJoinColumns={@ORM\JoinColumn(name="comment_id", referencedColumnName="id", unique=true)}
     *      )
     * @return ArrayCollection
+    * @JMS\Exclude
     */
     private $comments;
 
@@ -157,6 +169,7 @@ class Show
      * @var string
      * @CoreAssert\Delta
      * @ORM\Column(name="excerpt", type="text", length=6000, nullable=true)
+     * @JMS\Groups({"detail","list"})
      */
     private $excerpt;
 
@@ -175,6 +188,7 @@ class Show
      *      inverseJoinColumns={@ORM\JoinColumn(name="genre_id", referencedColumnName="id")}
      *      )
      * @var PersistentCollection
+     * @JMS\Groups({"detail","list"})
      */
     private $genres;
 
@@ -188,6 +202,7 @@ class Show
      *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id",onDelete="CASCADE")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id",onDelete="CASCADE")}
      * )
+     * @JMS\Groups({"detail","list"})
      */
     private $tags;
 
@@ -200,6 +215,7 @@ class Show
      *      inverseJoinColumns={@ORM\JoinColumn(name="dj_id", referencedColumnName="id", unique=true)}
      *      )
      * @return ArrayCollection
+     * @JMS\Groups({"detail","list"})
      */
     private $djs;
 
@@ -210,6 +226,7 @@ class Show
      */
     private $events;
 
+    private $deltaRenderer = 'HTML';
 
 
     public function __construct()
@@ -236,6 +253,16 @@ class Show
             $this->token = substr(bin2hex(random_bytes(12)),10);
             $this->createdAt = new \DateTime('now');
         }
+    }
+
+    public function setDeltaRenderer($praser)
+    {
+        $this->deltaRenderer = $praser;
+    }
+
+    public function getDeltaRenderer()
+    {
+        return $this->deltaRenderer;
     }
 
     public function getExcerpt()

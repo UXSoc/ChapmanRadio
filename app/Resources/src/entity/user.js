@@ -32,27 +32,27 @@ export default class User extends BaseEntity {
     return this._roles.includes(role)
   }
 
-  setUsername (test) {
-    this._username = test
+  set username (value) {
+    this._username = value
   }
 
-  getUsername () {
+  get username () {
     return this._username
   }
 
-  getRoles () {
+  get roles () {
     return this._roles
   }
 
-  getToken () {
+  get token () {
     return this._token
   }
 
-  getUpdatedAt () {
+  get updatedAt () {
     return this._updatedAt
   }
 
-  getCreatedAt () {
+  get createdAt () {
     return this._createdAt
   }
 }

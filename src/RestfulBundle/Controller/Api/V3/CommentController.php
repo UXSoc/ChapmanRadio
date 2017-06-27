@@ -3,31 +3,28 @@
 namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Entity\Comment;
-use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Normalizer\CommentNormalizer;
-use CoreBundle\Normalizer\UserNormalizer;
+use CoreBundle\Form\CommentType;
 use CoreBundle\Repository\CommentRepository;
-use CoreBundle\Form\UserType;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\Request;
 
-
+use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/api/v3/")
  */
-class CommentController extends Controller
+class CommentController extends FOSRestController
 {
 
     /**
      * @Security("has_role('ROLE_USER')")
-     * @Route("comment/{token}", options = { "expose" = true }, name="patch_comment")
-     * @Method({"PATCH"})
+     * @Rest\Patch("comment/{token}",
+     *     options = { "expose" = true },
+     *     name="patch_comment")
+     * @Rest\View(serializerGroups={"detail"})
      */
     public function patchCommentAction(Request $request, $token)
     {
@@ -40,19 +37,18 @@ class CommentController extends Controller
         if ($comment = $commentRepository->getCommentByToken($token)) {
             $this->denyAccessUnlessGranted('edit', $comment);
 
-            $form = $this->createForm(UserType::class,$comment);
-            $form->submit($request->request->all());
-            if($form->isValid())
+            $form = $this->createForm(CommentType::class,$comment,array(
+                'method' => 'PATCH',
+            ));
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid())
             {
                 $em->persist($comment);
                 $em->flush();
-
-                return RestfulEnvelope::successResponseTemplate('Comment Saved', $comment,
-                    [new UserNormalizer(), new CommentNormalizer()])->response();
+                return $this->view(['comment' => $comment]);
             }
-
-            return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->addFormErrors($form)->response();
+            return $this->view($form);
         }
-        return RestfulEnvelope::errorResponseTemplate("Unknown comment")->setStatus(410)->response();
+        throw $this->createNotFoundException('Comment Not Found');
     }
 }

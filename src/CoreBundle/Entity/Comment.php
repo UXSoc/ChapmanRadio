@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use JMS\Serializer\Annotation As JMS;
 /**
  * Comment
  *
@@ -23,19 +23,21 @@ class Comment
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @JMS\Exclude
      */
     private $id;
 
     /**
      * @var \DateTime
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
+     * @JMS\Groups({"detail","list"})
      */
     private $createdAt;
 
     /**
      * @var \DateTime
-     *
      * @ORM\Column(name="update_at", type="datetime", nullable=true)
+     * @JMS\Groups({"detail","list"})
      */
     private $updateAt;
 
@@ -43,13 +45,14 @@ class Comment
      * @var string
      * @Assert\NotBlank()
      * @ORM\Column(name="content", type="text", length=65535, nullable=true)
+     * @JMS\Groups({"detail","list"})
      */
     private $content;
 
     /**
      * @var string
      * @ORM\Column(name="token", type="string",length=100, nullable=false,unique=true)
-     *
+     * @JMS\Groups({"detail","list"})
      */
     private $token;
 
@@ -60,6 +63,7 @@ class Comment
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="comment_id", referencedColumnName="id")
      * })
+     * @JMS\Exclude
      */
     private $parentComment = null;
 
@@ -71,6 +75,7 @@ class Comment
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id", referencedColumnName="comment_id")
      * })
+     * @JMS\Groups({"list"})
      */
     private $childrenComment = null;
 
@@ -81,20 +86,21 @@ class Comment
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      * })
+     * @JMS\Groups({"detail","list"})
      */
     private $user;
 
     /**
      * @var Collection
      * @ORM\ManyToMany(targetEntity="Post",mappedBy="comments")
-     *
+     * @JMS\Groups({"detail"})
      */
     private $post;
 
     /**
      * @var Collection
      * @ORM\ManyToMany(targetEntity="Show",mappedBy="comments")
-     *
+     * @JMS\Groups({"detail"})
      */
     private $show;
 

@@ -1,5 +1,4 @@
 export default class BaseEntity {
-
   get (key: string, prop: any, value: any = null) {
     if (key in prop) { return prop[key] } else { return value }
   }

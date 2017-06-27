@@ -1,29 +1,51 @@
+/* @flow */
 /* global Routing */
 import axios from 'axios'
-import Pagination from './../entity/pagination'
-import Post from './../entity/post'
-import Envelope from './../entity/envelope'
-import Util from './util'
 import User from './../entity/user'
+import Form from './../entity/form'
 import qs from 'qs'
 
 export default {
-  getStatus: function (responseCallback : (result: Envelope<Pagination<Post>>) => void, errorResponseCallback: (result: Envelope) => void) {
-    axios.get(Routing.generate('get_user_status')).then((response) => {
-      responseCallback(new Envelope((userData) => new User(userData), response.data))
-    }).catch((error) => {
-      Util.handleErrorResponse(error, errorResponseCallback)
+  getStatus: function (callback: (callback: User) => void) {
+    return axios.get(Routing.generate('get_user_status')).then((response) => {
+      callback(new User(response.data.user))
     })
   },
-  login: function (responseCallback: (result: Envelope) => void, errorResponseCallback: (result: Envelope) => void, username: string, password: string, rememberMe: boolean) {
-    axios.post('/login', qs.stringify({
-      '_username': username,
-      '_password': password,
-      '_remember_me': rememberMe
+  login: function (payload: {
+    username: string,
+    password: string,
+    rememberMe: boolean
+  }, callback: (result) => void) {
+    return axios.post('/login', qs.stringify({
+      '_username': payload.username,
+      '_password': payload.password,
+      '_remember_me': payload.rememberMe
     })).then(function (response) {
-      responseCallback(new Envelope(() => null, response.data))
-    }).catch(function (error) {
-      Util.handleErrorResponse(error, errorResponseCallback)
+      callback(new Form(response.data))
+    }).catch((error) => {
+      if (error.response) {
+        if (error.response.status === 400) {
+          callback(new Form(error.response.data))
+        }
+      }
+    })
+  },
+  register: function (payload: {
+    email: string,
+    name: string,
+    username: string,
+    plainTextPassword: string,
+    studentId: string
+  }, callback: (result: Form) => void) {
+    payload['submit'] = ''
+    return axios.post(Routing.generate('post_register'), { user: payload }).then(function (response) {
+      callback(new Form(response.data))
+    }).catch((error) => {
+      if (error.response) {
+        if (error.response.status === 400) {
+          callback(new Form(error.response.data))
+        }
+      }
     })
   }
 }

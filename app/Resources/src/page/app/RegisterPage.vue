@@ -40,9 +40,11 @@
 </template>
 
 <script>
+  /* @flow */
   import { Validator } from 'vee-validate'
   import FormGroup from '../../components/FormGroup.vue'
-  import axios from 'axios/dist/axios'
+  import AuthService from '../../service/authService'
+  import Form from '../../entity/form'
   export default{
     data () {
       return {
@@ -57,16 +59,7 @@
       }
     },
     methods: {
-      validateForm: function () {
-      },
       register: function () {
-        let params = new URLSearchParams()
-        params.append('name', this.name)
-        params.append('username', this.username)
-        params.append('password', this.password)
-        params.append('studentId', this.studentId)
-        params.append('email', this.email)
-
         this.validator.validateAll({
           name: this.name,
           username: this.username,
@@ -74,13 +67,17 @@
           studentId: this.studentId,
           email: this.email
         }).then(() => {
-          let _this = this
-          axios.post(Routing.generate('post_register'), params).then(function (response) {
-            _this.showVerification = true
-          }).catch(function (error) {
-            let e = error.response.data.errors
-            for (let i = 0; i < e.length; i++) {
-              _this.validator.errorBag.add(e[i].field, e[i].message)
+          AuthService.register({
+            name: this.name,
+            username: this.username,
+            plainTextPassword: this.password,
+            studentId: this.studentId,
+            email: this.email
+          }, (result: Form) => {
+            if (result.code > 0) {
+              result.FillErrobag(this.validator.errorBag, { plainTextPassword: 'password' })
+            } else {
+              this.showVerification = true
             }
           })
         })
@@ -109,15 +106,16 @@
     },
     created () {
       this.validator = new Validator()
-      this.validator.attach('name', 'required', {prettyName: 'Name'})
-      this.validator.attach('username', 'required', {prettyName: 'Username'})
-      this.validator.attach('email', 'required|email', {prettyName: 'Email'})
-      this.validator.attach('studentId', 'digits:7', {prettyName: 'Student Id'})
-      this.validator.attach('password', 'required|confirmed:password_confirmed', {prettyName: 'Password'})
-      this.validator.attach('password_confirmed', 'required', {prettyName: 'Confirm Password'})
+      this.validator.attach('name', 'required', { prettyName: 'Name' })
+      this.validator.attach('username', 'required', { prettyName: 'Username' })
+      this.validator.attach('email', 'required|email', { prettyName: 'Email' })
+      this.validator.attach('studentId', 'digits:7', { prettyName: 'Student Id' })
+      this.validator.attach('password', 'required|confirmed:password_confirmed', { prettyName: 'Password' })
+      this.validator.attach('password_confirmed', 'required', { prettyName: 'Confirm Password' })
     },
     components: {
       FormGroup
     }
   }
+
 </script>

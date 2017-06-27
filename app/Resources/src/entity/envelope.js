@@ -34,11 +34,10 @@ export default class Envelope<T> extends BaseEntity {
   }
 
   fillErrorBag (errorBag : ErrorBag) {
-    for (let key in this._errors) {
+    for (const key in this._errors) {
       if (typeof this._errors[key] === 'string') {
         errorBag.add(key, this._errors[key])
       }
     }
   }
-
 }

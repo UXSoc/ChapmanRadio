@@ -1,7 +1,7 @@
 <template>
     <div class="post-entry" v-if="show">
-        <h2><router-link :to="show.getRoute()" :exact="true" tag="a">{{show.getName()}}</router-link></h2>
-        <div v-html="show.getDescription()"></div>
+        <h2><router-link :to="show.getRoute()" :exact="true" tag="a">{{show.name}}</router-link></h2>
+        <div v-html="show.description"></div>
         <slot></slot>
     </div>
 </template>

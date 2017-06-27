@@ -9,11 +9,19 @@
 namespace CoreBundle\Form\DataTransformer;
 
 
+use CoreBundle\Entity\Genre;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class GenreTransformer  implements DataTransformerInterface
 {
+    private $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
 
     /**
      * Transforms a value from the original representation to a transformed representation.
@@ -36,7 +44,7 @@ class GenreTransformer  implements DataTransformerInterface
      * By convention, transform() should return an empty string if NULL is
      * passed.
      *
-     * @param mixed $value The value in the original representation
+     * @param Genre $value The value in the original representation
      *
      * @return mixed The value in the transformed representation
      *
@@ -44,7 +52,10 @@ class GenreTransformer  implements DataTransformerInterface
      */
     public function transform($value)
     {
-        // TODO: Implement transform() method.
+        if (null === $value) {
+            return '';
+        }
+        return $value->getGenre();
     }
 
     /**
@@ -65,7 +76,7 @@ class GenreTransformer  implements DataTransformerInterface
      * By convention, reverseTransform() should return NULL if an empty string
      * is passed.
      *
-     * @param mixed $value The value in the transformed representation
+     * @param string $value The value in the transformed representation
      *
      * @return mixed The value in the original representation
      *
@@ -73,6 +84,17 @@ class GenreTransformer  implements DataTransformerInterface
      */
     public function reverseTransform($value)
     {
-        // TODO: Implement reverseTransform() method.
+        if (!$value) {
+            return null;
+        }
+
+        $genre = $this->em->getRepository(Genre::class)->findOneBy(['genre' => $value]);
+
+        if (!$genre) {
+            $genre = new Genre();
+            $genre->setGenre($value);
+        }
+
+        return $genre;
     }
 }

@@ -3,31 +3,28 @@
 namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Entity\User;
-use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Form\Items\ResetPassword;
 use CoreBundle\Form\ResetPasswordType;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
  * @Route("/api/v3")
  */
-class AccountController extends Controller
+class AccountController extends FOSRestController
 {
     /**
      * @Security("has_role('ROLE_USER')")
-     * @Route("/account/new-password",
+     * @Rest\Post("/account/new-password",
      *     options = { "expose" = true },
      *     name="post_account_password")
-     * @Method({"POST"})
      */
-    public  function  patchChangePasswordAction(Request $request)
+    public function  postChangePasswordAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -40,17 +37,14 @@ class AccountController extends Controller
             'password_encoder' => $passwordEncoder,
             'user' => $user]);
         $form->submit($request->request->all());
-        if($form->isValid())
+        if($form->isSubmitted() && $form->isValid())
         {
             $data = $form->getData();
-
             $new_password = $passwordEncoder->encodePassword($user,$data["newPassword"]);
             $user->setPassword($new_password);
             $em->persist($user);
             $em->flush();
-            return RestfulEnvelope::successResponseTemplate('Password Changed')->response();
         }
-        return RestfulEnvelope::errorResponseTemplate("Invalid Password")->setStatus(410)->addFormErrors($form)->response();
-
-    }
+        return $this->view($form);
+     }
 }

@@ -34,7 +34,7 @@ class TagTransformer implements DataTransformerInterface
      * By convention, transform() should return an empty string if NULL is
      * passed.
      *
-     * @param mixed $value The value in the original representation
+     * @param Tag $value The value in the original representation
      *
      * @return mixed The value in the transformed representation
      *
@@ -45,13 +45,13 @@ class TagTransformer implements DataTransformerInterface
         if (null === $value) {
             return '';
         }
-        return $value;
+        return $value->getTag();
     }
 
     /**
      * Transforms a value from the transformed representation to its original
      * representation.
-     * @param Tag $value The value in the transformed representation
+     * @param string $value The value in the transformed representation
      *
      * @return mixed The value in the original representation
      *
@@ -63,7 +63,7 @@ class TagTransformer implements DataTransformerInterface
             return null;
         }
 
-        $tag = $this->em->getRepository(Tag::class)->findOneBy(['tag' => $value->getTag()]);
+        $tag = $this->em->getRepository(Tag::class)->findOneBy(['tag' => $value]);
 
         if (!$tag) {
             $tag = new Tag();

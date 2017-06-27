@@ -15,6 +15,7 @@
 </template>
 
 <script>
+    /* @flow */
     import NewPasswordForm from './../../../form/NewPasswordForm.vue'
     export default {
       data () {

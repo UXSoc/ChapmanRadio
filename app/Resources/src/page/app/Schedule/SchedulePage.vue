@@ -28,9 +28,6 @@
                     <schedule-tab :date="start.clone().add(8, 'days')" :today="current"></schedule-tab>
                 </div>
             </div>
-            <div class="row">
-                <router-view></router-view>
-            </div>
 
             <div class="row">
                 <div class="col-md-12 nopadding schedule-nextday">
@@ -47,6 +44,7 @@
 </template>
 
 <script>
+    /* @flow */
     import ScheduleEntry from '../../../components/ScheduleEntry.vue'
     import ScheduleService from '../../../service/scheduleService'
     import Moment from 'moment'
@@ -61,12 +59,12 @@
       methods: {
         updateSchedule: function () {
           const _this = this
-          ScheduleService.getTodayDate((envelope) => {
-            _this.$set(_this, 'current', Moment(envelope.getResult()))
+          ScheduleService.getTodayDate((date) => {
+            _this.$set(_this, 'current', Moment(date))
             if (_this.$route.name === 'schedule_list') {
-              _this.$set(_this, 'start', Moment().set({year: _this.$route.params.year, month: _this.$route.params.month, date: _this.$route.params.day}))
+              _this.$set(_this, 'start', Moment().set({ year: _this.$route.params.year, month: _this.$route.params.month, date: _this.$route.params.day }))
             } else {
-              _this.$set(_this, 'start', Moment(envelope.getResult()))
+              _this.$set(_this, 'start', Moment(date))
             }
           }, (envelope) => {
           })

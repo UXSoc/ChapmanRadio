@@ -21,57 +21,49 @@
 </template>
 
 <script>
-    import PostExcerpt from '../../../components/PostExcerpt.vue'
-    import PostService from '../../../service/postService'
-    import Pagination from '../../../entity/pagination'
-    import Post from '../../../entity/post'
-    import $ from 'jquery'
-    export default{
-      props: {
+  import PostExcerpt from '../../../components/PostExcerpt.vue'
+  import PostService from '../../../service/postService'
+  import Post from '../../../entity/post'
+  import Paginator from '../../../entity/pagination'
+  import $ from 'jquery'
+  export default{
+    props: {},
+    data () {
+      return {
+        pagination: null,
+        data: [],
+        loading: false
+      }
+    },
+    methods: {
+      query: function (page) {
+        this.loading = true
+        PostService.getPosts(page, (data: Paginator<Post>) => {
+          this.loading = false
+          this.$set(this, 'data', this.data.concat(data.result))
+          this.$set(this, 'pagination', data)
+        })
       },
-      data () {
-        return {
-          pagination: null,
-          data: [],
-          loading: false
-        }
-      },
-      methods: {
-        query: function (page) {
-          let _this = this
-          _this.loading = true
-          PostService.getPosts(page, (data) => {
-            _this.loading = false
-            let pagination : Pagination = data.getResult()
-            let posts: [Post] = pagination.getResult()
-            let result = _this.data
-            result = result.concat(posts)
-            _this.$set(_this, 'data', result)
-            _this.$set(_this, 'pagination', pagination)
-          }, (data) => {
-          })
-        },
-        handleScroll () {
-          if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
-            if (!this.loading) {
-              if (this.pagination.getCurrentPage() <= this.pagination.getMaxPage()) {
-                this.query(this.pagination.getNextPage())
-              }
+      handleScroll () {
+        if ($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
+          if (!this.loading) {
+            if (this.pagination.currentPage <= this.pagination.maxPage) {
+              this.query(this.pagination.getNextPage())
             }
           }
         }
-      },
-      watch: {
-      },
-      created () {
-        this.query(0)
-        window.addEventListener('scroll', this.handleScroll)
-      },
-      destroyed () {
-        window.removeEventListener('scroll', this.handleScroll)
-      },
-      components: {
-        PostExcerpt
       }
+    },
+    watch: {},
+    created () {
+      this.query(0)
+      window.addEventListener('scroll', this.handleScroll)
+    },
+    destroyed () {
+      window.removeEventListener('scroll', this.handleScroll)
+    },
+    components: {
+      PostExcerpt
     }
+  }
 </script>

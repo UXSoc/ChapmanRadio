@@ -62,6 +62,7 @@
 </template>
 
 <script>
+    /* @flow */
   import $ from 'jquery'
 
   export default{

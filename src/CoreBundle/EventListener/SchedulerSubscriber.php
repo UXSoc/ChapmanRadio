@@ -7,22 +7,14 @@
  */
 
 namespace CoreBundle\EventListener;
-
-
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use CoreBundle\Caches;
-use CoreBundle\Entity\Schedule;
-use CoreBundle\Event\CommentEvent;
 use CoreBundle\Event\ScheduleBetweenEvent;
 use CoreBundle\Events;
 use CoreBundle\Helper\CacheableRule;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Psr\Cache\CacheItemPoolInterface;
-use Recurr\RecurrenceCollection;
-use Recurr\Transformer\ArrayTransformer;
-use Recurr\Transformer\Constraint\BeforeConstraint;
-use RRule\RRule;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SchedulerSubscriber implements EventSubscriberInterface
@@ -31,7 +23,7 @@ class SchedulerSubscriber implements EventSubscriberInterface
     private $register;
     private $cacheService;
 
-    function __construct(RegistryInterface $register,CacheItemPoolInterface  $cacheService)
+    function __construct(ManagerRegistry $register,CacheItemPoolInterface  $cacheService)
     {
         $this->register = $register;
         $this->cacheService = $cacheService;

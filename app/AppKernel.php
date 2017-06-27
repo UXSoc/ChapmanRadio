@@ -20,9 +20,10 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle(),
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new BroadcastBundle\BroadcastBundle(),
-            new \HybridAuthBundle\HybridAuthBundle()
+            new \HybridAuthBundle\HybridAuthBundle(),
+            new \JMS\SerializerBundle\JMSSerializerBundle(),
+            new \FOS\RestBundle\FOSRestBundle()
         ];
-
         if (in_array($this->getEnvironment(), ['dev', 'test','hot'], true)) {
             $bundles[] = new Symfony\Bundle\DebugBundle\DebugBundle();
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
