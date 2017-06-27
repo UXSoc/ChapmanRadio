@@ -13,7 +13,7 @@
         <select v-model="numEntries">
             <option v-for="r in range" :value="r">{{r}}</option>
         </select>
-        <pagination v-if="hasPagination()" @onPageChange="triggerPageChange" :pagination="dataTable.getPayload()"></pagination>
+        <pagination v-if="hasPagination()" @onPageChange="triggerPageChange" :pagination="dataTable.payload"></pagination>
     </div>
 </template>
 
@@ -21,6 +21,7 @@
   import Paginator from '../entity/pagination'
   import Pagination from './Pagination.vue'
   import Datatable from './../entity/dataTable'
+
   export default{
     props: {
       dataTable: {
@@ -46,13 +47,13 @@
         this.$emit('onPageChange', value)
       },
       hasPagination () {
-        return this.dataTable.getPayload() instanceof Paginator
+        return this.dataTable.payload instanceof Paginator
       },
       getPayload () {
         if (this.hasPagination()) {
-          return this.dataTable.getPayload().getResult()
+          return this.dataTable.payload.result
         } else {
-          return this.dataTable.getPayload()
+          return this.dataTable.payload
         }
       }
     },

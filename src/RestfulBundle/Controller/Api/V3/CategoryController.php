@@ -56,47 +56,4 @@ class CategoryController extends FOSRestController
         return $this->createNotFoundException("Can't Find Category");
     }
 
-    /**
-     * @Security("has_role('ROLE_STAFF')")
-     * @Rest\Put("/category/{category}",
-     *     options = { "expose" = true },
-     *     name="put_category")
-     */
-    public function putCategoryAction($category)
-    {
-        $em = $this->getDoctrine()->getManager();
-        /** @var CategoryRepository $categoryRepository */
-        $categoryRepository = $em->getRepository(Category::class);
-
-        if($result = $categoryRepository->getCategory($category))
-            return $this->createNotFoundException("Can't Find Category");
-
-        $c = new Category();
-        $c->setCategory($category);
-        $em->persist($c);
-        $em->flush();
-        return $this->view(['category' => $c->getCategory()]);
-    }
-
-    /**
-     * @Security("has_role('ROLE_STAFF')")
-     * @Rest\Delete("/category/{category}",
-     *     options = { "expose" = true },
-     *     name="delete_category")
-     */
-    public function deleteCategoryAction($category)
-    {
-        $em = $this->getDoctrine()->getManager();
-        /** @var CategoryRepository $categoryRepository */
-        $categoryRepository = $em->getRepository(Category::class);
-        /** @var Category $result */
-        if( $result = $categoryRepository->getCategory($category))
-        {
-            $em->remove($result);
-            $em->flush();
-            return $this->view(['category' => $result->getCategory()]);
-        }
-        return $this->createNotFoundException("Can't Find Category");
-    }
-
 }

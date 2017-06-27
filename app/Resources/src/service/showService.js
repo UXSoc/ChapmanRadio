@@ -10,10 +10,10 @@ import Comment from './../entity/comment'
 import Form from './../entity/form'
 
 export default {
-  getShowsDatatable: function (page: number, sort: [], responseCallback: (result: Envelope<Datatable<Pagination<Show>>>) => void, errorResponseCallback: (result: Envelope) => void, filter: any = {}) {
+  getShowsDatatable: function (page: number, sort: [], callback: (result: Datatable<Pagination<Show>>) => void, filter: any = {}) {
     const result = Object.assign({ page: page, sort: sort }, filter)
     return axios.get(Routing.generate('get_show_dataTable') + '?' + qs.stringify(result)).then((response) => {
-      responseCallback(new Datatable((paginationData) => new Pagination((postData) => new Show(postData), paginationData), response.data.payload))
+      callback(new Datatable((paginationData) => new Pagination((postData) => new Show(postData), paginationData), response.data.datatable))
     })
   },
   getShows: function (page: number, responseCallback: (result: Pagination<Show>) => void, filter: any = {}) {

@@ -43,7 +43,7 @@ class ScheduleController extends FOSRestController
      *     name="get_schedule_by_date")
      * @Rest\View(serializerGroups={"list"})
      */
-    public function getCurrentDateTimeAction(Request $request,$year,$month,$day)
+    public function getScheduleByDayYearMonthAction(Request $request,$year,$month,$day)
     {
         $c = Carbon::create($year,$month,$day);
 
@@ -78,69 +78,6 @@ class ScheduleController extends FOSRestController
     }
 
 
-    /**
-     * @Rest\Patch("/schedule/{token}",
-     *     options = { "expose" = true },
-     *     name="patch_show_schedule")
-     */
-    public function patchScheduleAction(Request $request, $token)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var ScheduleRepository $scheduleRepository */
-        $scheduleRepository = $this->get(Schedule::class);
-
-        /** @var Schedule $schedule */
-        if($schedule = $scheduleRepository->getByToken($token)) {
-
-            $form = $this->createForm(ScheduleType::class,$schedule);
-            $form->submit($request->request->all());
-            if($form->isSubmitted() && $form->isValid())
-            {
-                $em->persist($schedule);
-                $em->flush();
-            }
-            return $this->view($form);
-        }
-        throw  $this->createNotFoundException("Can't find Show");
-    }
-
-
-
-
-    /**
-     * @@Rest\Post("/show/{token}/{slug}/schedule",
-     *     options = { "expose" = true },
-     *     name="post_show_schedule")
-     */
-    public function postScheduleAction(Request $request, $token, $slug)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var ShowRepository $showRepository */
-        $showRepository = $this->get(Show::class);
-
-        /** @var Show $show */
-        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug))
-        {
-            $schedule = new Schedule();
-
-            $form = $this->createForm(ScheduleType::class,$schedule);
-            $form->submit($request->request->all());
-            if($form->isValid())
-            {
-                $em->persist($schedule);
-                $show->addSchedule($schedule);
-                $em->persist($show);
-                $em->flush();
-            }
-            return $this->view($form);
-        }
-        throw  $this->createNotFoundException("Unknown Schedule");
-    }
-
-
-
 
     /**
      * @Rest\Get("/show/{token}/{slug}/schedule/{year}/{month}",
@@ -172,7 +109,7 @@ class ScheduleController extends FOSRestController
      *     options = { "expose" = true },
      *     name="get_schedule_month")
      */
-    public function getSchedule(Request $request, $year, $month)
+    public function getScheduleMonthAction(Request $request, $year, $month)
     {
         /** @var ScheduleRepository $scheduleRepository */
         $scheduleRepository = $this->get(Schedule::class);

@@ -9,8 +9,6 @@
 namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Entity\Tag;
-use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Normalizer\TagNormalizer;
 use CoreBundle\Repository\TagRepository;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,48 +54,4 @@ class TagController extends FOSRestController
         throw $this->createNotFoundException("Tag Not Found");
     }
 
-    /**
-     * @Security("has_role('ROLE_STAFF')")
-     * @Rest\Put("/tag/{tag}",
-     *     options = { "expose" = true },
-     *     name="put_tag")
-     */
-    public function putTagAction($tag)
-    {
-
-        $em = $this->getDoctrine()->getManager();
-        /** @var TagRepository $tagRepository */
-        $tagRepository = $em->getRepository(Tag::class);
-
-        if($result = $tagRepository->getTag($tag))
-            return RestfulEnvelope::errorResponseTemplate('Tag duplicate')->response();
-
-        $c = new Tag();
-        $c->setTag($tag);
-        $em->persist($c);
-        $em->flush();
-        return RestfulEnvelope::successResponseTemplate('Tag added', $c,
-            [new TagNormalizer()])->response();
-    }
-
-    /**
-     * @Security("has_role('ROLE_STAFF')")
-     * @Rest\Delete("/tag/{tag}",
-     *     options = { "expose" = true },
-     *     name="delete_tag")
-     */
-    public function deleteTagAction($tag)
-    {
-        $em = $this->getDoctrine()->getManager();
-        /** @var TagRepository $tagRepository */
-        $tagRepository = $em->getRepository(Tag::class);
-        if( $result = $tagRepository->getTag($tag))
-        {
-            $em->remove($result);
-            $em->flush();
-            return RestfulEnvelope::successResponseTemplate('Tag deleted', $result,
-                [new TagNormalizer()])->response();
-        }
-        return RestfulEnvelope::errorResponseTemplate('Tag not found')->setStatus(410)->response();
-    }
 }

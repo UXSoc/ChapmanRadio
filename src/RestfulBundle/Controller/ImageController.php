@@ -8,23 +8,16 @@
 
 namespace RestfulBundle\Controller;
 
-
-use CoreBundle\Controller\BaseController;
-
 use CoreBundle\Entity\Image;
-use CoreBundle\Helper\ErrorWrapper;
-use CoreBundle\Helper\RestfulEnvelope;
-use CoreBundle\Normalizer\WrapperNormalizer;
 use CoreBundle\Repository\ImageRepository;
 use CoreBundle\Service\ImageUploadService;
 use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\FOSRestBundle;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Request;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\Request;
 
 class ImageController  extends FOSRestController
 {

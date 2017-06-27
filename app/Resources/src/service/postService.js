@@ -10,10 +10,10 @@ import Datatable from './../entity/dataTable'
 import Form from './../entity/form'
 
 export default {
-  getPostsDatatable: function (page : number, sort : [], responseCallback : (result: Envelope<Datatable<Pagination<Post>>>) => void, filter: any = {}) {
+  getPostsDatatable: function (page : number, sort : [], callback : (result: Envelope<Datatable<Pagination<Post>>>) => void, filter: any = {}) {
     const result = Object.assign({ page: page, sort: sort }, filter)
     return axios.get(Routing.generate('get_post_dataTable') + '?' + qs.stringify(result)).then((response) => {
-      responseCallback(new Envelope((dataTableData) => new Datatable((paginationData) => new Pagination((postData) => new Post(postData), paginationData), dataTableData), response.data.payload))
+      callback(new Datatable((paginationData) => new Pagination((postData) => new Post(postData), paginationData), response.data.datatable))
     })
   },
   getPosts: function (page : number, responseCallback : (result: Pagination<Post>) => void, filter: any = {}) {

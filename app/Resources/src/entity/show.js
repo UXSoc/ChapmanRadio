@@ -102,4 +102,10 @@ export default class Show extends BaseEntity {
       name: 'show_single', params: { token: this.token, slug: this.slug }
     }
   }
+
+  getRouteToEdit () : {name: string, params: { token: string, slug:string}} {
+    return {
+      name: 'dashboard_show_edit', params: { token: this.token, slug: this.slug }
+    }
+  }
 }

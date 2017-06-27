@@ -3,11 +3,10 @@
 </template>
 
 <script>
-    /* @flow */
+  /* @flow */
   export default{
     data () {
-      return {
-      }
+      return {}
     }
   }
 </script>

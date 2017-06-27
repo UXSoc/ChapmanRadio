@@ -5,7 +5,6 @@ namespace CoreBundle\Controller;
 use CoreBundle\Event\UserEvent;
 use CoreBundle\Events;
 use CoreBundle\Form\UserType;
-use CoreBundle\Helper\RestfulEnvelope;
 use CoreBundle\Service\UserTokenService;
 use FOS\RestBundle\Controller\FOSRestController;
 use CoreBundle\Entity\User;

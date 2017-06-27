@@ -11,12 +11,12 @@
                         </template>
                         <template slot="result" scope="props">
                             <tr>
-                                <td>{{props.item.getToken()}}</td>
-                                <td>{{props.item.getSlug()}}</td>
-                                <td>{{props.item.getCreatedAt()}}</td>
-                                <td>{{props.item.getUpdatedAt()}}</td>
-                                <td>{{props.item.getName()}}</td>
-                                <td>{{props.item.getStrikes()}}</td>
+                                <td><router-link :to="props.item.getRouteToEdit ()">{{props.item.token}}</router-link></td>
+                                <td><router-link :to="props.item.getRouteToEdit ()">{{props.item.slug}}</router-link></td>
+                                <td><router-link :to="props.item.getRouteToEdit ()">{{props.item.createdAt}}</router-link></td>
+                                <td><router-link :to="props.item.getRouteToEdit ()">{{props.item.updatedAt}}</router-link></td>
+                                <td><router-link :to="props.item.getRouteToEdit ()">{{props.item.name}}</router-link></td>
+                                <td><router-link :to="props.item.getRouteToEdit ()">{{props.item.strikes}}</router-link></td>
                             </tr>
                         </template>
                     </datatable>
@@ -28,42 +28,41 @@
 
 <script>
     /* @flow */
-  import Datatable from './../../../components/Datatable.vue'
-  import ShowService from './../../../service/showService'
-  export default{
-    props: {
-    },
-    data () {
-      return {
-        dataTable: null,
-        pageChange: 0,
-        numEntries: 10
-      }
-    },
-    methods: {
-      triggerPageChange: function (value) {
-        this.pageChange = value
-        this.query()
+    import Datatable from './../../../components/Datatable.vue'
+    import ShowService from './../../../service/showService'
+
+    export default {
+      props: {},
+      data () {
+        return {
+          dataTable: null,
+          page: 0,
+          numEntries: 10
+        }
       },
-      triggerEntries: function (value) {
-        this.numEntries = value
-        this.query()
+      methods: {
+        triggerPageChange: function (value) {
+          this.pageChange = value
+          this.query()
+        },
+        triggerEntries: function (value) {
+          this.numEntries = value
+          this.query()
+        },
+        query: function () {
+          const _this = this
+          ShowService.getShowsDatatable(_this.pageChange, [], function (datatable) {
+            _this.$set(_this, 'dataTable', datatable)
+          }, {
+            entries: _this.numEntries
+          })
+        }
       },
-      query: function () {
-        let _this = this
-        ShowService.getShowsDatatable(_this.pageChange, [], function (envelope) {
-          _this.$set(_this, 'dataTable', envelope.getResult())
-        }, function (envelope) {
-        }, {
-          entries: _this.numEntries
-        })
+      components: {
+        Datatable
+      },
+      created () {
+        this.query()
       }
-    },
-    components: {
-      Datatable
-    },
-    created () {
-      this.query()
     }
-  }
 </script>

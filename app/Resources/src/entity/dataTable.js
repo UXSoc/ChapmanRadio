@@ -10,11 +10,11 @@ export default class Datatable<T> extends BaseEntity {
     }
   }
 
-  getPayload () {
+  get payload () {
     return this._payload
   }
 
-  getSort () {
+  get sort () {
     return this._sort
   }
 

@@ -11,9 +11,9 @@
                     </template>
                     <template slot="result" scope="props">
                         <tr>
-                            <td><router-link :to="props.item.getRouteToEdit ()">{{props.item.getToken()}}</router-link></td>
-                            <td><router-link :to="props.item.getRouteToEdit ()">{{props.item.getSlug()}}</router-link></td>
-                            <td><router-link :to="props.item.getRouteToEdit ()">{{props.item.getName()}}</router-link></td>
+                            <td><router-link :to="props.item.getRouteToEdit ()">{{props.item.token}}</router-link></td>
+                            <td><router-link :to="props.item.getRouteToEdit ()">{{props.item.slug}}</router-link></td>
+                            <td><router-link :to="props.item.getRouteToEdit ()">{{props.item.name}}</router-link></td>
                         </tr>
                     </template>
                 </datatable>
@@ -48,9 +48,9 @@
         this.query()
       },
       query: function () {
-        let _this = this
-        PostService.getPostsDatatable(_this.page, [], function (envelope) {
-          _this.$set(_this, 'dataTable', envelope.getResult())
+        const _this = this
+        PostService.getPostsDatatable(_this.page, [], function (datatable) {
+          _this.$set(_this, 'dataTable', datatable)
         }, function (envelope) {
         }, {
           entries: _this.numEntries
