@@ -11,7 +11,7 @@
     import PostService from '../../../service/postService'
     import PostItem from '../../../components/PostItem.vue'
     import CommentItem from '../../../components/CommentItem.vue'
-//    import CommentService from '../../../service/commentService'
+    import CommentService from '../../../service/commentService'
     import Post from '../../../entity/post'
     import Comment from '../../../entity/comment'
     import Form from '../../../entity/form'
@@ -34,15 +34,20 @@
           })
         },
         editComment (markdown: string, comment: Comment, commentItem: CommentItem) {
+          CommentService.patchComment(comment, markdown, (resp) => {
+            if (resp instanceof Form) {
+            }
+            if (resp instanceof Comment) {
+              comment.content = resp.content
+            }
+          })
         },
         respondComment (markdown: string, comment: Comment, commentItem: CommentItem) {
-          const _this = this
           PostService.postPostComment(this.post, markdown, comment, (resp) => {
             if (resp instanceof Form) {
             }
             if (resp instanceof Comment) {
               comment.unshift(resp)
-//              _this.$set(comment, 'children', comment.children)
             }
           })
         }

@@ -3,20 +3,13 @@
 namespace CoreBundle\Handler;
 
 use CoreBundle\Entity\User;
-use CoreBundle\Helper\ErrorWrapper;
-use CoreBundle\Helper\SuccessWrapper;
-use CoreBundle\Normalizer\UserNormalizer;
-use CoreBundle\Normalizer\WrapperNormalizer;
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -24,7 +17,7 @@ use Symfony\Component\Security\Core\Exception\InsufficientAuthenticationExceptio
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
-use Symfony\Component\Serializer\Serializer;
+
 
 
 class AuthenticationHandler implements AuthenticationEntryPointInterface,AuthenticationFailureHandlerInterface, AuthenticationSuccessHandlerInterface
@@ -40,7 +33,7 @@ class AuthenticationHandler implements AuthenticationEntryPointInterface,Authent
      * @param SessionInterface $session
      * @param RegistryInterface $registry
      */
-    public function __construct(RouterInterface $router, SessionInterface $session, RegistryInterface $registry,ViewHandlerInterface $handler)
+    public function __construct(RouterInterface $router, SessionInterface $session, ManagerRegistry $registry,ViewHandlerInterface $handler)
     {
         $this->router = $router;
         $this->session = $session;

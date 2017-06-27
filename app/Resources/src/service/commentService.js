@@ -7,7 +7,7 @@ import Comment from './../entity/comment'
 
 export default {
   patchComment: function (comment: Comment, response: string, callback : (result: Envelope<Comment>) => void) {
-    return axios.patch(Routing.generate('patch_comment', { token: comment.getToken() }), qs.stringify({ content: response })).then((response) => {
+    return axios.patch(Routing.generate('patch_comment', { token: comment.token }), qs.stringify({ comment: { content: response }})).then((response) => {
       callback(new Comment(response.data.comment))
     })
   }

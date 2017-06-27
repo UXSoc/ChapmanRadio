@@ -1,7 +1,7 @@
 <template>
     <div>
         <show-item :show="show">
-            <comment-item v-if="comments"  v-for="comm in comments" :comment="comm" :key="comm.getToken()" :respondCallback="respondCallback" :editCallback="editCallback"></comment-item>
+            <comment-item v-if="comments"  v-for="comm in comments" :comment="comm" :key="comm.token" @respond="respondComment" @edit="editComment"></comment-item>
         </show-item>
     </div>
 </template>
@@ -13,7 +13,7 @@
   import ShowItem from '../../../components/ShowItem.vue'
   import CommentService from '../../../service/commentService'
   import ShowService from '../../../service/showService'
-  import Envelope from '../../../entity/envelope'
+  import Form from '../../../entity/form'
   import Comment from '../../../entity/comment'
 
   export default{
@@ -27,26 +27,28 @@
       query () {
         const _this = this
         ShowService.getShow(this.$route.params.token, this.$route.params.slug, (data) => {
-          _this.$set(_this, 'show', data.getResult())
-        }, (data) => {
-        })
-        ShowService.getShowComments(this.$route.params.token, this.$route.params.slug, null, (data) => {
-          _this.$set(_this, 'comments', data.getResult())
-        }, (data) => {
+          _this.$set(_this, 'show', data)
+          ShowService.getShowComments(data, null, (data) => {
+            _this.$set(_this, 'comments', data)
+          })
         })
       },
-      editCallback (current: Comment, response: string, successcallback: (e: Envelope<Comment>) => void, failCallback: (e: Envelope) => void) {
-        CommentService.patchComment(current, response, (envelope) => {
-          successcallback(envelope)
-        }, (envelope) => {
-          failCallback(envelope)
+      editComment (markdown: string, comment: Comment, commentItem: CommentItem) {
+        CommentService.patchComment(comment, markdown, (resp) => {
+          if (resp instanceof Form) {
+          }
+          if (resp instanceof Comment) {
+            comment.content = resp.content
+          }
         })
       },
-      respondCallback (parent: Comment, response: string, successcallback: (e: Envelope<Comment>) => void, failCallback: (e: Envelope) => void) {
-        ShowService.postPostComment(this.show, response, parent, (envelope) => {
-          successcallback(envelope)
-        }, (envelope) => {
-          failCallback(envelope)
+      respondComment (markdown: string, comment: Comment, commentItem: CommentItem) {
+        ShowService.postPostComment(this.post, markdown, comment, (resp) => {
+          if (resp instanceof Form) {
+          }
+          if (resp instanceof Comment) {
+            comment.unshift(resp)
+          }
         })
       }
     },

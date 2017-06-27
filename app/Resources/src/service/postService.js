@@ -52,11 +52,12 @@ export default {
     const payload: {
       parentComment: ?string,
       content: string
-    } = {}
+    } = {
+      content: comment
+    }
     if (root !== null) {
       payload.parentComment = root.token
     }
-    payload.content = comment
     return axios.post(Routing.generate('post_post_comment', { token: post.token, slug: post.slug }), qs.stringify({ 'comment': payload })).then((response) => {
       callback(new Comment(response.data.comment))
     }).catch((error) => {

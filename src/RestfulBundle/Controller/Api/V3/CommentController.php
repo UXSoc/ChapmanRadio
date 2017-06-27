@@ -3,8 +3,8 @@
 namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Entity\Comment;
+use CoreBundle\Form\CommentType;
 use CoreBundle\Repository\CommentRepository;
-use CoreBundle\Form\UserType;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -24,6 +24,7 @@ class CommentController extends FOSRestController
      * @Rest\Patch("comment/{token}",
      *     options = { "expose" = true },
      *     name="patch_comment")
+     * @Rest\View(serializerGroups={"detail"})
      */
     public function patchCommentAction(Request $request, $token)
     {
@@ -36,12 +37,15 @@ class CommentController extends FOSRestController
         if ($comment = $commentRepository->getCommentByToken($token)) {
             $this->denyAccessUnlessGranted('edit', $comment);
 
-            $form = $this->createForm(UserType::class,$comment);
-            $form->submit($request->request->all());
+            $form = $this->createForm(CommentType::class,$comment,array(
+                'method' => 'PATCH',
+            ));
+            $form->handleRequest($request);
             if($form->isSubmitted() && $form->isValid())
             {
                 $em->persist($comment);
                 $em->flush();
+                return $this->view(['comment' => $comment]);
             }
             return $this->view($form);
         }

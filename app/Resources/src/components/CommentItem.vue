@@ -41,9 +41,13 @@
           this.$emit('edit', markdown, comment, CommentItem)
         },
         onRespondSubmit (markdown: string) {
+          this.$set(this, 'respond', false)
+          this.$set(this, 'edit', false)
           this.$emit('respond', markdown, this.comment, this)
         },
         onEditSubmit (markdown: string) {
+          this.$set(this, 'respond', false)
+          this.$set(this, 'edit', false)
           this.$emit('edit', markdown, this.comment, this)
         },
         respondToComment () {
@@ -84,11 +88,11 @@
       created () {
         this.updateStatus()
         EventBus.$on('comment-edit', this.onCommentEdit)
-        EventBus.$on('comment-respond', this.onCommentRespond )
+        EventBus.$on('comment-respond', this.onCommentRespond)
       },
       destroyed () {
         EventBus.$off('comment-edit', this.onCommentEdit)
-        EventBus.$off('comment-respond', this.onCommentRespond )
+        EventBus.$off('comment-respond', this.onCommentRespond)
       },
       data () {
         return {
