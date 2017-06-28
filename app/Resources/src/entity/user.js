@@ -1,3 +1,4 @@
+/* global Routing */
 import BaseEntity from './baseEntity'
 
 export default class User extends BaseEntity {
@@ -54,5 +55,9 @@ export default class User extends BaseEntity {
 
   get createdAt () {
     return this._createdAt
+  }
+
+  getProfileImage () {
+    return Routing.generate('get_profile_image', { token: this.token })
   }
 }

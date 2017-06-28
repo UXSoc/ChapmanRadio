@@ -3,6 +3,7 @@ import Vue from 'vue'
 import Config from './config'
 import VueRouter from 'vue-router'
 import VeeValidate from 'vee-validate'
+import 'bootstrap-sass'
 
 window.Vue = Vue
 window.FConfig = Config

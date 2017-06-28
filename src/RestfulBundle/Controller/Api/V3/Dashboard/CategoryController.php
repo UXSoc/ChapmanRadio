@@ -26,7 +26,7 @@ class CategoryController extends FOSRestController
 {
     /**
      * @Security("has_role('ROLE_STAFF')")
-     * @Rest\Put("/category/{category}",
+     * @Rest\Put("category/{category}",
      *     options = { "expose" = true },
      *     name="put_category")
      */
@@ -48,7 +48,7 @@ class CategoryController extends FOSRestController
 
     /**
      * @Security("has_role('ROLE_STAFF')")
-     * @Rest\Delete("/category/{category}",
+     * @Rest\Delete("category/{category}",
      *     options = { "expose" = true },
      *     name="delete_category")
      */

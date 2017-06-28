@@ -29,7 +29,7 @@ class ScheduleController  extends FOSRestController
 {
 
     /**
-     * @Rest\Patch("/schedule/{token}",
+     * @Rest\Patch("schedule/{token}",
      *     options = { "expose" = true },
      *     name="patch_show_schedule")
      */
@@ -57,7 +57,7 @@ class ScheduleController  extends FOSRestController
 
 
     /**
-     * @@Rest\Post("/show/{token}/{slug}/schedule",
+     * @@Rest\Post("show/{token}/{slug}/schedule",
      *     options = { "expose" = true },
      *     name="post_show_schedule")
      */

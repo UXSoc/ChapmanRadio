@@ -29,6 +29,7 @@
     "marked": "^0.3.6",
     "quill-delta-markdown": "https://github.com/pollend/quill-delta-markdown.git",
     "commonmark": "^0.27.0",
-    "moment": "^2.18.1"
+    "moment": "^2.18.1",
+    "cropperjs": "^0.8.1"
   }
 }

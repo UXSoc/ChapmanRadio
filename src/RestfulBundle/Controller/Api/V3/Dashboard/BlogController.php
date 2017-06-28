@@ -6,7 +6,6 @@ use CoreBundle\Entity\Category;
 use CoreBundle\Entity\Image;
 use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Tag;
-use CoreBundle\Form\ImageType;
 use CoreBundle\Form\PostType;
 use CoreBundle\Repository\CategoryRepository;
 use CoreBundle\Repository\PostRepository;

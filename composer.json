@@ -38,6 +38,7 @@
         "jms/serializer-bundle": "^2.0",
         "league/factory-muffin": "^3.0",
         "league/factory-muffin-faker": "^2.0",
+        "liip/imagine-bundle": "^1.8",
         "nesbot/carbon": "^1.22",
         "paragonie/random_compat": "^2.0",
         "predis/predis": "^1.1",

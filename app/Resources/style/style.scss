@@ -1,6 +1,7 @@
 @import "~bootstrap-sass/assets/stylesheets/bootstrap-sprockets";
 @import "~bootstrap-sass/assets/stylesheets/bootstrap";
 @import "~font-awesome/scss/font-awesome.scss";
+@import "~cropperjs/dist/cropper.css";
 @import "~quill/dist/quill.core.css";
 @import "~quill/dist/quill.snow.css";
 @import "dashboard";
@@ -13,3 +14,4 @@
 @import "player";
 @import "tag_collection";
 @import "quill";
+@import "file";

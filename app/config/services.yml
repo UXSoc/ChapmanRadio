@@ -51,3 +51,6 @@ services:
     CoreBundle\Service\ImageUploadService:
         arguments: ['%image_directory%']
         public: true
+    CoreBundle\EventListener\ImageSubscriber:
+        arguments: ['%image_directory%']
+        public: true

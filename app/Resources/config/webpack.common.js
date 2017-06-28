@@ -80,6 +80,12 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({
       name: ['vendor']
     }),
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jquery: "jquery",
+      "window.jQuery": "jquery",
+      jQuery:"jquery"
+    }),
     new CopyWebpackPlugin([{ from: 'app/Resources/public', to: 'public' }])
   ]
 }

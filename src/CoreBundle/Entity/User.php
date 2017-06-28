@@ -72,22 +72,6 @@ class User implements AdvancedUserInterface
 
     /**
      * @var string
-     *
-     * @Assert\Regex("/[0-9][0-9][0-9][0-9][0-9][0-9][0-9]/")
-     * @Assert\NotBlank()
-     * @ORM\Column(name="student_id", type="string", length=15, nullable=false)
-     */
-    private $studentId;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="phone", type="string", length=30, nullable=true)
-     */
-    private $phone;
-
-    /**
-     * @var string
      * @Assert\NotBlank()
      * @ORM\Column(name="name", type="string", length=120, nullable=false)
      */
@@ -154,9 +138,24 @@ class User implements AdvancedUserInterface
 
 
     /**
+     * @var Profile
+     * @ORM\OneToOne(targetEntity="Profile", mappedBy="user", cascade={"persist", "detach"})
+     */
+    private $profile;
+
+    /**
+     * @var string
+     *
+     * @Assert\Regex("/[0-9][0-9][0-9][0-9][0-9][0-9][0-9]/")
+     * @Assert\NotBlank()
+     * @ORM\Column(name="student_id", type="string", length=15, nullable=false)
+     */
+    private $studentId;
+
+
+    /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="Role", mappedBy="user", cascade={"persist"})
-     *
      */
     private $roles;
 
@@ -175,10 +174,13 @@ class User implements AdvancedUserInterface
     private $plainTextPassword;
 
 
+
+
     public function __construct()
     {
         $this->userMeta = new ArrayCollection();
         $this->roles = new ArrayCollection();
+        $this->profile = new Profile();
     }
 
     /**
@@ -194,6 +196,15 @@ class User implements AdvancedUserInterface
             $this->token = substr(bin2hex(random_bytes(12)),10);
             $this->createdAt = new \DateTime('now');
         }
+    }
+
+    public function getProfile()
+    {
+        if($this->profile === null) {
+            $this->profile = new Profile();
+            $this->profile->setUser($this);
+        }
+        return $this->profile;
     }
 
     /**
@@ -282,42 +293,6 @@ class User implements AdvancedUserInterface
         return $this->id;
     }
 
-    public function setFacebookId($id)
-    {
-        $this->fbid = $id;
-    }
-
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    public function setEmail($email)
-    {
-        $this->email = $email;
-    }
-
-    public function getPhone()
-    {
-        return $this->phone;
-    }
-
-    public function setPhone($phone)
-    {
-        $this->phone = $phone;
-    }
-
-    public function setPlainTextPassword($password)
-    {
-        $this->plainTextPassword = $password;
-
-    }
-
-    public function getPlainTextPassword()
-    {
-        return $this->plainTextPassword;
-    }
-
     /**
      * Retrieves Chapman Student Id
      * @return string
@@ -335,6 +310,34 @@ class User implements AdvancedUserInterface
     {
         $this->studentId = $id;
     }
+
+    public function setFacebookId($id)
+    {
+        $this->fbid = $id;
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+
+    public function setPlainTextPassword($password)
+    {
+        $this->plainTextPassword = $password;
+
+    }
+
+    public function getPlainTextPassword()
+    {
+        return $this->plainTextPassword;
+    }
+
 
 
     /**
@@ -517,5 +520,6 @@ class User implements AdvancedUserInterface
     {
         $this->plainTextPassword = '';
     }
+
 }
 

@@ -4,13 +4,12 @@ import axios from 'axios'
 import qs from 'qs'
 import Pagination from '../entity/pagination'
 import Post from './../entity/post'
-import Envelope from './../entity/envelope'
 import Comment from './../entity/comment'
 import Datatable from './../entity/dataTable'
 import Form from './../entity/form'
 
 export default {
-  getPostsDatatable: function (page : number, sort : [], callback : (result: Envelope<Datatable<Pagination<Post>>>) => void, filter: any = {}) {
+  getPostsDatatable: function (page : number, sort : [], callback : (result: Datatable<Pagination<Post>>) => void, filter: any = {}) {
     const result = Object.assign({ page: page, sort: sort }, filter)
     return axios.get(Routing.generate('get_post_dataTable') + '?' + qs.stringify(result)).then((response) => {
       callback(new Datatable((paginationData) => new Pagination((postData) => new Post(postData), paginationData), response.data.datatable))
@@ -27,7 +26,7 @@ export default {
       callback(new Post(response.data.post))
     })
   },
-  patchPost: function (post: Post, responseCallback : (result: Envelope<Post>) => void, delta: boolean = false) {
+  patchPost: function (post: Post, responseCallback : (result: Post) => void, delta: boolean = false) {
     const payload = {
       name: post.name,
       content: post.content,
@@ -36,10 +35,10 @@ export default {
       isPinned: post.isPinned
     }
     return axios.patch(Routing.generate('patch_post', { token: post.token, slug: post.slug }) + '?' + qs.stringify(payload)).then((response) => {
-      responseCallback(new Envelope((postData) => new Post(postData), response.data))
+      responseCallback(new Post(response.data))
     })
   },
-  getPostComments: function (post:Post, root: (Comment | null), callback : (result: Envelope<Comment>) => void) {
+  getPostComments: function (post:Post, root: (Comment | null), callback : (result: Comment) => void) {
     let commentToken = null
     if (root !== null) {
       commentToken = root.token
@@ -48,7 +47,7 @@ export default {
       callback(response.data.comments.map((r) => new Comment(r)))
     })
   },
-  postPostComment: function (post: Post, comment: string, root: (Comment | null), callback : (result: Envelope<Comment>) => void) {
+  postPostComment: function (post: Post, comment: string, root: (Comment | null), callback : (result: Comment) => void) {
     const payload: {
       parentComment: ?string,
       content: string
@@ -68,34 +67,34 @@ export default {
       }
     })
   },
-  getPostTags: function (token: string, slug: string, responseCallback : (result: Envelope<Comment>) => void) {
+  getPostTags: function (token: string, slug: string, responseCallback : (result: [string]) => void) {
     return axios.get(Routing.generate('get_post_tags', { token: token, slug: slug })).then((response) => {
-      responseCallback(new Envelope((tags) => tags, response.data))
+      responseCallback(response.data.tags)
     })
   },
-  getPostCategories: function (token: string, slug: string, responseCallback : (result: Envelope<Comment>) => void) {
+  getPostCategories: function (token: string, slug: string, responseCallback : (result: [string]) => void) {
     return axios.get(Routing.generate('get_post_categories', { token: token, slug: slug })).then((response) => {
-      responseCallback(new Envelope((categories) => categories, response.data))
+      responseCallback(response.data.categories)
     })
   },
-  deletePostTag: function (post: Post, tag: string, responseCallback : (result: Envelope<Comment>) => void) {
+  deletePostTag: function (post: Post, tag: string, responseCallback : (result: string) => void) {
     return axios.delete(Routing.generate('delete_tag_post', { token: post.getToken(), slug: post.getSlug(), tag: tag })).then((response) => {
-      responseCallback(new Envelope((tag) => tag, response.data))
+      responseCallback(response.data.tag)
     })
   },
-  putPostTag: function (post: Post, tag: string, responseCallback : (result: Envelope<Comment>) => void) {
+  putPostTag: function (post: Post, tag: string, responseCallback : (result: string) => void) {
     return axios.put(Routing.generate('put_tag_post', { token: post.getToken(), slug: post.getSlug(), tag: tag })).then((response) => {
-      responseCallback(new Envelope((tagData) => tagData, response.data))
+      responseCallback(response.data.tag)
     })
   },
-  deletePostCategory: function (post: Post, category: string, responseCallback : (result: Envelope<Comment>) => void) {
+  deletePostCategory: function (post: Post, category: string, responseCallback : (result: string) => void) {
     return axios.delete(Routing.generate('delete_category_post', { token: post.getToken(), slug: post.getSlug(), category: category })).then((response) => {
-      responseCallback(new Envelope((category) => category, response.data))
+      responseCallback(response.data.category)
     })
   },
-  putPostCategory: function (post: Post, category: string, responseCallback : (result: Envelope<Comment>) => void) {
+  putPostCategory: function (post: Post, category: string, responseCallback : (result: string) => void) {
     return axios.put(Routing.generate('put_category_post', { token: post.getToken(), slug: post.getSlug(), category: category })).then((response) => {
-      responseCallback(new Envelope((category) => category, response.data))
+      responseCallback(response.data.category)
     })
   }
 }

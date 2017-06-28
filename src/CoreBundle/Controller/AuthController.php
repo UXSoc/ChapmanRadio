@@ -60,7 +60,8 @@ class AuthController extends FOSRestController
 
         /** @var User $user */
         if($user = $userRepository->getByToken($token))
-        {        /** @var EventDispatcher $dispatcher */
+        {
+            /** @var EventDispatcher $dispatcher */
             $dispatcher = $this->get('event_dispatcher');
             $dispatcher->dispatch(Events::USER_PASSWORD_RESET,new UserEvent($user));
             return $this->view();

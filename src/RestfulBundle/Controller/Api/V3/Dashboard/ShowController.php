@@ -60,7 +60,7 @@ class ShowController extends FOSRestController
 
     /**
      * @Security("has_role('ROLE_STAFF')")
-     * @Rest\Get("/show/datatable",
+     * @Rest\Get("show/datatable",
      *     options = { "expose" = true },
      *     name="get_show_dataTable")
      */
@@ -75,7 +75,7 @@ class ShowController extends FOSRestController
 
     /**
      * @Security("has_role('ROLE_STAFF')")
-     * @Rest\Post("/show",
+     * @Rest\Post("show",
      *     options = { "expose" = true },
      *     name="post_show")
      */
@@ -98,7 +98,7 @@ class ShowController extends FOSRestController
 
     /**
      * @Security("has_role('ROLE_DJ')")
-     * @Rest\Patch("/show/{token}/{slug}",
+     * @Rest\Patch("show/{token}/{slug}",
      *     options = { "expose" = true },
      *     name="patch_show")
      */
@@ -131,7 +131,7 @@ class ShowController extends FOSRestController
 
     /**
      * @Security("has_role('ROLE_DJ') | has_role('ROLE_STAFF')")
-     * @Rest\Delete("/show/{token}/{slug}",
+     * @Rest\Delete("show/{token}/{slug}",
      *     options = { "expose" = true },
      *     name="delete_show")
      */
@@ -154,7 +154,7 @@ class ShowController extends FOSRestController
 
 
     /**
-     * @Rest\Put("/show/{token}/{slug}/tag/{tag}",
+     * @Rest\Put("show/{token}/{slug}/tag/{tag}",
      *      options = { "expose" = true },
      *     name="put_tag_show")
      */
@@ -186,7 +186,7 @@ class ShowController extends FOSRestController
     }
 
     /**
-     * @Rest\Delete("/show/{token}/{slug}/tag/{tag}",
+     * @Rest\Delete("show/{token}/{slug}/tag/{tag}",
      *     options = { "expose" = true },
      *     name="delete_tag_show")
      */
@@ -212,7 +212,7 @@ class ShowController extends FOSRestController
     }
 
     /**
-     * @Route("/show/{token}/{slug}/image",
+     * @Route("show/{token}/{slug}/image",
      *     options = { "expose" = true },
      *     name="put_image_show")
      * @Method({"PUT"})

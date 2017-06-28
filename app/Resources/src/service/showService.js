@@ -4,7 +4,6 @@ import axios from 'axios'
 import qs from 'qs'
 import Pagination from '../entity/pagination'
 import Show from './../entity/show'
-import Envelope from './../entity/envelope'
 import Datatable from './../entity/dataTable'
 import Comment from './../entity/comment'
 import Form from './../entity/form'
@@ -22,12 +21,12 @@ export default {
       responseCallback(new Pagination((postData) => new Show(postData), response.data.payload))
     })
   },
-  getShow: function (token: string, slug: string, callback: (result: Envelope<Show>) => void) {
+  getShow: function (token: string, slug: string, callback: (result: Show) => void) {
     return axios.get(Routing.generate('get_show', { token: token, slug: slug })).then((response) => {
       callback(new Show(response.data.show))
     })
   },
-  getShowComments: function (show:Show, root: (Comment | null), callback : (result: Envelope<Comment>) => void) {
+  getShowComments: function (show:Show, root: (Comment | null), callback : (result: [Comment]) => void) {
     let commentToken = null
     if (root !== null) {
       commentToken = root.token
@@ -36,7 +35,7 @@ export default {
       callback(response.data.comments.map((r) => new Comment(r)))
     })
   },
-  postPostComment: function (show: Show, comment: string, parentComment: (Comment | null), callback: (result: Envelope<Comment>) => void) {
+  postPostComment: function (show: Show, comment: string, parentComment: (Comment | null), callback: (result: (Comment | Form)) => void) {
     const payload: {
       parentComment: ?string,
       content: string
