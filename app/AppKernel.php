@@ -22,7 +22,8 @@ class AppKernel extends Kernel
             new BroadcastBundle\BroadcastBundle(),
             new \HybridAuthBundle\HybridAuthBundle(),
             new \JMS\SerializerBundle\JMSSerializerBundle(),
-            new \FOS\RestBundle\FOSRestBundle()
+            new \FOS\RestBundle\FOSRestBundle(),
+            new \WebsocketBundle\WebsocketBundle()
         ];
         if (in_array($this->getEnvironment(), ['dev', 'test','hot'], true)) {
             $bundles[] = new Symfony\Bundle\DebugBundle\DebugBundle();

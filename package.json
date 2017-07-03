@@ -36,7 +36,8 @@
     "translated": "^0.3.0",
     "typo-js": "^1.0.3",
     "vue-loader": "^11.1.4",
-    "vue-translated": "^0.4.1"
+    "vue-translated": "^0.4.1",
+    "ws": "^3.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
