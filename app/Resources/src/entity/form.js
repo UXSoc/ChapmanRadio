@@ -1,6 +1,9 @@
 import BaseEntity from './baseEntity'
 import { ErrorBag } from 'vee-validate'
 export default class Form extends BaseEntity {
+  _code: string
+  _message: string
+
   constructor (data: any) {
     super()
     this._code = this.get('code', data, 0)

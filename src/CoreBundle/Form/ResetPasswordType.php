@@ -44,7 +44,6 @@ class ResetPasswordType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'csrf_protection' => false,
             'constraints' => [
                 new Callback([
                     'callback' => [$this,'verifyOldPassword']

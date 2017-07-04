@@ -28,17 +28,18 @@
         oldPassword: '',
         newPassword: '',
         newPassword_confirm: '',
-        showSuccess: false
+        showSuccess: false,
+        form: null
       }
     },
     methods: {
       validateForm: function () {
-        let _this = this
+        const _this = this
         this.validator.validateAll({
           oldPassword: this.oldPassword,
           newPassword: this.newPassword
         }).then(() => {
-          AccountService.postChangePassword(this.oldPassword, this.newPassword, (envelope) => {
+          AccountService.postChangePassword(this.form._token.value, this.oldPassword, this.newPassword, (envelope) => {
             _this.showSuccess = true
           },
           (envelope) => {
@@ -61,9 +62,12 @@
     },
     created () {
       this.validator = new Validator()
-
-      this.validator.attach('oldPassword', 'required', {prettyName: 'Old Password'})
-      this.validator.attach('newPassword', 'required|confirmed:newPassword_confirm', {prettyName: 'Password'})
+      const _this = this
+      AccountService.getChangePassword((form) => {
+        _this.$set(_this, 'form', form.form)
+      })
+      this.validator.attach('oldPassword', 'required', { prettyName: 'Old Password' })
+      this.validator.attach('newPassword', 'required|confirmed:newPassword_confirm', { prettyName: 'Password' })
     },
     components: {
       FormGroup,
