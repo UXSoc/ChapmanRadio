@@ -1,0 +1,51 @@
+// https://paper-leaf.com/blog/2016/01/creating-blurred-background-using-only-css/
+.noscroll {
+  overflow: hidden;
+}
+
+.inner {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.centerinparent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// Vertical align, then center
+.vertalign {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: 30px;
+}
+
+.heightfix {
+  height: 100%;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.music-player {
+  &.-collapsed {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 75px;
+  }
+
+  &.-expanded {
+    position: fixed;
+    padding: 0;
+    margin: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
