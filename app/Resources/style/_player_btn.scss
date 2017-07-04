@@ -1,0 +1,38 @@
+.player-btn {
+  color: #fff;
+  font-size: 48px;
+}
+
+.btn-player:link,
+.btn-player:visited,
+input[type=submit] {
+  display: inline-block;
+  padding: 10px 30px;
+  text-decoration: none;
+  border-radius: 200px;
+  transition: background-color 0.2s, border 0.2s, color 0.2s;
+  position: absolute;
+  top: 50%;
+  left: 60%;
+  transform: translate(0,-50%);
+  font-size: 14px;
+}
+
+.btn-ghost:link,
+.btn-ghost:visited {
+  border: 2px solid $white;
+  color: $white;
+}
+
+.btn-player:hover,
+.btn-player:active,
+input[type=submit]:hover,
+input[type=submit]:active {
+  //background-color: #5e9434;
+}
+
+.btn-ghost:hover,
+.btn-ghost:active {
+  border: 2px solid #bdbdbd;
+  color: #bdbdbd;
+}
