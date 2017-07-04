@@ -116,7 +116,7 @@
                         </div>
                     </div>
                     <div class="row" style="height:50%;">
-                        this is the chat box
+                        <chat></chat>
                     </div>
                 </div>
             </div>
@@ -128,6 +128,7 @@
 <script>
     /* @flow */
     import User from './../../entity/user'
+    import Chat from './../../components/Chat.vue'
     export default {
       data: function () {
         return {
@@ -173,6 +174,7 @@
         this.userStatus()
       },
       components: {
+        Chat
       }
     }
 </script>

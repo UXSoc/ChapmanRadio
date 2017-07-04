@@ -46,7 +46,7 @@ class ScheduleController extends FOSRestController
     public function getScheduleByDayYearMonthAction(Request $request,$year,$month,$day)
     {
         $c = Carbon::create($year,$month,$day);
-
+        
         /** @var ScheduleRepository $scheduleRepository */
         $scheduleRepository = $this->getDoctrine()->getRepository(Schedule::class);
 

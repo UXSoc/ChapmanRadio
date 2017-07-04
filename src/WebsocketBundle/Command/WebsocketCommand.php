@@ -1,13 +1,11 @@
 <?php
 namespace WebsocketBundle\Command;
 
-use Ratchet\Http\HttpServer;
-use Ratchet\Server\IoServer;
-use Ratchet\WebSocket\WsServer;
+use Ratchet\App;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use WebsocketBundle\Server\Chat;
+use WebsocketBundle\Server\ChatSocket;
 
 /**
  * Created by PhpStorm.
@@ -29,14 +27,11 @@ class WebsocketCommand  extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $loop = \React\EventLoop\Factory::create();
 
-        $server = IoServer::factory(new HttpServer(
-            new WsServer(
-                new Chat($this->getContainer())
-            )
-        ), 8080);
-
-        $server->run();
+        $app = new App('localhost',8080,'0.0.0.0',$loop);
+        $app->route('/chat',new ChatSocket($this->getContainer(),$loop),array('*'));
+        $app->run();
 
     }
 

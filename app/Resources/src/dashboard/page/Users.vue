@@ -41,10 +41,10 @@
     },
     methods: {
       update: function (val) {
-        this.$set(this, 'parameters', {search: this.search})
+        this.$set(this, 'parameters', { search: this.search })
       },
       userSelected: function (val) {
-        window.open(Routing.generate('dashboard_user',{"id" : val.id}),"_self")
+        window.open(Routing.generate('dashboard_user', { 'id': val.id }) , '_self')
       }
     },
     watch: {

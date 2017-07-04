@@ -4,6 +4,7 @@ namespace WebsocketBundle\Server;
 use FOS\RestBundle\Controller\FOSRestController;
 use Monolog\Logger;
 use Ratchet\MessageComponentInterface;
+use React\EventLoop\LoopInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -12,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Date: 7/2/17
  * Time: 1:37 PM
  */
-class Chat extends FOSRestController implements MessageComponentInterface
+class ChatSocket implements MessageComponentInterface
 {
 
     protected $connections = array();
@@ -22,15 +23,14 @@ class Chat extends FOSRestController implements MessageComponentInterface
     /** @var Logger  */
     private  $logger;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container,LoopInterface $loop)
     {
-        $this->setContainer($container);
+        //$this->setContainer($container);
 
         $this->clients = new \SplObjectStorage;
         /** @var Logger logger */
-        $this->logger = $this->get('logger');
+        $this->logger = $container->get('logger');
         $this->logger->info('Server Started');
-        echo "Server Started";
     }
 
     /**
@@ -41,10 +41,10 @@ class Chat extends FOSRestController implements MessageComponentInterface
     function onOpen(\Ratchet\ConnectionInterface $conn)
     {
         /** @var \CoreBundle\Entity\User $user */
-        $user = $this->getUser();
-        $this->logger->log(Logger::INFO,"User {$conn->resourceId} Connected: {$user->getToken()} - {$user->getName()}");
+       // $user = $this->getUser();
+        $this->logger->log(Logger::INFO,"User {$conn->resourceId} Connected: ");
 
-        $this->clients->attach($conn,$user->getToken());
+        $this->clients->attach($conn);
     }
 
     /**
