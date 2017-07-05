@@ -65,7 +65,6 @@ class ChatController extends FOSRestController
 
         $cache->save($t);
         return $this->view(['token' => $token]);
-
     }
 
 }
