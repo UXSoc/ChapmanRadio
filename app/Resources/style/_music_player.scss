@@ -1,3 +1,8 @@
+// https://paper-leaf.com/blog/2016/01/creating-blurred-background-using-only-css/
+.noscroll {
+  overflow: hidden;
+}
+
 .inner {
   position: absolute;
   width: 100%;
@@ -10,11 +15,16 @@
   align-items: center;
 }
 
+// Vertical align, then center
 .vertalign {
   position: relative;
   top: 50%;
   transform: translateY(-50%);
   margin-right: 30px;
+}
+
+.invisible {
+  visibility: hidden;
 }
 
 .-expanded {
@@ -25,11 +35,6 @@
   left: 0;
   width: 100%;
   height: 100%;
-}
-
-// https://paper-leaf.com/blog/2016/01/creating-blurred-background-using-only-css/
-.noscroll {
-  overflow: hidden;
 }
 
 .-collapsed {
@@ -73,32 +78,8 @@ input[type=submit]:active {
   color: #bdbdbd;
 }
 
-.player-content {
-  z-index: 1003;
-}
-
 .heightfix {
   height: 100%;
-}
-
-.player-art {
-  display: inline-block;
-  height: 75px;
-  width: 75px;
-  vertical-align: top
-}
-
-.player-art-exp {
-  height: 300px;
-  width: 300px;
-}
-
-.player-trackinfo {
-  display: inline-block;
-  color: #fff;
-  width: 70%;
-  height: 75%;
-  padding-left: 10px;
 }
 
 .player-btn {
@@ -106,43 +87,9 @@ input[type=submit]:active {
   font-size: 48px;
 }
 
-.player-showname {
-  color: #bdbdbd;
-  padding-top: 5px;
-  padding-bottom: 3px;
-  font-size: 13px;
-}
 
-.player-songname {
-  font-size: 16px;
-}
 
-.player-artistname {
-  color: #bdbdbd;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  font-size: 13px;
-}
 
-.expanded-player {
-  position: relative; //this will make the thing appear btw
-  height: 100%;
-  width: 100%;
-}
 
-.invisible {
-  visibility: hidden;
-}
 
-.player-artistname-exp {
-  font-size: 30px;
-  color: #bdbdbd;
-  padding-bottom: 20px;
-}
 
-.player-text:after {
-  display: block;
-  height: 1px;
-  background-color: #fff;
-  content: " ";
-}

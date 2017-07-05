@@ -1,0 +1,43 @@
+.expanded-player {
+  position: relative; //this will make the thing appear btw
+  height: 100%;
+  width: 100%;
+
+  .art {
+    height: 300px;
+    width: 300px;
+  }
+
+  .player-text {
+
+    >.showname {
+      font-size: 24px;
+      color: #fff;
+    }
+
+    >.djname {
+      font-size: 18px;
+      color: #bdbdbd;
+    }
+
+    >.songname {
+      padding-top: 50px;
+      font-size: 36px;
+      color: #fff;
+    }
+
+    >.artistname {
+      font-size: 30px;
+      color: #bdbdbd;
+      padding-bottom: 20px;
+    }
+
+  }
+
+  .player-text:after {
+    display: block;
+    height: 1px;
+    background-color: #fff;
+    content: " ";
+  }
+}

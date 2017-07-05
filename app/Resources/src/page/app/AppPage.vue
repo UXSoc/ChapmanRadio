@@ -63,14 +63,14 @@
             </div>
 
             <!--Collapsed Player Content-->
-            <div class="container-fluid inner nopadding" :class="isPlayerExpanded">
+            <div class="collapsed-player container-fluid inner nopadding" :class="isPlayerExpanded">
                 <div class="row heightfix marginfix">
                     <div class="col-md-5 nopadding">
                         <img class="player-art" src="https://images.genius.com/df91da4c0c20709e276c25f1bb6ff87f.640x640x1.jpg">
-                        <div class="player-trackinfo">
-                            <p class="player-showname">Planet Moon</p>
-                            <p class="player-songname">Passionfruit</p>
-                            <p class="player-artistname">Drake</p>
+                        <div class="trackinfo">
+                            <p class="showname">Planet Moon</p>
+                            <p class="songname">Passionfruit</p>
+                            <p class="artistname">Drake</p>
                             <a class="btn-player btn-ghost" href="#">VIEW SHOW PAGE</a>
                         </div>
                     </div>
@@ -91,20 +91,20 @@
                     </div>
                     <div class="row" style="height:50%;padding-top:50px;">
                         <div class="col-md-4">
-                            <img class="player-art-exp" src="https://images.genius.com/df91da4c0c20709e276c25f1bb6ff87f.640x640x1.jpg">
+                            <img class="art" src="https://images.genius.com/df91da4c0c20709e276c25f1bb6ff87f.640x640x1.jpg">
                         </div>
                         <div class="col-md-8">
                             <div class="player-text">
-                                <p style="font-size:24px;color:#fff;">
+                                <p class="showname">
                                     Planet Moon<br>
                                 </p>
-                                <p style="font-size:18px;color:#bdbdbd;">
+                                <p class="djname">
                                     DJ Crispin
                                 </p>
-                                <p style="padding-top:50px;font-size:36px;color:#fff;">
+                                <p class="songname">
                                     Passionfruit<br>
                                 </p>
-                                <p class="player-artistname-exp">
+                                <p class="artistname">
                                     Drake
                                 </p>
                             </div>
