@@ -9,8 +9,11 @@
 namespace RestfulBundle\Controller\Api\V3;
 
 
+use Carbon\CarbonInterval;
+use CoreBundle\Entity\User;
 use Firebase\JWT\JWT;
 use FOS\RestBundle\Controller\FOSRestController;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -25,21 +28,43 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 class ChatController extends FOSRestController
 {
 
+    const CHAT_USER = "CHAT_USER_ISSUE_";
+
     /**
+     * @Security("has_role('ROLE_USER')")
      * @Rest\Get("chat",
      *     options = { "expose" = true },
      *     name="get_chat_token")
      */
     public function getChatAction(Request $request)
     {
+        /** @var User $user */
+        $user = $this->getUser();
+        $time = time();
+
+        $token = substr(bin2hex(random_bytes(12)),10);
+
+        /** @var CacheItemPoolInterface $cache */
+        $cache = $this->get('cache.app');
+
+        $t = $cache->getItem(ChatController::CHAT_USER . $user->getToken());
+        $t->expiresAfter(new CarbonInterval(0, 0, 0, 0, 0, 0, 30));
+        $t->set($token);
+
         $token = JWT::encode([
-            'iss' => $request->getUri(),
-            'sub' => 'chat',
-            'iat' => (int)(new \DateTime('now'))->format('U'),
-            "nbf" => (int)(new \DateTime('now'))->format('U')
+            'iss' => $request->getUri(),     // The issuer of the token
+            'iat' => $time,                  // Issued at: time when the token was generated
+            'jti' => $token,                 // Json Token Id: an unique identifier for the token
+            "nbf" => $time,                  // Not before
+            'exp'  => $time + 20,            // Expire
+            'data' => [
+                'id' =>  $user->getId(),
+                'token' => $user->getToken()
+            ]
         ],$this->container->getParameter('env(SYMFONY_SECRET)'));
 
-        $this->view(['token' => $token)]);
+        $cache->save($t);
+        return $this->view(['token' => $token]);
 
     }
 

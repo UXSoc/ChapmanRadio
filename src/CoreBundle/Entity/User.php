@@ -180,7 +180,6 @@ class User implements AdvancedUserInterface
     {
         $this->userMeta = new ArrayCollection();
         $this->roles = new ArrayCollection();
-        $this->profile = new Profile();
     }
 
     /**

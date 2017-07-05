@@ -79,7 +79,6 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, C
         $password = $this->container->get('security.password_encoder')
             ->encodePassword($user, 'password');
         $user->setPassword($password);
-        $user->setPhone($faker->phoneNumber);
 
         return $user;
     }

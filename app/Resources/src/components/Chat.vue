@@ -107,6 +107,7 @@
 <script>
     /* @flow */
     import Config from './../config'
+    import ChatService from  './../service/chatService'
     import ChatMessage from './ChatMessage.vue'
     export default{
       data () {
@@ -129,17 +130,19 @@
       watch: {
       },
       created () {
-        this.socket = new WebSocket(Config.SocketServer + '/chat')
-        const _socket = this.socket
-        this.socket.onopen = function () {
-          _socket.send('Ping') // Send the message 'Ping' to the server
-        }
-        this.socket.onerror = function (error) {
-          console.log('WebSocket Error ' + error)
-        }
-        this.socket.onmessage = function (e) {
-          console.log('Server: ' + e.data)
-        }
+          ChatService.getChatToken((token) => {
+              this.socket = new WebSocket(Config.SocketServer + '/chat')
+              const _socket = this.socket
+              this.socket.onopen = function () {
+                  _socket.send('Ping') // Send the message 'Ping' to the server
+              }
+              this.socket.onerror = function (error) {
+                  console.log('WebSocket Error ' + error)
+              }
+              this.socket.onmessage = function (e) {
+                  console.log('Server: ' + e.data)
+              }
+          })
       },
       components: {
         ChatMessage
