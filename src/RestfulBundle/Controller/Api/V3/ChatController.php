@@ -39,7 +39,7 @@ class ChatController extends FOSRestController
             "nbf" => (int)(new \DateTime('now'))->format('U')
         ],$this->container->getParameter('env(SYMFONY_SECRET)'));
 
-        $this->view(['token' => $token)]);
+        $this->view(['token' => $token]);
 
     }
 
