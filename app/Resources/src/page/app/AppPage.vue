@@ -66,7 +66,7 @@
             <div class="collapsed-player container-fluid inner nopadding" :class="isPlayerExpanded">
                 <div class="row heightfix marginfix">
                     <div class="col-md-5 nopadding">
-                        <img class="art" src="https://images.genius.com/df91da4c0c20709e276c25f1bb6ff87f.640x640x1.jpg">
+                        <img class="player-art" src="https://images.genius.com/df91da4c0c20709e276c25f1bb6ff87f.640x640x1.jpg">
                         <div class="trackinfo">
                             <p class="showname">Planet Moon</p>
                             <p class="songname">Passionfruit</p>
