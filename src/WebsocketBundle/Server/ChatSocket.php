@@ -1,11 +1,20 @@
 <?php
 namespace WebsocketBundle\Server;
 
+use CoreBundle\Entity\User;
+use CoreBundle\Repository\UserRepository;
+use Firebase\JWT\JWT;
 use FOS\RestBundle\Controller\FOSRestController;
 use Monolog\Logger;
+use Psr\Cache\CacheItemPoolInterface;
+use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 use React\EventLoop\LoopInterface;
+use RestfulBundle\Controller\Api\V3\ChatController;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use WebsocketBundle\Server\Exception\AccessException;
+use WebsocketBundle\Server\Exception\AuthException;
 
 /**
  * Created by PhpStorm.
@@ -13,25 +22,20 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Date: 7/2/17
  * Time: 1:37 PM
  */
-class ChatSocket implements MessageComponentInterface
+class ChatSocket extends BaseSocket implements MessageComponentInterface
 {
-
     protected $connections = array();
 
     protected $clients;
 
-    /** @var Logger  */
-    private  $logger;
-
-    public function __construct(ContainerInterface $container,LoopInterface $loop)
+    public function __construct(ContainerInterface $container, LoopInterface $loop)
     {
-        //$this->setContainer($container);
+        $this->setContainer($container);
 
         $this->clients = new \SplObjectStorage;
-        /** @var Logger logger */
-        $this->logger = $container->get('logger');
-        $this->logger->info('Server Started');
+        $this->get('logger')->info('Server Started');
     }
+
 
     /**
      * When a new connection is opened it will be passed to this method
@@ -41,9 +45,7 @@ class ChatSocket implements MessageComponentInterface
     function onOpen(\Ratchet\ConnectionInterface $conn)
     {
         /** @var \CoreBundle\Entity\User $user */
-       // $user = $this->getUser();
-        $this->logger->log(Logger::INFO,"User {$conn->resourceId} Connected: ");
-
+        $this->get('logger')->log(Logger::INFO, "User {$conn->resourceId} Connected: ");
         $this->clients->attach($conn);
     }
 
@@ -57,7 +59,7 @@ class ChatSocket implements MessageComponentInterface
         // The connection is closed, remove it, as we can no longer send it messages
         $this->clients->detach($conn);
 
-        $this->logger->log(Logger::INFO, "Connection {$conn->resourceId} has disconnected\n");
+        $this->get('logger')->log(Logger::INFO, "Connection {$conn->resourceId} has disconnected\n");
     }
 
     /**
@@ -69,8 +71,7 @@ class ChatSocket implements MessageComponentInterface
      */
     function onError(\Ratchet\ConnectionInterface $conn, \Exception $e)
     {
-        $this->logger->log(Logger::ERROR, "An error has occurred: {$e->getMessage()}\n");
-
+        $this->get('logger')->log(Logger::ERROR, "An error has occurred: {$e->getMessage()}\n");
         $conn->close();
     }
 
@@ -83,13 +84,74 @@ class ChatSocket implements MessageComponentInterface
     function onMessage(\Ratchet\ConnectionInterface $from, $msg)
     {
         $numRecv = count($this->clients) - 1;
-        $this->logger->log(Logger::INFO, sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n", $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's'));
+        $this->get('logger')->log(Logger::INFO, sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n", $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's'));
 
-        foreach ($this->clients as $client) {
-            if ($from !== $client) {
-                // The sender is not the receiver, send to each client connected
-                $client->send($msg);
+        $payload = \json_decode($msg);
+        try {
+            if (isset($payload->type)) {
+                switch ($payload->type) {
+                    case 'message':
+                        $this->processMessage($payload, $from);
+                        break;
+                    case 'auth':
+                        $this->processAuthenticate($payload, $from);
+                        break;
+                    default:
+                        throw new \Exception('Unknown type');
+                }
+            }
+        } catch (AccessException $e) {
+            $from->send($this->seralizeToJson('error', get_class($e), ['code' => $e->getCode(), 'message' => $e->getMessage()]));
+        } catch (AuthException $e) {
+            $from->send($this->seralizeToJson('error', get_class($e), ['code' => $e->getCode(), 'message' => $e->getMessage()]));
+        }
+    }
+
+
+    /**
+     * @param $payload
+     * @param ConnectionInterface $from
+     * @return bool
+     */
+    private function processAuthenticate($payload, $from)
+    {
+        if (isset($payload->token)) {
+            $decode = JWT::decode($payload->token, $this->container->getParameter('env(SYMFONY_SECRET)'), array('HS256'));
+            /** @var CacheItemPoolInterface $cache */
+            $cache = $this->container->get('cache.app');
+
+            if ($token = $cache->getItem(ChatController::CHAT_USER . $decode->token)) {
+                if ($token->isHit()) {
+                    if ($token->get() === $decode->jti) {
+                        /** @var UserRepository $userRepository */
+                        $userRepository = $this->getDoctrine()->getManager()->getRepository(User::class);
+
+                        /** @var User $user */
+                        if ($user = $userRepository->getByToken($decode->token)) {
+                            $from->user = $user;
+                            $this->get('logger')->log(Logger::INFO, sprintf('Connection %d authenticated as %s' . "\n", $from->resourceId, $user->getName()));
+                            $cache->deleteItem($token->getKey());
+                            $from->send($this->seralizeToJson('success', 'auth', ['message' => 'User Authenticated']));
+                            return true;
+                        }
+                    }
+                    $cache->deleteItem($token->getKey());
+                }
             }
         }
+        throw new AuthException('Authentication Failed');
+    }
+
+    private function processMessage($payload, $from)
+    {
+        if (isset($from->user)) {
+            if (isset($payload->message)) {
+                foreach ($this->clients as $client) {
+                    if ($from !== $client) {
+                        $client->send($payload->message);
+                    }
+                }
+            }
+        } else throw  new AccessException('You need to be Authenticated First');
     }
 }

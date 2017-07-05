@@ -13,6 +13,7 @@ use Carbon\CarbonInterval;
 use CoreBundle\Entity\User;
 use Firebase\JWT\JWT;
 use FOS\RestBundle\Controller\FOSRestController;
+use JMS\Serializer\SerializerBuilder;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -20,6 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 
 /**
@@ -51,20 +53,18 @@ class ChatController extends FOSRestController
         $t->expiresAfter(new CarbonInterval(0, 0, 0, 0, 0, 0, 30));
         $t->set($token);
 
-        $token = JWT::encode([
+        $result = JWT::encode([
             'iss' => $request->getUri(),     // The issuer of the token
             'iat' => $time,                  // Issued at: time when the token was generated
             'jti' => $token,                 // Json Token Id: an unique identifier for the token
             "nbf" => $time,                  // Not before
             'exp'  => $time + 20,            // Expire
-            'data' => [
-                'id' =>  $user->getId(),
-                'token' => $user->getToken()
-            ]
+            'token' => $user->getToken()
+
         ],$this->container->getParameter('env(SYMFONY_SECRET)'));
 
         $cache->save($t);
-        return $this->view(['token' => $token]);
+        return $this->view(['token' => $result]);
     }
 
 }

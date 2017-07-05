@@ -6,7 +6,7 @@ import Token from './../entity/token'
 
 export default {
   getChatToken: function (callback: (result: Form) => void) {
-    return axios.post(Routing.generate('get_chat_token')).then((response) => {
+    return axios.get(Routing.generate('get_chat_token')).then((response) => {
       callback(new Token(response.data))
     })
   }

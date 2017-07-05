@@ -27,7 +27,7 @@ class Dj
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="blob", length=65535, nullable=true)
+     * @ORM\Column(name="description", type="text", length=65535, nullable=true)
      * @JMS\Groups({"detail"})
      */
     private $description;
