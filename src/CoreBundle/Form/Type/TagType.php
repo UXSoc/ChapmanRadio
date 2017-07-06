@@ -9,19 +9,11 @@
 namespace CoreBundle\Form\Type;
 
 
-use CoreBundle\Entity\Schedule;
 use CoreBundle\Entity\Tag;
 use CoreBundle\Form\DataTransformer\TagTransformer;
-use Doctrine\DBAL\Types\StringType;
-use Doctrine\DBAL\Types\TextType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\DataMapperInterface;
-use Symfony\Component\Form\Exception;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TagType extends AbstractType

@@ -7,18 +7,12 @@ import Form from './../entity/form'
 import FormView from './../entity/formView'
 
 export default {
-  postChangePassword: function (csrf:string, oldPassword: string, newPassword: string, callback: (result: Form) => void) {
+  postChangePassword: function ( oldPassword: string, newPassword: string, callback: (result: Form) => void) {
     return axios.post(Routing.generate('post_account_password'), qs.stringify({
       oldPassword: oldPassword,
-      newPassword: newPassword,
-      _token: csrf
+      newPassword: newPassword
     })).then((response) => {
       callback(response.data)
-    })
-  },
-  getChangePassword: function (callback: (result:string) => void) {
-    return axios.get(Routing.generate('get_account_password')).then((response) => {
-      callback(new FormView(response.data))
     })
   },
   postImage: function (image: File, x: number, y: number, width: number, height: number, callback: (result:string) => void) {
