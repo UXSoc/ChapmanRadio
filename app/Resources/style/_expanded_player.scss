@@ -3,6 +3,16 @@
   height: 100%;
   width: 100%;
 
+  >.container {
+    height:100vh;
+
+    >.close-btn {
+      text-align: right;
+      position: relative;
+      padding-top: 27px;
+    }
+  }
+
   .art {
     height: 300px;
     width: 300px;

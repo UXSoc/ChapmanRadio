@@ -58,7 +58,7 @@
             <!--Blur Effect-->
             <div class="blur-container">
                 <div class="solidcolor"></div>
-                <div class="playerart" :style="{ backgroundImage: 'url(' + 'https://images.genius.com/df91da4c0c20709e276c25f1bb6ff87f.640x640x1.jpg' + ')' }"></div>
+                <div class="playerart" :style="{ backgroundImage: 'url(' + playerart_url + ')' }"></div>
                 <div class="blureffect"></div>
             </div>
 
@@ -66,7 +66,7 @@
             <div class="collapsed-player container-fluid inner nopadding" :class="isPlayerExpanded">
                 <div class="row heightfix marginfix">
                     <div class="col-md-5 nopadding">
-                        <img class="player-art" src="https://images.genius.com/df91da4c0c20709e276c25f1bb6ff87f.640x640x1.jpg">
+                        <img class="player-art" :src="playerart_url">
                         <div class="trackinfo">
                             <p class="showname">Planet Moon</p>
                             <p class="songname">Passionfruit</p>
@@ -77,7 +77,7 @@
                     <div class="col-md-2 nopadding heightfix centerinparent">
                         <i class="fa fa-play-circle player-btn"></i>
                     </div>
-                    <div style="text-align:right;" class="col-md-5 nopadding heightfix">
+                    <div class="col-md-5 nopadding heightfix expand-btn">
                         <i class="fa fa-chevron-up player-btn vertalign" @click="expanded = !expanded; hasOverflow()"></i>
                     </div>
                 </div>
@@ -85,13 +85,13 @@
 
             <!--Expanded Fullscreen Player Content-->
             <div class="expanded-player" :class="isPlayerCollapsed">
-                <div class="container" style="height:100vh;">
-                    <div style="text-align:right;position:relative;padding-top:27px;">
+                <div class="container" style="">
+                    <div class="close-btn">
                         <i class="fa fa-close player-btn" @click="expanded = !expanded; hasOverflow()"></i>
                     </div>
                     <div class="row" style="height:50%;padding-top:50px;">
                         <div class="col-md-4">
-                            <img class="art" src="https://images.genius.com/df91da4c0c20709e276c25f1bb6ff87f.640x640x1.jpg">
+                            <img class="art" :src="playerart_url">
                         </div>
                         <div class="col-md-8">
                             <div class="player-text">
@@ -166,6 +166,12 @@
           } else {
             document.body.classList.remove('noscroll')
           }
+        }
+      },
+      props: {
+        playerart_url: {
+          type: String,
+          default: 'https://images.genius.com/df91da4c0c20709e276c25f1bb6ff87f.640x640x1.jpg'
         }
       },
       methods: {
