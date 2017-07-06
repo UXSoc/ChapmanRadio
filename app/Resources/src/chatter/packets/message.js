@@ -6,9 +6,17 @@ export default class Message extends Packet {
   _user: User
   _time: string
   constructor (data: any) {
-    super()
+    super(data)
     this._user = this.getAndInstance((data) => new User(data), 'user', data, null)
     this._message = this.get('message', data, '')
-    this._time = this.get('time', data, null)
+    this._time = this.get('timestamp', data, 0)
+  }
+
+  get user () {
+    return this._user
+  }
+
+  get message () {
+    return this._message
   }
 }

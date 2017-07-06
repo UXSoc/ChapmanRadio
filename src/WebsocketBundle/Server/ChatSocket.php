@@ -13,8 +13,14 @@ use React\EventLoop\LoopInterface;
 use RestfulBundle\Controller\Api\V3\ChatController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use WebsocketBundle\Server\Args\Args;
 use WebsocketBundle\Server\Exception\AccessException;
+use WebsocketBundle\Server\Exception\AuthenticationException;
 use WebsocketBundle\Server\Exception\AuthException;
+use WebsocketBundle\Server\Exception\SocketException;
+use WebsocketBundle\Server\Packets\Message;
+use WebsocketBundle\Server\Packets\Packet;
+use WebsocketBundle\Server\Packets\UserNotice;
 
 /**
  * Created by PhpStorm.
@@ -83,27 +89,22 @@ class ChatSocket extends BaseSocket implements MessageComponentInterface
      */
     function onMessage(\Ratchet\ConnectionInterface $from, $msg)
     {
-        $numRecv = count($this->clients) - 1;
-        $this->get('logger')->log(Logger::INFO, sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n", $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's'));
-
         $payload = \json_decode($msg);
         try {
             if (isset($payload->type)) {
                 switch ($payload->type) {
-                    case 'message':
+                    case Packet::MESSAGE:
                         $this->processMessage($payload, $from);
                         break;
-                    case 'auth':
+                    case Packet::AUTH:
                         $this->processAuthenticate($payload, $from);
                         break;
                     default:
-                        throw new \Exception('Unknown type');
+                        throw new SocketException('Unknown type ' . $payload->type);
                 }
             }
-        } catch (AccessException $e) {
-            $from->send($this->seralizeToJson('error', get_class($e), ['code' => $e->getCode(), 'message' => $e->getMessage()]));
-        } catch (AuthException $e) {
-            $from->send($this->seralizeToJson('error', get_class($e), ['code' => $e->getCode(), 'message' => $e->getMessage()]));
+        } catch (SocketException $e) {
+            $from->send($this->serializePacket($e));
         }
     }
 
@@ -111,7 +112,7 @@ class ChatSocket extends BaseSocket implements MessageComponentInterface
     /**
      * @param $payload
      * @param ConnectionInterface $from
-     * @return bool
+     * @return void
      */
     private function processAuthenticate($payload, $from)
     {
@@ -131,25 +132,25 @@ class ChatSocket extends BaseSocket implements MessageComponentInterface
                             $from->user = $user;
                             $this->get('logger')->log(Logger::INFO, sprintf('Connection %d authenticated as %s' . "\n", $from->resourceId, $user->getName()));
                             $cache->deleteItem($token->getKey());
-                            $from->send($this->seralizeToJson('success', 'auth', ['message' => 'User Authenticated']));
-                            return true;
+                            $from->send($this->serializePacket(new UserNotice(UserNotice::VERIFIED,$from)));
+                            return;
                         }
                     }
                     $cache->deleteItem($token->getKey());
                 }
             }
         }
-        throw new AuthException('Authentication Failed');
+        throw new AuthenticationException('Authentication failed');
     }
 
     private function processMessage($payload, $from)
     {
         if (isset($from->user)) {
+
             if (isset($payload->message)) {
+                $this->get('logger')->log(Logger::INFO, sprintf('Connection %d to clients %d as %s sending message: "%s"' . "\n", $from->resourceId, $this->clients->count() -1 , $from->user->getUsername(), $payload->message));
                 foreach ($this->clients as $client) {
-                    if ($from !== $client) {
-                        $client->send($payload->message);
-                    }
+                    $client->send($this->serializePacket(new Message($payload->message,$from,$client)));
                 }
             }
         } else throw  new AccessException('You need to be Authenticated First');

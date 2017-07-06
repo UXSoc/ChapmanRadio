@@ -5,7 +5,7 @@
             Chat
         </div>
         <div class="panel-body">
-            <chat-message></chat-message>
+            <chat-message v-for="message in messages" :key="message.timestamp" :message="message"></chat-message>
             <!--<ul class="chat">-->
                 <!--<li class="left clearfix">-->
                     <!--<span class="chat-img pull-left">-->
@@ -110,11 +110,13 @@
     import ChatService from './../service/chatService'
     import ChatMessage from './ChatMessage.vue'
     import Chatter from '../chatter/chatter'
-    export default{
+    import Message from '../chatter/packets/message'
+    export default {
       data () {
         return {
           chatter: null,
-          message: ''
+          message: '',
+          messages: []
         }
       },
       props: {
@@ -137,6 +139,14 @@
         ChatService.getChatToken((token) => {
           _this.chatter.authenticate(token)
         })
+        _this.chatter.setMessageCallback((response) => {
+          if (response instanceof Message) {
+            if (_this.messages.length > 100) {
+              _this.messages.shift()
+            }
+            _this.messages.push(response)
+          }
+        }, (e) => {})
       },
       components: {
         ChatMessage

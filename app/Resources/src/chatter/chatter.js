@@ -1,48 +1,57 @@
 import Token from '../entity/token'
-import ChatMessage from '../entity/chatMessage'
-
+import Message from './packets/message'
+import UserNotice from './packets/userNotice'
+import Packet from './packets/packet'
 export default class Chatter {
   _socket: WebSocket
   _isAuthenticated: false
 
   constructor (uri: string) {
     this._socket = new WebSocket(uri)
-    this.onMessage.then((response) => {
-      if (response.origin === 'auth' && response.code === 200) {
-        this._isAuthenticated = true
+    this.setMessageCallback((response) => {
+      if (response instanceof UserNotice) {
+        if (response.flag === UserNotice.VERIFIED) {
+          this._isAuthenticated = true
+        }
       }
+    }, (e) => {
+
     })
   }
 
   authenticate (token: Token) {
     this._socket.send(JSON.stringify({
-      type: 'auth',
+      type: Packet.AUTH,
       token: token.token
     }))
   }
 
-  get onMessage () {
+  setMessageCallback (callback, reject) {
     const _this = this
-    return new Promise(
-      (resolve, rejected) => {
-        _this._socket.addEventListener('message', function (event) {
-          try {
-            const result = JSON.parse(event.data)
-            resolve(new ChatMessage(result))
-          } catch (e) {
-            rejected(e)
-          }
-        })
+    _this._socket.addEventListener('message', function (event) {
+      try {
+        const result = JSON.parse(event.data)
+        switch (result.type) {
+          case Packet.USERNOTICE:
+            callback(new UserNotice(result))
+            break
+          case Packet.MESSAGE:
+            callback(new Message(result))
+            break
+        }
+      } catch (e) {
+        reject(e)
+      }
+    })
+  }
 
-        _this._socket.addEventListener('onerror', function (event) {
-          rejected(event)
-        })
-      })
+  get isAuthenticated () {
+    return this._isAuthenticated
   }
 
   sendMessage (message: string) {
     this._socket.send(JSON.stringify({
-      type: 'message',
+      type: Packet.MESSAGE,
       'message': message
     }))
   }

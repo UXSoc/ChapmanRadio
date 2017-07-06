@@ -9,7 +9,7 @@
 namespace WebsocketBundle\Server;
 
 
-class ShowSocket
+class PushSocket
 {
 
 }
