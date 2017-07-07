@@ -16,16 +16,18 @@
                                 <i class="fa fa-comments fa-5x"></i>
                             </div>
                             <div class="col-xs-9 text-right">
-                                <div class="huge">3:39PM</div>
-                                <div>Friday, May 20 2017</div>
+                                <div class="huge">{{hours}}:{{mins}}{{meridian}}</div>
+                                <div>{{dayofweek}}, {{month}} {{dayofmonth}} {{year}}</div>
                             </div>
                         </div>
                     </div>
-                    <div class="panel-footer">
-                        <span class="pull-left">Timecheck</span>
-                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                        <div class="clearfix"></div>
-                    </div>
+                    <a href="#">
+                        <div class="panel-footer">
+                            <span class="pull-left">Timecheck</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -37,12 +39,12 @@
                     <div class="panel-heading">Broadcast Live</div>
                     <div class="panel-body">
                         <div><strong>Episode Title:</strong></div>
-                        <p>Seani B sits in for Target</p>
+                        <p>{{episode_title}}</p>
                         <div><strong>Episode Description:</strong></div>
-                        <p>Diplo & Friends exclusively in the mix with Diplo fresh from his April tour of Africa! Expect tour hours of house music from AfrikaBurn (Burning Man in South Africa)... I here's music from MK, Gorgon City, Sante Sansone, Mujava, Rifon, Maxim Sunbeat and more!!</p>
+                        <p>{{episode_desc}}</p>
                     </div>
                     <div class="panel-heading panel-success centerinparent success-color">
-                        <strong>You’re all set for your next broadcast.</strong>
+                        <strong>{{broadcast_status_msg}}</strong>
                     </div>
                 </div>
                 <div class="panel panel-info">
@@ -50,10 +52,10 @@
                         Previous & Next Show
                     </div>
                     <div class="panel-body">
-                        <div><strong>Previously at 5PM:</strong></div>
-                        <p>pantherBuck$ with Taylor Cox & Courtney Bankhead</p>
-                        <div><strong>Up next at 6PM:</strong></div>
-                        <p>Beardguy & Friends with DJ Beardguy</p>
+                        <div><strong>Previously at {{prevhour}}:</strong></div>
+                        <p>{{prevshowname}} with {{prevshowhost}}</p>
+                        <div><strong>Up next at {{afterhour}}:</strong></div>
+                        <p>{{nextshowname}} with {{nextshowhost}}</p>
                     </div>
                     <div class="panel-heading panel-success centerinparent info-color">
                         <strong>Tell your listeners to tune into the next show!</strong>
@@ -65,11 +67,11 @@
                     </div>
                     <div class="panel-body">
                         <div><strong>Song Name:</strong></div>
-                        <p>Passionfruit</p>
+                        <p>{{songname}}</p>
                         <div><strong>Artist Name:</strong></div>
-                        <p>Drake</p>
+                        <p>{{artistname}}</p>
                         <div><strong>Album Name:</strong></div>
-                        <p>More Life</p>
+                        <p>{{albumname}}</p>
                         <img class="player-art" src="https://images.genius.com/df91da4c0c20709e276c25f1bb6ff87f.640x640x1.jpg">
                     </div>
                     <div class="panel-heading panel-success centerinparent info-color">
@@ -86,7 +88,7 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-md-6">
-                                Planet Moon
+                                {{showname}}
                             </div>
                             <div class="col-md-6">
                                 <select name="session">
@@ -197,6 +199,26 @@
     export default{
       data () {
         return {
+          hours: '03',
+          mins: '39',
+          meridian: 'PM',
+          dayofweek: 'Friday',
+          month: 'May',
+          dayofmonth: '21',
+          year: '2017',
+          episode_title: 'Seani B sits in for Target',
+          episode_desc: 'Diplo & Friends exclusively in the mix with Diplo fresh from his April tour of Africa! Expect tour hours of house music from AfrikaBurn (Burning Man in South Africa)... I here\'s music from MK, Gorgon City, Sante Sansone, Mujava, Rifon, Maxim Sunbeat and more!!',
+          broadcast_status_msg: 'You’re all set for your next broadcast.',
+          prevhour: '5PM',
+          afterhour: '6PM',
+          prevshowname: 'pantherbuck$',
+          prevshowhost: 'Taylor Cox & Courtney Bankhead',
+          nextshowname: 'Beardguy & Friends',
+          nextshowhost: 'DJ Beardguy',
+          songname: 'Passionfruit',
+          artistname: 'Drake',
+          albumname: 'More Life',
+          showname: 'Planet Moon',
         }
       },
       methods: {
