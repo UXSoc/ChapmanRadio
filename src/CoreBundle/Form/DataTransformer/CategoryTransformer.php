@@ -56,6 +56,7 @@ class CategoryTransformer  implements DataTransformerInterface
         if (null === $value) {
             return '';
         }
+
         return $value->getCategory();
     }
 

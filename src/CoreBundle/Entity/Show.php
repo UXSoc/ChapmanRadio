@@ -3,11 +3,11 @@
 namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
+
 use CoreBundle\Validation\Constraints As CoreAssert;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation As JMS;
 
 
@@ -36,6 +36,7 @@ class Show
      *
      * @ORM\Column(name="name", type="string", length=100, nullable=false)
      * @JMS\Groups({"detail","list"})
+     * @Assert\NotBlank()
      */
     private $name;
 
@@ -53,6 +54,7 @@ class Show
      * @ORM\Column(name="slug", type="string",length=100, nullable=false,unique=true)
      * @@Assert\Regex("^[a-zA-Z0-9\-]+$/")
      * @JMS\Groups({"detail","list"})
+     * @Assert\NotBlank()
      */
     private $slug;
 
@@ -60,6 +62,7 @@ class Show
      * @var resource
      *
      * @CoreAssert\Delta
+     * @Assert\NotBlank()
      * @ORM\Column(name="description", type="text", nullable=false)
      * @JMS\Groups({"detail"})
      */
@@ -75,7 +78,6 @@ class Show
 
     /**
      * @var integer
-     *
      * @ORM\Column(name="score", type="integer", nullable=false)
      */
     private $score = 0;
@@ -90,7 +92,6 @@ class Show
 
     /**
      * @var boolean
-     *
      * @ORM\Column(name="attendance_optional", type="boolean", nullable=false)
      */
     private $attendanceOptional = false;
@@ -106,7 +107,6 @@ class Show
 
     /**
      * @var integer
-     *
      * @ORM\Column(name="strike_count", type="integer", nullable=false)
      */
     private $strikeCount = 0;
@@ -167,7 +167,7 @@ class Show
 
     /**
      * @var string
-     * @CoreAssert\Delta
+     * @Assert\NotBlank()
      * @ORM\Column(name="excerpt", type="text", length=6000, nullable=true)
      * @JMS\Groups({"detail","list"})
      */
@@ -182,7 +182,7 @@ class Show
 
     /**
      * Many Shows have Many Images.
-     * @ORM\ManyToMany(targetEntity="Genre", indexBy="genre")
+     * @ORM\ManyToMany(targetEntity="Genre", cascade={"persist"})
      * @ORM\JoinTable(name="show_genre",
      *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="genre_id", referencedColumnName="id")}
@@ -197,7 +197,7 @@ class Show
      * @var ArrayCollection
      *
      * Many Shows have Many Images.
-     * @ORM\ManyToMany(targetEntity="Tag", indexBy="tag")
+     * @ORM\ManyToMany(targetEntity="Tag", cascade={"persist"})
      * @ORM\JoinTable(name="show_tag",
      *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id",onDelete="CASCADE")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id",onDelete="CASCADE")}
@@ -226,11 +226,20 @@ class Show
      */
     private $events;
 
+    /**
+     * @var PostMeta
+     * @var PersistentCollection
+     * @ORM\OneToMany(targetEntity="ShowMeta",mappedBy="show")
+     */
+    private $showMeta;
+
+
     private $deltaRenderer = 'HTML';
 
 
     public function __construct()
     {
+        $this->showMeta = new ArrayCollection();
         $this->images = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->schedule = new ArrayCollection();
@@ -324,6 +333,7 @@ class Show
         return $this->images;
     }
 
+
     /**
      * @return ArrayCollection
      */
@@ -332,25 +342,42 @@ class Show
         return $this->genres;
     }
 
+
+    /**
+     * @param Tag $tag
+     */
+    public function addGenre($tag)
+    {
+        if (!$this->genres->contains($tag)) {
+            $this->genres->add($tag);
+        }
+    }
+
+    /**
+     * @param string $key
+     */
+    public  function removeGenre($genre)
+    {
+        if (!$this->genres->contains($genre)) {
+            $this->genres->remove($genre);
+        }
+    }
+
+
     public function getTags()
     {
         return $this->tags;
     }
 
     /**
-     * @param Genre $genre
+     * @param $tag
+     * @return mixed
      */
-    public function addGenre($genre)
+    public function removeTag($tag)
     {
-        $this->genres->set($genre->getGenre(),$genre);
-    }
-
-    /**
-     * @param string $key
-     */
-    public  function removeGenre($key)
-    {
-        $this->genres->remove($key);
+        if (!$this->tags->contains($tag)) {
+            return $this->tags->remove($tag);
+        }
     }
 
     /**
@@ -361,14 +388,6 @@ class Show
         $this->tags->set($tag->getTag(),$tag);
     }
 
-    /**
-     * @param $tag
-     * @return mixed
-     */
-    public function removeTag($tag)
-    {
-        return $this->tags->remove($tag);
-    }
 
 
     public function getHeaderImage()
@@ -538,6 +557,9 @@ class Show
         return $this->archive;
     }
 
-
+    public function getShowMeta()
+    {
+        return $this->showMeta;
+    }
 }
 

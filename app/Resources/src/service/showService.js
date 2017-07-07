@@ -21,8 +21,8 @@ export default {
       responseCallback(new Pagination((postData) => new Show(postData), response.data.payload))
     })
   },
-  getShow: function (token: string, slug: string, callback: (result: Show) => void) {
-    return axios.get(Routing.generate('get_show', { token: token, slug: slug })).then((response) => {
+  getShow: function (token: string, slug: string, callback: (result: Show) => void, parse: string = 'HTML') {
+    return axios.get(Routing.generate('get_show', { token: token, slug: slug }) + '?' + qs.stringify({ delta: parse })).then((response) => {
       callback(new Show(response.data.show))
     })
   },
@@ -35,7 +35,7 @@ export default {
       callback(response.data.comments.map((r) => new Comment(r)))
     })
   },
-  postPostComment: function (show: Show, comment: string, parentComment: (Comment | null), callback: (result: (Comment | Form)) => void) {
+  postShowComment: function (show: Show, comment: string, parentComment: (Comment | null), callback: (result: (Comment | Form)) => void) {
     const payload: {
       parentComment: ?string,
       content: string
@@ -45,6 +45,28 @@ export default {
     }
     return axios.post(Routing.generate('post_show_comment', { token: show.token, slug: show.slug }), qs.stringify({ 'comment': payload })).then((response) => {
       callback(new Comment(response.data.comment))
+    }).catch((error) => {
+      if (error.response) {
+        if (error.response.status === 400) {
+          callback(new Form(error.response.data))
+        }
+      }
+    })
+  },
+  postShow: function (post: Show, callback : (result: Form | Show) => void) {
+    return axios.post(Routing.generate('post_show'), qs.stringify(post.payload)).then((response) => {
+      callback(new Show(response.data.show))
+    }).catch((error) => {
+      if (error.response) {
+        if (error.response.status === 400) {
+          callback(new Form(error.response.data))
+        }
+      }
+    })
+  },
+  patchShow: function (token: string, slug:string, post: Form | Show, callback : (result: Form) => void) {
+    return axios.patch(Routing.generate('patch_show', { token: token, slug: slug }), qs.stringify(post.payload)).then((response) => {
+      callback(new Show(response.data.show))
     }).catch((error) => {
       if (error.response) {
         if (error.response.status === 400) {

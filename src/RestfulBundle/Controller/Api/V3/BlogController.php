@@ -100,7 +100,7 @@ class BlogController extends FOSRestController
 
         /** @var Post $post */
         if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
-            return $this->view(['categories' => $post->getCategories()->getValues()]);
+            return $this->view(['categories' => $post->getCategories()]);
         throw $this->createNotFoundException("Post Not Found");
     }
 

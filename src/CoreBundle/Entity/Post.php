@@ -3,8 +3,9 @@
 namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
+
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use CoreBundle\Validation\Constraints As CoreAssert;
@@ -33,8 +34,9 @@ class Post
 
     /**
      * @var string
-     * @ORM\Column(name="name", type="string",length=100, nullable=false,unique=true)
+     * @ORM\Column(name="name", type="string",length=100, nullable=false, unique=true)
      * @JMS\Groups({"detail","list"})
+     * @Assert\NotBlank()
      */
     private $name;
 
@@ -42,7 +44,6 @@ class Post
      * @var string
      * @JMS\Groups({"detail","list"})
      * @ORM\Column(name="token", type="string",length=20, nullable=false,unique=true)
-     *
      */
     private $token;
 
@@ -51,6 +52,7 @@ class Post
      *
      * @ORM\Column(name="slug", type="string",length=100, nullable=false,unique=true)
      * @Assert\Regex("/^[a-zA-Z0-9\-]+$/")
+     * @Assert\NotBlank()
      * @JMS\Groups({"detail","list"})
      */
     private $slug;
@@ -76,6 +78,7 @@ class Post
      * @var string
      * @ORM\Column(name="excerpt", type="text", length=6000, nullable=true)
      * @JMS\Groups({"detail","list"})
+     * @Assert\NotBlank()
      */
     private $excerpt;
 
@@ -97,6 +100,7 @@ class Post
     /**
      * @var object
      * @CoreAssert\Delta
+     * @Assert\NotBlank()
      * @ORM\Column(name="content",  type="text", nullable=false)
      * @JMS\Groups({"detail","list"})
      */
@@ -139,7 +143,7 @@ class Post
      * @var ArrayCollection
      *
      * Many Shows have Many Images.
-     * @ORM\ManyToMany(targetEntity="Category", indexBy="category")
+     * @ORM\ManyToMany(targetEntity="Category", cascade={"persist"})
      * @ORM\JoinTable(name="post_category",
      *      joinColumns={@ORM\JoinColumn(name="post_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="category_id", referencedColumnName="id")}
@@ -152,7 +156,7 @@ class Post
      * @var ArrayCollection
      *
      * Many Shows have Many Images.
-     * @ORM\ManyToMany(targetEntity="Tag", indexBy="tag")
+     * @ORM\ManyToMany(targetEntity="Tag", cascade={"persist"})
      * @ORM\JoinTable(name="post_tag",
      *      joinColumns={@ORM\JoinColumn(name="post_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="tag_id", referencedColumnName="id")}
@@ -160,6 +164,13 @@ class Post
      * @JMS\Groups({"detail","list"})
      */
     private $tags;
+
+    /**
+     * @var ShowMeta
+     * @var PersistentCollection
+     * @ORM\OneToMany(targetEntity="PostMeta",mappedBy="post")
+     */
+    private $postMeta;
 
     private $deltaRenderer = 'HTML';
 
@@ -181,6 +192,7 @@ class Post
 
     public function __construct()
     {
+        $this->postMeta = new ArrayCollection();
         $this->images = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->tags = new ArrayCollection();
@@ -256,10 +268,10 @@ class Post
 
     public function isPinned()
     {
-        return $this->isPinned;
+        return (bool)$this->isPinned;
     }
 
-    public function setPinned($pinned)
+    public function setIsPinned($pinned)
     {
         $this->isPinned = $pinned;
     }
@@ -311,7 +323,14 @@ class Post
      */
     public function addTag($tag)
     {
-        $this->tags->set($tag->getTag(),$tag);
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+        }
+    }
+
+    public function hasTag(Tag $tag)
+    {
+        return $this->tags->contains($tag);
     }
 
     /**
@@ -320,7 +339,7 @@ class Post
      */
     public function removeTag($tag)
     {
-        return $this->tags->remove($tag);
+        return $this->tags->removeElement($tag);
     }
 
 
@@ -338,9 +357,15 @@ class Post
     /**
      * @param Category $category
      */
-    public  function addCategory($category)
+    public  function addCategory(Category $category)
     {
-        $this->categories->set($category->getCategory(),$category);
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+        }
+    }
+
+    public function hasCategory( Category $category) {
+        return $this->categories->contains($category);
     }
 
     /**
@@ -349,7 +374,7 @@ class Post
      */
     public function removeCategory($category)
     {
-        return $this->categories->remove($category);
+        $this->categories->removeElement($category);
     }
 
     /**
@@ -357,10 +382,8 @@ class Post
      */
     public  function getCategories()
     {
-        return $this->categories;
+        return $this->categories->getValues();
     }
-
-
 
 
     public function getToken()
@@ -379,6 +402,13 @@ class Post
         $result = preg_replace('/\-+/', '-',$result);
         $this->slug = $result;
     }
+
+    public function getPostMeta()
+    {
+        return $this->postMeta;
+    }
+
+
 
 }
 

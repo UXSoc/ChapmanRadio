@@ -6,10 +6,12 @@ namespace CoreBundle\Repository;
 
 use CoreBundle\Entity\Comment;
 use CoreBundle\Entity\Show;
+use CoreBundle\Entity\ShowMeta;
 use CoreBundle\Helper\Datatable;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\Request;
@@ -102,5 +104,33 @@ class ShowRepository extends EntityRepository
         $pagination->getQuery()->setFirstResult($num * $page);
         return $pagination;
     }
+
+    public function getMetaEntry(Show $show,$key,$metaValue, $create = false) {
+        $qb = $this->createQueryBuilder('s');
+        $qb->join('s.showMeta','sm',"WITH");
+        $qb->where($qb->expr()->eq('sm.metaKey',':key'))
+            ->setParameter('tag',$key);
+        $qb->andWhere('s.show',':show')
+            ->setParameter('show',$show);
+
+        try {
+            $result = $qb->getQuery()->getSingleResult();
+            return $result;
+        }
+        catch (NoResultException $e)
+        {
+            if($create === true)
+            {
+                $showMeta = new ShowMeta();
+                $showMeta->setShow($show);
+                $showMeta->setMetaKey($key);
+                return $showMeta;
+            }
+        }
+        return null;
+
+
+    }
+
 
 }

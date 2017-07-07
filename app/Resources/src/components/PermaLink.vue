@@ -14,6 +14,10 @@
         }
       },
       props: {
+        value: {
+          type: String,
+          default: ''
+        },
         to: {
           type: Object,
           default: {}
@@ -26,7 +30,7 @@
       },
       methods: {
         splitify: function () {
-          let path = this.$router.resolve(this.to, this.$route, '#').href.split('/')
+          const path = this.$router.resolve(this.to, this.$route, '#').href.split('/')
           this.$set(this, 'slug', path.splice(path.length - 1, 1)[0])
           this.$set(this, 'route', path.join('/'))
         },
@@ -35,6 +39,7 @@
           result = result.replace(/(-|\s|\n)+/g, '-')
           this.$set(this, 'edit', false)
           this.$set(this, 'slug', result)
+          this.$emit('input', this.slug)
           this.$emit('onSlug', this.slug)
         }
       },

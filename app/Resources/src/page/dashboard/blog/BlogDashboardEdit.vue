@@ -2,12 +2,12 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
-                <input type="text" v-model="post.name"/>
+                <input type="text"  v-on:blur="unBlurName()" v-model="post.name"/>
             </div>
         </div>
         <div class="row">
             <div class="col-lg-8">
-                <perma-link :to="post.getRoute()" ></perma-link>
+                <perma-link v-if="post  && post.slug !== ''" v-model="post.slug" :to="post.getRoute()" ></perma-link>
                 <tag-collection  :tags="post.tags"></tag-collection>
                 <quill-editor :module="quill" v-model="post.content"></quill-editor>
                 <textarea v-model="post.excerpt"></textarea>
@@ -26,7 +26,9 @@
                         Categories
                     </div>
                     <div class="panel-body">
-                        <checked-collection :items="categories" :selected="post.categories"></checked-collection>
+                        <div v-for="category in categories">
+                            <input type="checkbox" :value="category" v-model="post.categories"/>{{category}}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -38,10 +40,11 @@
   /* @flow */
   import TagCollection from '../../../components/TagCollection.vue'
   import PermaLink from '../../../components/PermaLink.vue'
-  import CheckedCollection from '../../../components/CheckedCollection.vue'
   import PostService from '../../../service/postService'
   import CategoryService from '../../../service/categoryService'
   import QuillEditor from '../../../components/quillEditor.vue'
+  import Post from '../../../entity/post'
+  import Form from '../../../entity/form'
 
   export default{
     data () {
@@ -78,32 +81,55 @@
           this.slug = this.$route.params.slug
           this.edit = true
         }
-        this.query()
       }
+      this.query()
     },
     mounted () {
     },
     methods: {
       update () {
       },
+      unBlurName () {
+        if (this.post && this.post.name !== '' && this.post.slug === '') {
+          this.post.slug = this.post.name
+        }
+      },
       query () {
+        const _this = this
         if (this.edit === true) {
-          const _this = this
           PostService.getPost(this.token, this.slug, (post) => {
             _this.$set(_this, 'post', post)
           }, 'delta')
-
-          CategoryService.getCategories((categories) => {
-            _this.$set(_this, 'categories', categories)
-          })
+        } else {
+          _this.$set(_this, 'post', new Post({}))
         }
+
+        CategoryService.getCategories((categories) => {
+          _this.$set(_this, 'categories', categories)
+        })
       },
       submit () {
+        const _this = this
+        if (_this.edit === true) {
+          PostService.patchPost(_this.token, _this.slug, this.post, (post) => {
+            if (post instanceof Post) {
+              _this.$set(_this, 'post', post)
+            } else if (post instanceof Form) {
+            }
+          })
+        } else {
+          PostService.postPost(this.post, (post) => {
+            if (post instanceof Post) {
+              _this.$set(_this, 'post', post)
+              _this.$router.push(post.getRoute())
+            } else if (post instanceof Form) {
+            }
+          })
+        }
       }
     },
     components: {
       TagCollection,
-      CheckedCollection,
       PermaLink,
       QuillEditor
     }

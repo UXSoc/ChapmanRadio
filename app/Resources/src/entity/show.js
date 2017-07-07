@@ -24,7 +24,7 @@ export default class Show extends BaseEntity {
     this._genres = this.get('genres', data, [])
     this._name = this.get('name', data, '')
     this._profanity = this.get('profanity', data, false)
-    this._token = this.get('token', data, '')
+    this._token = this.get('token', data, '---------')
     this._slug = this.get('slug', data, '')
     this._excerpt = this.get('excerpt', data, '')
     this._headerImage = this.get('header_image', data, '')
@@ -49,24 +49,48 @@ export default class Show extends BaseEntity {
     return this._profanity
   }
 
-  get hasCommentsEnabled () : boolean {
+  set hasProfanity (value: boolean) {
+    this._profanity = value
+  }
+
+  get commentsEnabled () : boolean {
     return this._enableComments
+  }
+
+  set commentsEnabled (value: boolean) {
+    this._enableComments = value
   }
 
   get genres () : [string] {
     return this._genres
   }
 
+  set genres (value: [string]) {
+    this._genres = value
+  }
+
   get profanity () : boolean {
     return this._profanity
+  }
+
+  set profanity (value: boolean) {
+    this._profanity = value
   }
 
   get excerpt () : string {
     return this._excerpt
   }
 
+  set excerpt (value: string) {
+    this._excerpt = value
+  }
+
   get description () : string {
     return this._description
+  }
+
+  set description (value: string) {
+    this._description = value
   }
 
   get token (): string {
@@ -77,8 +101,16 @@ export default class Show extends BaseEntity {
     return this._name
   }
 
+  set name (value: string) {
+    this._name = value
+  }
+
   get slug () : string {
     return this._slug
+  }
+
+  set slug (value: string) {
+    this._slug = value.replace(/(-|\s|\n)+/g, '-')
   }
 
   get createdAt () : string {
@@ -89,12 +121,21 @@ export default class Show extends BaseEntity {
     return this._updatedAt
   }
 
-  get content () :string {
-    return this._content
-  }
-
   get strikes () : string {
     return this._strikes
+  }
+
+  get payload () {
+    return {
+      show: {
+        name: this.name,
+        description: this.description,
+        excerpt: this.excerpt,
+        slug: this.slug,
+        tags: this.tags,
+        genres: this.genres
+      }
+    }
   }
 
   getRoute () : {name: string, params: { token: string, slug:string}} {

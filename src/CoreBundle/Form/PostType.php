@@ -36,10 +36,11 @@ class PostType extends AbstractType
             'allow_delete' => true
         ));
         $builder->add('tags', CollectionType::class, array(
-            'entry_type'   => TagType::class,
+            'entry_type' => TagType::class,
             'allow_add' => true,
             'allow_delete' => true
         ));
+
 
     }
 

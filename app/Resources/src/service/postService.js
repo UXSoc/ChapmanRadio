@@ -26,16 +26,26 @@ export default {
       callback(new Post(response.data.post))
     })
   },
-  patchPost: function (post: Post, responseCallback : (result: Post) => void, delta: boolean = false) {
-    const payload = {
-      name: post.name,
-      content: post.content,
-      excerpt: post.excerpt,
-      slug: post.slug,
-      isPinned: post.isPinned
-    }
-    return axios.patch(Routing.generate('patch_post', { token: post.token, slug: post.slug }) + '?' + qs.stringify(payload)).then((response) => {
-      responseCallback(new Post(response.data))
+  postPost: function (post: Post, callback : (result: Form | Post) => void) {
+    return axios.post(Routing.generate('post_post'), qs.stringify(post.payload)).then((response) => {
+      callback(new Post(response.data.post))
+    }).catch((error) => {
+      if (error.response) {
+        if (error.response.status === 500) {
+          callback(new Form(error.response.data))
+        }
+      }
+    })
+  },
+  patchPost: function (token: string, slug:string, post: Post, callback : (result: Form | Post) => void) {
+    return axios.patch(Routing.generate('patch_post', { token: token, slug: slug }), qs.stringify(post.payload)).then((response) => {
+      callback(new Post(response.data.post))
+    }).catch((error) => {
+      if (error.response) {
+        if (error.response.status === 500) {
+          callback(new Form(error.response.data))
+        }
+      }
     })
   },
   getPostComments: function (post:Post, root: (Comment | null), callback : (result: Comment) => void) {

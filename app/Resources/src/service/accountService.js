@@ -4,10 +4,9 @@
 import axios from 'axios'
 import qs from 'qs'
 import Form from './../entity/form'
-import FormView from './../entity/formView'
 
 export default {
-  postChangePassword: function ( oldPassword: string, newPassword: string, callback: (result: Form) => void) {
+  postChangePassword: function (oldPassword: string, newPassword: string, callback: (result: Form) => void) {
     return axios.post(Routing.generate('post_account_password'), qs.stringify({
       oldPassword: oldPassword,
       newPassword: newPassword

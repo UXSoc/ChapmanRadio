@@ -43,7 +43,7 @@
         })
       },
       respondComment (markdown: string, comment: Comment, commentItem: CommentItem) {
-        ShowService.postPostComment(this.post, markdown, comment, (resp) => {
+        ShowService.postShowComment(this.post, markdown, comment, (resp) => {
           if (resp instanceof Form) {
           }
           if (resp instanceof Comment) {

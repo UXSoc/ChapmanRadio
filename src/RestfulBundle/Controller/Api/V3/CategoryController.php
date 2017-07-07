@@ -30,9 +30,8 @@ class CategoryController extends FOSRestController
      */
     public function getCategoriesAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
         /** @var CategoryRepository $categoryRepository */
-        $categoryRepository = $em->getRepository(Category::class);
+        $categoryRepository = $this->getDoctrine()->getManager()->getRepository(Category::class);
         $categories = $categoryRepository->findCategory($request->get('search', ''));
 
         return $this->view(["categories" => $categories]);

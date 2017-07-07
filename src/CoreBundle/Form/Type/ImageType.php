@@ -36,7 +36,7 @@ class ImageType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Image::class,
             'csrf_protection' => false,
-            'invalid_message' => 'Unknown Parent Comment'
+            'invalid_message' => 'Unknown Image Comment'
         ]);
     }
 

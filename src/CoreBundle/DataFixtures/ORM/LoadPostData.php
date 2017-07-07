@@ -80,9 +80,14 @@ class LoadPostData extends AbstractFixture implements OrderedFixtureInterface, C
                 /** @var Category $category */
                 $category = $categories[array_rand($categories,1)];
 
-                if(!in_array($tag->getTag(),$post->getTags()->getKeys()))
+                if(!in_array($tag->getTag(),array_map(function($f) {
+                    return $f->getTag();
+                },$post->getTags()->toArray())))
                     $post->addTag($tag);
-                if(!in_array($category->getCategory(),$post->getCategories()->getKeys()))
+
+                if(!in_array($category->getCategory(),array_map(function($f) {
+                    return $f->getCategory();
+                },$post->getCategories()->toArray())))
                     $post->addCategory($category);
             }
             $manager->persist($post);

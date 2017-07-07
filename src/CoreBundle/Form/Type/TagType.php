@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TagType extends AbstractType
 {
-    private  $transformer;
+    private $transformer;
 
     function __construct(TagTransformer $transformer)
     {
@@ -28,16 +28,15 @@ class TagType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addModelTransformer($this->transformer);
+
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Tag::class,
             'csrf_protection' => false
         ]);
     }
-
     public function getParent()
     {
         return TextType::class;

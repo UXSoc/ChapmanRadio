@@ -16,12 +16,12 @@ export default class Post extends BaseEntity {
     super()
     this._categories = this.get('categories', data, [])
     this._tags = this.get('tags', data, [])
-    this._token = this.get('token', data, '')
+    this._token = this.get('token', data, '84nadjhankn')
     this._name = this.get('name', data, '')
     this._slug = this.get('slug', data, '')
-    this._createdAt = this.get('created_at', data, {})
-    this._updatedAt = this.get('updated_at', data, {})
-    this._content = this.get('content', data, '')
+    this._createdAt = this.get('created_at', data, '--')
+    this._updatedAt = this.get('updated_at', data, '--')
+    this._content = this.get('content', data, '{"ops": []}')
     this._excerpt = this.get('excerpt', data, '')
     this._isPinned = this.get('isPinned', data, false)
   }
@@ -75,7 +75,7 @@ export default class Post extends BaseEntity {
   }
 
   set slug (value) {
-    this._slug = value
+    this._slug = value.replace(/(-|\s|\n)+/g, '-')
   }
 
   get content () {
@@ -92,6 +92,20 @@ export default class Post extends BaseEntity {
 
   get updatedAt () {
     return this._updatedAt
+  }
+
+  get payload () {
+    return {
+      post: {
+        name: this.name,
+        content: this.content,
+        excerpt: this.excerpt,
+        slug: this.slug,
+        isPinned: this.isPinned,
+        tags: this.tags,
+        categories: this.categories
+      }
+    }
   }
 
   getRoute () {

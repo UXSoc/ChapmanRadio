@@ -210,9 +210,9 @@ class User implements AdvancedUserInterface
      * @param UserMeta $meta
      * @return bool
      */
-    public function addUserMeta($meta)
+    public function setUserMeta($key, $meta)
     {
-        return $this->userMeta->add($meta);
+        return $this->userMeta->set($key,$meta);
     }
 
     /**
@@ -224,14 +224,6 @@ class User implements AdvancedUserInterface
         return $this->userMeta->get($key);
     }
 
-    /**
-     * @param string $key
-     * @return bool
-     */
-    public function hasUserMeta($key)
-    {
-        return $this->userMeta->containsKey($key);
-    }
 
     public function getDj()
     {

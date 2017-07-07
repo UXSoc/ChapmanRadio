@@ -2,25 +2,25 @@
 /**
  * Created by PhpStorm.
  * User: michaelpollind
- * Date: 5/31/17
- * Time: 9:48 PM
+ * Date: 7/6/17
+ * Time: 8:53 PM
  */
 
 namespace CoreBundle\Entity;
+
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 /**
  * User
  *
  * @ORM\Entity()
- * @ORM\Table(name="user_meta")
+ * @ORM\Table(name="show_meta")
  *
  */
-class UserMeta
+class ShowMeta
 {
     /**
      * @var integer
@@ -48,12 +48,12 @@ class UserMeta
     /**
      * @var Schedule
      *
-     * @ORM\ManyToOne(targetEntity="User",inversedBy="userMeta")
+     * @ORM\ManyToOne(targetEntity="Show", inversedBy="showMeta")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="show_id", referencedColumnName="id")
      * })
      */
-    private $user;
+    private $show;
 
     public function getId()
     {
@@ -80,10 +80,13 @@ class UserMeta
         $this->metaValue = $value;
     }
 
-    public function getUser()
+    public function getShow()
     {
-        return $this->user;
+        return $this->show;
     }
 
-
+    public function setShow($show)
+    {
+        $this->show = $show;
+    }
 }

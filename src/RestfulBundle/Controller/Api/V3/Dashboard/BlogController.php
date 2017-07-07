@@ -47,6 +47,7 @@ class BlogController extends FOSRestController
      * @Rest\Post("post",
      *     options = { "expose" = true },
      *     name="post_post")
+     * @Rest\View(serializerGroups={"detail"})
      */
     public function postPostAction(Request $request)
     {
@@ -57,18 +58,22 @@ class BlogController extends FOSRestController
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid())
         {
+            $post->setDeltaRenderer('delta');
+            $post->setAuthor($this->getUser());
             $em->persist($post);
             $em->flush();
+            return $this->view(['post' => $post]);
         }
         return $this->view($form);
     }
+
 
 
     /**
      * @Rest\Patch("post/{token}/{slug}",
      *     options = { "expose" = true },
      *     name="patch_post")
-     * @Method({"PATCH"})
+     * @Rest\View(serializerGroups={"detail"})
      */
     public function patchPostAction(Request $request, $token, $slug)
     {
@@ -80,17 +85,23 @@ class BlogController extends FOSRestController
         {
             $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
 
-            $form = $this->createForm(PostType::class,$post);
+            $form = $this->createForm(PostType::class,$post,[
+                    'method' => 'patch'
+                ]);
             $form->handleRequest($request);
             if($form->isSubmitted() && $form->isValid())
             {
+                $post->setDeltaRenderer('delta');
                 $em->persist($post);
                 $em->flush();
+                return $this->view(['post' => $post]);
             }
             return $this->view($form);
         }
         throw $this->createNotFoundException("Post Not Found");
     }
+
+
 
 
     /**
@@ -108,13 +119,15 @@ class BlogController extends FOSRestController
         if($post = $postRepository->getPostByTokenAndSlug($token, $slug))
         {
             $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
-            if($post->getTags()->containsKey($tag))
-                return new HttpException(400,'Duplicate Tag');
 
             /** @var TagRepository $tagRepository */
             $tagRepository = $em->getRepository(Tag::class);
 
             $tag = $tagRepository->getOrCreateTag($tag);
+
+            if($post->hasTag($tag))
+                return new HttpException(400,'Duplicate Tag');
+
             $em->persist($tag);
             $post->addTag($tag);
             $em->persist($post);
@@ -227,13 +240,15 @@ class BlogController extends FOSRestController
         if($post = $postRepository->getPostByTokenAndSlug($token, $slug))
         {
             $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
-            if($post->getCategories()->containsKey($category))
-                throw new HttpException(400,"Duplicate Tag");
 
             /** @var CategoryRepository $categoryRepository */
             $categoryRepository = $em->getRepository(Category::class);
 
             $category = $categoryRepository->getOrCreateCategory($category);
+
+            if($post->hasCategory($category))
+                throw new HttpException(400,"Duplicate Tag");
+
             $em->persist($category);
             $post->addCategory($category);
             $em->persist($post);

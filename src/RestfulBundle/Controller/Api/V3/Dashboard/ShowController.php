@@ -29,7 +29,7 @@ class ShowController extends FOSRestController
      *     options = { "expose" = true },
      *     name="post_show_comment")
      */
-    public function postPostCommentAction(Request $request, $token, $slug, $comment_token = null)
+    public function postShowCommentAction(Request $request, $token, $slug, $comment_token = null)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -78,6 +78,7 @@ class ShowController extends FOSRestController
      * @Rest\Post("show",
      *     options = { "expose" = true },
      *     name="post_show")
+     * @Rest\View(serializerGroups={"detail"})
      */
     public function postShowAction(Request $request)
     {
@@ -101,6 +102,7 @@ class ShowController extends FOSRestController
      * @Rest\Patch("show/{token}/{slug}",
      *     options = { "expose" = true },
      *     name="patch_show")
+     * @Rest\View(serializerGroups={"detail"})
      */
     public function patchShowAction(Request $request, $token, $slug)
     {
@@ -108,14 +110,16 @@ class ShowController extends FOSRestController
         $em = $this->getDoctrine()->getManager();
 
         /** @var ShowRepository $showRepository */
-        $showRepository = $this->get(Show::class);
+        $showRepository = $em->getRepository(Show::class);
 
         /** @var Show $show */
         if ($show = $showRepository->getShowByTokenAndSlug($token, $slug))
         {
             $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
 
-            $form = $this->createForm(ShowType::class,$show);
+            $form = $this->createForm(ShowType::class,$show,[
+                'method' => 'patch'
+            ]);
             $form->handleRequest($request);
             if($form->isSubmitted() && $form->isValid())
             {
@@ -123,7 +127,7 @@ class ShowController extends FOSRestController
                 $em->flush();
                 $this->view(['show' => $show]);
             }
-            $this->view($form);
+            return $this->view($form);
         }
         throw $this->createNotFoundException('Show not Found');
     }
@@ -148,6 +152,7 @@ class ShowController extends FOSRestController
             $this->denyAccessUnlessGranted(ShowVoter::DELETE, $show);
             $em->remove($show);
             $em->flush();
+            return $this->view();
         }
         throw $this->createNotFoundException('Show not Found');
     }

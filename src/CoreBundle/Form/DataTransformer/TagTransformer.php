@@ -45,6 +45,7 @@ class TagTransformer implements DataTransformerInterface
         if (null === $value) {
             return '';
         }
+
         return $value->getTag();
     }
 
@@ -59,6 +60,7 @@ class TagTransformer implements DataTransformerInterface
      */
     public function reverseTransform($value)
     {
+
         if (!$value) {
             return null;
         }
