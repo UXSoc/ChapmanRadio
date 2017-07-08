@@ -61,14 +61,16 @@
         const data = this.cropper.getData()
         AccountService.postImage(this.image, data.x, data.y, data.width, data.height, function (result) {
           _this.$set(_this, 'c', _this.c + 1)
-          _this.$set(_this, 'userImage', _this.$auth.getStatus().getProfileImage() + '?' + _this.c)
+          _this.$auth.refresh()
         })
         $('#profile-image-edit-modal').modal('hide')
+      },
+      userStatus: function () {
+        this.$set(this, 'userImage', this.$auth.getStatus().getProfileImage() + '?' + this.c)
       }
     },
     mounted () {
       const _this = this
-      this.$set(this, 'userImage', this.$auth.getStatus().getProfileImage())
       $('#profile-image-edit-modal').on('shown.bs.modal', function (e) {
         _this.cropper = new Cropper($('#profile-image-edit').get(0), {
           responsive: true,
@@ -81,6 +83,7 @@
       })
     },
     watch: {
+      '$auth.status' : 'userStatus'
     },
     created () {
     },

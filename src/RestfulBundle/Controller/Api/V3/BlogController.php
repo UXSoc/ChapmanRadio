@@ -77,6 +77,7 @@ class BlogController extends FOSRestController
      */
     public function getPostTagsAction(Request $request, $token, $slug)
     {
+
         $em = $this->getDoctrine()->getManager();
         /** @var PostRepository $postRepository */
         $postRepository = $em->getRepository(Post::class);

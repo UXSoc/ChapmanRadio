@@ -56,16 +56,13 @@ class Dj
      */
     private $user;
 
+
     /**
      * Many Shows have Many Images.
-     * @ORM\ManyToMany(targetEntity="Image")
-     * @ORM\JoinTable(name="dj_image",
-     *      joinColumns={@ORM\JoinColumn(name="dj_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="image_id", referencedColumnName="id", unique=true)}
-     *      )
-     * @return ArrayCollection
+     * @ORM\OneToOne(targetEntity="Image", cascade={"persist","remove"})
+     * @ORM\JoinColumn(name="dj_image", referencedColumnName="id", onDelete="SET NULL"))
      */
-    private $images;
+    private $djImage;
 
     /**
      * DJ's can have multiple shows.
@@ -79,7 +76,6 @@ class Dj
     function __construct()
     {
         $this->shows =  new ArrayCollection();
-        $this->images = new ArrayCollection();
     }
 
     public function getShows()
@@ -129,6 +125,16 @@ class Dj
     public  function  getAttendWorkshop()
     {
         return $this->attendWorkshop;
+    }
+
+    public function setDjImage($image)
+    {
+        $this->djImage = $image;
+    }
+
+    public function getDjImage()
+    {
+        return $this->djImage;
     }
 
 }

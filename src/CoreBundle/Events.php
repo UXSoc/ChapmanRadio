@@ -12,9 +12,8 @@ namespace CoreBundle;
 class Events
 {
     const IMAGE_SAVE = "image.save";
-    const IMAGE_DELETE = "image.cache";
+    const IMAGE_DELETE = "image.delete";
     const IMAGE_RETRIEVE = "image.retrieve";
-
     const IMAGE_FILTER = "image.filter";
 
     const USER_CONFIRMATION = "user.confirmation";

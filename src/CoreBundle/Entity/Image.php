@@ -33,13 +33,6 @@ class Image
     private $source;
 
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="token", type="string", length=20, nullable=false)
-     */
-    private $token;
-
 
     /**
      * @var \DateTime
@@ -59,16 +52,6 @@ class Image
      * @Assert\NotBlank()
      */
     private $image;
-
-
-    /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(name="author_id", referencedColumnName="id", nullable=false)
-     */
-    private $author;
-
 
 
     /**
@@ -117,23 +100,6 @@ class Image
         return $this->source;
     }
 
-    public function getToken()
-    {
-        return $this->token;
-    }
-
-    /**
-     * @param User $author
-     */
-    public function setAuthor(User $author)
-    {
-        $this->author = $author;
-    }
-
-    public function getAuthor()
-    {
-        return $this->author;
-    }
 
 
 }

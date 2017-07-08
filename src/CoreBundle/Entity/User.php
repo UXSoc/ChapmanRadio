@@ -212,7 +212,7 @@ class User implements AdvancedUserInterface
      */
     public function setUserMeta($key, $meta)
     {
-        return $this->userMeta->set($key,$meta);
+        $this->userMeta->set($key,$meta);
     }
 
     /**

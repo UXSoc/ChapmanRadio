@@ -4,7 +4,9 @@ namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Entity\Image;
 use CoreBundle\Entity\User;
+use CoreBundle\Event\ImageDeleteEvent;
 use CoreBundle\Event\ImageEvent;
+use CoreBundle\Event\ImageSaveEvent;
 use CoreBundle\Event\SaveImageEvent;
 use CoreBundle\Events;
 use CoreBundle\Form\ProfileImageType;
@@ -14,6 +16,7 @@ use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\Point;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 
@@ -56,23 +59,6 @@ class AccountController extends FOSRestController
         return $this->view($form);
     }
 
-    /**
-     * @Security("has_role('ROLE_USER')")
-     * @Rest\Get("/account/new-password",
-     *     options = { "expose" = true },
-     *     name="get_account_password")
-     */
-    public function getChangePasswordAction(Request $request)
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        /** @var UserPasswordEncoder $passwordEncoder */
-        $passwordEncoder = $this->get('security.password_encoder');
-
-        return $this->view($this->createForm(ResetPasswordType::class, null, [
-            'password_encoder' => $passwordEncoder,
-            'user' => $user])->createView());
-    }
 
     /**
      * @Security("has_role('ROLE_USER')")
@@ -94,18 +80,18 @@ class AccountController extends FOSRestController
 
             $profile = $user->getProfile();
             if ($profile->getImage()) {
-                $dispatcher->dispatch(Events::IMAGE_DELETE, new ImageEvent($profile->getImage()));
+                $dispatcher->dispatch(ImageDeleteEvent::NAME, new ImageDeleteEvent($profile->getImage()));
             }
 
             $data = $form->getData();
             /** @var Image $image */
             $image = $data['image'];
-            $event = new SaveImageEvent($image, array(), function (ImageInterface $image) use ($data) {
+
+            $event = new ImageSaveEvent($image, array(), function (ImageInterface $image) use ($data) {
                 $image->crop(new Point($data['x'], $data['y']), new Box($data['width'], $data['height']));
                 $image->resize(new Box(200, 200));
             });
-            $dispatcher->dispatch(Events::IMAGE_SAVE, $event);
-            $event->getImage()->setAuthor($this->getUser());
+            $dispatcher->dispatch(ImageSaveEvent::NAME, $event);
             $profile->setImage($event->getImage());
             $em->persist($user);
             $em->flush();

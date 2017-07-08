@@ -139,60 +139,22 @@ class BlogController extends FOSRestController
 
 
     /**
-     * @Rest\Post("post/{token}/{slug}/image",
+     * @Rest\Post("post/{token}/{slug}/media",
      *     options = { "expose" = true },
      *     name="post_image_post")
      */
-    public function putImageForPostAction(Request $request, $token, $slug)
+    public function postPostMediaAction(Request $request, $token, $slug)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var PostRepository $postRepository */
-        $postRepository = $em->getRepository(Post::class);
-
-        /** @var ImageUploadService $imageService */
-        $imageService = $this->get(ImageUploadService::class);
-
-        /** @var Post $post */
-        if ( $post = $postRepository->getPostByTokenAndSlug($token, $slug))
-        {
-            $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
-
-            $image = new Image();
-            $image->setAuthor($this->getUser());
-            $form = $this->createForm(ImageType::class,$image);
-            $form->handleRequest($request);
-            if($form->isSubmitted() && $form->isValid())
-            {
-                $imageService->saveImageToFilesystem($image);
-                $em->persist($image);
-                $post->addImage($image);
-                $em->persist($post);
-                $em->flush();
-            }
-            return $this->view($form);
-        }
-        throw new BadRequestHttpException('Image Error');
     }
 
     /**
-     * @Rest\Get("post/{token}/{slug}/image",
+     * @Rest\Post("post/{token}/{slug}/media/feature",
      *     options = { "expose" = true },
-     *     name="get_image_post")
+     *     name="post_image_post")
      */
-    public function getImageForPostAction(Request $request, $token, $slug)
+    public function postPostFeatureImages(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        /** @var PostRepository $postRepository */
-        $postRepository = $em->getRepository(Post::class);
 
-        /** @var Post $post */
-        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
-        {
-            $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
-            return $this->view($post->getImages());
-        }
-        throw  $this->createNotFoundException('Post Not Found');
     }
 
 

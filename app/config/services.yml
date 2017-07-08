@@ -52,5 +52,8 @@ services:
         arguments: ['%image_directory%']
         public: true
     CoreBundle\EventListener\ImageSubscriber:
-        arguments: ['%image_directory%']
+        arguments: ['%image_directory%','%image_uri%']
+        public: true
+    CoreBundle\EventListener\MediaSubscriber:
+        arguments: ['%media_directory%','%media_uri%']
         public: true

@@ -10,7 +10,10 @@ namespace CoreBundle\EventListener;
 
 
 use CoreBundle\Entity\Image;
+use CoreBundle\Event\ImageDeleteEvent;
 use CoreBundle\Event\ImageEvent;
+use CoreBundle\Event\ImageRetrieveEvent;
+use CoreBundle\Event\ImageSaveEvent;
 use CoreBundle\Event\SaveImageEvent;
 use CoreBundle\Events;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,14 +27,17 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class ImageSubscriber implements EventSubscriberInterface
 {
     private $targetDir;
+    private $imageUri;
     private $em;
+
 
     /**
      * ImageUploadService constructor.
      * @param string $targetDir
      */
-    public function __construct($targetDir, EntityManagerInterface $em)
+    public function __construct($targetDir,$imageUri, EntityManagerInterface $em)
     {
+        $this->imageUri = $imageUri;
         $this->targetDir = $targetDir;
         $this->em = $em;
     }
@@ -57,12 +63,9 @@ class ImageSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            Events::IMAGE_DELETE =>   'onImageDelete',
-            Events::IMAGE_SAVE =>   array(
-                array('onImageSave',500),
-                array('onImageRetrieve')
-            ),
-            Events::IMAGE_RETRIEVE => 'onImageRetrieve'
+            ImageDeleteEvent::NAME =>   'onImageDelete',
+            ImageSaveEvent::NAME =>   'onImageSave',
+            ImageRetrieveEvent::NAME => 'onImageRetrieve'
         ];
     }
 
@@ -81,7 +84,7 @@ class ImageSubscriber implements EventSubscriberInterface
         return $this->getFullPath($image->getSource(), 'png');
     }
 
-    public function onImageSave(SaveImageEvent $event){
+    public function onImageSave(ImageSaveEvent $event){
         $image = $event->getImage();
         $image->setSource(substr(bin2hex(random_bytes(12)), 12));
 
@@ -100,7 +103,7 @@ class ImageSubscriber implements EventSubscriberInterface
         $image->setImage(null);
     }
 
-    public function onImageDelete(ImageEvent $event){
+    public function onImageDelete(ImageDeleteEvent $event){
         $image = $event->getImage();
 
         /** @var FileSystem $fs */
@@ -111,8 +114,10 @@ class ImageSubscriber implements EventSubscriberInterface
         $this->em->flush();
     }
 
-    public function onImageRetrieve(ImageEvent $event){
+    public function onImageRetrieve(ImageRetrieveEvent $event){
         $image = $event->getImage();
-        $event->setPath($this->targetDir . '/' . $this->getFullPath($image->getSource(),'png'));
+        $partial = $this->getFullPath($image->getSource(),'png');
+        $event->setPath($this->imageUri . '/' .$partial);
+        $event->setFullPath($this->targetDir . '/' . $partial);
     }
 }

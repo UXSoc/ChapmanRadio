@@ -11,6 +11,7 @@ namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Entity\User;
 use CoreBundle\Event\ImageEvent;
+use CoreBundle\Event\ImageRetrieveEvent;
 use CoreBundle\Events;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -27,30 +28,5 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
  */
 class UserController extends FOSRestController
 {
-    /**
-     * @Rest\Get("user/{token}/profile/image",
-     *     options = { "expose" = true },
-     *     name="get_profile_image")
-     */
-    public function getImage(Request $request, $token)
-    {
-        $em = $this->getDoctrine()->getManager();
-        /** @var User $user */
-        $user =  $em->getRepository(User::class)->findOneBy(['token' => $token]);
-        $image = $user->getProfile()->getImage();
-        if($image === null)
-        {
-
-        }
-        /** @var EventDispatcher $dispatcher */
-        $dispatcher = $this->get('event_dispatcher');
-        $event = new ImageEvent($image);
-        $dispatcher->dispatch(Events::IMAGE_RETRIEVE,$event);
-        return new Response(file_get_contents($event->getPath()), 200,  array(
-            'Content-Type' => 'image/png'
-        ));
-
-    }
-
 
 }

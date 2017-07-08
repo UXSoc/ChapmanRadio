@@ -115,17 +115,6 @@ class Post
      */
     private $author;
 
-    /**
-     *
-     * Many Shows have Many Images.
-     * @ORM\ManyToMany(targetEntity="Image")
-     * @ORM\JoinTable(name="post_image",
-     *      joinColumns={@ORM\JoinColumn(name="post_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="image_id", referencedColumnName="id", unique=true)}
-     *      )
-     * @return ArrayCollection
-     */
-    private $images;
 
     /**
      * @var ArrayCollection
@@ -165,6 +154,19 @@ class Post
      */
     private $tags;
 
+
+    /**
+     *
+     * Many Shows have Many Images.
+     * @ORM\ManyToMany(targetEntity="Media")
+     * @ORM\JoinTable(name="post_media",
+     *      joinColumns={@ORM\JoinColumn(name="post_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="media_id", referencedColumnName="id", unique=true)}
+     *      )
+     * @return ArrayCollection
+     */
+    private $media;
+
     /**
      * @var ShowMeta
      * @var PersistentCollection
@@ -193,7 +195,7 @@ class Post
     public function __construct()
     {
         $this->postMeta = new ArrayCollection();
-        $this->images = new ArrayCollection();
+        $this->media = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->tags = new ArrayCollection();
         $this->categories = new ArrayCollection();
@@ -223,24 +225,6 @@ class Post
     public function setAuthor($author)
     {
         $this->author = $author;
-    }
-
-    public function addImage($image)
-    {
-        $this->images->add($image);
-    }
-
-    public  function removeImage($image)
-    {
-        $this->images->remove($image);
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getImages()
-    {
-        return $this->images;
     }
 
     /**
@@ -352,8 +336,6 @@ class Post
     }
 
 
-
-
     /**
      * @param Category $category
      */
@@ -409,6 +391,18 @@ class Post
     }
 
 
+    public function addMedia(Media $media)
+    {
+        if(!$this->media->contains($media))
+        {
+            $this->media->add($media);
+        }
+    }
+
+    public function removeMedia(Media $media)
+    {
+        $this->media->removeElement($media);
+    }
 
 }
 

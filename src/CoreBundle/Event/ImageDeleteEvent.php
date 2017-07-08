@@ -2,21 +2,21 @@
 /**
  * Created by PhpStorm.
  * User: michaelpollind
- * Date: 6/27/17
- * Time: 7:39 AM
+ * Date: 7/7/17
+ * Time: 8:26 PM
  */
 
 namespace CoreBundle\Event;
 
 
 use CoreBundle\Entity\Image;
-use Imagine\Gd\Imagine;
 use Symfony\Component\EventDispatcher\Event;
 
-class ImageEvent extends Event
+class ImageDeleteEvent extends Event
 {
+    const NAME = "image.delete";
+
     private $image;
-    private $path;
 
     /**
      * ImageEvent constructor.
@@ -33,15 +33,4 @@ class ImageEvent extends Event
     {
         return $this->image;
     }
-
-    public function setPath($path)
-    {
-        $this->path = $path;
-    }
-
-    public function getPath()
-    {
-        return $this->path;
-    }
-
 }

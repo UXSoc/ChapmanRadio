@@ -131,16 +131,6 @@ class Show
      */
     private $enableComments = false;
 
-    /**
-     * Many Shows have Many Images.
-     * @ORM\ManyToMany(targetEntity="Image")
-     * @ORM\JoinTable(name="show_image",
-     *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="image_id", referencedColumnName="id", unique=true)}
-     *      )
-     */
-    private $images;
-
 
     /**
     * Many Shows have Many Images.
@@ -227,6 +217,18 @@ class Show
     private $events;
 
     /**
+     *
+     * Many Shows have Many Images.
+     * @ORM\ManyToMany(targetEntity="Media")
+     * @ORM\JoinTable(name="show_media",
+     *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="media_id", referencedColumnName="id", unique=true)}
+     *      )
+     * @return ArrayCollection
+     */
+    private $media;
+
+    /**
      * @var PostMeta
      * @var PersistentCollection
      * @ORM\OneToMany(targetEntity="ShowMeta",mappedBy="show")
@@ -239,8 +241,8 @@ class Show
 
     public function __construct()
     {
+        $this->media = new ArrayCollection();
         $this->showMeta = new ArrayCollection();
-        $this->images = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->schedule = new ArrayCollection();
         $this->djs = new ArrayCollection();
@@ -284,16 +286,6 @@ class Show
         $this->excerpt = $excerpt;
     }
 
-    public function addImage($image)
-    {
-        $this->images->add($image);
-    }
-
-    public function removeImage($image)
-    {
-        $this->images->remove($image);
-    }
-
     public function addSchedule(Schedule $schedule)
     {
         $schedule->setShow($this);
@@ -323,14 +315,6 @@ class Show
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getImages()
-    {
-        return $this->images;
     }
 
 
@@ -561,5 +545,19 @@ class Show
     {
         return $this->showMeta;
     }
+
+    public function addMedia(Media $media)
+    {
+        if(!$this->media->contains($media))
+        {
+            $this->media->add($media);
+        }
+    }
+
+    public function removeMedia(Media $media)
+    {
+        $this->media->removeElement($media);
+    }
+
 }
 

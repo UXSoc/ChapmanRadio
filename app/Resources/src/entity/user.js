@@ -1,12 +1,12 @@
-/* global Routing */
 import BaseEntity from './baseEntity'
-
+import Profile from './profile'
 export default class User extends BaseEntity {
   _username: string
   _roles: [string]
   _token: string
   _updatedAt: string
   _createdAt: string
+  _profile: Profile
 
   constructor (data) {
     super()
@@ -15,6 +15,7 @@ export default class User extends BaseEntity {
     this._token = this.get('token', data, '')
     this._updatedAt = this.get('updated_at', data, '')
     this._createdAt = this.get('created_at', data, '')
+    this._profile = this.getAndInstance((data) => new Profile(data), 'profile', data, new Profile({}))
   }
 
   isLoggedIn () {
@@ -57,7 +58,11 @@ export default class User extends BaseEntity {
     return this._createdAt
   }
 
+  get profile () {
+    return this._profile
+  }
+
   getProfileImage () {
-    return Routing.generate('get_profile_image', { token: this.token })
+    return this.profile.image.path
   }
 }
