@@ -4,15 +4,18 @@ namespace RestfulBundle\Controller\Api\V3\Dashboard;
 
 use CoreBundle\Entity\Category;
 use CoreBundle\Entity\Image;
+use CoreBundle\Entity\Media;
 use CoreBundle\Entity\Post;
 use CoreBundle\Entity\Tag;
+use CoreBundle\Event\MediaSaveEvent;
+use CoreBundle\Form\MediaType;
 use CoreBundle\Form\PostType;
 use CoreBundle\Repository\CategoryRepository;
 use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\TagRepository;
 use CoreBundle\Security\PostVoter;
-use CoreBundle\Service\ImageUploadService;
 use FOS\RestBundle\Controller\FOSRestController;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -85,9 +88,7 @@ class BlogController extends FOSRestController
         {
             $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
 
-            $form = $this->createForm(PostType::class,$post,[
-                    'method' => 'patch'
-                ]);
+            $form = $this->createForm(PostType::class,$post,['method' => 'patch']);
             $form->handleRequest($request);
             if($form->isSubmitted() && $form->isValid())
             {
@@ -145,6 +146,35 @@ class BlogController extends FOSRestController
      */
     public function postPostMediaAction(Request $request, $token, $slug)
     {
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var PostRepository $postRepository */
+        $postRepository = $em->getRepository(Post::class);
+        /** @var Post $post */
+
+        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
+        {
+            $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
+
+            $media = new Media();
+            $media->setAuthor($this->getUser());
+            $form = $this->createForm(MediaType::class,$media);
+            if($form->isSubmitted() && $form->isValid()) {
+                /** @var EventDispatcher $dispatcher */
+                $dispatcher = $this->get('event_dispatcher');
+                $event = new MediaSaveEvent($media);
+                $dispatcher->dispatch(MediaSaveEvent::NAME,$event);
+
+                $post->addMedia($media);
+                $em->persist($media);
+                $em->persist($post);
+                $em->flush();
+                return $this->view(['media' => $media]);
+            }
+            return $this->view($form);
+        }
+        throw  $this->createNotFoundException('Post Not Found');
+
     }
 
     /**
@@ -152,9 +182,18 @@ class BlogController extends FOSRestController
      *     options = { "expose" = true },
      *     name="post_image_post")
      */
-    public function postPostFeatureImages(Request $request)
+    public function postPostFeatureImages(Request $request, $token, $slug)
     {
+        $em = $this->getDoctrine()->getManager();
 
+        /** @var PostRepository $postRepository */
+        $postRepository = $em->getRepository(Post::class);
+        /** @var Post $post */
+
+        if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
+        {
+
+        }
     }
 
 

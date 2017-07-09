@@ -17,6 +17,7 @@ class MediaSaveEvent extends Event
     const NAME = "media.save";
 
     private $media;
+    private $options;
 
     /**
      * ImageEvent constructor.
@@ -24,14 +25,19 @@ class MediaSaveEvent extends Event
      * @param callable $callback
      *
      */
-    function __construct(Media $media)
+    function __construct(Media $media,$options = [])
     {
         $this->media = $media;
+        $this->options = $options;
     }
 
     public function getMedia()
     {
         return $this->media;
+    }
+
+    public function getOptions(){
+        return $this->options;
     }
 
 }

@@ -17,9 +17,7 @@ class ImageRetrieveEvent extends Event
     const NAME = "image.retrieve";
 
     private $image;
-    private $fullPath;
     private $path;
-    private $uriPath;
 
     /**
      * ImageEvent constructor.
@@ -38,14 +36,9 @@ class ImageRetrieveEvent extends Event
         return $this->image;
     }
 
-    public function setFullPath($path)
+    public function setPath($path)
     {
-        $this->fullPath = $path;
-    }
-
-    public function getFullPath()
-    {
-        return $this->fullPath;
+        $this->path = $path;
     }
 
     public function getPath()
@@ -53,18 +46,4 @@ class ImageRetrieveEvent extends Event
         return $this->path;
     }
 
-    public function setPath($path)
-    {
-        $this->path = $path;
-    }
-
-    public function getUriPath()
-    {
-        return $this->uriPath;
-    }
-
-    public function setUriPath($path)
-    {
-        $this->uriPath = $path;
-    }
 }

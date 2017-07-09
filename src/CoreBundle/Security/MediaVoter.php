@@ -1,12 +1,20 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: michaelpollind
+ * Date: 7/8/17
+ * Time: 11:19 PM
+ */
+
 namespace CoreBundle\Security;
 
-use CoreBundle\Entity\Post;
+
+use CoreBundle\Entity\Media;
 use CoreBundle\Entity\User;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class PostVoter extends  Voter
+class MediaVoter extends  Voter
 {
 
     const EDIT = 'edit';
@@ -41,7 +49,7 @@ class PostVoter extends  Voter
             return false;
         }
 
-        if(!$subject instanceof Post)
+        if(!$subject instanceof Media)
         {
             return false;
         }
@@ -71,35 +79,35 @@ class PostVoter extends  Voter
         }
 
 
-        /** @var Post $post */
-        $post = $subject;
+        /** @var Media $post */
+        $media = $subject;
 
         switch ($attribute){
             case self::VIEW:
-                return $this->canView($post,$user);
+                return $this->canView($media,$user);
             case self::EDIT:
-                return $this->canEdit($token,$post,$user);
+                return $this->canEdit($token,$media,$user);
             case self::DELETE:
-                return $this->canDelete($post,$user);
+                return $this->canDelete($media,$user);
         }
 
 
         throw new \LogicException('This code should not be reached!');
     }
 
-    private function canView(Post $post,User $user)
+    private function canView(Media $media,User $user)
     {
         return true;
     }
 
-    private  function canEdit($token,Post $post,User $user)
+    private  function canEdit($token,Media $media,User $user)
     {
-        if($post->getAuthor() === $user)
+        if($media->getAuthor() === $user)
             return true;
         return false;
     }
 
-    private function canDelete(Post $post,User $user)
+    private function canDelete(Media $media,User $user)
     {
         return false;
     }

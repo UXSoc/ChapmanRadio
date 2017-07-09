@@ -3,9 +3,12 @@ namespace RestfulBundle\Controller\Api\V3\Dashboard;
 
 
 use CoreBundle\Entity\Comment;
+use CoreBundle\Entity\Media;
 use CoreBundle\Entity\Show;
 use CoreBundle\Entity\Tag;
+use CoreBundle\Event\MediaSaveEvent;
 use CoreBundle\Form\CommentType;
+use CoreBundle\Form\MediaType;
 use CoreBundle\Form\ShowType;
 use CoreBundle\Repository\ShowRepository;
 use CoreBundle\Repository\TagRepository;
@@ -16,6 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -96,6 +100,45 @@ class ShowController extends FOSRestController
         $this->view($form);
     }
 
+
+    /**
+     * @Rest\Post("show/{token}/{slug}/media",
+     *     options = { "expose" = true },
+     *     name="post_image_post")
+     */
+    public function postShowMediaAction(Request $request, $token, $slug)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var ShowRepository $showRepository */
+        $showRepository = $em->getRepository(Show::class);
+
+        /** @var Show $post */
+        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug))
+        {
+            $this->denyAccessUnlessGranted(ShowVoter::EDIT, $post);
+
+            $media = new Media();
+            $media->setAuthor($this->getUser());
+            $form = $this->createForm(MediaType::class,$media);
+            if($form->isSubmitted() && $form->isValid()) {
+                /** @var EventDispatcher $dispatcher */
+                $dispatcher = $this->get('event_dispatcher');
+
+                $event = new MediaSaveEvent($media);
+                $dispatcher->dispatch(MediaSaveEvent::NAME,$event);
+
+                $em->persist($media);
+                $show->addMedia($media);
+                $em->persist($show);
+                $em->flush();
+                return $this->view(['media' => $media]);
+            }
+            return $this->view($form);
+        }
+        throw  $this->createNotFoundException('Post Not Found');
+
+    }
 
     /**
      * @Security("has_role('ROLE_DJ')")

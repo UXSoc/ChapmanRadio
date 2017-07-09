@@ -48,12 +48,12 @@ services:
     core.authentication_handler:
         class: CoreBundle\Handler\AuthenticationHandler
         autowire: true
-    CoreBundle\Service\ImageUploadService:
-        arguments: ['%image_directory%']
+    CoreBundle\Service\ImageCache:
+        arguments: ['%image_cache_directory%']
         public: true
     CoreBundle\EventListener\ImageSubscriber:
-        arguments: ['%image_directory%','%image_uri%']
+        arguments: ['%image_directory%']
         public: true
     CoreBundle\EventListener\MediaSubscriber:
-        arguments: ['%media_directory%','%media_uri%']
+        arguments: ['%media_directory%']
         public: true

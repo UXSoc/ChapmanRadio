@@ -2,25 +2,23 @@
 /**
  * Created by PhpStorm.
  * User: michaelpollind
- * Date: 7/7/17
- * Time: 11:00 PM
+ * Date: 7/8/17
+ * Time: 9:45 PM
  */
 
 namespace CoreBundle\Normalizer\Subscriber;
 
 
-use CoreBundle\Entity\Image;
-use CoreBundle\Event\ImageRetrieveEvent;
+use CoreBundle\Entity\Media;
 use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\JsonSerializationVisitor;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Routing\Router;
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeExtensionGuesser;
 use Symfony\Component\Routing\RouterInterface;
 
-class ImageSubscriber implements SubscribingHandlerInterface
+class MediaSubscriber implements SubscribingHandlerInterface
 {
     private $dispatcher;
     private  $router;
@@ -53,18 +51,30 @@ class ImageSubscriber implements SubscribingHandlerInterface
             array(
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
                 'format' => 'json',
-                'type' => Image::class,
+                'type' => Media::class,
                 'method' => 'serializeDateTimeToJson',
             ),
         );
     }
 
-    public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, Image $date, array $type, Context $context)
+    public function serializeDateTimeToJson(JsonSerializationVisitor $visitor, Media $date, array $type, Context $context)
     {
 
+        $mimeTypeGuess = new MimeTypeExtensionGuesser();
+        $context->setGroups(['detail']);
         return [
             'created_at' => $context->accept($date->getCreatedAt()),
-            'path' =>  $this->router->generate('get_image',['source'=>$date->getSource()])
+            'updated_at' => $context->accept($date->getUpdatedAt()),
+            'token' => $date->getToken(),
+            'title' => $date->getTitle(),
+            'caption' => $date->getCaption(),
+            'alt_text' => $date->getAltText(),
+            'description' => $date->getDescription(),
+            'author' => $context->accept($date->getAuthor()),
+            'mime' => $date->getMime(),
+            'is_hidden' => $date->getisHidden(),
+            'path' =>  $this->router->generate('get_media',['source' => $date->getSource(), 'ext' => $mimeTypeGuess->guess($date->getMime())])
         ];
     }
+
 }

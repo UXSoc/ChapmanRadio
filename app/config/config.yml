@@ -6,11 +6,10 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    image_directory: '%kernel.root_dir%/../web/uploads/images'
-    image_uri: '/uploads/images'
-    media_directory: '%kernel.root_dir%/../web/uploads/media'
-    media_uri: '/uploads/media'
-    recording_directory: '%kernel.root_dir%/../web/uploads/recordings/'
+    image_directory: '%kernel.root_dir%/../app/data/images'
+    media_directory: '%kernel.root_dir%/../app/data/media'
+    image_cache_directory: '%kernel.cache_dir%/media'
+    recording_directory: '%kernel.root_dir%/../app/uploads/recordings/'
     recording_uri: 'uploads/recordings/'
     locale: en
 

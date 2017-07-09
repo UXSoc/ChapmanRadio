@@ -8,6 +8,8 @@
 
 namespace CoreBundle\Entity;
 
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeExtensionGuesser;
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 use CoreBundle\Validation\Constraints As CoreAssert;
@@ -19,12 +21,15 @@ use JMS\Serializer\Annotation As JMS;
  * Media
  *
  * @ORM\Table(name="media")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="CoreBundle\Repository\MediaRepository")
  *
  * @ORM\HasLifecycleCallbacks
  */
 class Media
 {
+    const MEDIA_PNG = "image/png";
+    const MEDIA_JPEG = "image/jpeg";
+
     /**
      * @var integer
      *
@@ -273,5 +278,7 @@ class Media
     {
         return $this->filter;
     }
+
+
 
 }

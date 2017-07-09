@@ -27,7 +27,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class ImageSubscriber implements EventSubscriberInterface
 {
     private $targetDir;
-    private $imageUri;
     private $em;
 
 
@@ -35,9 +34,8 @@ class ImageSubscriber implements EventSubscriberInterface
      * ImageUploadService constructor.
      * @param string $targetDir
      */
-    public function __construct($targetDir,$imageUri, EntityManagerInterface $em)
+    public function __construct($targetDir, EntityManagerInterface $em)
     {
-        $this->imageUri = $imageUri;
         $this->targetDir = $targetDir;
         $this->em = $em;
     }
@@ -117,7 +115,6 @@ class ImageSubscriber implements EventSubscriberInterface
     public function onImageRetrieve(ImageRetrieveEvent $event){
         $image = $event->getImage();
         $partial = $this->getFullPath($image->getSource(),'png');
-        $event->setPath($this->imageUri . '/' .$partial);
-        $event->setFullPath($this->targetDir . '/' . $partial);
+        $event->setPath($this->targetDir . '/' . $partial);
     }
 }

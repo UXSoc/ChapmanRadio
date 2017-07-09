@@ -27,12 +27,11 @@ class MediaFilterEvent extends Event
      * @param callable $callback
      *
      */
-    function __construct(Media $media, $filter, $isHidden,$duplicate = false)
+    function __construct(Media $media, $filter, $isHidden)
     {
         $this->media = $media;
         $this->filter = $filter;
         $this->isHidden = $isHidden;
-        $this->duplicate = $duplicate;
 
     }
 
