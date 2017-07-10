@@ -82,6 +82,7 @@
             { 'name': 'Grades / Attendance', 'route': 'dashboard_grades_attendance', 'icon': 'fa-bar-chart-o' },
             { 'name': 'Settings', 'route': 'dashboard_settings', 'icon': 'fa-bar-chart-o' },
             { 'name': 'Attendance', 'route': 'dashboard_attendance', 'icon': 'fa-bar-chart-o' },
+            { 'name': 'Media', 'route': 'dashboard_media', 'icon': 'fa-bar-chart-o' },
             {
               'name': 'Blog', 'icon': 'fa-bar-chart-o',
               'sub_menu': [

@@ -139,15 +139,15 @@ class Media
     /**
      * @var bool
      *
-     * @ORM\Column(name="hidden", type="bool")
+     * @ORM\Column(name="hidden", type="boolean")
      */
-    private $isHidden = false;
+    private $hidden = false;
 
 
     /**
      * @var string
      *
-     * @ORM\Column(name="filter", type="json")
+     * @ORM\Column(name="filter", type="object")
      */
     private $filter;
 
@@ -260,13 +260,13 @@ class Media
         return $this->token;
     }
 
-    public function setisHidden($isHidden)
+    public function setHidden($Hidden)
     {
-        $this->isHidden  = $isHidden;
+        $this->Hidden  = $Hidden;
     }
 
-    public function getisHidden(){
-        return $this->isHidden;
+    public function getHidden(){
+        return $this->Hidden;
     }
 
     public function setFilter($filter)

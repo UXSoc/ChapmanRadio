@@ -29,6 +29,8 @@ import ShowsDashboard from './page/dashboard/siteadmin/ShowsDashboard.vue'
 import StaffDashboard from './page/dashboard/siteadmin/StaffDashboard.vue'
 import StrikesDashboard from './page/dashboard/siteadmin/StrikesDashboard.vue'
 import UsersDashboard from './page/dashboard/siteadmin/UsersDashboard.vue'
+import MediaDashboard from './page/dashboard/siteadmin/MediaDashboardPage.vue'
+
 // -------------------------------App----------------------------------------------
 
 import AppPage from './page/app/AppPage.vue'
@@ -114,7 +116,8 @@ const router = new VueRouter({ routes: [
       { name: 'dashboard_shows', path: 'shows', component: ShowsDashboard },
       { name: 'dashboard_staff', path: 'staff', component: StaffDashboard },
       { name: 'dashboard_strikes', path: 'strikes', component: StrikesDashboard },
-      { name: 'dashboard_users', path: 'users', component: UsersDashboard }
+      { name: 'dashboard_users', path: 'users', component: UsersDashboard },
+      { name: 'dashboard_media', path: 'media', component: MediaDashboard }
     ]
   }
   // -------------------------------App----------------------------------------------

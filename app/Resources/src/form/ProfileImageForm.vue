@@ -1,6 +1,5 @@
 <template>
     <form>
-
         <img :src="userImage">
         <label class="btn btn-default btn-file file-button">
             Upload Image <input type="file" v-on:change="profileImage" />

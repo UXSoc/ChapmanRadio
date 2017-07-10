@@ -18,7 +18,7 @@
 
 <script>
     /* @flow */
-    import ProfileImage from './../../../form/ProfileImage.vue'
+    import ProfileImage from '../../../form/ProfileImageForm.vue'
     import NewPasswordForm from './../../../form/NewPasswordForm.vue'
     export default {
       data () {

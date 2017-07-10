@@ -2,7 +2,9 @@
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace CoreBundle\Entity;
 
+use Codeception\Step\Meta;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\PersistentCollection;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -168,11 +170,10 @@ class Post
     private $media;
 
     /**
-     * @var ShowMeta
      * @var PersistentCollection
      * @ORM\OneToMany(targetEntity="PostMeta",mappedBy="post")
      */
-    private $postMeta;
+    private $meta;
 
     private $deltaRenderer = 'HTML';
 
@@ -194,7 +195,7 @@ class Post
 
     public function __construct()
     {
-        $this->postMeta = new ArrayCollection();
+        $this->meta = new ArrayCollection();
         $this->media = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->tags = new ArrayCollection();
@@ -385,11 +386,27 @@ class Post
         $this->slug = $result;
     }
 
-    public function getPostMeta()
+    public function getMeta()
     {
-        return $this->postMeta;
+        return $this->meta;
     }
 
+    public function getMetaByKey($key,$create = false)
+    {
+        $collection  = $this->meta->matching(Criteria::create()->where(Criteria::expr()->in("key", $key)));
+        if($collection->isEmpty()) {
+            if ($create === true) {
+                $meta = new PostMeta();
+                $meta->setKey($key);
+                $meta->setValue([]);
+                $meta->setPost($this);
+                $this->meta->add($meta);
+                return $meta;
+            }
+            return null;
+        }
+        return $collection->first();
+    }
 
     public function addMedia(Media $media)
     {

@@ -25,6 +25,7 @@ class MediaFilterBuilder
             'width' => $width,
             'height' => $height
         ];
+        return $this;
     }
 
     public function getResult()

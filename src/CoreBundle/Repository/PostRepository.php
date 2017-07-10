@@ -28,6 +28,11 @@ class PostRepository extends EntityRepository
         return $this->findOneBy(["token" => $token, "slug" => $slug]);
     }
 
+    public function getPostByToken($token)
+    {
+        return $this->findOneBy(["token" => $token]);
+    }
+
     private function _filter(Request $request)
     {
         $qb = $this->createQueryBuilder('s');

@@ -72,7 +72,7 @@ class MediaSubscriber implements SubscribingHandlerInterface
             'description' => $date->getDescription(),
             'author' => $context->accept($date->getAuthor()),
             'mime' => $date->getMime(),
-            'is_hidden' => $date->getisHidden(),
+            'is_hidden' => $date->getHidden(),
             'path' =>  $this->router->generate('get_media',['source' => $date->getSource(), 'ext' => $mimeTypeGuess->guess($date->getMime())])
         ];
     }

@@ -6,11 +6,15 @@ use CoreBundle\Entity\Category;
 use CoreBundle\Entity\Image;
 use CoreBundle\Entity\Media;
 use CoreBundle\Entity\Post;
+use CoreBundle\Entity\PostMeta;
 use CoreBundle\Entity\Tag;
 use CoreBundle\Event\MediaSaveEvent;
+use CoreBundle\Form\FeaturePostMediaType;
 use CoreBundle\Form\MediaType;
 use CoreBundle\Form\PostType;
+use CoreBundle\Helper\MediaFilterBuilder;
 use CoreBundle\Repository\CategoryRepository;
+use CoreBundle\Repository\MediaRepository;
 use CoreBundle\Repository\PostRepository;
 use CoreBundle\Repository\TagRepository;
 use CoreBundle\Security\PostVoter;
@@ -192,8 +196,32 @@ class BlogController extends FOSRestController
 
         if ($post = $postRepository->getPostByTokenAndSlug($token, $slug))
         {
+            $form = $this->createForm(FeaturePostMediaType::class);
+            $form->handleRequest($request);
+            if($form->isSubmitted() && $form->isValid())
+            {
+                $data = $form->getData();
 
+                /** @var MediaRepository $mediaRepository */
+                $mediaRepository = $em->getRepository(Media::class);
+                if($media = $mediaRepository->getMediaByToken($data['mediaToken']))
+                {
+                   $meta =  $post->getMetaByKey(PostMeta::FEATURE,true);
+                   $value = [
+                       'mediaToken' => $data['mediaToken'],
+                       'square' => (new MediaFilterBuilder())->crop($data['xSquare'],$data['ySquare'],$data['widthWide'],$data['heightWide'])->getResult(),
+                       'wide' => (new MediaFilterBuilder())->crop($data['xWide'],$data['yWide'],$data['widthWide'],$data['heightWide'])->getResult(),
+                   ];
+                   $meta->setValue($value);
+                   $em->persist($meta);
+                   $em->flush();
+                   return $this->view(['post' => $post]);
+                }
+                throw  $this->createNotFoundException('Media Not Found');
+            }
+            return $this->view($form);
         }
+        throw  $this->createNotFoundException('Post Not Found');
     }
 
 

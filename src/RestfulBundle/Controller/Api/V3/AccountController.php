@@ -44,7 +44,6 @@ class AccountController extends FOSRestController
         $passwordEncoder = $this->get('security.password_encoder');
 
         $form = $this->createForm(ResetPasswordType::class, null, [
-            'password_encoder' => $passwordEncoder,
             'user' => $user]);
         $form->submit($request->request->all());
         if ($form->isSubmitted() && $form->isValid()) {

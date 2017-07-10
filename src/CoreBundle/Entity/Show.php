@@ -3,6 +3,7 @@
 namespace CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\PersistentCollection;
 
 use CoreBundle\Validation\Constraints As CoreAssert;
@@ -229,11 +230,10 @@ class Show
     private $media;
 
     /**
-     * @var PostMeta
      * @var PersistentCollection
      * @ORM\OneToMany(targetEntity="ShowMeta",mappedBy="show")
      */
-    private $showMeta;
+    private $meta;
 
 
     private $deltaRenderer = 'HTML';
@@ -242,7 +242,7 @@ class Show
     public function __construct()
     {
         $this->media = new ArrayCollection();
-        $this->showMeta = new ArrayCollection();
+        $this->meta = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->schedule = new ArrayCollection();
         $this->djs = new ArrayCollection();
@@ -541,9 +541,26 @@ class Show
         return $this->archive;
     }
 
-    public function getShowMeta()
+    public function getMeta()
     {
-        return $this->showMeta;
+        return $this->meta;
+    }
+
+    public function getMetaByKey($key,$create = false)
+    {
+        $collection = $this->meta->matching(Criteria::create()->where(Criteria::expr()->in("key", $key)));
+        if ($collection->isEmpty()) {
+            if ($create === true) {
+                $meta = new ShowMeta();
+                $meta->setKey($key);
+                $meta->setValue([]);
+                $meta->setShow($this);
+                $this->meta->add($meta);
+                return $meta;
+            }
+            return null;
+        }
+        return $collection->first();
     }
 
     public function addMedia(Media $media)

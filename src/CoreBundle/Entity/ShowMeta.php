@@ -20,73 +20,27 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="show_meta")
  *
  */
-class ShowMeta
+class ShowMeta extends BaseMeta
 {
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="bigint", nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $id;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="meta_key", type="string", length=20, nullable=true)
-     */
-    private $metaKey;
-
-    /**
-     * @var array
-     *
-     * @ORM\Column(name="meta_value", type="object", nullable=true)
-     */
-    private $metaValue;
 
     /**
      * @var Schedule
      *
-     * @ORM\ManyToOne(targetEntity="Show", inversedBy="showMeta")
+     * @ORM\ManyToOne(targetEntity="Show", inversedBy="meta")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="show_id", referencedColumnName="id")
      * })
      */
     private $show;
 
-    public function getId()
-    {
-        return $this->id;
-    }
 
-    public function getMetaKey()
+    public function setShow($show)
     {
-        return $this->metaKey;
-    }
-
-    public function setMetaKey($key)
-    {
-        $this->metaKey = $key;
-    }
-
-    public function getMetaValue()
-    {
-        return $this->metaValue;
-    }
-
-    public function setMetaValue($value)
-    {
-        $this->metaValue = $value;
+        $this->show = $show;
     }
 
     public function getShow()
     {
         return $this->show;
-    }
-
-    public function setShow($show)
-    {
-        $this->show = $show;
     }
 }
