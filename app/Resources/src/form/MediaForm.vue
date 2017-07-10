@@ -1,6 +1,6 @@
 <template>
     <form>
-        <label class="btn btn-default btn-file file-button">
+        <label v-if="allowImageUpload" class="btn btn-default btn-file file-button">
             Upload <input type="file" v-on:change="uploadImage" />
         </label>
         <form-group :validator="validator" attribute="oldPassword" name="oldPassword" title="Title">
@@ -27,6 +27,12 @@
   import FormGroup from './../components/FormGroup.vue'
 
   export default{
+    props: {
+      allowImageUpload: {
+        type: Boolean,
+        default: false
+      }
+    },
     data () {
       return {
         validator: null,

@@ -12,9 +12,10 @@ use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeExtensionGuesser;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-use CoreBundle\Validation\Constraints As CoreAssert;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use CoreBundle\Validation\Constraints As CoreAssert;
 use JMS\Serializer\Annotation As JMS;
 
 /**
@@ -44,6 +45,7 @@ class Media
      * @var string
      * @JMS\Groups({"detail","list"})
      * @ORM\Column(name="token", type="string",length=20, nullable=false,unique=true)
+     * @JMS\Groups({"list"})
      */
     private $token;
 
@@ -69,7 +71,6 @@ class Media
      * @var string
      * @ORM\Column(name="title", type="text", length=6000, nullable=true)
      * @JMS\Groups({"detail","list"})
-     * @Assert\NotBlank()
      */
     private $title;
 
@@ -78,7 +79,6 @@ class Media
      * @var string
      * @ORM\Column(name="caption", type="text", length=6000, nullable=true)
      * @JMS\Groups({"detail","list"})
-     * @Assert\NotBlank()
      */
     private $caption;
 
@@ -88,7 +88,6 @@ class Media
      * @var string
      * @ORM\Column(name="alt_text", type="text", length=6000, nullable=true)
      * @JMS\Groups({"detail","list"})
-     * @Assert\NotBlank()
      */
     private $altText;
 
@@ -96,7 +95,6 @@ class Media
      * @var string
      * @ORM\Column(name="description", type="text", length=6000, nullable=true)
      * @JMS\Groups({"detail","list"})
-     * @Assert\NotBlank()
      */
     private $description;
 
@@ -123,6 +121,7 @@ class Media
      *     mimeTypesMessage = "Please upload a valid image file"
      * )
      * @Assert\NotBlank()
+     * @JMS\Exclude
      */
     private $file;
 
@@ -148,6 +147,7 @@ class Media
      * @var string
      *
      * @ORM\Column(name="filter", type="object")
+     * @JMS\Exclude
      */
     private $filter;
 
