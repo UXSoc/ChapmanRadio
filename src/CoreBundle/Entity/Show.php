@@ -548,7 +548,7 @@ class Show
 
     public function getMetaByKey($key,$create = false)
     {
-        $collection = $this->meta->matching(Criteria::create()->where(Criteria::expr()->in("key", $key)));
+        $collection = $this->meta->matching(Criteria::create()->where(Criteria::expr()->eq("key", $key)));
         if ($collection->isEmpty()) {
             if ($create === true) {
                 $meta = new ShowMeta();

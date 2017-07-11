@@ -16,6 +16,12 @@ class MediaFilterBuilder
     {
     }
 
+    public function orignal($orignal)
+    {
+        $this->operations = array_merge($orignal->operations,$this->operations);
+        return $this;
+    }
+
     public function crop($x,$y,$width,$height)
     {
         $this->operations[] = [

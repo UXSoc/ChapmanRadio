@@ -8,6 +8,7 @@
 
 namespace CoreBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeExtensionGuesser;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -43,9 +44,8 @@ class Media
 
     /**
      * @var string
-     * @JMS\Groups({"detail","list"})
      * @ORM\Column(name="token", type="string",length=20, nullable=false,unique=true)
-     * @JMS\Groups({"list"})
+     * @JMS\Groups({"detail","list"})
      */
     private $token;
 
@@ -102,6 +102,7 @@ class Media
      * @var string
      *
      * @ORM\Column(name="source", type="string", length=200, nullable=false)
+     * @JMS\Exclude
      */
     private $source;
 
@@ -110,6 +111,7 @@ class Media
      * @var string
      *
      * @ORM\Column(name="mime", type="string", length=70, nullable=false)
+     * @JMS\Groups({"detail","list"})
      */
     private $mime;
 
@@ -131,6 +133,7 @@ class Media
      *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="author_id", referencedColumnName="id", nullable=false)
+     * @JMS\Groups({"detail","list"})
      */
     private $author;
 
@@ -139,6 +142,7 @@ class Media
      * @var bool
      *
      * @ORM\Column(name="hidden", type="boolean")
+     * @JMS\Groups({"detail","list"})
      */
     private $hidden = false;
 
@@ -150,6 +154,22 @@ class Media
      * @JMS\Exclude
      */
     private $filter;
+
+
+    /**
+     * @var Collection
+     * @ORM\ManyToMany(targetEntity="Post",mappedBy="media")
+     * @JMS\Exclude
+     */
+    private $post;
+
+    /**
+     * @var Collection
+     * @ORM\ManyToMany(targetEntity="Show",mappedBy="media")
+     * @JMS\Exclude
+     */
+    private $show;
+
 
     /**
      *
@@ -262,11 +282,11 @@ class Media
 
     public function setHidden($Hidden)
     {
-        $this->Hidden  = $Hidden;
+        $this->hidden  = $Hidden;
     }
 
     public function getHidden(){
-        return $this->Hidden;
+        return $this->hidden;
     }
 
     public function setFilter($filter)
@@ -279,6 +299,14 @@ class Media
         return $this->filter;
     }
 
+    public function getBlog()
+    {
+        return $this->post->first();
+    }
 
+    public function getShow()
+    {
+        return $this->show->first();
+    }
 
 }

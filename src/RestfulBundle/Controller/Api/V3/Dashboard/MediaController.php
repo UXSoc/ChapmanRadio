@@ -9,7 +9,6 @@
 namespace RestfulBundle\Controller\Api\V3\Dashboard;
 
 use CoreBundle\Entity\Media;
-use CoreBundle\Event\MediaRetrieveEvent;
 use CoreBundle\Event\MediaSaveEvent;
 use CoreBundle\Form\MediaType;
 use CoreBundle\Repository\MediaRepository;
@@ -40,6 +39,7 @@ class MediaController extends FOSRestController
         $media = new Media();
         $media->setAuthor($this->getUser());
         $form = $this->createForm(MediaType::class,$media);
+        $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid())
         {
             /** @var EventDispatcher $dispatcher */
@@ -81,46 +81,5 @@ class MediaController extends FOSRestController
         }
         throw $this->createNotFoundException('Media Not Found');
     }
-
-
-    /**
-     * @Rest\Get("media/{token}",
-     *     options = { "expose" = true },
-     *     name="get_media")
-     */
-    public function getMediaAction(Request $request, $token)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var MediaRepository $mediaRepository */
-        $mediaRepository = $em->getRepository(Media::class);
-
-        if($media = $mediaRepository->getMediaByToken($token))
-        {
-            return $this->view(['media' => $media],200);
-        }
-        throw $this->createNotFoundException('Media Not Found');
-    }
-
-
-    /**
-     * @Rest\Get("media",
-     *     options = { "expose" = true },
-     *     name="get_medias")
-     */
-    public function getMediasAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var MediaRepository $mediaRepository */
-        $mediaRepository = $em->getRepository(Media::class);
-
-        return ['payload' => $mediaRepository->paginator($mediaRepository->filter($request),
-            $request->get('page',0),
-            $request->get('perPage',40),40)];
-
-    }
-
-
 
 }

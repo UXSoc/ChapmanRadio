@@ -20,7 +20,7 @@ class ImageController extends FOSRestController
 {
     /**
      * @Rest\Get("images/{source}.png",
-     *     name="get_image")
+     *     name="file_get_image")
      */
     public function getImageAction(Request $request,$source)
     {

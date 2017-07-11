@@ -23,11 +23,12 @@ class MediaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('title',TextType::class);
-        $builder->add('slug',TextType::class);
-        $builder->add('excerpt',TextareaType::class);
         $builder->add('caption',TextType::class);
         $builder->add('altText',TextType::class);
-        $builder->add('file',FileType::class);
+        $builder->add('description',TextType::class);
+        if($builder->getMethod() === 'POST') {
+            $builder->add('file', FileType::class);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)

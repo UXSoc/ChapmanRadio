@@ -19,6 +19,7 @@ class MediaRetrieveEvent extends Event
 
     private $media;
     private $path;
+    private $orginal;
 
     /**
      * ImageEvent constructor.
@@ -26,11 +27,16 @@ class MediaRetrieveEvent extends Event
      * @param callable $callback
      *
      */
-    function __construct(Media $media)
+    function __construct(Media $media,$orignal = false)
     {
         $this->media = $media;
+        $this->orginal = $orignal;
     }
 
+    public function getOrignal()
+    {
+        return $this->orginal;
+    }
 
     public function getMedia()
     {

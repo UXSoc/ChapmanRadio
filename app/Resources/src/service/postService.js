@@ -1,5 +1,6 @@
 /* @flow */
 /* global Routing */
+/* global FormData */
 import axios from 'axios'
 import qs from 'qs'
 import Pagination from '../entity/pagination'
@@ -7,6 +8,7 @@ import Post from './../entity/post'
 import Comment from './../entity/comment'
 import Datatable from './../entity/dataTable'
 import Form from './../entity/form'
+import Media from './../entity/media'
 
 export default {
   getPostsDatatable: function (page : number, sort : [], callback : (result: Datatable<Pagination<Post>>) => void, filter: any = {}) {
@@ -15,10 +17,10 @@ export default {
       callback(new Datatable((paginationData) => new Pagination((postData) => new Post(postData), paginationData), response.data.datatable))
     })
   },
-  getPosts: function (page : number, responseCallback : (result: Pagination<Post>) => void, filter: any = {}) {
+  getPosts: function (page : number, callback : (result: Pagination<Post>) => void, filter: any = {}) {
     const result = Object.assign({ page: page }, filter)
     return axios.get(Routing.generate('get_posts') + '?' + qs.stringify(result)).then((response) => {
-      responseCallback(new Pagination((postData) => new Post(postData), response.data.payload))
+      callback(new Pagination((postData) => new Post(postData), response.data.payload))
     })
   },
   getPost: function (token: string, slug:string, callback : (result: Post) => void, parse: string = 'HTML') {
@@ -27,7 +29,16 @@ export default {
     })
   },
   postPost: function (post: Post, callback : (result: Form | Post) => void) {
-    return axios.post(Routing.generate('post_post'), qs.stringify(post.payload)).then((response) => {
+    return axios.post(Routing.generate('post_post'), qs.stringify({
+      post: {
+        name: post.name,
+        content: post.content,
+        excerpt: post.excerpt,
+        slug: post.slug,
+        isPinned: post.isPinned,
+        tags: post.tags,
+        categories: post.categories
+      }})).then((response) => {
       callback(new Post(response.data.post))
     }).catch((error) => {
       if (error.response) {
@@ -38,8 +49,34 @@ export default {
     })
   },
   patchPost: function (token: string, slug:string, post: Post, callback : (result: Form | Post) => void) {
-    return axios.patch(Routing.generate('patch_post', { token: token, slug: slug }), qs.stringify(post.payload)).then((response) => {
+    return axios.patch(Routing.generate('patch_post', { token: token, slug: slug }), qs.stringify({
+      post: {
+        name: post.name,
+        content: post.content,
+        excerpt: post.excerpt,
+        slug: post.slug,
+        isPinned: post.isPinned,
+        tags: post.tags,
+        categories: post.categories
+      }})).then((response) => {
       callback(new Post(response.data.post))
+    }).catch((error) => {
+      if (error.response) {
+        if (error.response.status === 500) {
+          callback(new Form(error.response.data))
+        }
+      }
+    })
+  },
+  postPostMedia: function (post:Post, media: Media, callback: (result: Media | Form) => void) {
+    const formData = new FormData()
+    formData.append('media[file]', media.file)
+    formData.append('media[title]', media.title)
+    formData.append('media[caption]', media.caption)
+    formData.append('media[altText]', media.altText)
+    formData.append('media[description]', media.description)
+    return axios.post(Routing.generate('post_media_post', { token: post.token, slug: post.slug }), formData).then((response) => {
+      callback(new Media(response.data.media))
     }).catch((error) => {
       if (error.response) {
         if (error.response.status === 500) {

@@ -94,20 +94,6 @@ export default class Post extends BaseEntity {
     return this._updatedAt
   }
 
-  get payload () {
-    return {
-      post: {
-        name: this.name,
-        content: this.content,
-        excerpt: this.excerpt,
-        slug: this.slug,
-        isPinned: this.isPinned,
-        tags: this.tags,
-        categories: this.categories
-      }
-    }
-  }
-
   getRoute () {
     return {
       name: 'post_single', params: { token: this.token, slug: this.slug }

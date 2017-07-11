@@ -10,6 +10,7 @@ use CoreBundle\Event\MediaSaveEvent;
 use CoreBundle\Form\CommentType;
 use CoreBundle\Form\MediaType;
 use CoreBundle\Form\ShowType;
+use CoreBundle\Repository\MediaRepository;
 use CoreBundle\Repository\ShowRepository;
 use CoreBundle\Repository\TagRepository;
 use CoreBundle\Security\ShowVoter;
@@ -104,7 +105,7 @@ class ShowController extends FOSRestController
     /**
      * @Rest\Post("show/{token}/{slug}/media",
      *     options = { "expose" = true },
-     *     name="post_image_post")
+     *     name="post_media_show")
      */
     public function postShowMediaAction(Request $request, $token, $slug)
     {
@@ -113,10 +114,10 @@ class ShowController extends FOSRestController
         /** @var ShowRepository $showRepository */
         $showRepository = $em->getRepository(Show::class);
 
-        /** @var Show $post */
+        /** @var Show $show */
         if ($show = $showRepository->getShowByTokenAndSlug($token, $slug))
         {
-            $this->denyAccessUnlessGranted(ShowVoter::EDIT, $post);
+            $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
 
             $media = new Media();
             $media->setAuthor($this->getUser());
@@ -136,9 +137,10 @@ class ShowController extends FOSRestController
             }
             return $this->view($form);
         }
-        throw  $this->createNotFoundException('Post Not Found');
+        throw  $this->createNotFoundException('Media Not Found');
 
     }
+
 
     /**
      * @Security("has_role('ROLE_DJ')")
@@ -259,112 +261,6 @@ class ShowController extends FOSRestController
         throw $this->createNotFoundException('Show Not Found');
     }
 
-    /**
-     * @Route("show/{token}/{slug}/image",
-     *     options = { "expose" = true },
-     *     name="put_image_show")
-     * @Method({"PUT"})
-     */
-//    public function putImageForShowAction(Request $request, $token, $slug)
-//    {
-//        /** @var ValidatorInterface $validator */
-//        $validator = $this->get('validator');
-//
-//        /** @var ImageUploadService $imageService */
-//        $imageService = $this->get(ImageUploadService::class);
-//
-//        $em = $this->getDoctrine()->getManager();
-//
-//        /** @var ShowRepository $showRepository */
-//        $showRepository = $em->getRepository(Show::class);
-//        /** @var Show $show */
-//        if($show = $showRepository->getShowByTokenAndSlug($token, $slug))
-//        {
-//            $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
-//
-//            $src = $request->files->get('image', null);
-//            $image = new Image();
-//            $image->setImage($src);
-//            $image->setAuthor($this->getUser());
-//
-//            $errors = $validator->validate($image);
-//            if($errors->count() > 0)
-//                return RestfulEnvelope::errorResponseTemplate('invalid Image')->addErrors($errors)->response();
-//
-//            $imageService->saveImageToFilesystem($image);
-//            $em->persist($image);
-//
-//            $show->addImage($image);
-//            $em->persist($show);
-//            $em->flush();
-//            return $this->view(['image' => $image]);
-//        }
-//        throw $this->createNotFoundException('Show not Found');
-//    }
-
-    /**
-     * @Route("/show/{token}/{slug}/image",
-     *     options = { "expose" = true },
-     *     name="get_image_show")
-     * @Method({"GET"})
-     */
-    public function getImageForShowAction(Request $request, $token, $slug)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var ShowRepository $showRepository */
-        $showRepository = $em->getRepository(Show::class);
-
-        /** @var Show $show */
-
-        if ($show = $showRepository->getShowByTokenAndSlug($token, $slug))
-        {
-            $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
-            return $this->view(['image' => $show->getImages()->toArray()]);
-        }
-        throw $this->createNotFoundException('Show not Found');
-
-    }
-
-    /**
-     * @Route("/show/{token}/{slug}/header",
-     *     options = { "expose" = true },
-     *     name="post_header_image_show")
-     * @Method({"POST"})
-     */
-//    public function postImageShowHeaderAction(Request $request, $token, $slug)
-//    {
-//        /** @var ValidatorInterface $validator */
-//        $validator = $this->get('validator');
-//
-//        $em = $this->getDoctrine()->getManager();
-//
-//        /** @var ImageUploadService $imageService */
-//        $imageService = $this->get(ImageUploadService::class);
-//
-//        /** @var ShowRepository $showRepository */
-//        $showRepository = $em->getRepository(Show::class);
-//
-//        /** @var Show $show */
-//        if ( $show = $showRepository->getShowByTokenAndSlug($token, $slug))
-//        {
-//            $this->denyAccessUnlessGranted(ShowVoter::EDIT, $show);
-//
-//            $image  = $imageService->createImage($request->files->get('image', null),$this->getUser());
-//            $errors = $validator->validate($image);
-//            if($errors->count() > 0)
-//                return RestfulEnvelope::errorResponseTemplate('invalid Image')->addErrors($errors)->response();
-//
-//            $imageService->saveImageToFilesystem($image);
-//            $em->persist($image);
-//
-//            $show->setHeaderImage($image);
-//            $em->persist($show);
-//            $em->flush();
-//            return $this->view(['image' => $image]);
-//        }
-//        throw $this->createNotFoundException('Show not Found');
-//    }
 
     /**
      * @Route("/show/{token}/{slug}/header",

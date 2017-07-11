@@ -16,7 +16,7 @@ use CoreBundle\Event\MediaRetrieveEvent;
 use CoreBundle\Event\MediaSaveEvent;
 use CoreBundle\Service\ImageCache;
 use Doctrine\ORM\EntityManagerInterface;
-use Imagine\Imagick\Imagine;
+use Imagine\Gd\Imagine;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeExtensionGuesser;
@@ -124,7 +124,7 @@ class MediaSubscriber  implements EventSubscriberInterface
                 break;
         }
         $path = $this->targetDir . '/' . $partial;
-        if($media->getFilter() !== null)
+        if(!$event->getOrignal() && $media->getFilter() !== null)
             $path = $this->imageCache->resolve($path,$media->getFilter());
         $event->setPath($path);
 
@@ -140,7 +140,7 @@ class MediaSubscriber  implements EventSubscriberInterface
         $newMedia->setCaption($media->getAltText());
         $newMedia->setDescription($media->getAltText());
         $newMedia->setTitle($media->getTitle());
-        $newMedia->setisHidden($mediaFilterEvent->getIsHidden());
+        $newMedia->setHidden($mediaFilterEvent->getIsHidden());
         $newMedia->setFilter($mediaFilterEvent->getFilter());
 
         $mediaFilterEvent->setMedia($newMedia);

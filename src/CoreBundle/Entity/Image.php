@@ -2,9 +2,13 @@
 // Copyright 2017, Michael Pollind <polli104@mail.chapman.edu>, All Right Reserved
 namespace CoreBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use CoreBundle\Validation\Constraints As CoreAssert;
+use JMS\Serializer\Annotation As JMS;
 
 /**
  * Image
@@ -22,6 +26,7 @@ class Image
      * @ORM\Column(name="id", type="bigint", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @JMS\Exclude
      */
     private $id;
 
@@ -29,6 +34,7 @@ class Image
      * @var string
      *
      * @ORM\Column(name="source", type="string", length=200, nullable=false)
+     * @JMS\Exclude
      */
     private $source;
 

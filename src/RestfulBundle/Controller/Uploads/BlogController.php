@@ -35,7 +35,7 @@ class BlogController extends FOSRestController
 
     /**
      * @Rest\Get("post/{token}/feature/{type}/{media}.png",
-     *     name="get_blog_media")
+     *     name="file_get_blog_media")
      */
     public function getPostFeatureSquareAction(Request $request, $token,$type, $media)
     {
@@ -49,7 +49,7 @@ class BlogController extends FOSRestController
         /** @var Post $post */
         if ($post = $postRepository->getPostByToken($token)) {
             $feature = $post->getMetaByKey(PostMeta::FEATURE)->getValue();
-            if(isset($feature->square) && isset($feature->mediaToken) && $feature->mediaToken === $media)
+            if(isset($feature->mediaToken) && $feature->mediaToken === $media)
             {
                 /** @var MediaRepository $mediaRepository */
                 $mediaRepository = $em->getRepository(Media::class);
@@ -58,13 +58,17 @@ class BlogController extends FOSRestController
                 {
                     /** @var EventDispatcher $dispatcher */
                     $dispatcher = $this->get('event_dispatcher');
-                    $event = new MediaRetrieveEvent($media);
+                    $event = new MediaRetrieveEvent($media,true);
                     $dispatcher->dispatch(MediaRetrieveEvent::NAME,$event);
                     switch ($type){
                         case 'wide':
-                            return $this->file($imageCache->resolve($event->getPath(),$feature->wide));
+                            if(isset($feature->wide))
+                                return $this->file($imageCache->resolve($event->getPath(),$feature->wide));
+                            break;
                         case 'square':
-                            return $this->file($imageCache->resolve($event->getPath(),$feature->square));
+                            if(isset($feature->square))
+                                return $this->file($imageCache->resolve($event->getPath(),$feature->square));
+                            break;
                     }
                 }
             }

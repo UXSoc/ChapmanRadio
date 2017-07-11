@@ -27,7 +27,7 @@ class MediaController extends FOSRestController
 {
     /**
      * @Rest\Get("media/{source}.{ext}",
-     *     name="get_media")
+     *     name="file_get_media")
      */
     public function getImageAction(Request $request,$source,$ext)
     {

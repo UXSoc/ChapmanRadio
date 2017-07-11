@@ -3,7 +3,7 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active">
-                <a href="#new-media" aria-controls="newMedia" role="tab" data-toggle="tab">New Media</a>
+                <a href="#newMedia" aria-controls="newMedia" role="tab" data-toggle="tab">New Media</a>
             </li>
             <li role="presentation">
                 <a href="#library" aria-controls="library" role="tab" data-toggle="tab">Library</a>
@@ -13,10 +13,10 @@
         <!-- Tab panes -->
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="newMedia">
-                <media-form></media-form>
+                <multi-media-upload-form @upload="uploadMedia"></multi-media-upload-form>
             </div>
             <div role="tabpanel" class="tab-pane" id="library">
-                library
+                <media-form></media-form>
             </div>
 
         </div>
@@ -26,6 +26,9 @@
 
 <script>
     import MediaForm from './../../../form/MediaForm.vue'
+    import MultiMediaUploadForm from '../../../form/MultiMediaUploadForm.vue'
+    import MediaService from '../../../service/mediaService'
+
     /* @flow */
     export default{
       data () {
@@ -33,12 +36,16 @@
         }
       },
       methods: {
-
+        uploadMedia: function (item) {
+          MediaService.postMedia(item.media, (result) => {
+          })
+        }
       },
       watch: {
       },
       components: {
-        MediaForm
+        MediaForm,
+        MultiMediaUploadForm
       }
     }
 </script>

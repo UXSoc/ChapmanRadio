@@ -146,7 +146,7 @@ class BlogController extends FOSRestController
     /**
      * @Rest\Post("post/{token}/{slug}/media",
      *     options = { "expose" = true },
-     *     name="post_image_post")
+     *     name="post_media_post")
      */
     public function postPostMediaAction(Request $request, $token, $slug)
     {
@@ -177,7 +177,7 @@ class BlogController extends FOSRestController
             }
             return $this->view($form);
         }
-        throw  $this->createNotFoundException('Post Not Found');
+        throw  $this->createNotFoundException('Media Not Found');
 
     }
 
@@ -204,13 +204,14 @@ class BlogController extends FOSRestController
 
                 /** @var MediaRepository $mediaRepository */
                 $mediaRepository = $em->getRepository(Media::class);
+                /** @var Media $media */
                 if($media = $mediaRepository->getMediaByToken($data['mediaToken']))
                 {
                    $meta =  $post->getMetaByKey(PostMeta::FEATURE,true);
                    $value = [
                        'mediaToken' => $data['mediaToken'],
-                       'square' => (new MediaFilterBuilder())->crop($data['xSquare'],$data['ySquare'],$data['widthWide'],$data['heightWide'])->getResult(),
-                       'wide' => (new MediaFilterBuilder())->crop($data['xWide'],$data['yWide'],$data['widthWide'],$data['heightWide'])->getResult(),
+                       'square' => (new MediaFilterBuilder())->orignal($media->getFilter())->crop($data['xSquare'],$data['ySquare'],$data['widthWide'],$data['heightWide'])->getResult(),
+                       'wide' => (new MediaFilterBuilder())->orignal($media->getFilter())->crop($data['xWide'],$data['yWide'],$data['widthWide'],$data['heightWide'])->getResult(),
                    ];
                    $meta->setValue($value);
                    $em->persist($meta);

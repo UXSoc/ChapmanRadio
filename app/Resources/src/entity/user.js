@@ -63,6 +63,6 @@ export default class User extends BaseEntity {
   }
 
   getProfileImage () {
-    return this.profile.image.path
+    return this.profile.image.uri
   }
 }

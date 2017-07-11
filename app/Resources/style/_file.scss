@@ -2,3 +2,13 @@
 {
   display: none;
 }
+
+.file-window {
+  background-color: white;
+  outline: 2px dashed black;
+  outline-offset: -10px;
+  width: 100%;
+  height: 200px;
+  text-align: center;
+  line-height: 200px;
+}
