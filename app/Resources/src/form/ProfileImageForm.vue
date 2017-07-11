@@ -1,8 +1,8 @@
 <template>
     <form>
-        <img :src="userImage">
+        <div><img :src="userImage"></div>
         <label class="btn btn-default btn-file file-button">
-            Upload Image <input type="file" v-on:change="profileImage" />
+           Upload Image<input type="file" v-on:change="profileImage" />
         </label>
 
         <div class="modal fade" tabindex="-1" role="dialog" id="profile-image-edit-modal">

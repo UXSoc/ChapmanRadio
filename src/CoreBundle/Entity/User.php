@@ -44,12 +44,6 @@ class User implements AdvancedUserInterface
      */
     private $id;
 
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="facebook_id", type="bigint", nullable=true)
-     */
-    private $facebookId;
 
     /**
      * @var string
@@ -70,12 +64,6 @@ class User implements AdvancedUserInterface
      */
     private $email;
 
-    /**
-     * @var string
-     * @Assert\NotBlank()
-     * @ORM\Column(name="name", type="string", length=120, nullable=false)
-     */
-    private $name;
 
     /**
      * @var \DateTime
@@ -264,15 +252,6 @@ class User implements AdvancedUserInterface
         return $this->createdAt;
     }
 
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
 
     public function setUsername($username)
     {

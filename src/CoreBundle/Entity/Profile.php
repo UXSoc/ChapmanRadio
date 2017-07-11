@@ -40,12 +40,20 @@ class Profile
      */
     private $user;
 
+    /**
+     * @var string
+     * @ORM\Column(name="first_name", type="string", length=60, nullable=false)
+     * @Assert\NotBlank()
+     */
+    private $firstName;
 
     /**
      * @var string
-     * @ORM\Column(name="phone", type="string", length=30, nullable=true)
+     * @ORM\Column(name="last_name", type="string", length=60, nullable=false)
+     * @Assert\NotBlank()
      */
-    private $phone;
+    private $lastName;
+
 
     /**
      * Many Shows have Many Images.
@@ -74,20 +82,34 @@ class Profile
 
     }
 
-    public function getPhone()
-    {
-        return $this->phone;
-    }
-
-    public function setPhone($phone)
-    {
-        $this->phone = $phone;
-    }
-
     public function setImage($image)
     {
         $this->image = $image;
     }
 
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    }
+
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    }
+
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    public function getFullname()
+    {
+        return $this->firstName . ' ' . $this->lastName;
+    }
 
 }

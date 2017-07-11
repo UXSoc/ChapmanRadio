@@ -23,10 +23,10 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('email',TextareaType::class,array());
-        $builder->add('name',TextareaType::class,array());
         $builder->add('username',TextareaType::class,array());
         $builder->add('plainTextPassword',TextareaType::class,array());
         $builder->add('studentId',TextareaType::class,array());
+        $builder->add('profile',ProfileType::class,array());
     }
 
     public function configureOptions(OptionsResolver $resolver)

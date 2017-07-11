@@ -11,15 +11,13 @@ export default {
       callback(new User(response.data.user))
     })
   },
-  login: function (payload: {
-    username: string,
-    password: string,
-    rememberMe: boolean
-  }, callback: (result) => void) {
+  profile: function (payload: any) {
+  },
+  login: function (username: string, password: string, rememberMe: boolean, callback: (result) => void) {
     return axios.post('/login', qs.stringify({
-      '_username': payload.username,
-      '_password': payload.password,
-      '_remember_me': payload.rememberMe
+      '_username': username,
+      '_password': password,
+      '_remember_me': rememberMe
     })).then(function (response) {
       callback(new Form(response.data))
     }).catch((error) => {
@@ -30,14 +28,7 @@ export default {
       }
     })
   },
-  register: function (payload: {
-    email: string,
-    name: string,
-    username: string,
-    plainTextPassword: string,
-    studentId: string
-  }, callback: (result: Form) => void) {
-    payload['submit'] = ''
+  register: function (payload, callback: (result: Form) => void) {
     return axios.post(Routing.generate('post_register'), { user: payload }).then(function (response) {
       callback(new Form(response.data))
     }).catch((error) => {
