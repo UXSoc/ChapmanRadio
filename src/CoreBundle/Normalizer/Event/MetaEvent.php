@@ -75,7 +75,7 @@ class MetaEvent implements EventSubscriberInterface
         }
     }
 
-    public function onShowSerialize(PreSerializeEvent $event)
+    public function onShowSerialize(ObjectEvent $event)
     {
 
     }
