@@ -6,6 +6,7 @@ import VeeValidate from 'vee-validate'
 import 'bootstrap-sass'
 import 'toastr/toastr'
 import 'metismenu'
+import 'bootstrap-datepicker'
 
 window.Vue = Vue
 window.FConfig = Config

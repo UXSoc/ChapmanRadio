@@ -21,7 +21,12 @@
                             </div>
                             <div class="col-md-4">
                                 Workshop Date:
-                                <datepicker></datepicker>
+                                <div class="input-group date" data-provide="datepicker">
+                                    <input type="text" class="form-control">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar" aria-hidden="true"></i>
+                                    </div>
+                                </div>
                                 Recording Method:
                                 <input type="radio" name="recording1" value="manual"> Manual Recording<br>
                                 <input type="radio" name="recording2" value="cardswiper"> CardSwiper<br>
@@ -75,7 +80,7 @@
 
 <script>
     /* @flow */
-    import Datepicker from 'vuejs-datepicker'
+//    import Datepicker from 'vuejs-datepicker'
     import AttendanceItem from '../../components/AttendanceItem.vue'
     export default{
       data () {
@@ -88,7 +93,7 @@
       watch: {
       },
       components: {
-        Datepicker,
+//        Datepicker,
         AttendanceItem
       }
     }
