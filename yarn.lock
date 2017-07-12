@@ -3972,6 +3972,10 @@ methods@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
 
+metismenu@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/metismenu/-/metismenu-2.7.0.tgz#bb4db5dac2b24ddbf7b6c023ecc5f5945c4560b1"
+
 micromatch@^2.1.5, micromatch@^2.3.11:
   version "2.3.11"
   resolved "https://registry.yarnpkg.com/micromatch/-/micromatch-2.3.11.tgz#86677c97d1720b363431d04d0d15293bd38c1565"

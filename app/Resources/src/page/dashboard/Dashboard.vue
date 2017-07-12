@@ -33,11 +33,26 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul id="side-menu" class="nav">
                         <li v-for="menuItem in menu">
-                            <router-link :to=" ('route' in menuItem) ? {name: menuItem.route} : {name: 'dashboard' } "><i  v-bind:class="menuItem.icon" class="fa fa-fw"></i>{{menuItem.name}}<span class="fa arrow" v-if="'sub_menu' in menuItem"></span></router-link>
+                            <template v-if="'sub_menu' in menuItem">
+                                <a href="#">
+                                    <i  v-bind:class="menuItem.icon" class="fa fa-fw"></i>
+                                    {{menuItem.name}}
+                                    <span class="fa arrow" v-if="'sub_menu' in menuItem"></span>
+                                </a>
 
-                            <ul class="nav nav-second-level" v-if="'sub_menu' in menuItem" >
-                                <li v-for="item in menuItem.sub_menu"><router-link :to="{name: item.route }"><i v-bind:class="item.icon" class="fa fa-fw"></i>{{ item.name }}</router-link></li>
-                            </ul>
+                                <ul class="nav nav-second-level" v-if="'sub_menu' in menuItem" >
+                                    <li v-for="item in menuItem.sub_menu"><router-link :to="{name: item.route }"><i v-bind:class="item.icon" class="fa fa-fw"></i>{{ item.name }}</router-link></li>
+                                </ul>
+
+                            </template>
+                            <template v-else>
+                                <router-link :to=" ('route' in menuItem) ? {name: menuItem.route} : {name: 'dashboard' } ">
+                                    <i  v-bind:class="menuItem.icon" class="fa fa-fw"></i>
+                                    {{menuItem.name}}
+                                    <span class="fa arrow" v-if="'sub_menu' in menuItem"></span>
+                                </router-link>
+                            </template>
+
                         </li>
 
                     </ul>
@@ -111,7 +126,7 @@
       created () {
       },
       mounted: function () {
-        //      $('#side-menu').metisMenu({toggle: false})
+        $('#side-menu').metisMenu({toggle: false})
         //
         //      $(window).bind('load resize', function () {
         //        var topOffset = 50
