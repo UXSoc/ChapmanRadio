@@ -31,7 +31,9 @@
     "babel-preset-env": "^1.5.1",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-flow-vue": "^1.0.0",
+    "babel-preset-latest": "^6.24.1",
     "babel-preset-react": "^6.23.0",
+    "babel-preset-stage-1": "^6.24.1",
     "babel-preset-stage-2": "^6.0.0",
     "babelify": "^7.3.0",
     "bootstrap-sass": "^3.3.7",
@@ -96,12 +98,11 @@
     "vue-translated": "^0.4.1",
     "vueify": "^9.0.0",
     "vueify-insert-css": "^1.0.0",
+    "vuejs-datepicker": "^0.9.0",
     "watchify": "^3.9.0",
     "webpack": "^2.6.0",
     "webpack-dev-server": "^2.4.5",
     "webpack-merge": "^0.14.1",
-    "ws": "^3.0.0",
-    "babel-preset-latest": "^6.24.1",
-    "babel-preset-stage-1": "^6.24.1"
+    "ws": "^3.0.0"
   }
 }
