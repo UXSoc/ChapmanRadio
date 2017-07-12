@@ -98,6 +98,7 @@
     "vue-translated": "^0.4.1",
     "vueify": "^9.0.0",
     "vueify-insert-css": "^1.0.0",
+    "vuejs-datepicker": "^0.9.0",
     "watchify": "^3.9.0",
     "webpack": "^2.6.0",
     "webpack-dev-server": "^2.4.5",
