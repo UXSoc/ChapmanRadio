@@ -11,8 +11,6 @@ export default {
       callback(new User(response.data.user))
     })
   },
-  profile: function (payload: any) {
-  },
   login: function (username: string, password: string, rememberMe: boolean, callback: (result) => void) {
     return axios.post('/login', qs.stringify({
       '_username': username,
@@ -28,8 +26,17 @@ export default {
       }
     })
   },
-  register: function (payload, callback: (result: Form) => void) {
-    return axios.post(Routing.generate('post_register'), { user: payload }).then(function (response) {
+  register: function (user: User, callback: (result: Form) => void) {
+    return axios.post(Routing.generate('post_register'), { user: {
+      username: user.username,
+      plainTextPassword: user.password,
+      studentId: user.studentId,
+      email: user.email,
+      profile: {
+        firstName: user.profile.firstName,
+        lastName: user.profile.lastName
+      }
+    }}).then(function (response) {
       callback(new Form(response.data))
     }).catch((error) => {
       if (error.response) {

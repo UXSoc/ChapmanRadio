@@ -25,9 +25,9 @@
 </template>
 
 <script>
-    import MediaForm from './../../../form/MediaForm.vue'
-    import MultiMediaUploadForm from '../../../form/MultiMediaUploadForm.vue'
-    import MediaService from '../../../service/mediaService'
+    import MediaForm from '../../form/MediaForm.vue'
+    import MultiMediaUploadForm from '../../form/MultiMediaUploadForm.vue'
+    import MediaService from '../../service/mediaService'
 
     /* @flow */
     export default{

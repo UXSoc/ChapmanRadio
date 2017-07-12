@@ -55,11 +55,7 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, C
             $user = $this->generateUser($faker);
             $manager->persist($user);
         }
-
-
-
         $manager->flush();
-
     }
 
     /**
@@ -69,7 +65,10 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, C
     private  function generateUser($faker)
     {
         $user = new \CoreBundle\Entity\User();
-        $user->setName($faker->unique()->name);
+        $profile = $user->getProfile();
+        $profile->setFirstName($faker->unique()->name);
+        $profile->setLastName($faker->unique()->name);
+
         $user->setEmail($faker->unique()->email);
         $user->setStudentId($faker->numerify("#########"));
         $user->updateLastLogin();

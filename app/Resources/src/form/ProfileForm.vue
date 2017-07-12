@@ -1,12 +1,16 @@
 <template>
-    <form>
-        <form-group :validator="validator" attribute="firstName" name="firstName" title="First Name">
-            <input class="form-control" type="text" name="firstName" v-model="firstName" id="firstName" :disabled="showVerification">
-        </form-group>
-        <form-group :validator="validator" attribute="lastName" name="lastName" title="Last Name">
-            <input class="form-control" type="text" name="lastName" v-model="lastName" id="lastName" :disabled="showVerification">
-        </form-group>
-        <button class="btn btn-default" @click="register" type="button" name="button" :disabled="showVerification">Update</button>
+    <form @submit.prevent="update()" >
+        <div class="form-group" :class="{'input': true, 'has-error': errors.has('First Name') }">
+            <label class="control-label">First Name</label>
+            <input class="form-control" type="text" name="First Name"  v-validate="'required'" v-model="value.firstName" id="firstName">
+            <span v-show="errors.has('First Name')" class="help-block">{{ errors.first('First Name') }}</span>
+        </div>
+        <div class="form-group" :class="{'input': true, 'has-error': errors.has('Last Name') }">
+            <label class="control-label">Last Name</label>
+            <input class="form-control" type="text" name="Last Name"  v-validate="'required'" v-model="value.lastName" id="lastName">
+            <span v-show="errors.has('Last Name')" class="help-block">{{ errors.first('Last Name') }}</span>
+        </div>
+        <button class="btn btn-default"  type="submit" name="button">Update</button>
     </form>
 
 </template>
@@ -14,50 +18,30 @@
 
 <script>
     /* @flow */
-    import { Validator } from 'vee-validate'
     import FormGroup from '../components/FormGroup.vue'
-    import AuthService from '../service/authService'
-    import Form from '../entity/form'
-    export default{
+    import Profile from '../entity/profile'
+    export default {
+      props: {
+        value: {
+          type: Profile,
+          default: () => new Profile({})
+        }
+      },
       data () {
         return {
-          firstName: '',
-          lastName: '',
-          validator: null
         }
       },
       methods: {
-        register: function () {
-          this.validator.validateAll({
-            firstName: this.firstName,
-            lastName: this.lastName
-          }).then(() => {
-            AuthService.register({
-              firstName: this.firstName,
-              lastName: this.lastName
-            }, (result: Form) => {
-              if (result.code > 0) {
-                result.FillErrobag(this.validator.errorBag, { plainTextPassword: 'password' })
-              } else {
-                this.showVerification = true
-              }
-            })
+        update: function () {
+          const _this = this
+          _this.$validator.validateAll().then(result => {
+            _this.$emit('input', _this.value)
           })
         }
       },
       watch: {
-        firstName: function (val) {
-          this.validator.validate('firstName', val)
-        },
-        lastName: function (val) {
-          this.validator.validate('lastName', val)
-        }
-
       },
       created () {
-        this.validator = new Validator()
-        this.validator.attach('firstName', 'required', { prettyName: 'First Name' })
-        this.validator.attach('lastName', 'required', { prettyName: 'Last Name' })
       },
       components: {
         FormGroup

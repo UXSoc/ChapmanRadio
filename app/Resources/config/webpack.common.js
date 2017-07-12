@@ -88,7 +88,8 @@ module.exports = {
       $: 'jquery',
       jquery: 'jquery',
       'window.jQuery': 'jquery',
-      jQuery: 'jquery'
+      jQuery: 'jquery',
+      toastr: 'toastr'
     }),
     new CopyWebpackPlugin([{ from: 'app/Resources/public', to: 'public' }])
   ]

@@ -3,11 +3,13 @@
 namespace RestfulBundle\Controller\Api\V3;
 
 use CoreBundle\Entity\Image;
+use CoreBundle\Entity\Profile;
 use CoreBundle\Entity\User;
 use CoreBundle\Event\ImageDeleteEvent;
 use CoreBundle\Event\ImageSaveEvent;
 use CoreBundle\Events;
 use CoreBundle\Form\ProfileImageType;
+use CoreBundle\Form\ProfileType;
 use CoreBundle\Form\ResetPasswordType;
 use FOS\RestBundle\Controller\FOSRestController;
 use Imagine\Image\Box;
@@ -44,8 +46,9 @@ class AccountController extends FOSRestController
         $passwordEncoder = $this->get('security.password_encoder');
 
         $form = $this->createForm(ResetPasswordType::class, null, [
-            'user' => $user]);
-        $form->submit($request->request->all());
+            'user' => $user
+        ]);
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $new_password = $passwordEncoder->encodePassword($user, $data["newPassword"]);
@@ -61,7 +64,7 @@ class AccountController extends FOSRestController
      * @Security("has_role('ROLE_USER')")
      * @Rest\Post("/account/profile/image",
      *     options = { "expose" = true },
-     *     name="post_account_profile_image")
+     *     name="post_profile_image")
      */
     public function postProfileImageAction(Request $request)
     {
@@ -95,6 +98,45 @@ class AccountController extends FOSRestController
             return $this->view();
         }
         return $this->view($form);
+    }
+
+    /**
+     * @Security("has_role('ROLE_USER')")
+     * @Rest\Patch("/account/profile",
+     *     options = { "expose" = true },
+     *     name="patch_profile")
+     */
+    public function patchProfileAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $form = $this->createForm(ProfileType::class,$user->getProfile(),['method' => 'patch']);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Profile $profile */
+            $profile = $form->getData();
+
+            $em->persist($profile);
+            $em->flush();
+            return $this->view(['profile' => $profile]);
+        }
+        return $this->view($form);
+    }
+
+    /**
+     * @Security("has_role('ROLE_USER')")
+     * @Rest\Get("/account/profile",
+     *     options = { "expose" = true },
+     *     name="get_profile")
+     */
+    public function getProfileAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var User $user */
+        $user = $this->getUser();
+        return $this->view(['profile' => $user->getProfile()]);
     }
 
 }

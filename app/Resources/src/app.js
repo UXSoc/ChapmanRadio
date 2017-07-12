@@ -5,10 +5,10 @@ import App from './App'
 import Dashboard from './page/dashboard/Dashboard.vue'
 
 // -------------------------------DASHBOARD----------------------------------------------
-import BroadcastLiveDashboard from './page/dashboard/dj/BroadcastLiveDashboard.vue'
-import GradesAttendanceDashboard from './page/dashboard/dj/GradesAttendanceDashboard.vue'
-import MyShowsDashboard from './page/dashboard/dj/MyShowsDashboard.vue'
-import SettingsDashboard from './page/dashboard/dj/SettingsDashboard.vue'
+import BroadcastLiveDashboard from './page/dashboard/BroadcastLiveDashboard.vue'
+import GradesAttendanceDashboard from './page/dashboard/GradesAttendanceDashboard.vue'
+import MyShowsDashboard from './page/dashboard/MyShowsDashboard.vue'
+import SettingsDashboard from './page/dashboard/SettingsDashboard.vue'
 
 import BlogDashboardPage from './page/dashboard/blog/BlogDashboardPage.vue'
 import BlogDashboardList from './page/dashboard/blog/BlogDashboardList.vue'
@@ -21,15 +21,15 @@ import ShowDashboardList from './page/dashboard/show/ShowDashboardList.vue'
 
 import DashboardProfilePage from './page/dashboard/DashboardProfilePage.vue'
 
-import AttendanceDashboard from './page/dashboard/siteadmin/AttendanceDashboard.vue'
-import EmailAlertsDashboard from './page/dashboard/siteadmin/EmailAlertsDashboard.vue'
-import GradeMgmtDashboard from './page/dashboard/siteadmin/GradeMgmtDashboard.vue'
-import ScheduleDashboard from './page/dashboard/siteadmin/ScheduleDashboard.vue'
-import ShowsDashboard from './page/dashboard/siteadmin/ShowsDashboard.vue'
-import StaffDashboard from './page/dashboard/siteadmin/StaffDashboard.vue'
-import StrikesDashboard from './page/dashboard/siteadmin/StrikesDashboard.vue'
-import UsersDashboard from './page/dashboard/siteadmin/UsersDashboard.vue'
-import MediaDashboard from './page/dashboard/siteadmin/MediaDashboardPage.vue'
+import AttendanceDashboard from './page/dashboard/AttendanceDashboard.vue'
+import EmailAlertsDashboard from './page/dashboard/EmailAlertsDashboard.vue'
+import GradeMgmtDashboard from './page/dashboard/GradeMgmtDashboard.vue'
+import ScheduleDashboard from './page/dashboard/ScheduleDashboard.vue'
+import ShowsDashboard from './page/dashboard/ShowsDashboard.vue'
+import StaffDashboard from './page/dashboard/StaffDashboard.vue'
+import StrikesDashboard from './page/dashboard/StrikesDashboard.vue'
+import UsersDashboard from './page/dashboard/UsersDashboard.vue'
+import MediaDashboard from './page/dashboard/MediaDashboardPage.vue'
 
 // -------------------------------App----------------------------------------------
 

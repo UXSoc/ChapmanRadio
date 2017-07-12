@@ -9,7 +9,7 @@
         </div>
         <div>
             <h2> My Password</h2>
-            <new-password-form></new-password-form>
+            <new-password-form @success="updatePasswordSuccess"></new-password-form>
             <profile-image></profile-image>
 
         </div>
@@ -25,6 +25,9 @@
         return {}
       },
       methods: {
+        updatePasswordSuccess: function () {
+          toastr.success('Account Updated', 'Password Changed', { 'positionClass': 'toast-top-right-offset' })
+        }
       },
       components: {
         NewPasswordForm,

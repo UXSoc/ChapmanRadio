@@ -19,7 +19,7 @@ export default class Form extends BaseEntity {
     return null
   }
 
-  FillErrobag (errorBag: ErrorBag, alias: any) {
+  fillErrorbag (errorBag: ErrorBag, alias: any = {}) {
     for (const key in this._errors) {
       let k = key
       if (key in alias) { k = alias[key] }

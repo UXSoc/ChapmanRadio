@@ -1,35 +1,51 @@
 <template>
-    <form>
+    <form @submit.prevent="register()" >
         <div class="well" v-show="showVerification">Check your email for verification</div>
-        <form-group :validator="validator" attribute="username" name="username" title="Username">
-            <input class="form-control" type="text" name="username" v-model="username" id="username" :disabled="showVerification">
-        </form-group>
 
-        <form-group :validator="validator" attribute="email" name="email" title="Email">
-            <input class="form-control" type="text" name="email" v-model="email" id="email" :disabled="showVerification">
-        </form-group>
+        <div class="form-group" :class="{'input': true, 'has-error': errors.has('Username') }">
+            <label class="control-label" >Username</label>
+            <input class="form-control" type="text" name="Username"  v-validate="'required'" v-model="value.username" id="username"  :disabled="showVerification">
+            <span v-show="errors.has('Username')" class="help-block">{{ errors.first('Username') }}</span>
+        </div>
 
-        <form-group :validator="validator" attribute="firstName" name="firstName" title="First Name">
-            <input class="form-control" type="text" name="firstName" v-model="firstName" id="firstName" :disabled="showVerification">
-        </form-group>
+        <div class="form-group" :class="{'input': true, 'has-error': errors.has('Email') }">
+            <label class="control-label" >Email</label>
+            <input class="form-control" type="text" name="Email"  v-validate="'required|email'" v-model="value.email" id="email"  :disabled="showVerification">
+            <span v-show="errors.has('Email')" class="help-block">{{ errors.first('Email') }}</span>
+        </div>
 
-        <form-group :validator="validator" attribute="lastName" name="lastName" title="Last Name">
-            <input class="form-control" type="text" name="lastName" v-model="lastName" id="lastName" :disabled="showVerification">
-        </form-group>
+        <div class="form-group" :class="{'input': true, 'has-error': errors.has('First Name') }">
+            <label class="control-label">First Name</label>
+            <input class="form-control" type="text" name="First Name"  v-validate="'required'" v-model="value.profile.firstName" id="firstName"  :disabled="showVerification">
+            <span v-show="errors.has('First Name')" class="help-block">{{ errors.first('First Name') }}</span>
+        </div>
 
-        <form-group :validator="validator" attribute="studentId" name="studentId" title="Student Id">
-            <input class="form-control" type="text" name="studentId" v-model="studentId" id="studentId" :disabled="showVerification">
-        </form-group>
+        <div class="form-group" :class="{'input': true, 'has-error': errors.has('Last Name') }">
+            <label class="control-label" >Last Name</label>
+            <input class="form-control" type="text" name="Last Name"  v-validate="'required'" v-model="value.profile.lastName" id="lastName"  :disabled="showVerification">
+            <span v-show="errors.has('Last Name')" class="help-block">{{ errors.first('Last Name') }}</span>
+        </div>
 
-        <form-group :validator="validator" attribute="password" name="password" title="Password">
-            <input class="form-control" type="password" name="password" v-model="password" id="password" :disabled="showVerification">
-        </form-group>
+        <div class="form-group" :class="{'input': true, 'has-error': errors.has('Student Id') }">
+            <label class="control-label" >Student Id</label>
+            <input class="form-control" type="text" name="Student Id"  v-validate="'digits:7'" v-model="value.studentId" id="studentId"  :disabled="showVerification">
+            <span v-show="errors.has('Student Id')" class="help-block">{{ errors.first('Student Id') }}</span>
+        </div>
 
-        <form-group :validator="validator" attribute="password_confirmed" name="password_confirmed" title="Repeat Password">
-            <input class="form-control" type="password" name="password_confirmed" v-model="password_confirmed" id="password_confirmed" :disabled="showVerification">
-        </form-group>
-        <button class="btn btn-default" @click="register" type="button" name="button" :disabled="showVerification">Register
-        </button>
+        <div class="form-group" :class="{'input': true, 'has-error': errors.has('Password') }">
+            <label class="control-label" >Password</label>
+            <input class="form-control" type="password" name="Password"  v-validate="'required|confirmed:Password Confirmed'" v-model="value.password" id="password"  :disabled="showVerification">
+            <span v-show="errors.has('Password')" class="help-block">{{ errors.first('Password') }}</span>
+        </div>
+
+        <div class="form-group" :class="{'input': true, 'has-error': errors.has('Password Confirmed') }">
+            <label class="control-label" for="firstName">Password Confirmed</label>
+            <input class="form-control" type="password" name="Password Confirmed"  v-validate="'required'" id="password_confirmed"  :disabled="showVerification">
+            <span v-show="errors.has('Password Confirmed')" class="help-block">{{ errors.first('Password Confirmed') }}</span>
+        </div>
+
+
+        <button class="btn btn-default" type="submit" name="button" :disabled="showVerification">Register</button>
     </form>
 
 </template>
@@ -37,89 +53,42 @@
 
 <script>
     /* @flow */
-    import { Validator } from 'vee-validate'
-    import FormGroup from '../components/FormGroup.vue'
-    import AuthService from '../service/authService'
+    import User from '../entity/user'
     import Form from '../entity/form'
     export default{
+      props: {
+        value: {
+          type: User,
+          default: () => new User({})
+        },
+        showVerification: {
+          type: Boolean,
+          default: false
+        },
+        form: {
+          type: Form,
+          default: () => new Form({})
+        }
+      },
       data () {
         return {
-          username: '',
-          email: '',
-          firstName: '',
-          lastName: '',
-          password: '',
-          password_confirmed: '',
-          studentId: '',
-          showVerification: false,
-          validator: null
+        }
+      },
+      watch: {
+        'form': function () {
+          this.form.fillErrorbag(this.errors, {
+            'email': 'Email',
+            'username': 'Username'
+          })
         }
       },
       methods: {
         register: function () {
-          this.validator.validateAll({
-            username: this.username,
-            password: this.password,
-            studentId: this.studentId,
-            email: this.email,
-            firstName: this.firstName,
-            lastName: this.lastName
-          }).then(() => {
-            AuthService.register({
-              username: this.username,
-              plainTextPassword: this.password,
-              studentId: this.studentId,
-              email: this.email,
-              profile: {
-                firstName: this.firstName,
-                lastName: this.lastName
-              }
-            }, (result: Form) => {
-              if (result.code > 0) {
-                result.FillErrobag(this.validator.errorBag, { plainTextPassword: 'password' })
-              } else {
-                this.showVerification = true
-              }
-            })
+          const _this = this
+          _this.$validator.validateAll().then(result => {
+            _this.$emit('input', _this.value)
           })
         }
-      },
-      watch: {
-        username: function (val) {
-          this.validator.validate('username', val)
-        },
-        email: function (val) {
-          this.validator.validate('email', val)
-        },
-        firstName: function (val) {
-          this.validator.validate('firstName', val)
-        },
-        lastName: function (val) {
-          this.validator.validate('lastName', val)
-        },
-        password: function (val) {
-          this.validator.validate('password', val)
-        },
-        password_confirmed: function (val) {
-          this.validator.validate('password', this.password)
-        },
-        studentId: function (val) {
-          this.validator.validate('studentId', val)
-        }
-
-      },
-      created () {
-        this.validator = new Validator()
-        this.validator.attach('firstName', 'required', { prettyName: 'First Name' })
-        this.validator.attach('lastName', 'required', { prettyName: 'Last Name' })
-        this.validator.attach('username', 'required', { prettyName: 'Username' })
-        this.validator.attach('email', 'required|email', { prettyName: 'Email' })
-        this.validator.attach('studentId', 'digits:7', { prettyName: 'Student Id' })
-        this.validator.attach('password', 'required|confirmed:password_confirmed', { prettyName: 'Password' })
-        this.validator.attach('password_confirmed', 'required', { prettyName: 'Confirm Password' })
-      },
-      components: {
-        FormGroup
       }
     }
 

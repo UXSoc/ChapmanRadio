@@ -1,7 +1,5 @@
 <template>
     <form>
-
-        <alert v-show="showSuccess" alert="alert-success" message=" Your password has been changed" @close="showSuccess = false"></alert>
         <form-group :validator="validator" attribute="oldPassword" name="oldPassword" title="Old Password">
             <input class="form-control" type="password" name="oldPassword" v-model="oldPassword" id="oldPassword">
         </form-group>
@@ -20,6 +18,7 @@
   import FormGroup from './../components/FormGroup.vue'
   import Alert from './../components/Alert.vue'
   import AccountService from '../service/accountService'
+  import Form from './../entity/form'
 
   export default{
     data () {
@@ -27,8 +26,7 @@
         validator: null,
         oldPassword: '',
         newPassword: '',
-        newPassword_confirm: '',
-        showSuccess: false
+        newPassword_confirm: ''
       }
     },
     methods: {
@@ -38,11 +36,12 @@
           oldPassword: this.oldPassword,
           newPassword: this.newPassword
         }).then(() => {
-          AccountService.postChangePassword(this.oldPassword, this.newPassword, (envelope) => {
-            _this.showSuccess = true
-          },
-          (envelope) => {
-            envelope.fillErrorBag(_this.validator.errorBag)
+          AccountService.postChangePassword(this.oldPassword, this.newPassword, (envelope: Form) => {
+            if (envelope.code > 0) {
+              envelope.fillErrorbag(_this.validator.errorBag)
+            } else {
+              _this.$emit('success')
+            }
           })
         })
       }

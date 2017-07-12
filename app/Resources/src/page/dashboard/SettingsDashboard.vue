@@ -4,10 +4,10 @@
             <div class="col-lg-7">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        My Passowrd
+                        My Password
                     </div>
                     <div class="panel-body">
-                        <new-password-form></new-password-form>
+                        <new-password-form @success="updatePasswordSuccess"></new-password-form>
                         <!--<div class="row">-->
                         <!--<div class="col-md-6">-->
                         <!--Current Password-->
@@ -30,6 +30,14 @@
                     <!--<strong>Change Password</strong>-->
                     <!--</div>-->
                     <!--</a>-->
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Profile
+                    </div>
+                    <div class="panel-body">
+                        <profile-form v-on:input="updateProfile" v-model="profile"></profile-form>
+                    </div>
                 </div>
 
                 <!--<div class="panel panel-default">-->
@@ -125,17 +133,45 @@
 
 <script>
     /* @flow */
-    import NewPasswordForm from './../../../form/NewPasswordForm.vue'
-    import ProfileImageForm from './../../../form/ProfileImageForm.vue'
+    /* global toastr */
+    import Profile from '../../entity/profile'
+    import Form from '../../entity/form'
+    import NewPasswordForm from '../../form/NewPasswordForm.vue'
+    import ProfileImageForm from '../../form/ProfileImageForm.vue'
+    import ProfileForm from '../../form/ProfileForm.vue'
+    import AccountService from '../../service/accountService'
     export default{
       data () {
-        return {}
+        return {
+          profile: new Profile({})
+        }
       },
-      methods: {},
+      methods: {
+        updateProfile: function (val) {
+          const _this = this
+          AccountService.patchProfile(val, (c) => {
+            if (c instanceof Profile) {
+              _this.$set(_this, 'profile', c)
+              toastr.success('Profile Updated', '', { 'positionClass': 'toast-top-right' })
+            } else if (c instanceof Form) {
+            }
+          })
+        },
+        updatePasswordSuccess: function () {
+          toastr.success('Account Updated', 'Password Changed', { 'positionClass': 'toast-top-right' })
+        }
+      },
       watch: {},
+      created () {
+        const _this = this
+        AccountService.getProfile((c) => {
+          _this.$set(_this, 'profile', c)
+        })
+      },
       components: {
         NewPasswordForm,
-        ProfileImageForm
+        ProfileImageForm,
+        ProfileForm
       }
     }
 </script>

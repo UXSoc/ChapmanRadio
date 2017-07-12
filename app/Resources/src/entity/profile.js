@@ -8,8 +8,8 @@ export default class Profile extends BaseEntity {
 
   constructor (data) {
     super()
-    this._firstName = this.get('firstName', data, '')
-    this._lastName = this.get('lastName', data, '')
+    this._firstName = this.get('first_name', data, '')
+    this._lastName = this.get('last_name', data, '')
     this._image = this.getAndInstance((data) => new Image(data), 'image', data, new Image({}))
   }
 
@@ -23,6 +23,10 @@ export default class Profile extends BaseEntity {
 
   set lastName (value) {
     this._lastName = value
+  }
+
+  get lastName () {
+    return this._lastName
   }
 
   get phone () {

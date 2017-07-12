@@ -194,7 +194,7 @@
 </template>
 
 <script>
-    import Chat from './../../../components/Chat.vue'
+    import Chat from '../../components/Chat.vue'
     /* @flow */
     export default{
       data () {

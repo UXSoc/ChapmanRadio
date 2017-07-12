@@ -4,6 +4,7 @@ import Config from './config'
 import VueRouter from 'vue-router'
 import VeeValidate from 'vee-validate'
 import 'bootstrap-sass'
+import 'toastr/toastr'
 
 window.Vue = Vue
 window.FConfig = Config

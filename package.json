@@ -36,6 +36,7 @@
     "socket.io": "^2.0.3",
     "style-loader": "^0.13.2",
     "throttle-debounce": "^1.0.1",
+    "toastr": "^2.1.2",
     "translated": "^0.3.0",
     "typo-js": "^1.0.3",
     "utf-8-validate": "^3.0.2",

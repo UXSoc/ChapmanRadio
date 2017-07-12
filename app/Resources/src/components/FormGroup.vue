@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  import {Validator} from 'vee-validate'
+  import { Validator } from 'vee-validate'
   export default{
     props: {
       validator: {

@@ -23,7 +23,9 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Tests\Encoder\PasswordEncoder;
 use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContext;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class ResetPasswordType extends AbstractType
 {
@@ -41,7 +43,8 @@ class ResetPasswordType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $this->user = $options['user'];
-        $builder->add('oldPassword',PasswordType::class,array());
+        $builder->add('oldPassword',PasswordType::class,
+            array('constraints' => array(new Callback(array($this, 'verifyOldPassword')))));
         $builder->add('newPassword',PasswordType::class,array());
 
     }
@@ -49,24 +52,23 @@ class ResetPasswordType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'csrf_protection' => false,
-            'constraints' => [
-                new Callback([
-                    'callback' => [$this,'verifyOldPassword']
-                ])
-            ]
+            'csrf_protection' => false
         ]);
 
-        $resolver->setRequired('password_encoder');
         $resolver->setRequired('user');
     }
 
-    public function verifyOldPassword($data, ExecutionContext $context)
+
+    public function getBlockPrefix()
     {
-        if(!$this->passwordEncoder->isPasswordValid($this->user,  $data['oldPassword']))
+        return 'reset_password';
+    }
+
+    public function verifyOldPassword($value, ExecutionContextInterface $context)
+    {
+        if(!$this->passwordEncoder->isPasswordValid($this->user,  $value))
         {
             $context->buildViolation('Invalid Password')
-                ->atPath('oldPassword')
                 ->addViolation();
         }
     }
