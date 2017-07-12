@@ -1,4 +1,4 @@
-// flow-typed signature: 1d5052655aeb8acf9559de246be75c1e
+// flow-typed signature: 45b014dad45e1a70323cca1eff8ac0d4
 // flow-typed version: <<STUB>>/eslint_v^4.1.0/flow_v0.48.0
 
 /**
@@ -359,6 +359,10 @@ declare module 'eslint/lib/rules/func-style' {
 }
 
 declare module 'eslint/lib/rules/generator-star-spacing' {
+  declare module.exports: any;
+}
+
+declare module 'eslint/lib/rules/getter-return' {
   declare module.exports: any;
 }
 
@@ -1294,6 +1298,10 @@ declare module 'eslint/lib/token-store/utils' {
   declare module.exports: any;
 }
 
+declare module 'eslint/lib/util/ajv' {
+  declare module.exports: any;
+}
+
 declare module 'eslint/lib/util/fix-tracker' {
   declare module.exports: any;
 }
@@ -1613,6 +1621,9 @@ declare module 'eslint/lib/rules/func-style.js' {
 }
 declare module 'eslint/lib/rules/generator-star-spacing.js' {
   declare module.exports: $Exports<'eslint/lib/rules/generator-star-spacing'>;
+}
+declare module 'eslint/lib/rules/getter-return.js' {
+  declare module.exports: $Exports<'eslint/lib/rules/getter-return'>;
 }
 declare module 'eslint/lib/rules/global-require.js' {
   declare module.exports: $Exports<'eslint/lib/rules/global-require'>;
@@ -2312,6 +2323,9 @@ declare module 'eslint/lib/token-store/skip-cursor.js' {
 }
 declare module 'eslint/lib/token-store/utils.js' {
   declare module.exports: $Exports<'eslint/lib/token-store/utils'>;
+}
+declare module 'eslint/lib/util/ajv.js' {
+  declare module.exports: $Exports<'eslint/lib/util/ajv'>;
 }
 declare module 'eslint/lib/util/fix-tracker.js' {
   declare module.exports: $Exports<'eslint/lib/util/fix-tracker'>;

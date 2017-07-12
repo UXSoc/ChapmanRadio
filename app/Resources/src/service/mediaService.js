@@ -4,6 +4,7 @@
 
 import axios from 'axios'
 import Media from './../entity/media'
+import Form from './../entity/form'
 
 export default {
   postMedia: function (media: Media, callback: (result: Media | Form) => void) {

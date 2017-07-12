@@ -23,6 +23,7 @@ declare module 'babelify' {
  * needed.
  */
 
+
 // Filename aliases
 declare module 'babelify/index' {
   declare module.exports: $Exports<'babelify'>;

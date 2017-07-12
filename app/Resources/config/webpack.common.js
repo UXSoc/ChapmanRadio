@@ -11,8 +11,8 @@ module.exports = {
     'vendor': './app/Resources/src/vendor.js'
   },
   resolve: {
-    modules: ['node_modules', 'bower_components'],
-    descriptionFiles: ['package.json', 'bower.json'],
+    modules: ['node_modules'],
+    descriptionFiles: ['package.json'],
     extensions: ['.vue', '.js', '.scss', '.ts', '.svg'],
     alias: {
       'parchment': path.resolve(__dirname, '../../../node_modules/parchment/src/parchment.ts'),
@@ -46,7 +46,7 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader!eslint-loader',
         // make sure to exclude 3rd party code in node_modules
-        exclude: ['/node_modules/', '/bower_components']
+        exclude: ['/node_modules/']
       },
       {
         test: /\.ts$/,

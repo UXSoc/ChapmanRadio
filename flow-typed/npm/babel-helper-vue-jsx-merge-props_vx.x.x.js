@@ -23,6 +23,7 @@ declare module 'babel-helper-vue-jsx-merge-props' {
  * needed.
  */
 
+
 // Filename aliases
 declare module 'babel-helper-vue-jsx-merge-props/index' {
   declare module.exports: $Exports<'babel-helper-vue-jsx-merge-props'>;

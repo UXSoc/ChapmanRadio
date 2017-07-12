@@ -8,6 +8,8 @@ import Show from './../entity/show'
 import Datatable from './../entity/dataTable'
 import Comment from './../entity/comment'
 import Form from './../entity/form'
+import Media from './../entity/media'
+import Post from './../entity/post'
 
 export default {
   getShowsDatatable: function (page: number, sort: [], callback: (result: Datatable<Pagination<Show>>) => void, filter: any = {}) {
@@ -38,11 +40,11 @@ export default {
   },
   postShowComment: function (show: Show, comment: string, parentComment: (Comment | null), callback: (result: (Comment | Form)) => void) {
     const payload: {
-      parentComment: ?string,
+      parentComment?: string,
       content: string
     } = { content: comment }
-    if (root !== null) {
-      payload.parentComment = root.token
+    if (show !== null) {
+      payload.parentComment = show.token
     }
     return axios.post(Routing.generate('post_show_comment', { token: show.token, slug: show.slug }), qs.stringify({ 'comment': payload })).then((response) => {
       callback(new Comment(response.data.comment))
