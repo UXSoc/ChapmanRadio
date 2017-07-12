@@ -13,6 +13,8 @@ declare module 'axios' {
 
 declare var Routing: any
 
+declare var FormData: any
+
 declare module 'vue' {
   declare module.exports: any;
 }

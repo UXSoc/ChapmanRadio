@@ -27,7 +27,6 @@
   /* @flow */
   import Datatable from './../../../components/Datatable.vue'
   import PostService from './../../../service/postService'
-  import RouterLink from "../../../../../../bower_components/vue-router/src/components/link";
   export default{
     props: {
     },
@@ -51,14 +50,12 @@
         const _this = this
         PostService.getPostsDatatable(_this.page, [], function (datatable) {
           _this.$set(_this, 'dataTable', datatable)
-        }, function (envelope) {
         }, {
           entries: _this.numEntries
         })
       }
     },
     components: {
-      RouterLink,
       Datatable
     },
     created () {

@@ -1,4 +1,4 @@
-// flow-typed signature: aa69e23a634fa3612f863955de80bdf8
+// flow-typed signature: 92972cde0fc44dad3f234f299fddb8a6
 // flow-typed version: <<STUB>>/less-loader_v^4.0.3/flow_v0.48.0
 
 /**
@@ -22,6 +22,10 @@ declare module 'less-loader' {
  * require those files directly. Feel free to delete any files that aren't
  * needed.
  */
+declare module 'less-loader/dist/cjs' {
+  declare module.exports: any;
+}
+
 declare module 'less-loader/dist/createWebpackLessPlugin' {
   declare module.exports: any;
 }
@@ -51,6 +55,9 @@ declare module 'less-loader/dist/stringifyLoader' {
 }
 
 // Filename aliases
+declare module 'less-loader/dist/cjs.js' {
+  declare module.exports: $Exports<'less-loader/dist/cjs'>;
+}
 declare module 'less-loader/dist/createWebpackLessPlugin.js' {
   declare module.exports: $Exports<'less-loader/dist/createWebpackLessPlugin'>;
 }

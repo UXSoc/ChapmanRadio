@@ -96,7 +96,7 @@ export default {
   },
   postPostComment: function (post: Post, comment: string, root: (Comment | null), callback : (result: Comment) => void) {
     const payload: {
-      parentComment: ?string,
+      parentComment?: string,
       content: string
     } = {
       content: comment

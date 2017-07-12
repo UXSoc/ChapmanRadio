@@ -11,7 +11,7 @@ export default {
       callback(new User(response.data.user))
     })
   },
-  login: function (username: string, password: string, rememberMe: boolean, callback: (result) => void) {
+  login: function (username: string, password: string, rememberMe: boolean, callback: (result: Form) => void) {
     return axios.post('/login', qs.stringify({
       '_username': username,
       '_password': password,
