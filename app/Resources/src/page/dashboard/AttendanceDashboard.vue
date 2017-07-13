@@ -23,8 +23,8 @@
                                 Workshop Date:
                                 Recording Method:
                                 <!--<datepicker>-->
-                                <input type="radio" name="recording1" value="manual"> Manual Recording<br>
-                                <input type="radio" name="recording2" value="cardswiper"> CardSwiper<br>
+                                <input type="radio" name="recording" value="manual"> Manual Recording<br>
+                                <input type="radio" name="recording" value="cardswiper"> CardSwiper<br>
                             </div>
                             <div class="col-md-4">
                                 <input class="form-control" placeholder="Type student ID, name, or DJ number">
