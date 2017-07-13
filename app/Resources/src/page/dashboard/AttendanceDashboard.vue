@@ -21,15 +21,10 @@
                             </div>
                             <div class="col-md-4">
                                 Workshop Date:
-                                <div class="input-group date" data-provide="datepicker">
-                                    <input type="text" class="form-control">
-                                    <div class="input-group-addon">
-                                        <i class="fa fa-calendar" aria-hidden="true"></i>
-                                    </div>
-                                </div>
                                 Recording Method:
-                                <input type="radio" name="recording1" value="manual"> Manual Recording<br>
-                                <input type="radio" name="recording2" value="cardswiper"> CardSwiper<br>
+                                <!--<datepicker>-->
+                                <input type="radio" name="recording" value="manual"> Manual Recording<br>
+                                <input type="radio" name="recording" value="cardswiper"> CardSwiper<br>
                             </div>
                             <div class="col-md-4">
                                 <input class="form-control" placeholder="Type student ID, name, or DJ number">
@@ -38,8 +33,16 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <button type="button" class="btn btn-primary btn-lg btn-block">MARK PRESENT</button>
+                            </div>
+                            <div class="col-md-4">
                                 <button type="button" class="btn btn-primary btn-lg btn-block">MARK EXCUSED</button>
+
+                            </div>
+                            <div class="col-md-4">
                                 <button type="button" class="btn btn-primary btn-lg btn-block">MARK ABSENT</button>
+                            </div>
+                            <div class="col-md-4">
+
                             </div>
                         </div>
                         <div class="row">
@@ -80,7 +83,6 @@
 
 <script>
     /* @flow */
-//    import Datepicker from 'vuejs-datepicker'
     import AttendanceItem from '../../components/AttendanceItem.vue'
     export default{
       data () {
@@ -89,12 +91,11 @@
       },
       methods: {
 
-      },
-      watch: {
-      },
-      components: {
-//        Datepicker,
-        AttendanceItem
-      }
+        },
+        watch: {
+        },
+        components: {
+            AttendanceItem
+        }
     }
 </script>
