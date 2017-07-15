@@ -9,21 +9,25 @@
 namespace CoreBundle\Repository;
 
 
+use Carbon\Carbon;
 use CoreBundle\Entity\Event;
 use Doctrine\ORM\EntityRepository;
 
 class EventRepository extends EntityRepository
 {
     /**
-     * @param \DateTime $time
+     * @param \DateTime $dateTime
      * @return Event[]
      */
-    public function getEventByTime(\DateTime $time)
+    public function getEventByDateTime(\DateTime $dateTime)
     {
         $qb = $this->createQueryBuilder('e');
-            $qb->where($qb ->expr()->lt('e.start',':time'))
-                ->where($qb->expr()->gt('e.end',':time'))
-                ->setParameter('time',$time);
+            $qb->where($qb->expr()->eq('e.current',':current'))
+                ->setParameter('current',$dateTime);
+
+            $qb->andWhere($qb ->expr()->lt('e.startTime',':time'))
+                ->andWhere($qb->expr()->gt('e.endTime',':time'))
+                ->setParameter('time',$dateTime);
         return $qb->getQuery()->getResult();
     }
 

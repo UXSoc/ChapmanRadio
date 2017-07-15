@@ -123,7 +123,7 @@ class ShowRepository extends EntityRepository
             {
                 $showMeta = new ShowMeta();
                 $showMeta->setShow($show);
-                $showMeta->setMetaKey($key);
+                $showMeta->setKey($key);
                 return $showMeta;
             }
         }

@@ -160,7 +160,7 @@ class Post
     /**
      *
      * Many Shows have Many Images.
-     * @ORM\ManyToMany(targetEntity="Media")
+     * @ORM\ManyToMany(targetEntity="Media", inversedBy="post")
      * @ORM\JoinTable(name="post_media",
      *      joinColumns={@ORM\JoinColumn(name="post_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="media_id", referencedColumnName="id", unique=true)}

@@ -60,11 +60,18 @@ class ScheduleRepository extends EntityRepository
     {
         $qb = $this->byDateTime($dateTime);
 
-        if(!is_null($archive))
-            $qb->join('s.show','sh','WITH',$qb->expr()->eq('sh.archive',$archive));
-        if(!is_null($profanity))
-            $qb->join('s.show','sh','WITH',$qb->expr()->eq('sh.profanity',$profanity));
+        if(!is_null($archive)) {
+            $qb->join('s.show', 'sh', 'WITH');
 
+            $qb->andWhere($qb->expr()->eq('sh.archive',":archive"))
+                ->setParameter('archive',$archive);
+        }
+        if(!is_null($profanity))
+        {
+            $qb->join('s.show','sh','WITH');
+            $qb->andWhere($qb->expr()->eq('sh.profanity',":profanity"))
+                ->setParameter('profanity',$profanity);
+        }
         return $qb->getQuery()->getResult();
     }
 
@@ -75,11 +82,18 @@ class ScheduleRepository extends EntityRepository
         $qb->andWhere($qb->expr()->eq('s.show',':show'))
             ->setParameter('show',$show);
 
-        if(!is_null($archive))
-            $qb->join('s.show','sh','WITH',$qb->expr()->eq('sh.archive',$archive));
-        if(!is_null($profanity))
-            $qb->join('s.show','sh','WITH',$qb->expr()->eq('sh.profanity',$profanity));
+        if(!is_null($archive)) {
+            $qb->join('s.show', 'sh', 'WITH');
 
+            $qb->andWhere($qb->expr()->eq('sh.archive',":archive"))
+                ->setParameter('archive',$archive);
+        }
+        if(!is_null($profanity))
+        {
+            $qb->join('s.show','sh','WITH');
+            $qb->andWhere($qb->expr()->eq('sh.profanity',":profanity"))
+                ->setParameter('profanity',$profanity);
+        }
         return $qb->getQuery()->getResult();
     }
 
@@ -87,10 +101,18 @@ class ScheduleRepository extends EntityRepository
     {
         $qb = $this->byDateTimeRange($start,$end);
 
-        if(!is_null($archive))
-            $qb->join('s.show','sh','WITH',$qb->expr()->eq('sh.archive',$archive));
+        if(!is_null($archive)) {
+            $qb->join('s.show', 'sh', 'WITH');
+
+            $qb->andWhere($qb->expr()->eq('sh.archive',":archive"))
+                ->setParameter('archive',$archive);
+        }
         if(!is_null($profanity))
-            $qb->join('s.show','sh','WITH',$qb->expr()->eq('sh.profanity',$profanity));
+        {
+            $qb->join('s.show','sh','WITH');
+            $qb->andWhere($qb->expr()->eq('sh.profanity',":profanity"))
+                ->setParameter('profanity',$profanity);
+        }
 
         return $qb->getQuery()->getResult();
     }
@@ -102,11 +124,18 @@ class ScheduleRepository extends EntityRepository
         $qb->andWhere($qb->expr()->eq('s.show',':show'))
             ->setParameter('show',$show);
 
-        if(!is_null($archive))
-            $qb->join('s.show','sh','WITH',$qb->expr()->eq('sh.archive',$archive));
-        if(!is_null($profanity))
-            $qb->join('s.show','sh','WITH',$qb->expr()->eq('sh.profanity',$profanity));
+        if(!is_null($archive)) {
+            $qb->join('s.show', 'sh', 'WITH');
 
+            $qb->andWhere($qb->expr()->eq('sh.archive',":archive"))
+                ->setParameter('archive',$archive);
+        }
+        if(!is_null($profanity))
+        {
+            $qb->join('s.show','sh','WITH');
+            $qb->andWhere($qb->expr()->eq('sh.profanity',":profanity"))
+                ->setParameter('profanity',$profanity);
+        }
         return $qb->getQuery()->getResult();
     }
 

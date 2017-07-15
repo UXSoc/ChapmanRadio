@@ -144,6 +144,7 @@ class User implements AdvancedUserInterface
     /**
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="Role", mappedBy="user", cascade={"persist"})
+     * @JMS\Exclude
      */
     private $roles;
 
@@ -334,6 +335,9 @@ class User implements AdvancedUserInterface
      * is created.
      *
      * @return Role[] The user roles
+     *
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("roles")
      */
     public function getRoles()
     {

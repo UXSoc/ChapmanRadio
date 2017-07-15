@@ -220,7 +220,7 @@ class Show
     /**
      *
      * Many Shows have Many Images.
-     * @ORM\ManyToMany(targetEntity="Media")
+     * @ORM\ManyToMany(targetEntity="Media", inversedBy="show")
      * @ORM\JoinTable(name="show_media",
      *      joinColumns={@ORM\JoinColumn(name="show_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="media_id", referencedColumnName="id", unique=true)}

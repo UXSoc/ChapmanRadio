@@ -14,13 +14,13 @@ use Symfony\Component\EventDispatcher\Event;
 
 class ScheduleBetweenEvent extends Event
 {
+    const NAME = "schedule.between";
+
     private $schedule;
     private $start;
     private $end;
 
     private  $datetimes;
-
-
 
     function __construct(Schedule $schedule,$start,$end)
     {

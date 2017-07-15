@@ -308,9 +308,15 @@ class Schedule
         return (new RRule($this->getRule()))->rfcString();
     }
 
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("rrule")
+     * @JMS\Groups({"detail","list"})
+     * @return array
+     */
     public function getRule()
     {
-        return array(
+        return [
             'DTSTART' => $this->getStartDate(),
             'FREQ' => $this->getFrequency(),
             'UNTIL' => $this->getEndDate(),
@@ -326,7 +332,7 @@ class Schedule
             'BYMONTH' => $this->getByMonth(),
             'BYSETPOS' => null,
             'WKST' => 'MO'
-        );
+        ];
     }
 
     public function setByDay($byday)

@@ -1,7 +1,19 @@
 <template>
     <div class="schedule-shows" v-if="scheduleEntries">
         <p class="schedule-time-heading">EARLY</p>
-        <schedule-entry v-for="(item, index) in scheduleEntries" :key="index" :show="item.show" :showDate="item.date"></schedule-entry>
+        <div class="row schedule-entry" v-for="(item, index) in scheduleEntries">
+            <div class="col-md-2">
+                <p class="schedule-time">{{ convertToTime(item.date) }}</p>
+            </div>
+            <div class="col-md-3 trackview">
+                <!--<img :src="image">-->
+            </div>
+            <div class="col-md-7">
+                <p class="schedule-showname">{{item.show.name}}</p>
+                <p class="schedule-showdesc">derp</p>
+                <p class="schedule-epdesc">{{item.show.excerpt}}</p>
+            </div>
+        </div>
      </div>
 </template>
 
@@ -33,9 +45,11 @@
             }
             ScheduleService.getScheduleByDate(this.start.year(), this.start.month(), this.start.date(), (entries) => {
               this.$set(this, 'scheduleEntries', entries)
-            }, (envelope) => {
             })
           })
+        },
+        convertToTime: function (date: string) {
+          return Moment.utc(date).format('h:mm a')
         }
       },
       watch: {

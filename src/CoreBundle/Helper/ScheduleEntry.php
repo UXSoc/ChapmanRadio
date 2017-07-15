@@ -9,6 +9,7 @@
 namespace CoreBundle\Helper;
 
 
+use CoreBundle\Entity\Schedule;
 use CoreBundle\Entity\Show;
 use DateTime;
 use Symfony\Component\Cache\CacheItem;
@@ -34,19 +35,29 @@ class ScheduleEntry
      */
     private $show;
 
-    public function setShow(Show $show)
+    /**
+     * @var Schedule
+     * @JMS\Groups({"detail","list"})
+     */
+    private $schedule;
+
+    function __construct(DateTime $showDate,Schedule $schedule)
     {
-        $this->show = $show;
+        $this->showDate = $showDate;
+        $this->schedule = $schedule;
+        $this->length = $schedule->getShowLength();
+        $this->show = $schedule->getShow();
+
+    }
+
+    public function getSchedule()
+    {
+        return $this->schedule;
     }
 
     public function getShow()
     {
         return $this->show;
-    }
-
-    public function setDate(DateTime $date)
-    {
-        $this->showDate = $date;
     }
 
     public function getShowDate()
@@ -57,11 +68,6 @@ class ScheduleEntry
     public function getLenght()
     {
         return $this->length;
-    }
-
-    public function setLength($length)
-    {
-        $this->length = $length;
     }
 
 }

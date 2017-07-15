@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use CoreBundle\Entity\Schedule;
 use CoreBundle\Entity\Show;
 use CoreBundle\Event\ScheduleBetweenEvent;
+use CoreBundle\Event\ScheduleChainEvent;
 use CoreBundle\Events;
 use CoreBundle\Form\ScheduleType;
 use CoreBundle\Helper\ScheduleEntry;
@@ -58,33 +59,34 @@ class ScheduleController extends FOSRestController
         $schedules = $scheduleRepository->getByDatetime($c);
 
         $result = array();
-        /** @var Schedule $schdule */
-        foreach ($schedules as $schdule)
+        /** @var Schedule $schedule */
+        foreach ($schedules as $schedule)
         {
-            $dates = new ScheduleBetweenEvent($schdule,$start->copy(),$end->copy());
-            $dispatcher->dispatch(Events::ON_SCHEDULE_RULE,$dates);
+            $dates = new ScheduleBetweenEvent($schedule,$start->copy(),$end->copy());
+            $dispatcher->dispatch(ScheduleBetweenEvent::NAME,$dates);
             if($dates->hasDates())
             {
                 foreach ($dates->getDateTimes() as $date) {
-                    $entry = new ScheduleEntry();
-                    $entry->setDate($date);
-                    $entry->setShow($schdule->getShow());
-                    $entry->setLength($schdule->getShowLength());
-                    $result[] = $entry;
+                    $result[] = new ScheduleEntry($date,$schedule);
                 }
             }
         }
+        usort($result,function (ScheduleEntry $a,ScheduleEntry $b) {
+            if ($a->getShowDate() == $b->getShowDate()) {
+                return 0;
+            }
+            return $a->getShowDate() < $b->getShowDate() ? -1 : 1;
+        });
         return $this->view(['scheduleEntries' => $result]);
     }
 
 
-
     /**
-     * @Rest\Get("/show/{token}/{slug}/schedule/{year}/{month}",
+     * @Rest\Get("show/{token}/{slug}/schedule/{year}/{month}",
      *     options = { "expose" = true },
      *     name="get_show_schedule_month")
      */
-    public function getScheduleByMonthAction(Request $request, $token, $slug, $year, $month)
+    public function getShowScheduleByMonthAction(Request $request, $token, $slug, $year, $month)
     {
         $date = Carbon::create($year,$month);
 
@@ -105,11 +107,30 @@ class ScheduleController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/schedule/{year}/{month}",
+     * @Rest\Get("schedule/chain/{amount}",
+     *     options = { "expose" = true },
+     *     name="get_schedule_chain")
+     * @Rest\View(serializerGroups={"list"})
+     */
+    public function nextScheduledItemsInChainAction(Request $request, $amount)
+    {
+        /** @var EventDispatcher $dispatcher */
+        $dispatcher = $this->get('event_dispatcher');
+
+        $event = new ScheduleChainEvent(new \DateTime('now'),$amount,true);
+
+        $dispatcher->dispatch(ScheduleChainEvent::NAME,$event);
+        return $this->view(['scheduleEntries' => $event->getScheduleEntries()]);
+    }
+
+
+    /**
+     * @Rest\Get("schedule/{year}/{month}",
      *     options = { "expose" = true },
      *     name="get_schedule_month")
+     * @Rest\View(serializerGroups={"list"})
      */
-    public function getScheduleMonthAction(Request $request, $year, $month)
+    public function getScheduleByMonthAction(Request $request, $year, $month)
     {
         /** @var ScheduleRepository $scheduleRepository */
         $scheduleRepository = $this->get(Schedule::class);
@@ -118,5 +139,6 @@ class ScheduleController extends FOSRestController
         $schedules = $scheduleRepository->getByDatetimeRange($date->copy()->startOfMonth(),$date->copy()->endOfMonth(),false);
         return $this->view(["schedules" => $schedules]);
     }
+
 
 }
